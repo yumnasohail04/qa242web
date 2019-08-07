@@ -1,5 +1,4 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
@@ -29,11 +28,11 @@ if (strpos($_SERVER['HTTP_HOST'], '.') > 0 && $_SERVER['HTTP_HOST'] != '192.168.
 else
 	$localname='';
 //	echo $localname; exit;
-$prefix='http';
+$prefix='https';
 if ( $_SERVER['HTTP_HOST'] == 'dinehome.no' || $_SERVER['HTTP_HOST'] =='www.dinehome.no' )
 	$prefix = 'https';
 
-$config['base_url']	= $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname;
+$config['base_url']	='';
 //$config['base_url']	= 'http://tastybite.digitalspinners.com/';
 
 
@@ -48,7 +47,6 @@ $config['base_url']	= $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname;
 |
 */
 $config['index_page'] = '';
-
 /*
 |--------------------------------------------------------------------------
 | URI PROTOCOL

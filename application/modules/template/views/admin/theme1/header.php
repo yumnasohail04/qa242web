@@ -1,4 +1,5 @@
 <!-- Header   -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +16,7 @@
 
 
     <!-- =============== Custom CSS ===============-->
-    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>custom.css">
+    <link rel="stylesheet"  type="text/css" href="<?php echo STATIC_ADMIN_CSS?>custom.css">
 
   <!-- ============== Toastr ====================== -->
    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>toastr.css"> 
@@ -103,7 +104,6 @@
 </head>
 <body>
 <div class="wrapper">
-    
       <!-- top navbar-->
       <header class="topnavbar-wrapper">
          <!-- START Top Navbar-->

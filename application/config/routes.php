@@ -37,9 +37,8 @@
 | in the URL cannot be matched to a valid route.
 |
 */
-
 /////////////// ADMIN PAGES ////////////////
-//$route['admin/login/submit_login'] = "login/submit_login";
+$route['admin/login/submit_login'] = "login/submit_login";
 
 	
 	

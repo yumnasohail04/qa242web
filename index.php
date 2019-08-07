@@ -1,5 +1,7 @@
 <?php
-
+/*ini_set('display_startup_errors', true);
+error_reporting(E_ALL);
+ini_set('display_errors', true);*/
 /*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT
@@ -20,7 +22,7 @@
  */
 
 // ************** FOR LOCAL SERVER
-  define('ENVIRONMENT', 'production');
+  define('ENVIRONMENT', 'development');
 
 // ************** FOR LIVE SERVER
  ///define('ENVIRONMENT', 'production');

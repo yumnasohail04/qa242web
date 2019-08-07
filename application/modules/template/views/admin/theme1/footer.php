@@ -1,4 +1,5 @@
     <!-- Page footer *** -->
+    
     <footer>
       <p class="copy-right">All Rights Reserved by LANTIX<span class="theme-color"></span></p>
     </footer>
@@ -360,7 +361,7 @@ $(document).ready(function() {
    //        clear: 'fa fa-trash'
    //      },
    //      //viewMode: 'years',
-   //      format: '<?=$arrDate[DEFAULT_DATE_FORMAT]?>'
+   //      format: ''
    //  });
 
 
