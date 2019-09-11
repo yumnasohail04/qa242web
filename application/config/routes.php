@@ -213,6 +213,5 @@ $route['admin/login/submit_login'] = "login/submit_login";
 		$route['get-all-deals']=$api_folder."get_deals_list";
 		$route['get-outlet-info']=$api_folder."get_oultet_info";
 	
- 	
 
 $route['404_override'] = '';

@@ -126,9 +126,9 @@
                         <div class="card text-white bg-flat-color-4">
                             <div class="card-body pb-0">
                                 <h4 class="mb-0">
-                                    <span class="count">10468</span>
+                                    <span class="count"><?php $temp='0'; if(isset($totalchecks) && !empty($totalchecks)) $temp=$totalchecks; $temp=  Modules::run('api/string_length',$temp,'100','0'); echo $temp; ?></span>
                                 </h4>
-                                <p class="text-light">Completed Checks</p>
+                                <p class="text-light">Total Checks</p>
                                 <div class="chart-wrapper px-3" style="height:70px;" height="70">
                                     <canvas id="widgetChart8"></canvas>
                                 </div>
@@ -138,25 +138,12 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-6 col-lg-3">
-                        <div class="card text-white bg-flat-color-5">
-                            <div class="card-body pb-0">
-                                <h4 class="mb-0">
-                                    <span class="count">10468</span>
-                                </h4>
-                                <p class="text-light">Reports</p>
-                                <div class="chart-wrapper px-3" style="height:70px;" height="70">
-                                    <canvas id="widgetChart4"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-lg-3">
                         <div class="card text-white bg-flat-color-6">
                             <div class="card-body pb-0">
                                 <h4 class="mb-0">
-                                    <span class="count" >10468</span>
+                                    <span class="count" ><?php $temp='0'; if(isset($activechecks) && !empty($activechecks)) $temp=$activechecks; $temp=  Modules::run('api/string_length',$temp,'100','0'); echo $temp; ?></span>
                                 </h4>
-                                <p class="text-light" >Archieve Checks</p>
+                                <p class="text-light" >Active Checks</p>
 
                                 <div class="chart-wrapper px-0" style="height:70px;" height="70">
                                     <canvas id="widgetChart5"></canvas>
@@ -168,9 +155,9 @@
                         <div class="card text-white bg-flat-color-7">
                             <div class="card-body pb-0">
                                 <h4 class="mb-0">
-                                    <span class="count">10468</span>
+                                    <span class="count"><?php $temp='0'; if(isset($overduechecks) && !empty($overduechecks)) $temp=$overduechecks; $temp=  Modules::run('api/string_length',$temp,'100','0'); echo $temp; ?></span>
                                 </h4>
-                                <p class="text-light">Pending Checks</p>
+                                <p class="text-light">OverDue Checks</p>
                                 <div class="chart-wrapper px-0" style="height:70px;" height="70">
                                     <canvas id="widgetChart6"></canvas>
                                 </div>
@@ -181,7 +168,7 @@
                         <div class="card text-white bg-flat-color-8">
                             <div class="card-body pb-0">
                                 <h4 class="mb-0">
-                                    <span class="count">10468</span>
+                                    <span class="count"><?php $temp='0'; if(isset($pendingreviews) && !empty($pendingreviews)) $temp=$pendingreviews; $temp=  Modules::run('api/string_length',$temp,'100','0'); echo $temp; ?></span>
                                 </h4>
                                 <p class="text-light">Pending Review</p>
                             </div>
@@ -190,6 +177,21 @@
                             </div>
                         </div>
                     </div>
+                <div class="col-sm-6 col-lg-3">
+                        <div class="card text-white bg-flat-color-5">
+                            <div class="card-body pb-0">
+                                <h4 class="mb-0">
+                                    <span class="count"><?php $temp='0'; if(isset($pendingapproval) && !empty($pendingapproval)) $temp=$pendingapproval; $temp=  Modules::run('api/string_length',$temp,'100','0'); echo $temp; ?></span>
+                                </h4>
+                                <p class="text-light">Pending Approval</p>
+                                <div class="chart-wrapper px-3" style="height:70px;" height="70">
+                                    <canvas id="widgetChart4"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>	
+                
+                
                 </div>
             </div>
         </section>

@@ -71,7 +71,7 @@ Modules::run('site_security/has_permission');
       $week_start=date("Y-m-d ", strtotime($year.'W'.$week.'1'));
       $temp_product = array();
       if(!empty($week_start)) {
-        for ($i=0; $i <=4; $i++) { 
+        for ($i=0; $i <=5; $i++) { 
           $temp['date'] = date('m-d-Y', strtotime($week_start));
           $temp['day'] = date('l', strtotime($week_start));
           $temp['data'] = $this->get_product_schedules_from_db(array("ps_date >="=>$week_start,"ps_end_date <="=>$week_start),'ps_date desc','ps_id',DEFAULT_OUTLET,'product_title,ps_line,ps_id,ps_product,navision_no,product_type,ps_date','1','0','','','')->result_array();
@@ -101,6 +101,10 @@ Modules::run('site_security/has_permission');
         endforeach;
         $shift_timing = $temp;
       }
+      $data['fb_document_name'] = "";
+      $document_name = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id asc','general_setting','document_name','1','1')->result_array();
+      if(isset($document_name[0]['document_name']) && !empty($document_name[0]['document_name']))
+        $data['fb_document_name'] = $document_name[0]['document_name'];
       $datas= Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc','apps_setting','android_link,ios_link','1','1')->row_array();
       $data['shift_timing'] = $shift_timing;
       $data['product_schedule'] = $temp_product;
@@ -222,7 +226,7 @@ Modules::run('site_security/has_permission');
       $data['end_date'] = $data['start_date'];
       $data['selected_product'] = $this->input->post('product');
       $data['line'] = $this->input->post('line');
-      $data['products'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("status" =>'1'),'id desc','id',DEFAULT_OUTLET.'_product','id,product_title','1','0','','','')->result_array();
+      $data['products'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("status" =>'1'),'id desc','id',DEFAULT_OUTLET.'_product','id,product_title,navision_no','1','0','','','')->result_array();
       $this->load->view('product_schedule',$data);
     }
     function submit_plant_data() {
@@ -454,6 +458,7 @@ Modules::run('site_security/has_permission');
                 $app_data['ios_link']=$this->input->post('ios_link');
                 $app_data['android_link']=$this->input->post('android_link');
                 Modules::run('api/update_specific_table',array(),$app_data,'apps_setting');
+    			Modules::run('api/update_specific_table',array('outlet_id'=>DEFAULT_OUTLET),array("document_name"=>$this->input->post('fb_document_name')),'general_setting');
     }
 
    

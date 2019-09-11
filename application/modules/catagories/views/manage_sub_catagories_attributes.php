@@ -19,6 +19,7 @@
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-body">
+                         <h2>Choice Attributes</h2>
                     <table id="datatable1" class="table table-striped table-hover ">
                         <thead class="bg-th">
                         <tr class="bg-col">
@@ -41,6 +42,7 @@
                                 if (isset($query)) {
                                     foreach ($query->result() as
                                             $row) {
+                                                 if($row->attribute_type=="Choice"){
                                         $i++;
                                       //$manage_sub_page_url = ADMIN_BASE_URL . 'catagories/manage_attributes/' . $row->id ."/". ;
                                       //  $active_url = ADMIN_BASE_URL . 'catagories/sub_cat_active/' . $row->parent_id . '/' . $row->id;
@@ -79,7 +81,107 @@
                                                 ?>
                                             </td>
                                         </tr>
-                                    <?php }
+                                    <?php } }
+                                    ?>    
+                                <?php } ?>
+                            </tbody>
+                    </table>
+                      <h2>Fixed Attributes</h2>
+                    <table id="datatable2" class="table table-striped table-hover ">
+                        <thead class="bg-th">
+                        <tr class="bg-col">
+                        <th  style="display:none;width:2%">S.No</th>
+                        <th width="400px">Attribute`s Name</th>
+                        <th width="400px"></th>
+
+                        
+
+                        <th class="" style="width:320px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actions</th>
+                        </tr>
+                        </thead>
+                         <tbody class="courser table-body">
+                                <?php
+                                $i=0;
+                                if (isset($query)) {
+                                    foreach ($query->result() as
+                                            $row) {
+                                        $i++;
+                                     if($row->attribute_type=="Fixed"){
+                                         $edit_url = ADMIN_BASE_URL . 'catagories/create_sub_catagories_attibutes/' . $row->check_cat_id . '/' . $row->id .'/'.str_replace('/', '-', $parent_name);
+                                        $delete_url = ADMIN_BASE_URL . 'catagories/delete_sub_catagories/' . $row->id . '/' ;
+                                        $set_publish_url = ADMIN_BASE_URL . 'catagories/active/' . $row->id;
+                                        $set_unpublish_url = ADMIN_BASE_URL . 'catagories/in_active/' . $row->id;
+                                        
+                                        ?>
+                                        <tr class="odd gradeX" >
+                                          <td class="table-checkbox" style="display:none;"><?php echo $i; ?></td>
+                                            <td><?php echo $row->attribute_name; ?></td>
+                                            <td>User will provide a text input</td>
+                                           
+                                           
+                                            <td class="table_action">
+                                           
+
+                                                 <?php
+                                                
+                                                echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => ' btn blue c-btn','title' => 'Edit Sub Category'));
+                                                echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_records btn red c-btn', 'rel' => $row->id,'title' => 'Delete Attribute'));
+                                                ?>
+                                            </td>
+                                        </tr>
+                                    <?php }}
+                                    ?>    
+                                <?php } ?>
+                            </tbody>
+                    </table>
+                     <h2>Range Attributes</h2>
+                    <table id="datatable" class="table table-striped table-hover ">
+                        <thead class="bg-th">
+                        <tr class="bg-col">
+                        <th  style="display:none;width:2%">S.No</th>
+                        <th width="400px">Attribute`s Name</th>
+                        <th width="400px">Min</th>
+                        <th width="400px">Max</th>
+                        <th width="400px">Target</th>
+
+
+                        
+
+                        <th class="" style="width:320px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actions</th>
+                        </tr>
+                        </thead>
+                         <tbody class="courser table-body">
+                                <?php
+                                $i=0;
+                                if (isset($query)) {
+                                    foreach ($query->result() as
+                                            $row) {
+                                        $i++;
+                                      if($row->attribute_type=="Range"){
+                                       $edit_url = ADMIN_BASE_URL . 'catagories/create_sub_catagories_attibutes/' . $row->check_cat_id . '/' . $row->id .'/'.str_replace('/', '-', $parent_name);
+                                        $delete_url = ADMIN_BASE_URL . 'catagories/delete_sub_catagories/' . $row->id . '/' ;
+                                        $set_publish_url = ADMIN_BASE_URL . 'catagories/active/' . $row->id;
+                                        $set_unpublish_url = ADMIN_BASE_URL . 'catagories/in_active/' . $row->id;
+                                        
+                                        ?>
+                                        <tr class="odd gradeX" >
+                                          <td class="table-checkbox" style="display:none;"><?php echo $i; ?></td>
+                                            <td><?php echo $row->attribute_name; ?></td>
+                                            <td><?php if($row->attribute_type=="Range")  echo $row->min; ?></td>
+                                            <td><?php if($row->attribute_type=="Range")  echo $row->max; ?></td>
+                                            <td><?php if($row->attribute_type=="Range") echo $row->target; ?></td>
+                                           
+                                            <td class="table_action">
+                                           
+
+                                                 <?php
+                                                
+                                                echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => ' btn blue c-btn','title' => 'Edit Sub Category'));
+                                                echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_records btn red c-btn', 'rel' => $row->id,'title' => 'Delete Attribute'));
+                                                ?>
+                                            </td>
+                                        </tr>
+                                    <?php }}
                                     ?>    
                                 <?php } ?>
                             </tbody>
@@ -197,3 +299,5 @@ $(document).ready(function(){
 });
 
 </script>
+
+

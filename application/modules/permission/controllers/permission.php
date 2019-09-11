@@ -27,11 +27,11 @@ function manage(){
 	$qry = Modules::run('roles/_get_where',$curr_role_id);
 	$rs_role = $qry->row();
 	if($rs_role->role == 'admin'){
-		$where1['role !='] = 'portal admin';
+		$where1['role !='] = 'Admin';
 	}
 	$query = Modules::run('roles/_get_where_cols',$where1);
 	foreach($query->result() as $role){
-		if($role->role != 'portal admin')
+		if($role->role != 'Admin')
 			$rs_roles[$role->id] = $role->role;
 	}
 	$query2 = Modules::run('outlet/_get','name asc');
@@ -41,7 +41,7 @@ function manage(){
    
 
 	if($role_id > 0){
-		if($user_data['role'] == 'portal admin'){
+		if($user_data['role'] == 'Admin'){
 			$admin_rights = NULL;
 			$query1 = Modules::run('rights/_get_where_custom','parent_id',0);
 		}else{
@@ -86,7 +86,7 @@ function manage(){
 				if($admin_rights != NULL && in_array($right['id'],$admin_rights)){
 					$rs_rights[$key]['methods'][] = array('id'=>$right['id'],'right'=>$right['right'],'parent_id'=>$right['parent_id'],'checked'=>$checked);
 				}
-				else if($user_data['role'] == 'portal admin' ){
+				else if($user_data['role'] == 'Admin' ){
 					$rs_rights[$key]['methods'][] = array('id'=>$right['id'],'right'=>$right['right'],'parent_id'=>$right['parent_id'],'checked'=>$checked);
 				}
 			}

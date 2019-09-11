@@ -1,7 +1,8 @@
 <?php
-/*ini_set('display_startup_errors', true);
+
+ini_set('display_startup_errors', true);
 error_reporting(E_ALL);
-ini_set('display_errors', true);*/
+ini_set('display_errors', true);
 /*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT
@@ -22,7 +23,7 @@ ini_set('display_errors', true);*/
  */
 
 // ************** FOR LOCAL SERVER
-  define('ENVIRONMENT', 'development');
+  define('ENVIRONMENT', 'production');
 
 // ************** FOR LIVE SERVER
  ///define('ENVIRONMENT', 'production');
@@ -198,7 +199,6 @@ if (defined('ENVIRONMENT'))
 
 		define('APPPATH', BASEPATH.$application_folder.'/');
 	}
-
 /*
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE

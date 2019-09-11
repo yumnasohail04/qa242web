@@ -4,7 +4,7 @@
                         <th class="text-center" style="width:120px;">Start Time <i class="fa fa-sort" style="font-size:13px;"></th>
                         <th class="text-center" style="width:120px;">End Time <i class="fa fa-sort" style="font-size:13px;"></th>
                         <th class="text-center" style="width:200px;">Check Name <i class="fa fa-sort" style="font-size:13px;"></th>
-                        <th class="text-center"style="width:200px;" >Responsible Team <i class="fa fa-sort" style="font-size:13px;"></th>
+                        <th class="text-center"style="width:200px;" ><?php if(strtolower($assign_type) == 'completed_checks') echo 'Approved by'; else echo "Responsible Team"; ?> <i class="fa fa-sort" style="font-size:13px;"></th>
                          <?php if($assign_type == 'pending_review'){ ?>
                         <th class="text-center"style="width:200px;" >Work arround <i class="fa fa-sort" style="font-size:13px;"></th>
                         <th class="text-center"style="width:200px;" >Completed By <i class="fa fa-sort" style="font-size:13px;"></th>
@@ -43,6 +43,19 @@
                                          <td class="text-center"> <?php if(isset($new->completed_datetime)) echo $new->completed_datetime;?></td>
                                          
                                        <?}?>
+                                       <?php if(strtolower($assign_type) == 'completed_checks'){ ?>
+                                        <td class="text-center">
+                                            <?php
+                                            if(isset($new->assign_id) && !empty($new->assign_id)) {
+                                                $assignment_answer = Modules::run('api/_get_specific_table_with_pagination',array("assign_id"=>$new->assign_id),'assign_id desc',DEFAULT_OUTLET.'_assignments','approval_user','1','1')->result_array();
+                                                if(isset($assignment_answer[0]['approval_user']) && !empty($assignment_answer[0]['approval_user'])) {
+                                                    $users = Modules::run('api/_get_specific_table_with_pagination',array("id"=>$assignment_answer[0]['approval_user']),'id desc','users','user_name','1','1')->result_array();
+                                                     $name=''; if(isset($users[0]['user_name']) && !empty($users[0]['user_name'])) $name= $users[0]['user_name']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; 
+                                                }
+                                            }
+                                            ?>
+                                        </td>
+                                        <?php } ?>
                                         <td class="table_action text-center">
                                              <?php if($assign_type == 'pending_review'){ ?>
                                             <?php $current_status= "";

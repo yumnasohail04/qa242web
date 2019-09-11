@@ -51,14 +51,16 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                         <!-- BEGIN FORM-->
                             <div class="form-body">
                                   <?php if(isset($update_id) && !empty($update_id) && !empty($assign_id) && ( $function == "pending_review" || $function == "pending_approval"  || $function="completed_checks")) {
-                                    $product_check = Modules::run('api/_get_specific_table_with_pagination',array("id"=>$assign_id),'id desc',DEFAULT_OUTLET.'_product_checks','productid,check_subcat_id','1','1')->result_array();
+									$product_heading = "Product name";                                    
+									$product_check = Modules::run('api/_get_specific_table_with_pagination',array("id"=>$assign_id),'id desc',DEFAULT_OUTLET.'_product_checks','productid,check_subcat_id','1','1')->result_array();
                                     $product_id = ""; 
-                                    if(isset($product_check[0]['productid']) && !empty($product_check[0]['productid'])) {
-                                      $product_id = $product_check[0]['productid'];
+                                    if(isset($assign_detail[0]['product_id']) && !empty($assign_detail[0]['product_id'])) {
+                                      $product_id = $assign_detail[0]['product_id'];
                                       $prodct_detail = Modules::run('api/_get_specific_table_with_pagination',array("id"=>$product_id),'id desc',DEFAULT_OUTLET.'_product','product_title','1','1')->result_array();
                                     }
                                     elseif(isset($product_check[0]['check_subcat_id']) && !empty($product_check[0]['check_subcat_id'])) {
-                                      $prodct_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$product_check[0]['check_subcat_id']),"id desc","id desc",'catagories','cat_name as product_title','1','1','','','')->result_array();
+                                    	$product_heading = "Process Check Type";  
+                                    	$prodct_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$product_check[0]['check_subcat_id']),"id desc","id desc",'catagories','cat_name as product_title','1','1','','','')->result_array();
                                     }
                                     else
                                       $prodct_detail[0]['product_title'] = 'N/A';
@@ -74,7 +76,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                         <tbody class="table-body">
                                           <tr class="bg-col">
                                               <th>
-                                                   Product name:
+                                                 <?=$product_heading?>:
                                               </th>
                                               <td>
                                                 <?php $name=''; if(isset($prodct_detail[0]['product_title']) && !empty($prodct_detail[0]['product_title'])) $name=$prodct_detail[0]['product_title']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; ?>

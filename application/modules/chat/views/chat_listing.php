@@ -71,7 +71,7 @@
                 <ul class="heightt" style="float: left;width: 100%">
                 </ul>
             </div>
-            <div class="message-input">
+            <div class="message-input"  style="display: none;">
                 <div class="wrap">
                 <input type="text" placeholder="Write your message..." />
                 <button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
@@ -143,7 +143,7 @@
             success: function(data) {
                 console.log(data);
                 if(data.status == true) {
-                    firebase.firestore().collection('/qaproject/users_chats/'+$(".contact-profile-image").attr("tracking")).doc().set({
+                    firebase.firestore().collection('/qaproject/<?=DEFAULT_DOCUMENT_NAME?>/'+$(".contact-profile-image").attr("tracking")).doc().set({
                         chat_id : data.chat_id,
                         createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
                         text: data.text,
@@ -216,7 +216,7 @@
     function getRealtimeUpdates(tracking){
         var user = '<?=$this->session->userdata['user_data']['user_id']?>';
         var chat_id = parseInt($(".contact-profile-image").attr("lastcheater"));
-        var chatRef = firebase.firestore().collection('/qaproject/users_chats/'+tracking).where("chat_id",">",chat_id).limit(5);
+        var chatRef = firebase.firestore().collection('/qaproject/<?=DEFAULT_DOCUMENT_NAME?>/'+tracking).where("chat_id",">",chat_id).limit(5);
         chatRef.onSnapshot(function(querySnapshot){
             querySnapshot.forEach(function(doc) {
                 if(doc.data().chat_id > $(".contact-profile-image").attr("lastcheater") && $(".contact-profile-image").attr("tracking") == tracking) {

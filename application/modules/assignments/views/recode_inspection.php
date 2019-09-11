@@ -139,6 +139,7 @@ $(document).ready(function(){
                         data: {'id': id,'txt':txt},
                         async: false,
                         success: function(test_body) {
+                        	location.reload();
                         }
                     });
                 });

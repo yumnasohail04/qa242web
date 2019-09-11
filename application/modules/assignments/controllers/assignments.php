@@ -19,9 +19,9 @@ Modules::run('site_security/is_login');
 
         $where['assign_status']="Open";
         $data['news'] = $this->_get('id desc',$where);
-        $data['view_file'] = 'news';
         $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
         $data['groups'] = $groups;
+        $data['view_file'] = 'news';
         $this->load->module('template');
         $this->template->admin($data);
     }
@@ -529,10 +529,10 @@ Modules::run('site_security/is_login');
         $txt = $this->input->post('txt');
         if(!empty($id) && !empty($txt)) {
             if($txt == "Review & Approved") {
-                Modules::run('api/update_specific_table',array("si_id"=>$id),array("ci_review"=>$this->session->userdata['user_data']['user_id'],'ci_review_datetime'=>date("Y-m-d H:i:s"),'ci_approve'=>$this->session->userdata['user_data']['user_id'],'ci_approve_datetime'=>date("Y-m-d H:i:s"),'ci_status'=>'Complete'),DEFAULT_OUTLET.'_cleaning_inspection');
+                Modules::run('api/update_specific_table',array("ci_id"=>$id),array("ci_review"=>$this->session->userdata['user_data']['user_id'],'ci_review_datetime'=>date("Y-m-d H:i:s"),'ci_approve'=>$this->session->userdata['user_data']['user_id'],'ci_approve_datetime'=>date("Y-m-d H:i:s"),'ci_status'=>'Complete'),DEFAULT_OUTLET.'_cleaning_inspection');
             }
             elseif($txt == "Reviewed") {
-                Modules::run('api/update_specific_table',array("si_id"=>$id),array("ci_review"=>$this->session->userdata['user_data']['user_id'],'ci_review_datetime'=>date("Y-m-d H:i:s"),'ci_status'=>'Review'),DEFAULT_OUTLET.'_cleaning_inspection');
+                Modules::run('api/update_specific_table',array("ci_id"=>$id),array("ci_review"=>$this->session->userdata['user_data']['user_id'],'ci_review_datetime'=>date("Y-m-d H:i:s"),'ci_status'=>'Review'),DEFAULT_OUTLET.'_cleaning_inspection');
             }
             else{
                 $status = "";
@@ -552,6 +552,25 @@ Modules::run('site_security/is_login');
             }
             elseif($txt == "Reviewed") {
                 Modules::run('api/update_specific_table',array("bi_id"=>$id),array("bi_review"=>$this->session->userdata['user_data']['user_id'],'bi_review_datetime'=>date("Y-m-d H:i:s"),'bi_status'=>'Review'),DEFAULT_OUTLET.'_bulk_tub_inspection');
+            }
+            else{
+                $status = "";
+            }
+        }
+    }
+	function bulk_form_inspection_status() {
+        date_default_timezone_set("Asia/karachi");
+        $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id asc','general_setting','timezones','1','1')->result_array();
+        if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
+            date_default_timezone_set($timezone[0]['timezones']);
+        $id = $this->input->post('id');
+        $txt = $this->input->post('txt');
+        if(!empty($id) && !empty($txt)) {
+            if($txt == "Review & Approved") {
+                Modules::run('api/update_specific_table',array("bfi_id"=>$id),array("bfi_review"=>$this->session->userdata['user_data']['user_id'],'bfi_review_datetime'=>date("Y-m-d H:i:s"),'bfi_approve'=>$this->session->userdata['user_data']['user_id'],'bfi_approve_datetime '=>date("Y-m-d H:i:s"),'bfi_status'=>'Complete'),DEFAULT_OUTLET.'_bulk_form_inspection');
+            }
+            elseif($txt == "Reviewed") {
+                Modules::run('api/update_specific_table',array("bfi_id"=>$id),array("bfi_review"=>$this->session->userdata['user_data']['user_id'],'bfi_review_datetime'=>date("Y-m-d H:i:s"),'bfi_status'=>'Review'),DEFAULT_OUTLET.'_bulk_form_inspection');
             }
             else{
                 $status = "";
@@ -592,11 +611,13 @@ Modules::run('site_security/is_login');
          elseif($assign_type=='pending_approval'){
              $where['assign_status']="Approval";
          }
+         elseif($assign_type=='completed_checks'){
+             $where['assign_status']="Completed";
+         }
         if(isset($startdate) && !empty($startdate))
              $where['assignments.start_datetime >=']=date('Y-m-d 00:00',strtotime($startdate));
         if(isset($enddate) && !empty($enddate))
              $where['assignments.end_datetime <=']=date('Y-m-d 23:59',strtotime($enddate));
-            
         $data['news'] = $this->_get('id desc',$where);
         
         $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();

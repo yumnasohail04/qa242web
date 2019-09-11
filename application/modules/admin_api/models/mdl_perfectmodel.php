@@ -63,18 +63,32 @@ class Mdl_perfectmodel extends CI_Model {
         }
         function get_all_check_list_from_db($where,$outlet_id,$where_frequency){
             $table=$outlet_id."_product_checks product_checks";
-            $this->db->select('product_checks.*');
+            $this->db->select('product_checks.*,,catagories.cat_name');
             $this->db->from($table);
+        	$this->db->join("catagories","catagories.id=product_checks.check_cat_id","left");
+        
+
              if(!empty($where))
             $this->db->where($where);
             $this->db->where('checktype !=','wip_profile ');
             $this->db->where('checktype !=','bowl_filling ');
             if(!empty($where_frequency))
             $this->db->where_in('product_checks.frequency',$where_frequency);
+        	$this->db->where_not_in('catagories.cat_name ',array('Gluten Free','Seafood'));
            $query=$this->db->get();
           return $query;
         }
-
+		function get_all_check_list_from_db_without_join($where,$outlet_id,$where_frequency){
+          $table=$outlet_id."_product_checks product_checks";
+          $this->db->from($table);
+            $this->db->where($where);
+          $this->db->where('checktype !=','wip_profile ');
+          $this->db->where('checktype !=','bowl_filling ');
+          if(!empty($where_frequency))
+            $this->db->where_in('product_checks.frequency',$where_frequency);
+          $query=$this->db->get();
+          return $query;
+        }
         function insert_assignment_data($data,$outlet_id){
               $table =$outlet_id."_assignments";
               $this->db->insert($table, $data);
@@ -264,6 +278,29 @@ class Mdl_perfectmodel extends CI_Model {
             $this->db->where_in('catagories.cat_name ',array('Gluten Free','Seafood'));
            $query=$this->db->get();
           return $query;
+        }
+		function get_schedules_product($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having=''){
+            $table = $outlet_id."_product_schedules";
+            $second_table = $outlet_id."_product";
+            $offset=($page_number-1)*$limit;
+            $this->db->select($select);
+            $this->db->from($table);
+            $this->db->join($second_table,$table.'.ps_product='.$second_table.'.id','left');
+            if(!empty($group_by))
+                $this->db->group_by($group_by);
+            if(!empty($cols))
+                $this->db->where($cols);
+            if(!empty($or_where))
+                $this->db->where($or_where);
+            if(!empty($and_where))
+                $this->db->where($and_where);
+            if(!empty($having))
+                $this->db->having($having);
+            if($limit != 0)
+                $this->db->limit($limit, $offset);
+            $this->db->order_by($order_by);
+            $query=$this->db->get();
+            return $query;
         }
          /////////////// END WIP PROFILE FUNCTIONS????????///////////////
 }

@@ -1,7 +1,11 @@
 <style type="text/css">
 	.red {
-		border: 1px solid red;
+		border: 1px solid red !important;
 	}
+  .selectbox-class {
+    background-color: white;
+    color: #3a3f51;
+  }
 </style>
 <div class="page-content-wrapper">
         <div class="row">
@@ -17,15 +21,15 @@
                                         <div class="form-group">
                                           <label class="col-sm-4 control-label">Product</label>
                                             <div class="col-sm-8">
-                                               	<select  class="validate_form form-control restaurant_type" name="product_name" required="required">
-                                               		<option value="">Select</option>
-                                                	<?php 
+                                               	<select  id="selectboxing" class="selectpicker"  data-show-subtext="true" data-live-search="true" name="product_name" required="required">
+                                                  <option value="">Select</option>
+                                                  <?php 
                                                     if(!isset($selected_product))
                                                       $selected_product ='';
                                                     if(isset($products) && !empty($products)) { foreach($products as $key=> $pro): ?>
-                                                   	<option  value="<?=$pro['id'];?>" <?php if($selected_product == $pro['id']) echo 'selected="selected"';?>><?=$pro['product_title'];?></option>
+                                                    <option  value="<?=$pro['id'];?>" <?php if($selected_product == $pro['id']) echo 'selected="selected"';?>  data-subtext="<?php if(isset($pro['navision_no']) && !empty($pro['navision_no'])) echo $pro['navision_no'];?>"><?=$pro['product_title'];?></option>
                                                    <?php endforeach; } ?>
-                                               	</select>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>

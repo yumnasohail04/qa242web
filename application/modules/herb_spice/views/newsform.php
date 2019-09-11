@@ -1,6 +1,5 @@
 
 
-
 <div class="page-content-wrapper">
   <div class="page-content"> 
     <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
@@ -71,26 +70,6 @@
                  
 
                    <div class="row section-box">
-                        <div class="col-sm-5">
-                            <div class="form-group">
-                                <?php
-                                $data = array(
-                                    'name' => 'navision_number',
-                                    'id' => 'navision_number',
-                                    'class' => 'form-control',
-                                    'value' => $news['navision_number'],
-                                    'type' => 'text',
-                                    'required' => 'required',
-                                    
-                                );
-                                $attribute = array('class' => 'control-label col-md-4');
-                                ?>
-                                <?php echo form_label('Product Title <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
-                                </div>
-                            </div>
-                        </div>
                          <div class="col-sm-5">
                             <div class="form-group">
                                 <?php
@@ -105,7 +84,27 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Navision Number<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
+                                <?php echo form_label('Product Title<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
+                                <div class="col-md-8">
+                                    <?php echo form_input($data); ?>
+                                </div>
+                            </div>
+                        </div>
+                   		<div class="col-sm-5">
+                            <div class="form-group">
+                                <?php
+                                $data = array(
+                                    'name' => 'navision_number',
+                                    'id' => 'navision_number',
+                                    'class' => 'form-control',
+                                    'value' => $news['navision_number'],
+                                    'type' => 'text',
+                                    'required' => 'required',
+                                    
+                                );
+                                $attribute = array('class' => 'control-label col-md-4');
+                                ?>
+                                <?php echo form_label('Navision Number <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
                                 <div class="col-md-8">
                                     <?php echo form_input($data); ?>
                                 </div>

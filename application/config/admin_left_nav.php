@@ -14,10 +14,13 @@ $config = array(
 		 10 => 'catagories',
 		 11 => 'chat',
 		 12 => 'groups',
-		 13 => 'notification_setting',
+		 13 => 'global_configuration',
 		 14 => 'product',
 		 15 => 'product_checks',
-		 16 => 'webpages',
-		 17 => 'genereal_setting',
+		 16 => 'product_tests',
+		 17 => 'wip_profile',
+		 18 => 'herbspice_checks',
+		 19 => 'assignments',
+		  
 	),
 );

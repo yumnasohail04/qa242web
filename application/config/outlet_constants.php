@@ -379,4 +379,10 @@ if (isset($outlet_data) && $outlet_data != NULL && $user_data['role'] == 'portal
         exit;
     }
 }
+$general_setting = $db->get_where('general_setting', array('outlet_id' => DEFAULT_OUTLET))->row();
+if (isset($general_setting) && !empty($general_setting)) {
+        define('DEFAULT_DOCUMENT_NAME', $general_setting->document_name);
+}
+else
+    define('DEFAULT_DOCUMENT_NAME','');
 

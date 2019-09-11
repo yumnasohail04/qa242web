@@ -8,7 +8,10 @@ function __construct() {
 parent::__construct();
 Modules::run('site_security/is_login');
 Modules::run('site_security/has_permission');
-date_default_timezone_set("Asia/karachi");
+	date_default_timezone_set("Asia/karachi");
+    $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id asc','general_setting','timezones','1','1')->result_array();
+    if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
+        date_default_timezone_set($timezone[0]['timezones']);
 }
 
     function index() {
@@ -132,14 +135,6 @@ date_default_timezone_set("Asia/karachi");
         $data['check_cat_id'] =  $this->input->post('check_cat_id');
         $data['check_subcat_id'] =  $this->input->post('check_subcat_id');
         //////////////////General check parameter////////
-        $data['created_datetme'] = date('Y-m-d');
-        $start_date = date('Y-m-d', strtotime($this->input->post('start_date')));
-
-        $start_time = $this->input->post('start_time');
-        $end_date =   date('Y-m-d', strtotime($this->input->post('end_date')));
-        $end_time =  $this->input->post('end_time');
-        $data['start_datetime']=date('Y-m-d H:i:s');
-        $data['end_datetime']=date('Y-m-d H:i:s', strtotime('+10 years'));
         $data['outlet_id'] =DEFAULT_OUTLET;
         $data['inspection_team'] = $this->input->post('inspection_team');
         $data['review_team'] = $this->input->post('review_team');
@@ -269,6 +264,13 @@ date_default_timezone_set("Asia/karachi");
 		                $this->session->set_flashdata('status', 'success');
             }
             if (is_numeric($update_id) && $update_id == 0) {
+            	$data['created_datetme'] = date('Y-m-d');
+                $start_date = date('Y-m-d', strtotime($this->input->post('start_date')));
+                $start_time = $this->input->post('start_time');
+                $end_date =   date('Y-m-d', strtotime($this->input->post('end_date')));
+                $end_time =  $this->input->post('end_time');
+                $data['start_datetime']=date('Y-m-d H:i:s');
+                $data['end_datetime']=date('Y-m-d H:i:s', strtotime('+17 years'));
                 $checktype= $this->input->post('checktype');
                 $id = $this->_insert($data);
                 $this->get_team_data_from_post($id);
@@ -308,7 +310,23 @@ date_default_timezone_set("Asia/karachi");
         else
             $status = 1;
         $data = array('status' => $status);
-        $status = $this->_update_id($id, $data);
+        if($status == 1) {
+            $check_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('id'=>$id),'id desc','id',DEFAULT_OUTLET.'_product_checks','start_datetime,end_datetime','1','0','','','')->result_array();
+            $sf_start_datetime = date("Y-m-d H:i:s");
+            $sf_end_datetime = date('Y-m-d H:i:s', strtotime('+18 years'));
+            if(!empty($check_detail)) {
+                if(isset($check_detail[0]['start_datetime']) && !empty($check_detail[0]['start_datetime'])) 
+                    if($check_detail[0]['start_datetime'] != '0000-00-00 00:00:00')
+                        $sf_start_datetime = $check_detail[0]['start_datetime'];
+                if(isset($check_detail[0]['end_datetime']) && !empty($check_detail[0]['end_datetime']))
+                    if($check_detail[0]['end_datetime'] != '0000-00-00 00:00:00')
+                        $sf_end_datetime = $check_detail[0]['end_datetime'];
+
+            }
+            $data['start_datetime'] = $sf_start_datetime;
+            $data['end_datetime'] = $sf_end_datetime;
+        }
+        Modules::run('api/update_specific_table',array("id"=>$id),$data,DEFAULT_OUTLET.'_product_checks');
         echo $status;
     }
     function detail() {

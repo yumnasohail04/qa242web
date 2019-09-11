@@ -10,7 +10,11 @@
     color: white;
     width: 120px;
   }
-
+  .selectbox-class, .selectbox-class:hover {
+    background-color: white;
+    color: #3a3f51;
+    width: 147% !important;
+  }
 </style>
 <?php
 function timezone_menu2($default = 'UTC', $class = "form-control select2me timezones", $name = 'timezones')
@@ -52,6 +56,8 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
     }
 ?>
 <?php include_once("select_box.php");?>
+<link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>bootstrap-select.min.css" />
+<script src="<?php echo STATIC_ADMIN_JS?>bootstrap-select.min.js"></script>
 <div class="page-content-wrapper">
     <div class="page-content">
         <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
@@ -155,6 +161,14 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                                                 </div>
                                              </div>
                                              
+                                          </div>
+                                          <div class="col-sm-12">
+                                             <div class="form-group">
+                                                <label class="col-sm-2 control-label">Firebase Documents Name </label>
+                                                <div class="col-sm-4">
+                                                   <input type="text" name="fb_document_name" class="form-control"  value="<?=$fb_document_name?>"/>
+                                                </div>
+                                             </div>
                                           </div>
                                                 <div class="form-actions fluid">
                                                     <div class="row">
@@ -543,6 +557,8 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
       success: function(test_body) {
         $("#product_schedules .modal-body").html(test_body);
         $("#product_schedules .modal-footer").html('<button type="submit" class="btn-primary btn pull-right submit_from" style="clear: both; margin-top: 10px;">Submit</button>');
+      	$('.selectpicker').selectpicker('refresh');
+        $( ".selectpicker" ).addClass('selectbox-class');
       }
     });
   });

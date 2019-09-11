@@ -35,19 +35,15 @@ Modules::run('site_security/has_permission');
 				}
 			} 
 		}
-		
 		foreach($arr_rights as $ctrl=>$methods){
 			if($ctrl!='rights')
 			{
 				$parent_id = '';
-
 //				$query = $this->_get_where_custom('right',$ctrl);
 				$where_right['right'] = $ctrl;
 				$where_right['parent_id'] = 0;
 				$query = $this->_get_where_cols($where_right);
-
 				$parent = $query->row();
-
 				if(count($parent) == 0){
 					$parent_data['right'] = $ctrl;
 					//$parent_data['outlet_id'] = DEFAULT_OUTLET;
@@ -65,7 +61,6 @@ Modules::run('site_security/has_permission');
 				}
 			}
 		}
-
 
 		$query = Modules::run('roles/_get_where_custom','role','portal admin');
 		$result = $query->row();

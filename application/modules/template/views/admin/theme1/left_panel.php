@@ -90,7 +90,7 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                                     <a class="color_check" href="<?php $controller='catagories'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-check"></em>
-                                        <span>Check Attributes</span>
+                                        <span>Forms Detail</span>
                                     </a>
                                 </li>
                                  <?php

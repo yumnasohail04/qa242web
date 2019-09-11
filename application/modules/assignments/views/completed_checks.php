@@ -8,36 +8,35 @@
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                          <div class="row">
+                        <div class="row">
                             <div class="col-md-3">
-                            <div class="form-group">
-                            <label>From:</label>
-                                <div class='input-group date datetimepicker2'>
-                                <input type='text' class="form-control" id="startdate" />
-                                <span class="input-group-addon">
-                                    <span class="fa fa-calendar"></span>
-                                </span>
-                             </div>
+                                <div class="form-group">
+                                <label>From:</label>
+                                    <div class='input-group datetimepicker2'>
+                                        <input type='text' class="form-control" id="startdate" />
+                                        <span class="input-group-addon">
+                                            <span class="fa fa-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
-                         </div>
-                         <div class="col-md-3">
-                            <div class="form-group">
-                             <label>To:</label>
-                                <div class='input-group date datetimepicker2'>
-                                <input type='text' class="form-control" id="enddate" />
-                                <span class="input-group-addon">
-                                    <span class="fa fa-calendar"></span>
-                                </span>
-                             </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                 <label>To:</label>
+                                    <div class='input-group datetimepicker2'>
+                                    <input type='text' class="form-control" id="enddate" />
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                                 </div>
+                                </div>
                             </div>
-                         </div>
-                         <div class="col-md-1">
-                            <div class="form-group" style="margin-top: 33px;">
-                                <button type="button" class="btn btn-primary form-control filter_search">Search</button>
-                             </div>
+                            <div class="col-md-1">
+                                <div class="form-group" style="margin-top: 33px;">
+                                    <button type="button" class="btn btn-primary form-control filter_search">Search</button>
+                                 </div>
+                            </div>
                         </div>
-                         
-                         </div>
                     <table id="datatable1" class="table table-striped table-hover table-body table-bordered">
                         <thead class="bg-th">
                         <tr class="bg-col">

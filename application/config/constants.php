@@ -47,7 +47,6 @@ if (strpos($_SERVER['HTTP_HOST'], '.') > 0 && $_SERVER['HTTP_HOST'] != '192.168.
 }
 else
 	$localname='/';
-
 $prefix = 'https';
 define('BASE_URL', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname);
 define('BASE_URL_FRONT', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname);

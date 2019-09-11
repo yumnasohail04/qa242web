@@ -142,6 +142,7 @@ $(document).ready(function(){
                 data: {'id': id, 'status': status},
                 async: false,
                 success: function(result) {
+                	location.reload();
                     if($('#'+id).hasClass('default')==true)
                     {
                         $('#'+id).addClass('green');

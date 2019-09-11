@@ -50,7 +50,7 @@ parent::__construct();
                     if(isset($group_message[0]['chat_id']) && !empty($group_message[0]['chat_id'])) 
                         $temp['last_chat']=$group_message[0]['chat_id'];
                     $temp['type'] = 'group';
-                    $temp['image'] = STATIC_FRONT_IMAGE.'user.png';
+                    $temp['image'] = STATIC_FRONT_IMAGE.'group.png';
                     $temp['next_chat'] = true;
                     $left_panel[] = $temp;
                     unset($temp);
@@ -71,7 +71,7 @@ parent::__construct();
                         if(isset($group_message[0]['chat_id']) && !empty($group_message[0]['chat_id'])) 
                             $temp['last_chat']=$group_message[0]['chat_id'];
                         $temp['type'] = 'group';
-                        $temp['image'] = STATIC_FRONT_IMAGE.'user.png';
+                        $temp['image'] = STATIC_FRONT_IMAGE.'group.png';
                         $temp['next_chat'] = true;
                         $left_panel[] = $temp;
                         unset($temp);
@@ -97,8 +97,9 @@ parent::__construct();
                     endforeach;
                 }
                 $previous_user = array();
-                $group_users= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("outlet_id" =>DEFAULT_OUTLET,"status"=>"1",'id !='=>$user_id),'id desc','id','users','id,first_name,last_name,user_image,is_online','1','0','(`group` = "'.$primary_group.'" OR `group` = "'.$secondry_group.'" OR `second_group` = "'.$primary_group.'" OR `second_group` = "'.$secondry_group.'")','','')->result_array();
-                if(!empty($group_users)) {
+                $group_users= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("outlet_id" =>DEFAULT_OUTLET,"status"=>"1",'id !='=>$user_id),'id desc','id','users','id,first_name,last_name,user_image,is_online','1','0','','','')->result_array();
+            /*(`group` = "'.$primary_group.'" OR `group` = "'.$secondry_group.'" OR `second_group` = "'.$primary_group.'" OR `second_group` = "'.$secondry_group.'")*/    
+            if(!empty($group_users)) {
                     foreach ($group_users as $key => $gc):
                         $pre_temp['user_id'] = $temp['id'] = $gc['id'];
                         $first_name = "";
@@ -134,7 +135,7 @@ parent::__construct();
                         unset($temp);
                     endforeach;
                 }
-                $and_where = "";
+                /*$and_where = "";
                 $or_where = "";
                 if(!empty($previous_user)) {
                     foreach ($previous_user as $key => $pu):
@@ -225,7 +226,7 @@ parent::__construct();
                             }
                         }
                     endforeach;
-                }
+                }*/
             }
             $data['chat_css'] = "chat_css";
             $data['left_panel'] = $left_panel;

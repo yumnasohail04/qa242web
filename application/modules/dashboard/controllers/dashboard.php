@@ -17,6 +17,11 @@ class Dashboard extends MX_Controller{
 		$data['products'] = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_product','id','1','0')->num_rows();
 		$data['users'] = Modules::run('api/_get_specific_table_with_pagination',array('outlet_id'=>DEFAULT_OUTLET), 'id desc','users','id','1','0')->num_rows();
 		$data['groups'] = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id','1','0')->num_rows();
+    	$data['activechecks'] = Modules::run('api/_get_specific_table_with_pagination',array("assign_status"=>"Open"), 'assign_id desc',DEFAULT_OUTLET.'_assignments','assign_id','1','0')->num_rows();
+    	$data['overduechecks'] = Modules::run('api/_get_specific_table_with_pagination',array("assign_status"=>"OverDue"), 'assign_id desc',DEFAULT_OUTLET.'_assignments','assign_id','1','0')->num_rows();
+    	$data['pendingreviews'] = Modules::run('api/_get_specific_table_with_pagination',array("review_user"=>"0"), 'assign_id desc',DEFAULT_OUTLET.'_assignments','assign_id','1','0')->num_rows();
+    	$data['pendingapproval'] = Modules::run('api/_get_specific_table_with_pagination',array("approval_user"=>" "), 'assign_id desc',DEFAULT_OUTLET.'_assignments','assign_id','1','0')->num_rows();
+    	$data['totalchecks'] = Modules::run('api/_get_specific_table_with_pagination',array(), 'assign_id desc',DEFAULT_OUTLET.'_assignments','assign_id','1','0')->num_rows();
 		$data['view_file'] = 'home';
         $data['dashboard_file'] = 'asdfsadf';
 		$this->load->module('template');
