@@ -238,12 +238,24 @@
                         <div class="col-sm-5">
                             <div class="form-group">
                                 <?php
-                                $product_type = array('Gluten'=>'Gluten','Seafood'=>'Seafood','Vegetarian'=>'Vegetarian','Meat'=>'Meat');
+                                $product_type = array('Gluten'=>'Gluten','Seafood'=>'Seafood','Vegetarian'=>'Vegetarian','Meat'=>'Meat','FDA'=>'FDA','USDA'=>'USDA','Organic'=>'Organic');
                                 $options = array('General' => 'General')+$product_type ;
                                 $attribute = array('class' => 'control-label col-md-4');
                                 echo form_label('Product Type <span style="color:red">*</span>', 'product_type', $attribute);?>
                                 <div class="col-md-8">
                                     <?php echo form_dropdown('product_type', $options, $news['product_type'],  'class="form-control select2me" required="required" id="product_type" tabindex ="12"'); ?>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-sm-5">
+                            <div class="form-group">
+                                <?php
+                                $storage_type = array('Refrigerated'=>'Refrigerated','Frozen'=>'Frozen');
+                                $options = array('Refrigerated' => 'Refrigerated')+$storage_type ;
+                                $attribute = array('class' => 'control-label col-md-4');
+                                echo form_label('Storage Type <span style="color:red">*</span>', 'product_type', $attribute);?>
+                                <div class="col-md-8">
+                                    <?php echo form_dropdown('storage_type', $options, $news['storage_type'],  'class="form-control select2me" required="required" id="storage_type" tabindex ="12"'); ?>
                                 </div>
                             </div>
                         </div>

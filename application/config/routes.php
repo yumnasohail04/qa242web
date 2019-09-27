@@ -163,6 +163,9 @@ $route['admin/login/submit_login'] = "login/submit_login";
 		$route['submit-recode-inspection'] = $admin_api_folder."submit_recode_inspection";
 		$route['submit-media-file'] = $admin_api_folder."submit_media_file";
 		$route['delete-media-file'] = $admin_api_folder."delete_media_file";
+		$route['get-fixed-forms'] = $admin_api_folder."get_fixed_forms";
+		$route['get-fixed-forms-detail'] = $admin_api_folder."get_fixed_forms_detail";
+		$route['fixed-form-response'] = "api/static_form_response";
 		
 		
 		
@@ -194,6 +197,8 @@ $route['admin/login/submit_login'] = "login/submit_login";
 		$route['get-checklists-data']=$admin_api_folder."get_user_check_lists";
 		$route['checklists-detail']=$admin_api_folder."checklists_detail";
 		$route['submit-assignment-answer']=$admin_api_folder."submit_assignments_answers";
+		
+		$route['get-products-lists']=$admin_api_folder."get_scheduled_checks_products";
 		
 		
 		///////////////////////////end admin apis//////////////////////////

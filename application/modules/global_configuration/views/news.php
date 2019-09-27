@@ -422,7 +422,8 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                             <thead class="bg-th">
                               <tr class="bg-col">
                                 <th class="text-center">Line Name</th>
-                                <th class="text-center">Action</th>
+                                 <th class="text-center">Status</th>
+                                 <th class="text-center">Action</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -432,6 +433,12 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                                 foreach ($lines as $key=>$li):?>
                                   <tr  id="Row_<?=$counter?>" class="odd gradeX " >
                                     <td class="text-center"><?=$li['line_name'];?></td>
+                                    <td class="text-center">
+                                        <select class="form-control" id="line_status" line_id="<?=$li['line_id']==""?>"> 
+                                        <option value="up" <?php if($li['active_status']=="up") echo 'selected="selected"';?>>Up</option>
+                                        <option value="down" <?php if($li['active_status']=="down") echo 'selected="selected"';?>>Down</option>
+                                        </select>
+                                    </td>
                                     <td class="text-center">
                                       <?php
                                       echo anchor('"javascript:;"', '<i class="fa fa-edit"></i>', array('class' => 'edit_line btn blue c-btn', 'rel' => $li['line_id'],'line_name' => $li['line_name'], 'title' => 'Edit Line'));
@@ -469,6 +476,7 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                                 <th class="text-center" style="width:120px;">Product Code</th>
                                 <th class="text-center" style="width:120px;">Product Name</th>
                                 <th class="text-center" style="width:120px;">Product Type</th>
+                                 <th class="text-center" style="width:120px;">Storage Type</th>
                                 <th class="text-center" style="width:120px;">Line</th>
                                 <th class="text-center" style="width:120px;">Action</th>
                               </tr>
@@ -491,6 +499,7 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                                     <td class="text-center"><?=$pro['navision_no'];?></td>
                                     <td class="text-center"><?=$pro['product_title'];?></td>
                                     <td class="text-center"><?=$pro['product_type'];?></td>
+                                    <td class="text-center"><?=$pro['storage_type'];?></td>
                                     <td class="text-center"><?=$pro['ps_line'];?></td>
                                     <td class="text-center">
                                       <?php

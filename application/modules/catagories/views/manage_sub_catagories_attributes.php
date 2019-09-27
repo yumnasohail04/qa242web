@@ -19,7 +19,7 @@
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                         <h2>Choice Attributes</h2>
+                         <h4>Choice Attributes</h4>
                     <table id="datatable1" class="table table-striped table-hover ">
                         <thead class="bg-th">
                         <tr class="bg-col">
@@ -86,7 +86,7 @@
                                 <?php } ?>
                             </tbody>
                     </table>
-                      <h2>Fixed Attributes</h2>
+                      <h4>Fixed Attributes</h4>
                     <table id="datatable2" class="table table-striped table-hover ">
                         <thead class="bg-th">
                         <tr class="bg-col">
@@ -134,7 +134,7 @@
                                 <?php } ?>
                             </tbody>
                     </table>
-                     <h2>Range Attributes</h2>
+                     <h4>Range Attributes</h4>
                     <table id="datatable" class="table table-striped table-hover ">
                         <thead class="bg-th">
                         <tr class="bg-col">

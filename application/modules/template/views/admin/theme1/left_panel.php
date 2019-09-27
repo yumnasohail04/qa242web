@@ -78,7 +78,13 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             <em class="fa fa-clipboard "></em>
                             <span>QA Checks</span>
                         </a>
-                        <ul id="layout2" class="nav sidebar-subnav collapse" style="background:#272C32">
+                      <ul id="layout2" class="nav sidebar-subnav collapse" style="background:#272C32">
+                        <li class="back_shadow">
+                        <a href="#layout_CheckOptions" title="Layouts" data-toggle="collapse" >
+                            <em class="fa fa-clipboard "></em>
+                            <span>Check Options</span>
+                        </a>
+                            <ul id="layout_CheckOptions" class="nav sidebar-subnav collapse" style="background:#272C32">
                             <li class="sidebar-subnav-header">QA Checks</li>
                             <?php $permission = true;
                             if ($user_data['role'] != 'Admin')
@@ -94,7 +100,38 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                                     </a>
                                 </li>
                                  <?php
-                            }
+                            }?>
+                         
+                                 <?php
+                                  $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'wip_profile');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                                <li class="<?php if($curr_url == 'wip_profile'){echo 'active';}    ?>" style="padding-left:15px">
+                                    <a class="color_check" href="<?php $controller='wip_profile'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-outdent"></em>
+                                        <span>WIP Form detail</span>
+                                    </a>
+                                </li>
+                                 <?php
+                            } ?>  
+                            
+                           
+                        </ul>
+                            
+                        </li>
+                        <li class="back_shadow">
+                        <a href="#layout_Check_Details" title="Layouts" data-toggle="collapse" >
+                            <em class="fa fa-clipboard "></em>
+                            <span>Existing Checks</span>
+                        </a>
+                            <ul id="layout_Check_Details" class="nav sidebar-subnav collapse" style="background:#272C32">
+                            <li class="sidebar-subnav-header">QA Checks</li>
+                            <?php 
+                          
                             $permission = false;
                             if ($user_data['role'] != 'Admin')
                                 $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'product_checks');
@@ -120,26 +157,11 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                                     <a class="color_check" href="<?php $controller='product_tests'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-calendar"></em>
-                                        <span>Scheduled Checks</span>
+                                        <span>Production Checks</span>
                                     </a>
                                 </li>
                                 <?}?>
-                                 <?php
-                                  $permission = false;
-                            if ($user_data['role'] != 'Admin')
-                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'wip_profile');
-                            else 
-                                $permission = true;
-                            if ($permission){?>
-                                <li class="<?php if($curr_url == 'wip_profile'){echo 'active';}    ?>" style="padding-left:15px">
-                                    <a class="color_check" href="<?php $controller='wip_profile'; 
-                                        echo ADMIN_BASE_URL . $controller ?>">
-                                        <em class="fa fa-outdent"></em>
-                                        <span>WIP Profile</span>
-                                    </a>
-                                </li>
-                                 <?php
-                            } ?>  
+                                
                               <?php
                                   $permission = false;
                             if ($user_data['role'] != 'Admin')
@@ -156,7 +178,41 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                                 </li>
                                  <?php
                             } ?>  
+                             <?php
+                                  $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'scheduled_checks');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                                <li class="<?php if($curr_url == 'scheduled_checks' || $curr_url == 'scheduled_checks' || $curr_url == 'scheduled_checks'){echo 'active';}    ?>" style="padding-left:15px">
+                                    <a class="color_check" href="<?php $controller='scheduled_checks'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-outdent"></em>
+                                        <span> Scheduled checks</span>
+                                    </a>
+                                </li>
+                                 <?php
+                            } ?>  
+                             <?php $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'assignments');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                                <li class="<?php if($curr_url == 'static_form'){echo 'active';}    ?>" style="padding-left:15px">
+                                    <a class="color_check" href="<?php $controller='static_form'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-tasks "></em>
+                                        <span>Static Form Checks</span>
+                                    </a>
+                                </li>
+                                <?php } ?>
                         </ul>
+                            
+                        </li>
+                        </ul>
+                        
                     </li>
                 <?php
                 }
@@ -252,14 +308,65 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                                     <a class="color_check" href="<?php $controller='assignments/completed_checks'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-check"></em>
-                                        <span>Completed Assignments</span>
+                                        <span>Completed<br> Assignments</span>
                                     </a>
                                 </li>
                                  <?php
-                            }?>
+                            }
+                            
+                            $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'assignments');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                            <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/static_forms_pending'){echo 'active';}    ?>" style="padding-left:15px">
+                                    <a class="color_check" href="<?php $controller='assignments/static_forms_pending'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-check"></em>
+                                        <span>Pending Forms </span>
+                                    </a>
+                                </li>
+                                 <?php
+                            }
+                            
+                            $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'assignments');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                            <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/static_forms_reviewed'){echo 'active';}    ?>" style="padding-left:15px">
+                                    <a class="color_check" href="<?php $controller='assignments/static_forms_reviewed'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-check"></em>
+                                        <span>Reviewed Forms </span>
+                                    </a>
+                                </li>
+                                 <?php
+                            }
+                            
+                            $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'assignments');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                            <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/static_forms_approved'){echo 'active';}    ?>" style="padding-left:15px">
+                                    <a class="color_check" href="<?php $controller='assignments/static_forms_approved'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-check"></em>
+                                        <span>Approved Forms </span>
+                                    </a>
+                                </li>
+                                 <?php
+                            }
+                            
+                            ?>
+                            
                         </ul>
                     </li>
-                    <li class="back_shadow">
+                   <!-- <li class="back_shadow">
                         <a href="#inspectioin_admin" title="Layouts" data-toggle="collapse" >
                             <em class="fa fa-address-card"></em>
                             <span>Inspection Tasks</span>
@@ -324,8 +431,53 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                                  <?php
                             }?>
                         </ul>
-                    </li>
+                    </li>-->
+                    <?php $permission = false;
+                    if ($user_data['role'] != 'Admin')
+                        $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'static_form');
+                    else 
+                        $permission = true;
+                    if ($permission){?>
+                       <!-- <li class="<?php if($curr_url == 'static_form'){echo 'active';}    ?>">
+                            <a href="<?php $controller='static_form'; 
+                                echo ADMIN_BASE_URL . $controller ?>">
+                                <i class="fa fa-user "></i>
+                                <span>Static Forms</span>
+                            </a>
+                        </li>-->
+                    <?php }?>
                 <?php }?>
+             <!--  <li class="back_shadow">
+                        <a href="#inspectioin_admin" title="Layouts" data-toggle="collapse" >
+                            <em class="fa fa-clipboard "></em>
+                            <span>Static Checks</span>
+                        </a>
+                        <ul id="inspectioin_admin" class="nav sidebar-subnav collapse" style="background:#272C32">
+                            <li class="sidebar-subnav-header">Static Checks</li>
+                            <?php $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'assignments');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                                <li class="<?php if($curr_url == 'static_form'){echo 'active';}    ?>" style="padding-left:15px">
+                                    <a class="color_check" href="<?php $controller='static_form'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-tasks "></em>
+                                        <span>Checks Detail</span>
+                                    </a>
+                                </li>
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/static_assignments_detail'){echo 'active';}    ?>" style="padding-left:15px">
+                                    <a class="color_check" href="<?php $controller='assignments/static_assignments_detail'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-check"></em>
+                                        <span>Submitted Checks </span>
+                                    </a>
+                                </li>
+                                 <?php
+                            }?>
+                        </ul>
+                    </li>-->
             </ul>
         <!-- END sidebar nav-->
         </nav>

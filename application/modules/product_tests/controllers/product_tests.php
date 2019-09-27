@@ -31,6 +31,8 @@ Modules::run('site_security/has_permission');
         $arr_process=array();
         if (is_numeric($update_id) && $update_id != 0) {
             $data['news'] = $this->_get_data_from_db($update_id);
+            $data['inspection_team'] = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$update_id), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+        
             $productid=$data['news']['productid'];
             $arr_sub=array();
             if($data['news']['checktype']=="general qa check"){
@@ -136,7 +138,7 @@ Modules::run('site_security/has_permission');
         $data['check_subcat_id'] =  $this->input->post('check_subcat_id');
         //////////////////General check parameter////////
         $data['outlet_id'] =DEFAULT_OUTLET;
-        $data['inspection_team'] = $this->input->post('inspection_team');
+       // $data['inspection_team'] = $this->input->post('inspection_team');
         $data['review_team'] = $this->input->post('review_team');
         $data['approval_team'] = $this->input->post('approval_team');
         $data['status'] = $this->input->post('hdnActive');
@@ -255,6 +257,13 @@ Modules::run('site_security/has_permission');
             $update_id = $this->uri->segment(4);
             $data = $this->_get_data_from_post();
             if (is_numeric($update_id) && $update_id != 0) {
+                  Modules::run('api/delete_from_specific_table',array("sci_check_id"=>$update_id),DEFAULT_OUTLET.'_scheduled_checks_inspection');
+                   $inspection_team = $this->input->post('inspection_team');
+                    if(!empty($inspection_team)) {
+                        foreach ($inspection_team as $key => $it):
+                            Modules::run('api/insert_or_update',array("sci_check_id"=>$update_id,"sci_team_id"=>$it),array("sci_check_id"=>$update_id,"sci_team_id"=>$it),DEFAULT_OUTLET.'_scheduled_checks_inspection');
+                        endforeach;
+                    }
                 $where['id'] = $update_id;
                 $arr_where['checkid']=$update_id;
                 $this->_update($where, $data);
@@ -273,6 +282,12 @@ Modules::run('site_security/has_permission');
                 $data['end_datetime']=date('Y-m-d H:i:s', strtotime('+17 years'));
                 $checktype= $this->input->post('checktype');
                 $id = $this->_insert($data);
+                 $inspection_team = $this->input->post('inspection_team');
+                    if(!empty($inspection_team)) {
+                        foreach ($inspection_team as $key => $it):
+                            Modules::run('api/insert_or_update',array("sci_check_id"=>$id,"sci_team_id"=>$it),array("sci_check_id"=>$id,"sci_team_id"=>$it),DEFAULT_OUTLET.'_scheduled_checks_inspection');
+                        endforeach;
+                    }
                 $this->get_team_data_from_post($id);
                
                 $this->session->set_flashdata('message', 'product'.' '.DATA_SAVED);										

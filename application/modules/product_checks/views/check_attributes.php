@@ -9,7 +9,7 @@ display: block;
 }
 
 </style>
-<?php function searchForId($id, $array) {
+<?php $datacheck=false; function searchForId($id, $array) {
    foreach ($array as $key => $val) {
        if ($val['attribute_type'] === $id) {
            return $key;
@@ -25,13 +25,13 @@ display: block;
                                       <tr>
                                         <th  style="color: black !important">Attribute Name</th>
                                         <th  style="color: black !important">Choice Type</th>
-                                        
+                                         <th style="color: black !important">Order</th>
                                         <!--<th style="color: black !important">Possible Value</th>-->
-                                        <?php if($datacheck==false){?>
+                                        <?php  if($datacheck==false){?>
                                         <th style="color: black !important"></th><?}?> 
                                       </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="choice_table">
                                          <?php if(isset($master_attributes) && !empty($master_attributes)){
                                         foreach($master_attributes as $valuess){
                                             
@@ -75,15 +75,28 @@ display: block;
               <input type="hidden" name="min_value[]" value="" />
               <input type="hidden" name="max_value[]" value="" />
                <input type="hidden" name="target_val[]" value="" />    
-                                    
-             <?php if($datacheck==false){?>
+            <td>
+
+              <div class="form-group">
+                <?php
+                $options = array('' => 'Select') + $rank;
+                if(!isset($valuess['question_id']))
+                $valuess['question_id']='0';
+                ?>
+                <div class="col-md-12" id="cities_cont">
+                  <?php echo form_dropdown('page_rank[]', $options, $valuess['page_rank'], 'class = "form-control chosen-select" id = "rank" attr_id="'.$valuess['question_id'].'"'); ?>
+                </div>
+              </div>
+                                        
+            </td>                    
+            
             <td> <div class="form-group">
             <div class="col-md-8" style="width:100%;">
                   
-                    <i  style="color:#ffc735;" class="fa fa-times  pull-right remove_attribute"  data-org_id="0" data-outlet_id="0" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check"></i>              </div>
+                    <i  style="color:#ffc735;" class="fa fa-times  pull-right remove_attribute"   attr_id="<?php if(isset($valuess['question_id']) && $valuess['question_id'] >0) echo $valuess['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check"></i>              </div>
                    
                    
-            </div></td> <?}?>
+            </div></td>
                              
                                       </tr>
                                       <?}}}?>
@@ -97,11 +110,12 @@ display: block;
                                         <th  style="color: black !important">Attribute Name</th>
                                         
                                         <th style="color: black !important"></th>
+                                         <th style="color: black !important">Order</th>
                                        <?php if($datacheck==false){?>
                                         <th style="color: black !important"></th><?}?> 
                                       </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody  id="fixed_table">
                                          <?php if(isset($master_attributes) && !empty($master_attributes)){
                                         foreach($master_attributes as $valuerrr){
                                             
@@ -116,7 +130,7 @@ display: block;
             <?php $options =$products ;?>
           
             <div class="col-md-12" >
-               <?php echo form_dropdown('attribute_name[]', $options, $news['group'],  'class="form-control select2me required validatefield" id="product_id" tabindex ="8"'); ?>
+               <?php echo form_dropdown('attribute_name[]', $options, $news['group'],  'class="form-control select2me required validatefield" id="product_id" tabindex ="8" '); ?>
             </div>
          </div></td>
                  <td style="display:none;"><div class="form-group">
@@ -145,15 +159,28 @@ display: block;
              <input type="hidden" name="min_value[]" value="" />
               <input type="hidden" name="max_value[]" value="" />
                <input type="hidden" name="target_val[]" value="" />                 
-                                    
-              <?php if($datacheck==false){?>
+               <td>
+
+              <div class="form-group">
+                <?php
+                $options = array('' => 'Select') + $rank;
+                if(!isset($valuerrr['question_id']))
+                $valuerrr['question_id']='0';
+                ?>
+                <div class="col-md-12" id="cities_cont">
+                  <?php echo form_dropdown('page_rank[]', $options,$valuerrr['page_rank'], 'class = "form-control chosen-select" id = "rank" attr_id="'.$valuerrr['question_id'].'"'); ?>
+                </div>
+              </div>
+                                        
+            </td>                          
+             
             <td> <div class="form-group">
             <div class="col-md-8" style="width:100%;">
                   
-                    <i  style="color:#ffc735;" class="fa fa-times  pull-right remove_attribute"  data-org_id="0" data-outlet_id="0" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check"></i>              </div>
+                    <i  style="color:#ffc735;" class="fa fa-times  pull-right remove_attribute"   attr_id="<?php if(isset($valuerrr['question_id']) && $valuerrr['question_id'] >0) echo $valuerrr['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check"></i>              </div>
                    
                    
-            </div></td> <?}?>
+            </div></td> 
                              
                                       </tr>
                                       <?}}}?>
@@ -165,23 +192,24 @@ display: block;
                                     <thead>
                                       <tr>
                                         <th  style="color: black !important">Attribute Name</th>
-                                        <th style="color: black !important">Min</th>
-                                        <th style="color: black !important">Target</th>
-                                        <th style="display:none;"></th>
-                                        <th style="color: black !important">Max</th>
+                                        <th style="color: black !important;width:15%;">Min</th>
+                                        <th style="color: black !important;width:15%;">Target</th>
+                                        <th style="display:none;width:15%;"></th>
+                                        <th style="color: black !important;width:15%;">Max</th>
+                                        <th style="color: black !important;width:15%;">Rank</th>
                                         <!--<th style="color: black !important">Possible Value</th>-->
                                        <?php if($datacheck==false){?>
                                         <th style="color: black !important"></th><?}?> 
                                       </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody  id="range_table">
                                          <?php if(isset($master_attributes) && !empty($master_attributes)){
                                              
                                         foreach($master_attributes as $valuettt){ 
                                         
                                         if($valuettt['attribute_type']=='Range'){?>
                                       <tr>
-                                        <td style="width:35%;!important"> <div class="form-group">
+                                        <td > <div class="form-group">
 
             <?php
              $products=array();
@@ -190,7 +218,7 @@ display: block;
             <?php $options =$products ;?>
           
             <div class="col-md-12" >
-               <?php echo form_dropdown('attribute_name[]', $options, $news['group'],  'class="form-control select2me required validatefield" id="product_id" tabindex ="8"'); ?>
+               <?php echo form_dropdown('attribute_name[]', $options, $news['group'],  'class="form-control select2me required validatefield" id="product_id" tabindex ="8" '); ?>
             </div>
          </div></td>
                  <td style="display:none;"><div class="form-group">
@@ -210,7 +238,7 @@ display: block;
                  
                   ?>
               
-               <div class="col-md-8" style="width:100%;">
+               <div class="col-md-12" style="width:100%;">
                   <?php echo form_input($data); ?>
                </div>
             </div></td>
@@ -232,7 +260,7 @@ display: block;
                  
                   ?>
               
-               <div   class="col-md-8 " <?php if($valuettt['attribute_type']=="Choice" || $valuettt['attribute_type']=="Fixed") echo ' style="display:none;"';else echo 'style="width:100%;"'?>>
+               <div   class="col-md-12 " <?php if($valuettt['attribute_type']=="Choice" || $valuettt['attribute_type']=="Fixed") echo ' style="display:none;"';else echo ''?>>
                   <?php echo form_input($data); ?>
                </div>
             </div></td>
@@ -253,7 +281,7 @@ display: block;
                   
                   ?>
            
-               <div class="col-md-8" <?php if($valuettt['attribute_type']=="Choice"|| $valuettt['attribute_type']=="Fixed") echo ' style="display:none;" ' ;else echo 'style="width:100%;"'?>>
+               <div class="col-md-12" <?php if($valuettt['attribute_type']=="Choice"|| $valuettt['attribute_type']=="Fixed") echo ' style="display:none;" ' ;else echo ''?>>
                   <?php echo form_input($data); ?>
                </div>
             </div></td>
@@ -275,7 +303,7 @@ display: block;
                  
                   ?>
            
-               <div class="col-md-8" <?php if($valuettt['attribute_type']=="Choice"|| $valuettt['attribute_type']=="Fixed") echo ' style="display:none;"';else echo 'style="width:100%;"'?> >
+               <div class="col-md-12" <?php if($valuettt['attribute_type']=="Choice"|| $valuettt['attribute_type']=="Fixed") echo ' style="display:none;"';else echo ''?> >
                   <?php echo form_input($data); ?>
                </div>
             </div></td>
@@ -302,14 +330,28 @@ display: block;
                </div>
             </div></td>-->
               <input type="hidden" name="possible_answers[]" value="<?=strtolower( str_replace(',', '/',$valuettt['possible_answers'])) ?>">  
-             <?php if($datacheck==false){?>
+              <td>
+
+              <div class="form-group">
+                <?php
+                $options = array('' => 'Select') + $rank;
+                if(!isset($valuettt['question_id']))
+                $valuettt['question_id']='0';
+               ?>
+                <div class="col-md-12" id="cities_cont">
+                  <?php echo form_dropdown('page_rank[]', $options, $valuettt['page_rank'], 'class = "form-control chosen-select" id = "rank" attr_id="'.$valuettt['question_id'].'" '); ?>
+                </div>
+              </div>
+                                        
+            </td>     
+             
             <td> <div class="form-group">
             <div class="col-md-8" style="width:100%;">
                   
-                    <i  style="color:#ffc735;" class="fa fa-times  pull-right remove_attribute"  data-org_id="0" data-outlet_id="0" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check"></i>              </div>
+                    <i  style="color:#ffc735;" class="fa fa-times  pull-right remove_attribute"  attr_id="<?php if(isset($valuettt['question_id']) && $valuettt['question_id'] >0) echo $valuettt['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check"></i>              </div>
                    
                    
-            </div></td> <?}?>
+            </div></td> 
                              
                                       </tr>
                                       <?}}}?>
@@ -320,9 +362,27 @@ display: block;
                     </div>
                      <br><br>
            <div class="col-sm-12">
-                                          <button class="btn btn-primary nextBtn  pull-right" type="button" >Next</button>
-                                           <button type="button" class="btn btn-primary btn-previous pull-right">Previous</button>
+                                         
                                         </div>
                                        </div>
                                  </div>
   </div>
+<script>
+    $('.chosen-select').on('change', function() {
+         var attr_id=$(this).attr('attr_id');
+         var select_val=$(this).val();
+         var checkid=<?=$update_id?>;
+      
+         if(attr_id >0 && checkid >0){
+                 $.ajax({
+                       type: 'POST',
+                       url: "<?=ADMIN_BASE_URL?>product_checks/update_specific_attribute",
+                       data: {'page_rank': select_val,'attr_id':attr_id,'checkid':checkid},
+                       async: false,
+                       success: function(test_body) {
+                        
+                        }
+                   });
+         }
+});
+</script>

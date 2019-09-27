@@ -20,7 +20,7 @@ class Admin_api extends MX_Controller {
     }
     function delete_join_table_data(){
         $this->db->where('1_checks_questions.assignment_id !=', 0);
-       $this->db->delete('1_checks_questions');
+         $this->db->delete('1_checks_questions');
        /* $result_arr=$this->db->get('1_checks_questions')->result_array();
       
         foreach($result_arr as $value){
@@ -1776,7 +1776,7 @@ class Admin_api extends MX_Controller {
         $complete = $overdue = $pending = $open = 0;
         $total_notification = '0';
         $calling_status = $this->input->post('calling_status');
-        if($user_key['key_status'] == true) {
+      //  if($user_key['key_status'] == true) {
             if(!empty($user_id) && !empty($outlet_id) && !empty($role)){
                 $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>$outlet_id),'id desc','general_setting','timezones','1','1')->result_array();
                 if(!empty($timezone)) {
@@ -1785,20 +1785,22 @@ class Admin_api extends MX_Controller {
                 }
                 if(strtolower($role) == 'agent' || strtolower($role) == 'packingtech' || strtolower($role) == 'production' || strtolower($role) == 'warehouse') {
                     $status=true;
-                    $checklist_or_where = '('.$outlet_id.'_assignments.inspection_team ="'.$group_id.'" OR '.$outlet_id.'_assignments.reassign_user ="'.$user_id.'")';
+                    $checklist_or_where = '(inspection_teams.inspection_team_id ="'.$group_id.'" OR assignments.reassign_user ="'.$user_id.'")';
                     if(!empty($calling_status))
                         if(strtolower($calling_status) !='Completed')
-                            $checklist_where = array($outlet_id.'_assignments.assign_status'=>$calling_status);
+                            $checklist_where = array('assignments.assign_status'=>$calling_status);
                         else {
                            $checklist_where = $this->get_and_where(array('OverDue','Open'),'assignments.assign_status !'); 
                            $checklist_or_where = '(assignments.user_id ="'.$user_id.'")';
                         }
                     else
-                        $checklist_where = array($outlet_id.'_assignments.assign_status'=>'Open');
-                    if(empty($calling_status)|| (!empty($calling_status) && strtolower($calling_status) != strtolower('Completed')))
-                        $checklist_data = $this->get_checks_lists_from_db($checklist_where,'',$outlet_id.'_assignments','assign_id,checkid,start_time,end_time,assign_status,start_datetime,assignment_type',$page_number,$limit,$checklist_or_where,'','',$line_timing)->result_array();
-                    else
-                        $checklist_data = $this->get_complete_by_user(array("user_id"=>$user_id), 'assignments.assign_id',"assignment_answer.assignment_id",$outlet_id,'assign_id,checkid,start_time,end_time,assign_status,start_datetime,assignment_type',$page_number,$limit,$this->get_and_where(array('OverDue','Open'),'assignments.assign_status !'),'','')->result_array();
+                        $checklist_where = array('assignments.assign_status'=>'Open');
+                    if(empty($calling_status)|| (!empty($calling_status) && strtolower($calling_status) != strtolower('Completed'))){
+                       
+                    
+                        $checklist_data = $this->get_checks_lists_from_db($checklist_where,'',$outlet_id.'_assignments assignments','assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status,assignments.start_datetime,assignments.assignment_type',$page_number,$limit,$checklist_or_where,'','',$line_timing)->result_array();
+                    }else
+                        $checklist_data = $this->get_complete_by_user(array("user_id"=>$user_id), 'assignments.assign_id',"assignment_answer.assignment_id",$outlet_id,'assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status,assignments.start_datetime,assignments.assignment_type',$page_number,$limit,$this->get_and_where(array('OverDue','Open'),'assignments.assign_status !'),'','')->result_array();
                     //print_r($checklist_data);exit;
                     if(!empty($checklist_data)) {
                         $temp = array();
@@ -1822,9 +1824,9 @@ class Admin_api extends MX_Controller {
                         $checklist_data = $temp;
                         $message="Record fetched successfully";
                         if(empty($calling_status)|| (!empty($calling_status) && strtolower($calling_status) !=strtolower('Completed')))
-                            $total_pages= $this->get_checks_lists_from_db($checklist_where,'',$outlet_id.'_assignments','assign_id,checkid,start_time,end_time,assign_status',$page_number,'0',$checklist_or_where,'','',$line_timing)->num_rows();
+                            $total_pages= $this->get_checks_lists_from_db($checklist_where,'',$outlet_id.'_assignments assignments','assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status',$page_number,'0',$checklist_or_where,'','',$line_timing)->num_rows();
                         else {
-                            $total_pages = $this->get_complete_by_user(array("user_id"=>$user_id), 'assignments.assign_id',"assignment_answer.assignment_id",$outlet_id,'assign_id,checkid,start_time,end_time,assign_status','1','0',$this->get_and_where(array('OverDue','Open'),'assignments.assign_status !'),'','')->num_rows();
+                            $total_pages = $this->get_complete_by_user(array("user_id"=>$user_id), 'assignments.assign_id',"assignment_answer.assignment_id",$outlet_id,'assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status','1','0',$this->get_and_where(array('OverDue','Open'),'assignments.assign_status !'),'','')->num_rows();
                         }
                         $diviser=($total_pages/$limit);
                         $reminder=($total_pages%$limit);
@@ -1835,8 +1837,8 @@ class Admin_api extends MX_Controller {
                     }
                     else
                         $message="No checklist found";
-                    $open = $this->get_checks_lists_from_db(array($outlet_id.'_assignments.assign_status'=>"Open"),'',$outlet_id.'_assignments','assign_id,checkid,start_time,end_time,assign_status','1','0','('.$outlet_id.'_assignments.inspection_team ="'.$group_id.'" OR '.$outlet_id.'_assignments.reassign_user ="'.$user_id.'")','','',$line_timing)->num_rows();
-                    $overdue = $this->get_checks_lists_from_db(array($outlet_id.'_assignments.assign_status'=>"OverDue"),'',$outlet_id.'_assignments','assign_id,checkid,start_time,end_time,assign_status','1','0','('.$outlet_id.'_assignments.inspection_team ="'.$group_id.'" OR '.$outlet_id.'_assignments.reassign_user ="'.$user_id.'")','','',$line_timing)->num_rows();
+                    $open = $this->get_checks_lists_from_db(array('assignments.assign_status'=>"Open"),'',$outlet_id.'_assignments assignments','assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status','1','0','(inspection_teams.inspection_team_id ="'.$group_id.'" OR assignments.reassign_user ="'.$user_id.'")','','',$line_timing)->num_rows();
+                    $overdue = $this->get_checks_lists_from_db(array('assignments.assign_status'=>"OverDue"),'',$outlet_id.'_assignments assignments','assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status','1','0','(inspection_teams.inspection_team_id ="'.$group_id.'" OR assignments.reassign_user ="'.$user_id.'")','','',$line_timing)->num_rows();
                     $complete = $this->get_complete_by_user(array("user_id"=>$user_id), 'assignments.assign_id',"assignment_answer.assignment_id",$outlet_id,'assign_id','1','0',$this->get_and_where(array('OverDue','Open'),'assignments.assign_status !'),'','')->num_rows();
                     
                 }
@@ -1844,9 +1846,9 @@ class Admin_api extends MX_Controller {
                     if(!empty($group_id)) {
                         $status = true;
                         if(empty($calling_status)|| (!empty($calling_status) && strtolower($calling_status) !=strtolower('Completed')))
-                            $checklist_data = $this->get_checks_lists_from_db(array("assign_status"=>"Review",$outlet_id."_assignments.review_team"=>$group_id,$outlet_id."_assignments.reassign_id"=>'0'),'',$outlet_id.'_assignments','assign_id,checkid,start_time,end_time,assign_status,complete_datetime',$page_number,$limit,'','','','')->result_array();
+                            $checklist_data = $this->get_checks_lists_from_db(array("assign_status"=>"Review",$outlet_id."_assignments.review_team"=>$group_id,$outlet_id."_assignments.reassign_id"=>'0'),'',$outlet_id.'_assignments assignments','assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status,assignments.complete_datetime',$page_number,$limit,'','','','')->result_array();
                         else
-                            $checklist_data = $this->get_checks_lists_from_db(array("review_user"=>$user_id),'',$outlet_id.'_assignments','assign_id,checkid,start_time,end_time,assign_status,complete_datetime',$page_number,$limit,'','','','')->result_array();
+                            $checklist_data = $this->get_checks_lists_from_db(array("review_user"=>$user_id),'',$outlet_id.'_assignments assignments','assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status,assignments.complete_datetime',$page_number,$limit,'','','','')->result_array();
                         if(!empty($checklist_data)) {
                             $temp = array();
                             foreach ($checklist_data as $key => $cd):
@@ -1868,9 +1870,9 @@ class Admin_api extends MX_Controller {
                             $checklist_data = $temp;
                             $message="Record fetched successfully";
                             if(empty($calling_status)|| (!empty($calling_status) && strtolower($calling_status) !=strtolower('Completed')))
-                                $total_pages = $this->get_checks_lists_from_db(array("assign_status"=>"Review",$outlet_id."_assignments.review_team"=>$group_id,$outlet_id."_assignments.reassign_id"=>'0'),'',$outlet_id.'_assignments','assign_id,checkid,start_time,end_time,assign_status',$page_number,'0','','','','')->num_rows();
+                                $total_pages = $this->get_checks_lists_from_db(array("assign_status"=>"Review",$outlet_id."_assignments.review_team"=>$group_id,$outlet_id."_assignments.reassign_id"=>'0'),'',$outlet_id.'_assignments assignments','assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status',$page_number,'0','','','','')->num_rows();
                             else
-                                $total_pages = $this->get_checks_lists_from_db(array("review_user"=>$user_id),'',$outlet_id.'_assignments','assign_id,checkid,start_time,end_time,assign_status','1','0','','','','')->num_rows();
+                                $total_pages = $this->get_checks_lists_from_db(array("review_user"=>$user_id),'',$outlet_id.'_assignments assignments','assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status','1','0','','','','')->num_rows();
                             $diviser=($total_pages/$limit);
                             $reminder=($total_pages%$limit);
                             if($reminder>0)
@@ -1890,9 +1892,9 @@ class Admin_api extends MX_Controller {
                     if(!empty($group_id)) {
                         $status = true;
                         if(strtolower($calling_status) !='completed')
-                            $checklist_data = $this->get_checks_lists_from_db(array("assign_status"=>"Approval",$outlet_id."_assignments.approval_team"=>$group_id,$outlet_id."_assignments.reassign_id"=>'0'),'',$outlet_id.'_assignments','assign_id,checkid,start_time,end_time,assign_status,review_datetime',$page_number,$limit,'','','','')->result_array();
+                            $checklist_data = $this->get_checks_lists_from_db(array("assign_status"=>"Approval",$outlet_id."_assignments.approval_team"=>$group_id,$outlet_id."_assignments.reassign_id"=>'0'),'',$outlet_id.'_assignments assignments','assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status,assignments.review_datetime',$page_number,$limit,'','','','')->result_array();
                         else
-                            $checklist_data =  Modules::run('api/_get_specific_table_with_pagination',array("approval_user"=>$user_id),'assign_id desc',$outlet_id.'_assignments','assign_id,checkid,start_time,end_time,assign_status,review_datetime',$page_number,$limit)->result_array();
+                            $checklist_data =  Modules::run('api/_get_specific_table_with_pagination',array("approval_user"=>$user_id),'assign_id desc',$outlet_id.'_assignments assignments','assign_id,checkid,start_time,end_time,assign_status,review_datetime',$page_number,$limit)->result_array();
                         if(!empty($checklist_data)) {
                             $temp = array();
                             foreach ($checklist_data as $key => $cd):
@@ -1914,7 +1916,7 @@ class Admin_api extends MX_Controller {
                             $checklist_data = $temp;
                             $message="Record fetched successfully";
                             if(strtolower($calling_status) !='completed')
-                                $total_pages = $this->get_checks_lists_from_db(array("assign_status"=>"Approval",$outlet_id."_assignments.approval_team"=>$group_id,$outlet_id."_assignments.reassign_id"=>'0'),'',$outlet_id.'_assignments','assign_id,checkid,start_time,end_time,assign_status',$page_number,'0','','','','')->num_rows();
+                                $total_pages = $this->get_checks_lists_from_db(array("assign_status"=>"Approval",$outlet_id."_assignments.approval_team"=>$group_id,$outlet_id."_assignments.reassign_id"=>'0'),'',$outlet_id.'_assignments assignments','assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status',$page_number,'0','','','','')->num_rows();
                             else
                             $total_pages =  Modules::run('api/_get_specific_table_with_pagination',array("approval_user"=>$user_id),'assign_id desc',$outlet_id.'_assignments','assign_id,checkid,start_time,end_time,assign_status','1','0')->num_rows();
                             $diviser=($total_pages/$limit);
@@ -1937,9 +1939,9 @@ class Admin_api extends MX_Controller {
                 unset($where);
                 $total_notification =  Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("user_id"=>$user_id,"outlet_id"=>$outlet_id),'notification_id desc','notification_id','notification','notification_id,assingment_id,notification_message as message, notification_datetime as datetime','1','0','','','')->num_rows();
             }
-        }
-        else
-            $message = $user_key['key_message'];
+        //}
+       // else
+           // $message = $user_key['key_message'];
         header('Content-Type: application/json');
         echo json_encode(array("status"=>$status,"message"=>$message,"data"=>$checklist_data,"page_number"=>$page_number,"total_pages"=>$total_pages,"complete"=>$complete,"overdue" => $overdue,"pending" => $pending,"open" => $open,'total_notification'=>$total_notification));
     }
@@ -2105,20 +2107,27 @@ class Admin_api extends MX_Controller {
         header('Content-Type: application/json');
         echo json_encode(array("status"=>$status,"message"=>$message,"data"=>array($arr_data)));
     }*/
-    function checklists_detail(){
+     function checklists_detail(){
         //////////////////////// function for check list detail///////
         $reassing_answer = $reassign = $status=false;
         $message="Something Went Wrong";
         $arr_data=array();
         $outlet_id=$this->input->post('outlet_id');
         $assign_id=$this->input->post('assign_id');
+        $checktype=$this->input->post('checktype');
         $role=$this->input->post('role');
+      
         if(empty($role))
             $role = 'agent';
         $user_key = $this->check_user_api_key();
         $checking = false;
-        if($user_key['key_status'] == true) {
+       //if($user_key['key_status'] == true) {
             if(isset($outlet_id) && !empty($outlet_id) && isset($assign_id) && !empty($assign_id)) {
+                  $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>$outlet_id),'id desc','general_setting','timezones','1','1')->result_array();
+                        if(!empty($timezone)) {
+                            if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
+                                date_default_timezone_set($timezone[0]['timezones']);
+                        }
                 $status=true;
                 $table = $outlet_id.'_assignments';
                 $message="No Data Found";
@@ -2158,7 +2167,7 @@ class Admin_api extends MX_Controller {
                                 $assignment_type = true;
                         if(isset($assignment_detail[0]['product_id']) && !empty($assignment_detail[0]['product_id']) && $assignment_type == true)
                             $question_condtion['assignment_id'] = $assign_id;
-                        $questions = Modules::run('api/_get_specific_table_with_pagination_where_groupby',$question_condtion,"question_id desc","question_id desc",$outlet_id.'_checks_questions','type,question_id,question','1','0','','','')->result_array();
+                        $questions = Modules::run('api/_get_specific_table_with_pagination_where_groupby',$question_condtion,"page_rank asc","question_id desc",$outlet_id.'_checks_questions','type,question_id,question','1','0','','','')->result_array();
                         $reassign_question = array();
                         if(!empty($assignment_detail[0]['reassign_id'])) {
                             $reassign_question = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("rq_assign_id"=>$assign_id),"rq_id desc","rq_id",$outlet_id.'_reassign_questions','rq_question_id,','1','0','','','')->result_array();
@@ -2319,11 +2328,52 @@ class Admin_api extends MX_Controller {
                             }
                         }
                     }
+               }
+            }
+            if($checktype !="general qa check" || $checktype!='herb_spice'){
+                $table = $outlet_id.'_assignments';
+                $where_data=array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d'));
+                $assignment_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array($table.".assign_id"=>$assign_id), $table.".assign_id desc",$table.".assign_id desc",$table,'checkid,complete_datetime,reassign_id,review_user,review_datetime,review_comments,approval_user,approval_datetime,appoval_comments,product_id,assignment_type','1','1','','','')->result_array();
+                if(!empty($assignment_detail)){
+                    $checkid=$assignment_detail[0]['checkid'];
+                    $checkdetail_s=$this->get_check_category_details($checkid)->row_array();
+                      if(strtolower($checkdetail_s['cat_name']) =="usda"){
+                       $product_type="USDA";
+                       $where_data['storage_type']=$product_type;
+                     }
+                     elseif(strtolower($checkdetail_s['cat_name']) =="fda"){
+                     $product_type="FDA";
+                        $where_data['storage_type']=$product_type;
+                     }
+                     elseif(strtolower($checkdetail_s['cat_name']) =="organic"){
+                     $product_type="Organic";
+                     $where_data['product_type']=$product_type;
+                     }
+                     elseif(strtolower($checkdetail_s['cat_name']) =="frozen"){
+                   
+                     $where_data=array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d'),"storage_type"=>"Frozen");
+                      $where_data['storage_type']='Frozen';
+                     }
+                     elseif(strtolower($checkdetail_s['cat_name']) =="refrigerated"){
+                      $where_data['storage_type']='Refrigerated';
+                    
+                     }
+                     
+                       
+                        $product_schedules = $this->get_product_schedules_from_db($where_data,'ps_id desc','ps_id',DEFAULT_OUTLET,'id,ps_product,product_title,ps_line,unit_weight,shape,product_type,storage_type','1','0','','','')->result_array();
+                        if(!empty($product_schedules)){
+                            foreach($product_schedules as $product){
+                                $temp_data['productid']=$product['id'];
+                                $temp_data['product_title']=$product['product_title'];
+                                $temp_array[]=$temp_data;
+                            }
+                        }
+                       
                 }
             }
-        }
-        else
-            $message=$api_key['key_message'];
+       // }
+        //else
+          // $message=$api_key['key_message'];
         header('Content-Type: application/json');
         echo json_encode(array("status"=>$status,"message"=>$message,"data"=>array($arr_data),"reassign"=>$reassign,"reassing_answer"=>$reassing_answer));
     }
@@ -2704,6 +2754,90 @@ class Admin_api extends MX_Controller {
     function random_color() {
         return $this->random_color_part() . $this->random_color_part() . $this->random_color_part();
     }
+    function get_fixed_forms() {
+        $status=false;
+        $message="Bad request";
+        $group_id = $this->input->post('group_id');
+        $user_id=$this->input->post('user_id');
+        $outlet_id=$this->input->post('outlet_id');
+        $open_close=$this->outlet_open_close($outlet_id);
+        $user_key = $this->check_user_api_key();
+        $page_number=$this->input->post('page_number');
+        if(!is_numeric($page_number))
+            $page_number = 1;
+        $limit=$this->input->post('limit');
+        if(!is_numeric($limit))
+            $limit = 20;
+        $total_pages=0;
+        $static_form = array();
+        if($user_key['key_status'] == true) {
+            if(is_numeric($group_id) && is_numeric($outlet_id)) {
+                $status = true;
+                $message = "Successfuly executed";
+                date_default_timezone_set("Asia/karachi");
+                $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>$outlet_id), 'id asc','general_setting','timezones','1','1')->result_array();
+                if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
+                    date_default_timezone_set($timezone[0]['timezones']);
+                $static_form = $this->get_static_forms(array("sf_status"=>'1','sf_delete_status'=>'0','sf_start_datetime <='=>date("Y-m-d H:i:s"),'sf_end_datetime >='=>date("Y-m-d H:i:s"),"sci_team_id"=>$group_id),'sf_id desc','sf_id',$outlet_id,'sf_name as check_name,sf_start_datetime as start_datetime,sf_id as check_id',$page_number,$limit,'','','')->result_array();
+                if(!empty($static_form)) {
+                    $total_pages = $this->get_static_forms(array("sf_status"=>'1','sf_delete_status'=>'0','sf_start_datetime <='=>date("Y-m-d H:i:s"),'sf_end_datetime >='=>date("Y-m-d H:i:s"),"sci_team_id"=>$group_id),'sf_id desc','sf_id',$outlet_id,'sf_name as check_name,sf_start_datetime as start_datetime,sf_id as check_id','1','0','','','')->num_rows();
+                    $diviser=($total_pages/$limit);
+                    $reminder=($total_pages%$limit);
+                    if($reminder>0)
+                       $total_pages=intval($diviser)+1;
+                    else
+                        $total_pages=intval($diviser);
+                }
+            }
+        }
+        else
+            $message=$user_key['key_message'];
+        header('Content-Type: application/json');
+        echo json_encode(array("status"=>$status,"message"=>$message,"static_form"=>$static_form,"page_number"=>$page_number,"total_pages"=>$total_pages));
+    }
+    function get_fixed_forms_detail() {
+        $status=false;
+        $message="Bad request";
+        $check_id = $this->input->post('check_id');
+        $user_id=$this->input->post('user_id');
+        $outlet_id=$this->input->post('outlet_id');
+        $open_close=$this->outlet_open_close($outlet_id);
+        $user_key = $this->check_user_api_key();
+        $final_array = array();
+        if($user_key['key_status'] == true) {
+            if(is_numeric($check_id) && is_numeric($outlet_id)) {
+                $status = true;
+                $message = "Successfuly executed";
+                $questions= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("sfq_status"=>'1',"sfq_delete"=>"0","sfq_check_id"=>$check_id),'sfq_id desc','sfq_id',$outlet_id.'_static_form_question','sfq_id as question_id,sfq_question as question,sfq_question_type as question_type,sfq_question_selection as selection,sfq_selection_type as custom_answers','1','0','','','')->result_array();
+                if(!empty($questions)) {
+                    foreach ($questions as $key => $qa):
+                        if(isset($qa['question_type']) && !empty($qa['question_type'])) {
+                            $qa['question_type'] = strtolower($qa['question_type']);
+                            if($qa['question_type'] == 'choice') {
+                                $qa['possible_answer'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("sfa_status"=>'1',"sfa_delete"=>"0","sfa_question_id"=>$qa['question_id']),'sfa_id desc','sfa_id',$outlet_id.'_static_form_answer','sfa_id as answer_id,sfa_answer as answer,sfa_answer_acceptance as acceptance','1','0','','','')->result_array();
+                            }
+                            elseif($qa['question_type'] == 'range') {
+                                $possible_answer[0]['name'] = 'refrigerated';
+                                $possible_answer[0]['data'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("sfa_status"=>'1',"sfa_delete"=>"0","sfa_question_id"=>$qa['question_id'],'sfa_answer_acceptance'=>'refrigerated'),'sfa_id desc','sfa_id',$outlet_id.'_static_form_answer','sfa_id as answer_id,sfa_min as min,sfa_max as max,sfa_target as target','1','0','','','')->result_array();
+                                $possible_answer[1]['name'] = 'frozen';
+                                $possible_answer[1]['data'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("sfa_status"=>'1',"sfa_delete"=>"0","sfa_question_id"=>$qa['question_id'],'sfa_answer_acceptance'=>'frozen'),'sfa_id desc','sfa_id',$outlet_id.'_static_form_answer','sfa_id as answer_id,sfa_min as min,sfa_max as max,sfa_target as target','1','0','','','')->result_array();
+                                $qa['possible_answer'] = $possible_answer;
+                                unset($possible_answer);
+                            }
+                            else
+                                echo "";
+                            $final_array[] = $qa;
+                            unset($qa);
+                        }
+                    endforeach;
+                }
+            }
+        }
+        else
+            $message=$user_key['key_message'];
+        header('Content-Type: application/json');
+        echo json_encode(array("status"=>$status,"message"=>$message,"final_array"=>$final_array));
+    }
     /*function checklists_detail(){   //////////////////////// function for check list detail///////
     $status=false;
     $message="Something Went Wrong";
@@ -2924,16 +3058,19 @@ class Admin_api extends MX_Controller {
             $where['product_checks.start_datetime <=']=date('Y-m-d H:i');
             $where['product_checks.end_datetime >=']=date('Y-m-d H:i');
             $where['product_checks.status >=']='1';
+            $where['product_checks.is_dates']='1';
             $where['product_checks.checktype !=']='wip_profile';
             $where['product_checks.checktype !=']='bowl_filling';
              $where['product_checks.checktype !=']='herb_spice';
+             $where['product_checks.checktype !=']='scheduled_checks';
             $where_frequency[]='30 Mins';
             $where_frequency[]='Shift';
-            /*$where['product_checks.start_time <=']=date('H:i');
-            $where['product_checks.end_time >=']=date('H:i');*/
             $check_lists=$this->get_all_check_list_from_db_without_join($where,$outlet_id=DEFAULT_OUTLET,$where_frequency)->result_array();
+      
             if(isset($check_lists) && !empty($check_lists)){
                 foreach ($check_lists as $key => $value) {
+                       print_r($value);echo "<br><br><br>";
+                                    
                     $assign_data = $where_assig = array();
                     if($value['frequency']=="30 Mins") {
                         $assign_data =array();
@@ -2960,28 +3097,36 @@ class Admin_api extends MX_Controller {
                                 	$assign_data['assign_status']='Open';
                                 	/////////////check for already exists
                                 	$where_assign['checkid']=$value['id'];
-                                	$where_assign['inspection_team']=$value['inspection_team'];
+                                	//$where_assign['inspection_team']=$value['inspection_team'];
                                 	$where_assign['review_team']=$value['review_team'];
                                 	$where_assign['approval_team']=$value['approval_team'];
                                 	$where_assign['start_datetime <=']=date('Y-m-d H:i:s');
                                 	$where_assign['end_datetime >=']= date('Y-m-d H:i:s',strtotime('+30 minutes',strtotime(date('Y-m-d H:i:s'))));
                                 	$check_if=$this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
-                                	if(empty($check_if)){
+                                	$inspection_team_array=array();
+                                	$inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+                                
+                                	if(empty($check_if) && !empty($inspection_team_array)){
                                     	$assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
+                                    	
                                      	/////////// notification code umar start///////////
                                     	if(!empty($assign_id) && !empty($outlet_id)) {
                                         	$assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
                                         	$fcm_token = array();
-                                        	$tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$value['inspection_team'].'" or `group`="'.$value['inspection_team'].'")','','')->result_array();
-                                        	if(!empty($tokens)) {
-                                            	foreach ($tokens as $key => $to):
-                                                	if(isset($to['fcm_token']) && !empty($to['fcm_token']))
-                                                    	$fcm_token[] = $to['fcm_token'];
-                                                	if(isset($to['id']) && !empty($to['id'])) {
-                                                    	Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
-                                                	}
-                                            	endforeach;
-                                        	}
+                                            foreach ($inspection_team_array as $key => $insp_team):
+                                                
+                                                Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
+                                            	$tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$insp_team['sci_team_id'].'" or `group`="'.$insp_team['sci_team_id'].'")','','')->result_array();
+                                            	if(!empty($tokens)) {
+                                                	foreach ($tokens as $key => $to):
+                                                    	if(isset($to['fcm_token']) && !empty($to['fcm_token']))
+                                                        	$fcm_token[] = $to['fcm_token'];
+                                                    	if(isset($to['id']) && !empty($to['id'])) {
+                                                        	Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                                    	}
+                                                	endforeach;
+                                            	}
+                                            endforeach;
                                         	if(!empty($fcm_token) && $counter== 1) {
                                             	$fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
                                             	Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
@@ -3013,23 +3158,25 @@ class Admin_api extends MX_Controller {
                                             $assign_data['product_id'] = $ps['ps_product'];
                                             $outlet_id=$value['outlet_id'];
                                             $assign_data['checkid']=$value['id'];
-                                            $assign_data['inspection_team']=$value['inspection_team'];
+                                            //$assign_data['inspection_team']=$value['inspection_team'];
                                             $assign_data['review_team']=$value['review_team'];
                                             $assign_data['approval_team']=$value['approval_team'];
                                             $assign_data['outlet_id']=$value['outlet_id'];
                                             $assign_data['start_datetime']=date('Y-m-d H:i:s');
                                             $assign_data['end_datetime']=$cenvertedTime = date('Y-m-d H:i:s',strtotime('+30 minutes',strtotime(date('Y-m-d H:i:s'))));
-                                            $assign_data['assign_status']='Open';
+                                            $assign_data['assign_status']='Closed';
                                             $where_assign['checkid']=$value['id'];
                                         	$where_assign['product_id'] = $ps['ps_product'];
-                                            $where_assign['inspection_team']=$value['inspection_team'];
+                                            //$where_assign['inspection_team']=$value['inspection_team'];
                                             $where_assign['review_team']=$value['review_team'];
                                             $where_assign['approval_team']=$value['approval_team'];
                                             $where_assign['start_datetime <=']=date('Y-m-d H:i:s');
                                             $where_assign['end_datetime >=']= date('Y-m-d H:i:s',strtotime('+30 minutes',strtotime(date('Y-m-d H:i:s'))));
                                             $check_if=$this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
-                                             
-                                            if(empty($check_if)){
+                                          	$inspection_team_array=array();
+                                	        $inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+                        
+                                	        if(empty($check_if) && !empty($inspection_team_array)){
                                             $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
                                              /////////////check for already exists
                                
@@ -3049,25 +3196,30 @@ class Admin_api extends MX_Controller {
                                             }
                                             }       
                                             /////////// notification code umar start///////////
-                                            if(!empty($assign_id) && !empty($outlet_id)) {
+                                            /*if(!empty($assign_id) && !empty($outlet_id)) {
                                                 $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
                                                 $fcm_data = $fcm_token = array();
-                                                $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$value['inspection_team'].'" or `group`="'.$value['inspection_team'].'")','','')->result_array();
-                                                if(!empty($tokens)) {
-                                                    foreach ($tokens as $key => $to):
-                                                        if(isset($to['fcm_token']) && !empty($to['fcm_token']))
-                                                            $fcm_token[] = $to['fcm_token'];
-                                                        if(isset($to['id']) && !empty($to['id'])) {
-                                                            Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                                  foreach ($inspection_team_array as $key => $insp_team):
+                                                        Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
+                                               
+                                                        $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$insp_team['sci_team_id'].'" or `group`="'.$insp_team['sci_team_id'].'")','','')->result_array();
+                                                        
+                                                        if(!empty($tokens)) {
+                                                            foreach ($tokens as $key => $to):
+                                                                if(isset($to['fcm_token']) && !empty($to['fcm_token']))
+                                                                    $fcm_token[] = $to['fcm_token'];
+                                                                if(isset($to['id']) && !empty($to['id'])) {
+                                                                    Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                                                }
+                                                            endforeach;
                                                         }
                                                     endforeach;
-                                                }
                                                 if(!empty($fcm_token) && $counter== 1) {
                                                     $fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
                                                     Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
                                                     $counter = $counter + 1;
                                                 }
-                                            }
+                                            }*/
                                             /////////// notification code umar end///////////
                                         }
                                     endforeach;
@@ -3108,13 +3260,13 @@ class Admin_api extends MX_Controller {
 
                                                         if($st['fc_frequency'] == 'Start') {
 
-                                                            if($current_shift_timig[0]['st_start'] >= $start_time && $current_shift_timig[0]['st_start'] <= $end_time) {
+                                                            if($current_shift_timig[0]['st_start'] <= $start_time && $current_shift_timig[0]['st_start'] <= $end_time) {
                                                                 $check = TRUE;
                                                             }
                                                         }
                                                         elseif($st['fc_frequency'] == 'End') {
 
-                                                            if($current_shift_timig[0]['st_end'] >= $start_time && $current_shift_timig[0]['st_end'] <= $end_time) {
+                                                            if($current_shift_timig[0]['st_end'] <= $start_time && $current_shift_timig[0]['st_end'] <= $end_time) {
                                                                 $check = TRUE;
                                                             }
                                                         }
@@ -3131,11 +3283,11 @@ class Admin_api extends MX_Controller {
                                                         }
                                                         else
                                                             $check = false;
-                                             				echo $check;
+                                             			
                                                         if($check == true) {
                                                             $outlet_id=$value['outlet_id'];
                                                             $assign_data['checkid']=$value['id'];
-                                                            $assign_data['inspection_team']=$value['inspection_team'];
+                                                           // $assign_data['inspection_team']=$value['inspection_team'];
                                                             $assign_data['review_team']=$value['review_team'];
                                                             $assign_data['approval_team']=$value['approval_team'];
                                                             $assign_data['outlet_id']=$value['outlet_id'];
@@ -3144,28 +3296,35 @@ class Admin_api extends MX_Controller {
                                                             $assign_data['assign_status']='Open';
                                                             /////////////check for already exists
                                                             $where_assign['checkid']=$value['id'];
-                                                            $where_assign['inspection_team']=$value['inspection_team'];
+                                                           // $where_assign['inspection_team']=$value['inspection_team'];
                                                             $where_assign['review_team']=$value['review_team'];
                                                             $where_assign['approval_team']=$value['approval_team'];
                                                             $where_assign['start_datetime <=']=date('Y-m-d H:i:s');
                                                             $where_assign['end_datetime >=']= date('Y-m-d H:i:s',strtotime('+30 minutes',strtotime(date('Y-m-d H:i:s'))));
                                                             $check_if=$this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
-                                                            if(empty($check_if)){
+                                                            $inspection_team_array=array();
+                                	                        $inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+                                                        
+                                	                        if(empty($check_if) && !empty($inspection_team_array)){
                                                                  $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
                                                                  /////////// notification code umar start///////////
                                                                 if(!empty($assign_id) && !empty($outlet_id)) {
                                                                     $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
                                                                     $fcm_token = array();
-                                                                    $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$value['inspection_team'].'" or `group`="'.$value['inspection_team'].'")','','')->result_array();
-                                                                    if(!empty($tokens)) {
-                                                                        foreach ($tokens as $key => $to):
-                                                                            if(isset($to['fcm_token']) && !empty($to['fcm_token']))
-                                                                                $fcm_token[] = $to['fcm_token'];
-                                                                            if(isset($to['id']) && !empty($to['id'])) {
-                                                                                Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                                                     foreach ($inspection_team_array as $key => $insp_team):
+                                                                         Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
+                                               
+                                                                            $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$insp_team['sci_team_id'].'" or `group`="'.$insp_team['sci_team_id'].'")','','')->result_array();
+                                                                            if(!empty($tokens)) {
+                                                                                foreach ($tokens as $key => $to):
+                                                                                    if(isset($to['fcm_token']) && !empty($to['fcm_token']))
+                                                                                        $fcm_token[] = $to['fcm_token'];
+                                                                                    if(isset($to['id']) && !empty($to['id'])) {
+                                                                                        Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                                                                    }
+                                                                                endforeach;
                                                                             }
-                                                                        endforeach;
-                                                                    }
+                                                                         endforeach;
                                                                     if(!empty($fcm_token) && $counter== 1) {
                                                                         $fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
                                                                         Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
@@ -3209,6 +3368,7 @@ class Admin_api extends MX_Controller {
             $where['product_checks.checktype !=']='wip_profile';
             $where['product_checks.checktype !=']='bowl_filling';
             $where['product_checks.checktype !=']='herb_spice';
+            $where['product_checks.checktype !=']='scheduled_checks';
             $check_lists=$this->get_all_check_list_from_db_without_join($where,$outlet_id=DEFAULT_OUTLET,$where_frequency)->result_array();
         
             $counter = 1;
@@ -3231,7 +3391,7 @@ class Admin_api extends MX_Controller {
                                 	$assign_id='';
                                 	$check_if='';
                                 	$assign_data['checkid']=$value['id'];
-                                	$assign_data['inspection_team']=$value['inspection_team'];
+                                	//$assign_data['inspection_team']=$value['inspection_team'];
                                 	$assign_data['review_team']=$value['review_team'];
                                 	$assign_data['approval_team']=$value['approval_team'];
                                 	$assign_data['outlet_id']=$value['outlet_id'];
@@ -3240,29 +3400,37 @@ class Admin_api extends MX_Controller {
                                 	$assign_data['assign_status']='Open';
                                 	/////////////check for already exists
                                 	$where_assign['checkid']=$value['id'];
-                                	$where_assign['inspection_team']=$value['inspection_team'];
+                                //	$where_assign['inspection_team']=$value['inspection_team'];
                                 	$where_assign['review_team']=$value['review_team'];
                                 	$where_assign['approval_team']=$value['approval_team'];
                                 	$where_assign['start_datetime <=']=date('Y-m-d H:i:s');
                                 	$where_assign['end_datetime >=']= date('Y-m-d H:i:s',strtotime('+1 hour',strtotime(date('Y-m-d H:i:s'))));
                                 	$check_if=$this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
-                               
-                                	if(empty($check_if)) {
+                                    $inspection_team_array=array();
+        	                        $inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+                                
+        	                        if(empty($check_if) && !empty($inspection_team_array)){
+                                                      
+                        	           
                                     	$assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
                                     	/////////// notification code umar start///////////
                                     	if(!empty($assign_id) && !empty($outlet_id)) {
                                         	$assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
                                         	$fcm_token = array();
-                                        	$tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$value['inspection_team'].'" or `group`="'.$value['inspection_team'].'")','','')->result_array();
-                                        	if(!empty($tokens)) {
-                                            	foreach ($tokens as $key => $to):
-                                                	if(isset($to['fcm_token']) && !empty($to['fcm_token']))
-                                                    	$fcm_token[] = $to['fcm_token'];
-                                                	if(isset($to['id']) && !empty($to['id'])) {
-                                                    	Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
-                                                	}
-                                            	endforeach;
-                                        	}
+                                         foreach ($inspection_team_array as $key => $insp_team):
+                                             Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
+                   
+                                                $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$insp_team['sci_team_id'].'" or `group`="'.$insp_team['sci_team_id'].'")','','')->result_array();
+                                                if(!empty($tokens)) {
+                                                    foreach ($tokens as $key => $to):
+                                                        if(isset($to['fcm_token']) && !empty($to['fcm_token']))
+                                                            $fcm_token[] = $to['fcm_token'];
+                                                        if(isset($to['id']) && !empty($to['id'])) {
+                                                            Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                                        }
+                                                    endforeach;
+                                                }
+                                             endforeach;
                                         	if(!empty($fcm_token)  && $counter== 1) {
                                             	$fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
                                             	Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
@@ -3292,21 +3460,24 @@ class Admin_api extends MX_Controller {
                                             $assign_data['product_id'] = $ps['ps_product'];
                                             $outlet_id=$value['outlet_id'];
                                             $assign_data['checkid']=$value['id'];
-                                            $assign_data['inspection_team']=$value['inspection_team'];
+                                           // $assign_data['inspection_team']=$value['inspection_team'];
                                             $assign_data['review_team']=$value['review_team'];
                                             $assign_data['approval_team']=$value['approval_team'];
                                             $assign_data['outlet_id']=$value['outlet_id'];
                                             $assign_data['start_datetime']=date('Y-m-d H:i:s');
                                             $assign_data['end_datetime']=$cenvertedTime = date('Y-m-d H:i:s',strtotime('+1 hour',strtotime(date('Y-m-d H:i:s'))));
-                                            $assign_data['assign_status']='Open';
+                                            $assign_data['assign_status']='Closed';
                                         	$where_assign['product_id'] = $ps['ps_product'];
-                                            $where_assign['inspection_team']=$value['inspection_team'];
+                                           // $where_assign['inspection_team']=$value['inspection_team'];
                                             $where_assign['review_team']=$value['review_team'];
                                             $where_assign['approval_team']=$value['approval_team'];
                                             $where_assign['start_datetime <=']=date('Y-m-d H:i:s');
                                             $where_assign['end_datetime >=']= date('Y-m-d H:i:s',strtotime('+1 hour',strtotime(date('Y-m-d H:i:s'))));
                                             $check_if=$this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
-                                            if(empty($check_if)){
+                                            $inspection_team_array=array();
+        	                                $inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+                                
+        	                            if(empty($check_if) && !empty($inspection_team_array)){
                                             $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
                                             if(isset($ps['shape']) && !empty($ps['shape'])) {
                                                 $insert_id=Modules::run('api/insert_into_specific_table',array("type"=>'Dropdown',"question"=>'Shape',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
@@ -3324,10 +3495,13 @@ class Admin_api extends MX_Controller {
                                             }
                                         }
                                             /////////// notification code umar start///////////
-                                            if(!empty($assign_id) && !empty($outlet_id)) {
+                                            /*if(!empty($assign_id) && !empty($outlet_id)) {
                                                 $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
                                                 $fcm_data = $fcm_token = array();
-                                                $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$value['inspection_team'].'" or `group`="'.$value['inspection_team'].'")','','')->result_array();
+                                                foreach ($inspection_team_array as $key => $insp_team):
+                                                Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
+                   
+                                                $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$insp_team['sci_team_id'].'" or `group`="'.$insp_team['sci_team_id'].'")','','')->result_array();
                                                 if(!empty($tokens)) {
                                                     foreach ($tokens as $key => $to):
                                                         if(isset($to['fcm_token']) && !empty($to['fcm_token']))
@@ -3337,12 +3511,13 @@ class Admin_api extends MX_Controller {
                                                         }
                                                     endforeach;
                                                 }
+                                                endforeach;
                                                 if(!empty($fcm_token) && $counter== 1) {
                                                     $fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
                                                     Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
                                                     $counter = $counter + 1;
                                                 }
-                                            }
+                                            }*/
                                             /////////// notification code umar end///////////
                                         }
                                     endforeach;
@@ -3374,6 +3549,7 @@ class Admin_api extends MX_Controller {
             $where['product_checks.checktype !=']='wip_profile';
             $where['product_checks.checktype !=']='bowl_filling';
             $where['product_checks.checktype !=']='herb_spice';
+            $where['product_checks.checktype !=']='scheduled_checks';
             $check_lists=$this->get_all_check_list_from_db_without_join($where,$outlet_id=DEFAULT_OUTLET,$where_frequency)->result_array();
         print_r($check_lists);echo "<br><br>start check list<br><br><br>";
             $counter = 1;
@@ -3392,10 +3568,11 @@ class Admin_api extends MX_Controller {
                                             $futher_process = false;
                                     }
                                 }
+                                
                                 if($futher_process == true) {
                                     $outlet_id=$value['outlet_id'];
                                     $assign_data['checkid']=$value['id'];
-                                    $assign_data['inspection_team']=$value['inspection_team'];
+                                   // $assign_data['inspection_team']=$value['inspection_team'];
                                     $assign_data['review_team']=$value['review_team'];
                                     $assign_data['approval_team']=$value['approval_team'];
                                     $assign_data['outlet_id']=$value['outlet_id'];
@@ -3404,30 +3581,38 @@ class Admin_api extends MX_Controller {
                                     $assign_data['assign_status']='Open';
                                     /////////////check for already exists
                                     $where_assign['checkid']=$value['id'];
-                                    $where_assign['inspection_team']=$value['inspection_team'];
+                                  //  $where_assign['inspection_team']=$value['inspection_team'];
                                     $where_assign['review_team']=$value['review_team'];
                                     $where_assign['approval_team']=$value['approval_team'];
                                     $where_assign['start_datetime <=']=date('Y-m-d H:i:s');
                                     $where_assign['end_datetime >=']= date('Y-m-d 23:59:00');
 
                                     $check_if=$this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
-                                    if(empty($check_if)){
+                                     $inspection_team_array=array();
+                                	 $inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+                                                        
+                                    if(empty($check_if) && !empty($inspection_team_array)){
 
                                     $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
                                     /////////// notification code umar start///////////
                                     if(!empty($assign_id) && !empty($outlet_id)) {
                                         $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
                                         $fcm_token = array();
-                                        $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$value['inspection_team'].'" or `group`="'.$value['inspection_team'].'")','','')->result_array();
-                                        if(!empty($tokens)) {
-                                            foreach ($tokens as $key => $to):
-                                                if(isset($to['fcm_token']) && !empty($to['fcm_token']))
-                                                    $fcm_token[] = $to['fcm_token'];
-                                                if(isset($to['id']) && !empty($to['id'])) {
-                                                    Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                        foreach ($inspection_team_array as $key => $insp_team):
+                                             Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
+                                               
+                                                $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$insp_team['sci_team_id'].'" or `group`="'.$insp_team['sci_team_id'].'")','','')->result_array();
+                                                if(!empty($tokens)) {
+                                                    
+                                                    foreach ($tokens as $key => $to):
+                                                        if(isset($to['fcm_token']) && !empty($to['fcm_token']))
+                                                            $fcm_token[] = $to['fcm_token'];
+                                                        if(isset($to['id']) && !empty($to['id'])) {
+                                                            Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                                        }
+                                                    endforeach;
                                                 }
-                                            endforeach;
-                                        }
+                                         endforeach;
                                         if(!empty($fcm_token)  && $counter== 1) {
                                             $fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
                                             Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
@@ -3442,6 +3627,7 @@ class Admin_api extends MX_Controller {
                                 echo "<br>all products<br><br>";
                                 print_r($product_schedules);
                                 echo "<br>";
+                                
                                 if(!empty($product_schedules)) {
                                     foreach ($product_schedules as $key => $ps):
                                         $product_attribute = array();
@@ -3462,26 +3648,29 @@ class Admin_api extends MX_Controller {
                                             $assign_data['product_id'] = $ps['ps_product'];
                                             $outlet_id=$value['outlet_id'];
                                             $assign_data['checkid']=$value['id'];
-                                            $assign_data['inspection_team']=$value['inspection_team'];
+                                            //$assign_data['inspection_team']=$value['inspection_team'];
                                             $assign_data['review_team']=$value['review_team'];
                                             $assign_data['approval_team']=$value['approval_team'];
                                             $assign_data['outlet_id']=$value['outlet_id'];
                                             $assign_data['start_datetime']=date('Y-m-d H:i:s');
                                             $assign_data['end_datetime']=date('Y-m-d 23:59:00');
-                                            $assign_data['assign_status']='Open';
+                                            $assign_data['assign_status']='Closed';
                                             /////////////check for already exists
                                             $where_assign['checkid']=$value['id'];
                                         	$where_assign['product_id'] = $ps['ps_product'];
-                                            $where_assign['inspection_team']=$value['inspection_team'];
+                                            //$where_assign['inspection_team']=$value['inspection_team'];
                                             $where_assign['review_team']=$value['review_team'];
                                             $where_assign['approval_team']=$value['approval_team'];
                                             $where_assign['start_datetime <=']=date('Y-m-d H:i:s');
                                             $where_assign['end_datetime >=']= date('Y-m-d 23:59:00');
                                             $check_if=$this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
+                                             $inspection_team_array=array();
+                                	         $inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+                                    
                                             echo "<br><br>is check created or not <br>";
                                             print_r($check_if);
                                             echo "<br><br>";
-                                            if(empty($check_if)){
+                                            if(empty($check_if)  && !empty($inspection_team_array)){
                                             	$assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
                                             echo "assign_id ".$assign_id."========<br><br>";
                                                 if(isset($ps['shape']) && !empty($ps['shape'])) {
@@ -3500,25 +3689,30 @@ class Admin_api extends MX_Controller {
                                                 }
                                             }
                                             /////////// notification code umar start///////////
-                                            if(!empty($assign_id) && !empty($outlet_id)) {
+                                           /* if(!empty($assign_id) && !empty($outlet_id)) {
                                                 $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
                                                 $fcm_data = $fcm_token = array();
-                                                $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$value['inspection_team'].'" or `group`="'.$value['inspection_team'].'")','','')->result_array();
-                                                if(!empty($tokens)) {
-                                                    foreach ($tokens as $key => $to):
-                                                        if(isset($to['fcm_token']) && !empty($to['fcm_token']))
-                                                            $fcm_token[] = $to['fcm_token'];
-                                                        if(isset($to['id']) && !empty($to['id'])) {
-                                                            Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                                foreach ($inspection_team_array as $key => $insp_team):
+                                                     Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
+                                                       
+                                                        $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$insp_team['sci_team_id'].'" or `group`="'.$insp_team['sci_team_id'].'")','','')->result_array();
+                                                        if(!empty($tokens)) {
+                                                            
+                                                            foreach ($tokens as $key => $to):
+                                                                if(isset($to['fcm_token']) && !empty($to['fcm_token']))
+                                                                    $fcm_token[] = $to['fcm_token'];
+                                                                if(isset($to['id']) && !empty($to['id'])) {
+                                                                    Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                                                }
+                                                            endforeach;
                                                         }
-                                                    endforeach;
-                                                }
+                                                endforeach;
                                                 if(!empty($fcm_token) && $counter== 1) {
                                                     $fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
                                                     Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
                                                     $counter = $counter + 1;
                                                 }
-                                            }
+                                            }*/
                                             /////////// notification code umar end///////////
                                         }
                                     endforeach;
@@ -3541,7 +3735,7 @@ class Admin_api extends MX_Controller {
                                 if(!empty($today_valid) && $futher_process == true) {
                                     $outlet_id=$value['outlet_id'];
                                     $assign_data['checkid']=$value['id'];
-                                    $assign_data['inspection_team']=$value['inspection_team'];
+                                    //$assign_data['inspection_team']=$value['inspection_team'];
                                     $assign_data['review_team']=$value['review_team'];
                                     $assign_data['approval_team']=$value['approval_team'];
                                     $assign_data['outlet_id']=$value['outlet_id'];
@@ -3550,28 +3744,36 @@ class Admin_api extends MX_Controller {
                                     $assign_data['assign_status']='Open';
                                    /////////////check for already exists
                                      $where_assign['checkid']=$value['id'];
-                                    $where_assign['inspection_team']=$value['inspection_team'];
+                                    //$where_assign['inspection_team']=$value['inspection_team'];
                                     $where_assign['review_team']=$value['review_team'];
                                     $where_assign['approval_team']=$value['approval_team'];
                                     $where_assign['start_datetime <=']=date('Y-m-d h:i:s');
                                     $where_assign['end_datetime >=']= date('Y-m-d').' 23:59:59';
                                     $check_if=$this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
-                                    if(empty($check_if)){
+                                    $inspection_team_array=array();
+                                	$inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+                                    
+                                    if(empty($check_if) && !empty($inspection_team_array)){
                                         $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
                                         /////////// notification code umar start///////////
                                         if(!empty($assign_id) && !empty($outlet_id)) {
                                             $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
                                             $fcm_token = array();
-                                            $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$value['inspection_team'].'" or `group`="'.$value['inspection_team'].'")','','')->result_array();
-                                            if(!empty($tokens)) {
-                                                foreach ($tokens as $key => $to):
-                                                    if(isset($to['fcm_token']) && !empty($to['fcm_token']))
-                                                        $fcm_token[] = $to['fcm_token'];
-                                                    if(isset($to['id']) && !empty($to['id'])) {
-                                                        Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
-                                                    }
-                                                endforeach;
-                                            }
+                                            foreach ($inspection_team_array as $key => $insp_team):
+                                                     Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
+                                                       
+                                                        $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$insp_team['sci_team_id'].'" or `group`="'.$insp_team['sci_team_id'].'")','','')->result_array();
+                                                        if(!empty($tokens)) {
+                                                            
+                                                            foreach ($tokens as $key => $to):
+                                                                if(isset($to['fcm_token']) && !empty($to['fcm_token']))
+                                                                    $fcm_token[] = $to['fcm_token'];
+                                                                if(isset($to['id']) && !empty($to['id'])) {
+                                                                    Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                                                }
+                                                            endforeach;
+                                                        }
+                                            endforeach;
                                             if(!empty($fcm_token)  && $counter== 1) {
                                                 $fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
                                                 Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
@@ -3598,7 +3800,7 @@ class Admin_api extends MX_Controller {
                                 if(!empty($today_valid)  && $futher_process == true) {
                                     $outlet_id=$value['outlet_id'];
                                     $assign_data['checkid']=$value['id'];
-                                    $assign_data['inspection_team']=$value['inspection_team'];
+                                   // $assign_data['inspection_team']=$value['inspection_team'];
                                     $assign_data['review_team']=$value['review_team'];
                                     $assign_data['approval_team']=$value['approval_team'];
                                     $assign_data['outlet_id']=$value['outlet_id'];
@@ -3607,28 +3809,36 @@ class Admin_api extends MX_Controller {
                                     $assign_data['assign_status']='Open';
                                    /////////////check for already exists
                                      $where_assign['checkid']=$value['id'];
-                                    $where_assign['inspection_team']=$value['inspection_team'];
+                                   // $where_assign['inspection_team']=$value['inspection_team'];
                                     $where_assign['review_team']=$value['review_team'];
                                     $where_assign['approval_team']=$value['approval_team'];
                                     $where_assign['start_datetime <=']=date('Y-m-d h:i:s');
                                     $where_assign['end_datetime >=']= date('Y-m-d').' 23:59:59';
                                     $check_if=$this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
+                                    $inspection_team_array=array();
+                                	$inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+                                    
                                     if(empty($check_if)){
                                         $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
                                         /////////// notification code umar start///////////
                                         if(!empty($assign_id) && !empty($outlet_id)) {
                                             $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
                                             $fcm_token = array();
-                                            $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$value['inspection_team'].'" or `group`="'.$value['inspection_team'].'")','','')->result_array();
-                                            if(!empty($tokens)) {
-                                                foreach ($tokens as $key => $to):
-                                                    if(isset($to['fcm_token']) && !empty($to['fcm_token']))
-                                                        $fcm_token[] = $to['fcm_token'];
-                                                    if(isset($to['id']) && !empty($to['id'])) {
-                                                        Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
-                                                    }
-                                                endforeach;
-                                            }
+                                           foreach ($inspection_team_array as $key => $insp_team):
+                                                     Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
+                                                       
+                                                        $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$insp_team['sci_team_id'].'" or `group`="'.$insp_team['sci_team_id'].'")','','')->result_array();
+                                                        if(!empty($tokens)) {
+                                                            
+                                                            foreach ($tokens as $key => $to):
+                                                                if(isset($to['fcm_token']) && !empty($to['fcm_token']))
+                                                                    $fcm_token[] = $to['fcm_token'];
+                                                                if(isset($to['id']) && !empty($to['id'])) {
+                                                                    Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                                                }
+                                                            endforeach;
+                                                        }
+                                            endforeach;
                                             if(!empty($fcm_token)  && $counter== 1) {
                                                 $fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
                                                 Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
@@ -3708,7 +3918,7 @@ class Admin_api extends MX_Controller {
         $assign_data['outlet_id']=$outlet_id;
         $assign_data['start_datetime']=$start_date_time;
         $assign_data['end_datetime']=$end_date_time;
-        $assign_data['assign_status']='Open';
+        $assign_data['assign_status']='Closed';
         $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
         /////////////check for already exists
         /*$where_assign['checkid']=$data['id'];
@@ -4100,22 +4310,25 @@ class Admin_api extends MX_Controller {
                                             $assign_data['product_id'] = $ps['ps_product'];
                                             $outlet_id=$value['outlet_id'];
                                             $assign_data['checkid']=$value['id'];
-                                            $assign_data['inspection_team']=$value['inspection_team'];
+                                            //$assign_data['inspection_team']=$value['inspection_team'];
                                             $assign_data['review_team']=$value['review_team'];
                                             $assign_data['approval_team']=$value['approval_team'];
                                             $assign_data['outlet_id']=$value['outlet_id'];
                                             $assign_data['start_datetime']=$start_date_time;
                                             $assign_data['end_datetime']=$end_date_time;
-                                            $assign_data['assign_status']='Open';
+                                            $assign_data['assign_status']='Closed';
                                             /////////////check for already exists
                                             $where_assign['checkid']=$value['id'];
-                                            $where_assign['inspection_team']=$value['inspection_team'];
+                                           // $where_assign['inspection_team']=$value['inspection_team'];
                                             $where_assign['review_team']=$value['review_team'];
                                             $where_assign['approval_team']=$value['approval_team'];
                                             $where_assign['start_datetime <=']=$start_date_time;
                                             $where_assign['end_datetime >=']= $end_date_time;
                                             $check_if=$this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
-                                         if(empty($check_if)){
+                                            $inspection_team_array=array();
+                                	        $inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+                                                        
+                                            if(empty($check_if) && !empty($inspection_team_array)){
                                                 $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
                                                 
                                                 if(isset($product_attribute) && !empty($product_attribute)) {$attribute_name='';
@@ -4268,25 +4481,30 @@ class Admin_api extends MX_Controller {
                                                     }
                                                 }
                                                 /////////// notification code umar start///////////
-                                                if(!empty($assign_id) && !empty($outlet_id)) {
+                                                /*if(!empty($assign_id) && !empty($outlet_id)) {
                                                     $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
                                                     $fcm_data = $fcm_token = array();
-                                                    $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$value['inspection_team'].'" or `group`="'.$value['inspection_team'].'")','','')->result_array();
-                                                    if(!empty($tokens)) {
-                                                        foreach ($tokens as $key => $to):
-                                                            if(isset($to['fcm_token']) && !empty($to['fcm_token']))
-                                                                $fcm_token[] = $to['fcm_token'];
-                                                            if(isset($to['id']) && !empty($to['id'])) {
-                                                                Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
-                                                            }
-                                                        endforeach;
-                                                    }
+                                                    foreach ($inspection_team_array as $key => $insp_team):
+                                                     Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
+                                                       
+                                                        $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$insp_team['sci_team_id'].'" or `group`="'.$insp_team['sci_team_id'].'")','','')->result_array();
+                                                        if(!empty($tokens)) {
+                                                            
+                                                            foreach ($tokens as $key => $to):
+                                                                if(isset($to['fcm_token']) && !empty($to['fcm_token']))
+                                                                    $fcm_token[] = $to['fcm_token'];
+                                                                if(isset($to['id']) && !empty($to['id'])) {
+                                                                    Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                                                }
+                                                            endforeach;
+                                                        }
+                                                    endforeach;
                                                     if(!empty($fcm_token) && $counter== 1) {
                                                         $fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
                                                         Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
                                                         $counter = $counter + 1;
                                                     }
-                                                }
+                                                }*/
                                                 /////////// notification code umar end///////////
                                             }
                                         }
@@ -4317,22 +4535,25 @@ class Admin_api extends MX_Controller {
                                             $assign_data['product_id'] = $ps['ps_product'];
                                             $outlet_id=$value['outlet_id'];
                                             $assign_data['checkid']=$value['id'];
-                                            $assign_data['inspection_team']=$value['inspection_team'];
+                                            //$assign_data['inspection_team']=$value['inspection_team'];
                                             $assign_data['review_team']=$value['review_team'];
                                             $assign_data['approval_team']=$value['approval_team'];
                                             $assign_data['outlet_id']=$value['outlet_id'];
                                             $assign_data['start_datetime']=$start_date_time;
                                             $assign_data['end_datetime']=$end_date_time;
-                                            $assign_data['assign_status']='Open';
+                                            $assign_data['assign_status']='Closed';
                                             /////////////check for already exists
                                             $where_assign['checkid']=$value['id'];
-                                            $where_assign['inspection_team']=$value['inspection_team'];
+                                            //$where_assign['inspection_team']=$value['inspection_team'];
                                             $where_assign['review_team']=$value['review_team'];
                                             $where_assign['approval_team']=$value['approval_team'];
                                             $where_assign['start_datetime <=']=$start_date_time;
                                             $where_assign['end_datetime >=']= $end_date_time;
                                             $check_if=$this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
-                                                if(empty($check_if)){
+                                              $inspection_team_array=array();
+                                	        $inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+                                                        
+                                            if(empty($check_if) && !empty($inspection_team_array)){
                                                     $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
                                                     
                                                     if(isset($product_attribute) && !empty($product_attribute)) {$attribute_name='';
@@ -4482,25 +4703,30 @@ class Admin_api extends MX_Controller {
                                                         }
                                                     
                                                     /////////// notification code umar start///////////
-                                                    if(!empty($assign_id) && !empty($outlet_id)) {
+                                                    /*if(!empty($assign_id) && !empty($outlet_id)) {
                                                         $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
                                                         $fcm_data = $fcm_token = array();
-                                                        $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$value['inspection_team'].'" or `group`="'.$value['inspection_team'].'")','','')->result_array();
-                                                        if(!empty($tokens)) {
-                                                            foreach ($tokens as $key => $to):
-                                                                if(isset($to['fcm_token']) && !empty($to['fcm_token']))
-                                                                    $fcm_token[] = $to['fcm_token'];
-                                                                if(isset($to['id']) && !empty($to['id'])) {
-                                                                    Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
-                                                                }
-                                                            endforeach;
-                                                        }
+                                                       foreach ($inspection_team_array as $key => $insp_team):
+                                                            Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
+                                                           
+                                                            $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$insp_team['sci_team_id'].'" or `group`="'.$insp_team['sci_team_id'].'")','','')->result_array();
+                                                            if(!empty($tokens)) {
+                                                                
+                                                                foreach ($tokens as $key => $to):
+                                                                    if(isset($to['fcm_token']) && !empty($to['fcm_token']))
+                                                                        $fcm_token[] = $to['fcm_token'];
+                                                                    if(isset($to['id']) && !empty($to['id'])) {
+                                                                        Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                                                    }
+                                                                endforeach;
+                                                            }
+                                                        endforeach;
                                                         if(!empty($fcm_token) && $counter== 1) {
                                                             $fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
                                                             Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
                                                             $counter = $counter + 1;
                                                         }
-                                                    }
+                                                    }*/
                                                     /////////// notification code umar end///////////
                                                 }
                                         }
@@ -4510,7 +4736,7 @@ class Admin_api extends MX_Controller {
                            
     }
     function create_gluten_free_checks(){
-          date_default_timezone_set("Asia/karachi");
+            date_default_timezone_set("Asia/karachi");
             $outlet_id=DEFAULT_OUTLET;
             $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id asc','general_setting','timezones','1','1')->result_array();
             if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
@@ -4631,40 +4857,48 @@ class Admin_api extends MX_Controller {
                                 $assign_data['product_id'] = $ps['ps_product'];
                                 $assign_data['assignment_type']=$assignment_type;
                                 $assign_data['checkid']=$value['id'];
-                                $assign_data['inspection_team']=$value['inspection_team'];
+                                //$assign_data['inspection_team']=$value['inspection_team'];
                                 $assign_data['review_team']=$value['review_team'];
                                 $assign_data['approval_team']=$value['approval_team'];
                                 $assign_data['outlet_id']=$value['outlet_id'];
                                 $assign_data['start_datetime']=$start_date_time;
                                 $assign_data['end_datetime']=$end_date_time;
-                                $assign_data['assign_status']='Open';
+                                $assign_data['assign_status']='Closed';
                                 /////////////check for already exists
                                 $where_assign['checkid']=$value['id'];
                             	$where_assign['product_id'] = $ps['ps_product'];
-                                $where_assign['inspection_team']=$value['inspection_team'];
+                               // $where_assign['inspection_team']=$value['inspection_team'];
                                 $where_assign['review_team']=$value['review_team'];
                                 $where_assign['approval_team']=$value['approval_team'];
                                 $where_assign['start_datetime <=']=$start_date_time;
                                 $where_assign['end_datetime >=']= $end_date_time;
                                 $check_if=$this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
                                  
-                                if(empty($check_if)){
+                                 $inspection_team_array=array();
+                    	        $inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+                                            
+                                if(empty($check_if) && !empty($inspection_team_array)){
                                      $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
                                     
                                      /////////// notification code umar start///////////
                                     if(!empty($assign_id) && !empty($outlet_id)) {
                                         $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
                                         $fcm_token = array();
-                                        $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$value['inspection_team'].'" or `group`="'.$value['inspection_team'].'")','','')->result_array();
-                                        if(!empty($tokens)) {
-                                            foreach ($tokens as $key => $to):
-                                                if(isset($to['fcm_token']) && !empty($to['fcm_token']))
-                                                    $fcm_token[] = $to['fcm_token'];
-                                                if(isset($to['id']) && !empty($to['id'])) {
-                                                    Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                          foreach ($inspection_team_array as $key => $insp_team):
+                                                Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
+                                               
+                                                $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$insp_team['sci_team_id'].'" or `group`="'.$insp_team['sci_team_id'].'")','','')->result_array();
+                                                if(!empty($tokens)) {
+                                                    
+                                                    foreach ($tokens as $key => $to):
+                                                        if(isset($to['fcm_token']) && !empty($to['fcm_token']))
+                                                            $fcm_token[] = $to['fcm_token'];
+                                                        if(isset($to['id']) && !empty($to['id'])) {
+                                                            Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                                        }
+                                                    endforeach;
                                                 }
                                             endforeach;
-                                        }
                                         if(!empty($fcm_token) && $counter== 1) {
                                             $fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
                                             Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
@@ -4723,17 +4957,17 @@ class Admin_api extends MX_Controller {
                                                         $assign_data['product_id'] = $ps['ps_product'];
                                                         $assign_data['assignment_type']=$assignment_type;
                                                         $assign_data['checkid']=$value['id'];
-                                                        $assign_data['inspection_team']=$value['inspection_team'];
+                                                       // $assign_data['inspection_team']=$value['inspection_team'];
                                                         $assign_data['review_team']=$value['review_team'];
                                                         $assign_data['approval_team']=$value['approval_team'];
                                                         $assign_data['outlet_id']=$value['outlet_id'];
                                                         $assign_data['start_datetime']=date('Y-m-d H:i:s');
                                                         $assign_data['end_datetime']=$cenvertedTime = date('Y-m-d H:i:s',strtotime('+30 minutes',strtotime(date('Y-m-d H:i:s'))));
-                                                        $assign_data['assign_status']='Open';
+                                                        $assign_data['assign_status']='Closed';
                                                         /////////////check for already exists
                                                         $where_assign['checkid']=$value['id'];
                                                     	$where_assign['product_id'] = $ps['ps_product'];
-                                                        $where_assign['inspection_team']=$value['inspection_team'];
+                                                        //$where_assign['inspection_team']=$value['inspection_team'];
                                                         $where_assign['review_team']=$value['review_team'];
                                                         $where_assign['approval_team']=$value['approval_team'];
                                                         $where_assign['start_datetime  <=']=date('Y-m-d H:i:s');
@@ -4779,6 +5013,8 @@ class Admin_api extends MX_Controller {
            
         
     }
+    /////////////functioons for //////////
+    
     
      function schedule_for_herbspice_checks_assignments(){
         date_default_timezone_set("Asia/karachi");
@@ -5186,7 +5422,7 @@ class Admin_api extends MX_Controller {
 	function delete_current_date_checks() {
         $outlet_id = '1';
         $start_time = '2019-01-19 00:00:00';
-        $end_time= "2019-09-02 15:39:31";
+        $end_time= "2019-12-12 15:39:31";
         $checks = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("start_datetime >="=>$start_time),'assign_id desc','assign_id',$outlet_id.'_assignments','checkid,assign_id','1','0','','','')->result_array();
         print_r($checks);echo "<br><br>";
         if(isset($checks) && !empty($checks)) {
@@ -5225,5 +5461,317 @@ class Admin_api extends MX_Controller {
         }
         else
             echo "<br><br>no checks available during start datetime ".$start_time." and end datetime ".$end_time."<br>";
+    }
+    function get_static_forms($cols, $order_by,$group_by='',$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having=''){
+        $this->load->model('mdl_perfectmodel');
+        $query = $this->mdl_perfectmodel->get_static_forms($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where,$and_where,$having);
+        return $query;
+    }
+    ////////////////\
+   function create_scheduled_checks(){
+          date_default_timezone_set("Asia/karachi");
+            $outlet_id=DEFAULT_OUTLET;
+            $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id asc','general_setting','timezones','1','1')->result_array();
+            if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
+                date_default_timezone_set($timezone[0]['timezones']);
+            $where_in=array();
+          
+            $where['product_checks.start_datetime <=']=date('Y-m-d H:i');
+            $where['product_checks.end_datetime >=']=date('Y-m-d H:i');
+            $where['product_checks.status >=']='1';
+            $where['product_checks.checktype']='scheduled_checks';
+
+            $check_lists=$this->get_all_scheduled_checks($where,$outlet_id=DEFAULT_OUTLET)->result_array() ;
+           
+             if(isset($check_lists) && !empty($check_lists)){
+                foreach ($check_lists as $key => $value) {
+                     $start_date_time='';
+                     $end_date_time='';
+                    if($value['frequency']=="30 Mins"){
+                        $start_date_time=date('Y-m-d H:i:s');
+                        $end_date_time= date('Y-m-d H:i:s',strtotime('+30 minutes',strtotime(date('Y-m-d H:i:s'))));
+                    }
+                    elseif ($value['frequency']=="hourly"){
+                                $start_date_time=date('Y-m-d H:i:s');
+                                $end_date_time= date('Y-m-d H:i:s',strtotime('+1 hour',strtotime(date('Y-m-d H:i:s'))));
+                       
+                    } 
+                    elseif($value['frequency']=="Daily"){
+                               $start_date_time=date('Y-m-d H:i:s');
+                               $end_date_time=  date('Y-m-d 23:59:00');
+                    }  
+                    elseif($value['frequency']=="Weekly"){
+                                    $today_valid = Modules::run('api/_get_specific_table_with_pagination',array("fc_check_id" =>$value['id'],'fc_frequency'=>date("l")), 'fc_id asc',DEFAULT_OUTLET.'_checks_frequency','fc_frequency','1','0')->result_array();
+                                    if(!empty($today_valid)) {
+                                    $start_date_time=date('Y-m-d H:i:s');
+                                    $end_date_time=$cenvertedTime = date('Y-m-d').' 23:59:59';
+                                    }
+                    
+                    } 
+                    elseif($value['frequency']=="Shift"){
+                            $start_date_time=date('Y-m-d').' 00:00:00';
+                            $end_date_time=$cenvertedTime = date('Y-m-d').' 23:59:59';
+                    }
+                     if(strtolower($value['cat_name']) =="usda"){
+                      $product_type="USDA";
+                       $where_data=array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d'),"product_type"=>$product_type);
+                     }
+                     elseif(strtolower($value['cat_name']) =="fda"){
+                     $product_type="FDA";
+                      $where_data=array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d'),"product_type"=>$product_type);
+                     }
+                     elseif(strtolower($value['cat_name']) =="organic"){
+                     $product_type="Organic";
+                     $where_data=array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d'),"product_type"=>$product_type);
+                     }
+                     elseif(strtolower($value['cat_name']) =="frozen"){
+                   
+                     $where_data=array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d'),"storage_type"=>"Frozen");
+                     }
+                     elseif(strtolower($value['cat_name']) =="refrigerated"){
+                     
+                     $where_data=array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d'),"storage_type"=>"Refrigerated");
+                     }
+                     
+                       
+                        $product_schedules = $this->get_product_schedules_from_db($where_data,'ps_id desc','ps_id',DEFAULT_OUTLET,'ps_product,product_title,ps_line,unit_weight,shape,product_type,storage_type','1','0','','','')->result_array();
+                        
+                       
+                        if(!empty($product_schedules)) {
+                        foreach ($product_schedules as $key => $ps){
+                        $this->create_scheduled_assignments($value,$start_date_time,$end_date_time,$ps);
+                        }
+                            
+                    }
+                }
+            }
+          
+    }
+    function create_scheduled_assignments($value,$start_date_time,$end_date_time,$ps) {
+      
+                $counter = 1; 
+                
+                $is_valid_product = Modules::run('api/_get_specific_table_with_pagination',array("product_type" =>$product_type,'id'=>$ps['ps_product']), 'id asc',DEFAULT_OUTLET.'_product','id','1','0')->result_array();
+          
+                
+               
+              
+                  
+                         $assignment_type="scheduled_checks";
+                        if($value['frequency']!= "Shift") {
+                        if(isset($value['checktype']) && !empty($value['checktype'])) {
+                            $assign_data =array();
+                            if(strtolower($value['checktype']) != strtolower('product attribute')) {
+                                $outlet_id=$value['outlet_id'];
+                                $assign_data['line_timing'] = $ps['ps_line'];
+                                $assign_data['product_id'] =  $ps['ps_product'];
+                                $assign_data['assignment_type']=$assignment_type;
+                                $assign_data['checkid']=$value['id'];
+                               // $assign_data['inspection_team']=$value['inspection_team'];
+                                $assign_data['review_team']=$value['review_team'];
+                                $assign_data['approval_team']=$value['approval_team'];
+                                $assign_data['outlet_id']=$value['outlet_id'];
+                                $assign_data['start_datetime']=$start_date_time;
+                                $assign_data['end_datetime']=$end_date_time;
+                                $assign_data['assign_status']='Closed';
+                                /////////////check for already exists
+                                $where_assign['checkid']=$value['id'];
+                            	$where_assign['product_id'] = $ps['ps_product'];
+                               // $where_assign['inspection_team']=$value['inspection_team'];
+                                $where_assign['review_team']=$value['review_team'];
+                                $where_assign['approval_team']=$value['approval_team'];
+                                $where_assign['start_datetime <=']=$start_date_time;
+                                $where_assign['end_datetime >=']= $end_date_time;
+                                $check_if=$this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
+                                 $inspection_team_array=array();
+                                 $inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+                                    
+                                if(empty($check_if) && !empty($inspection_team_array)){
+                                     $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
+                                    
+                                     /////////// notification code umar start///////////
+                                    /*if(!empty($assign_id) && !empty($outlet_id)) {
+                                        $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
+                                        $fcm_token = array();
+                                         
+                                            foreach ($inspection_team_array as $key => $insp_team):
+                                                     Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
+                                                       
+                                                        $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$insp_team['sci_team_id'].'" or `group`="'.$insp_team['sci_team_id'].'")','','')->result_array();
+                                                        if(!empty($tokens)) {
+                                                            
+                                                            foreach ($tokens as $key => $to):
+                                                                if(isset($to['fcm_token']) && !empty($to['fcm_token']))
+                                                                    $fcm_token[] = $to['fcm_token'];
+                                                                if(isset($to['id']) && !empty($to['id'])) {
+                                                                    Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                                                }
+                                                            endforeach;
+                                                        }
+                                            endforeach;
+                                        if(!empty($fcm_token) && $counter== 1) {
+                                            $fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
+                                            Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
+                                            $counter = $counter + 1;
+                                        }
+                                    }*/
+                                    /////////// notification code umar end///////////
+                                }
+                            }
+                           
+                           
+                        }                
+                    }
+                    elseif($value['frequency'] == "Shift") {
+                        if(isset($value['checktype']) && !empty($value['checktype'])) {
+                            $assign_data =array();
+                            if(strtolower($value['checktype']) != strtolower('product attribute')) {
+                                $shift_timing = Modules::run('api/_get_specific_table_with_pagination',array("fc_check_id" =>$value['id']), 'fc_id asc',DEFAULT_OUTLET.'_checks_frequency','fc_frequency','1','0')->result_array();
+                                if(!empty($shift_timing)) {
+                                    $all_shifts = Modules::run('api/_get_specific_table_with_pagination',array("shift_status" =>'1'), 'shift_id asc',DEFAULT_OUTLET.'_shifts','shift_id','1','0')->result_array();
+                                    if(!empty($all_shifts)){
+                                        foreach ($all_shifts as $key => $as):
+                                            $current_shift_timig = Modules::run('api/_get_specific_table_with_pagination',array("st_day" =>date("l"),'st_shift'=>$as['shift_id'],'st_status'=>'1'), 'st_id asc',DEFAULT_OUTLET.'_shift_timing','st_start,st_end','1','0')->result_array();
+                                            if(!empty($current_shift_timig)){
+                                                $check = false;
+                                                $start_time = date('H:i:s');
+                                                $end_time = date('H:i:s',strtotime('+30 minutes',strtotime(date('H:i:s'))));
+                                            	$start_time = date('H:i:s',strtotime('-1 minutes',strtotime($start_time)));
+                                                foreach ($shift_timing as $key => $st):
+                                                    $check = false;
+                                                    if($st['fc_frequency'] == 'Start') {
+                                                        if($current_shift_timig[0]['st_start'] >= $start_time && $current_shift_timig[0]['st_start'] <= $end_time) {
+                                                            $check = TRUE;
+                                                        }
+                                                    }
+                                                    elseif($st['fc_frequency'] == 'End') {
+                                                        if($current_shift_timig[0]['st_end'] >= $start_time && $current_shift_timig[0]['st_end'] <= $end_time) {
+                                                            $check = TRUE;
+                                                        }
+                                                    }
+                                                    elseif($st['fc_frequency'] == 'Middle') {
+                                                        $matching_time= "";
+                                                        if($current_shift_timig[0]['st_end'] > $current_shift_timig[0]['st_start']) {
+                                                            $timeDiff=$current_shift_timig[0]['st_end']-$current_shift_timig[0]['st_start'];
+                                                            $timeDiff = round(round($timeDiff)/2);
+                                                            $matching_time = date('H:i:s',strtotime('+'.$timeDiff.' hour',strtotime($current_shift_timig[0]['st_start'])));
+                                                            if($matching_time >= $start_time && $matching_time <= $end_time)
+                                                                $check = TRUE;
+                                                        }                                            
+                                                    }
+                                                    else
+                                                        $check = false;
+                                                    if($check == true) {
+                                                        $outlet_id=$value['outlet_id'];
+                                                        $assign_data['line_timing'] = $ps['ps_line'];
+                                                        $assign_data['product_id'] =$ps['ps_product'];
+                                                        $assign_data['assignment_type']=$assignment_type;
+                                                        $assign_data['checkid']=$value['id'];
+                                                        //$assign_data['inspection_team']=$value['inspection_team'];
+                                                        $assign_data['review_team']=$value['review_team'];
+                                                        $assign_data['approval_team']=$value['approval_team'];
+                                                        $assign_data['outlet_id']=$value['outlet_id'];
+                                                        $assign_data['start_datetime']=date('Y-m-d H:i:s');
+                                                        $assign_data['end_datetime']=$cenvertedTime = date('Y-m-d H:i:s',strtotime('+30 minutes',strtotime(date('Y-m-d H:i:s'))));
+                                                        $assign_data['assign_status']='Closed';
+                                                        /////////////check for already exists
+                                                        $where_assign['checkid']=$value['id'];
+                                                        $where_assign['product_id'] = $ps['ps_product'];
+                                                       // $where_assign['inspection_team']=$value['inspection_team'];
+                                                        $where_assign['review_team']=$value['review_team'];
+                                                        $where_assign['approval_team']=$value['approval_team'];
+                                                        $where_assign['start_datetime  <=']=date('Y-m-d H:i:s');
+                                                        $where_assign['end_datetime >=']= date('Y-m-d H:i:s',strtotime('+30 minutes',strtotime(date('Y-m-d H:i:s'))));
+                                                        $check_if=$this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
+                                                        $inspection_team_array=array();
+                                                        $inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+                                  
+                                                        if(empty($check_if)){
+                                                             $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
+                                                             /////////// notification code umar start///////////
+                                                           /* if(!empty($assign_id) && !empty($outlet_id)) {
+                                                                $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
+                                                                $fcm_token = array();
+                                                                   foreach ($inspection_team_array as $key => $insp_team):
+                                                                         Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
+                                                                           
+                                                                            $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$insp_team['sci_team_id'].'" or `group`="'.$insp_team['sci_team_id'].'")','','')->result_array();
+                                                                            if(!empty($tokens)) {
+                                                                                
+                                                                                foreach ($tokens as $key => $to):
+                                                                                    if(isset($to['fcm_token']) && !empty($to['fcm_token']))
+                                                                                        $fcm_token[] = $to['fcm_token'];
+                                                                                    if(isset($to['id']) && !empty($to['id'])) {
+                                                                                        Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                                                                    }
+                                                                                endforeach;
+                                                                            }
+                                                                    endforeach;
+                                                                if(!empty($fcm_token) && $counter== 1) {
+                                                                    $fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
+                                                                    Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
+                                                                    $counter = $counter + 1;
+                                                                }
+                                                            }*/
+                                                            /////////// notification code umar end///////////
+                                                        }
+                                                    }
+                                                endforeach;
+                                            }
+                                        endforeach;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                        echo "";                
+                }
+    
+    function get_all_scheduled_checks($where,$outlet_id){
+         $this->load->model('mdl_perfectmodel');
+         $query = $this->mdl_perfectmodel->get_all_scheduled_checks($where,$outlet_id);
+        return $query;
+    }
+    
+    function get_product_for_schedule_checks($cols, $order_by,$group_by='',$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having=''){
+            $this->load->model('mdl_perfectmodel');
+        $query = $this->mdl_perfectmodel->get_product_for_schedule_checks($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where,$and_where,$having);
+        return $query;
+    }
+    function get_check_category_details($checkid){
+         $this->load->model('mdl_perfectmodel');
+        $query = $this->mdl_perfectmodel->get_check_category_details($checkid);
+        return $query;
+    }
+    function get_scheduled_checks_products(){
+            $status=false;
+            $message="No scheduled products found";
+            $line_number=$this->input->post('line');
+            $outlet_id=DEFAULT_OUTLET;
+            if(!empty($line_number)){
+                 date_default_timezone_set("Asia/karachi");
+                            $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>$outlet_id), 'id asc','general_setting','timezones','1','1')->result_array();
+                            if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
+                                date_default_timezone_set($timezone[0]['timezones']);
+                $table = $outlet_id.'_assignments';
+                $where_data=array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d'),'ps_line'=>$line_number);
+                $assignment_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array($table.".assign_id"=>$assign_id), $table.".assign_id desc",$table.".assign_id desc",$table,'checkid,complete_datetime,reassign_id,review_user,review_datetime,review_comments,approval_user,approval_datetime,appoval_comments,product_id,assignment_type','1','1','','','')->result_array();
+                $product_schedules = $this->get_product_schedules_from_db($where_data,'ps_id desc','ps_id',DEFAULT_OUTLET,'id,ps_product,product_title,ps_line,unit_weight,shape,product_type,storage_type','1','0','','','')->result_array();
+                        if(!empty($product_schedules)){
+                            $status=true;
+                            $message="Data fetched";
+                            foreach($product_schedules as $product){
+                                
+                                $temp_data['productid']=$product['id'];
+                                $temp_data['product_title']=$product['product_title'];
+                                $temp_array[]=$temp_data;
+                            }
+                        }
+                       
+                
+            }
+            header('Content-Type: application/json');
+        echo json_encode(array("status"=>$status,"message"=>$message,"data"=>$temp_array));
     }
 }

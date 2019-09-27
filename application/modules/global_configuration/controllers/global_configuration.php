@@ -74,7 +74,7 @@ Modules::run('site_security/has_permission');
         for ($i=0; $i <=5; $i++) { 
           $temp['date'] = date('m-d-Y', strtotime($week_start));
           $temp['day'] = date('l', strtotime($week_start));
-          $temp['data'] = $this->get_product_schedules_from_db(array("ps_date >="=>$week_start,"ps_end_date <="=>$week_start),'ps_date desc','ps_id',DEFAULT_OUTLET,'product_title,ps_line,ps_id,ps_product,navision_no,product_type,ps_date','1','0','','','')->result_array();
+          $temp['data'] = $this->get_product_schedules_from_db(array("ps_date >="=>$week_start,"ps_end_date <="=>$week_start),'ps_date desc','ps_id',DEFAULT_OUTLET,'product_title,ps_line,ps_id,ps_product,navision_no,product_type,storage_type,ps_date','1','0','','','')->result_array();
           $week_start = date('Y-m-d',strtotime($week_start . "+1 days"));
           $temp_product[] = $temp;
           unset($temp);

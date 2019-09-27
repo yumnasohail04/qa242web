@@ -39,8 +39,10 @@ class Mdl_perfectmodel extends CI_Model {
       ////////////////////////////// Qa project functions///////////
         function get_checks_lists_from_db($cols,$group_by,$table,$select,$page_number,$limit,$or_where,$and_where,$having,$like){
             $offset=($page_number-1)*$limit;
+           
             $this->db->select($select);
             $this->db->from($table);
+            $this->db->join(DEFAULT_OUTLET.'_assignment_inspection_teams inspection_teams','inspection_teams.assignment_id=assignments.assign_id','left');
             $this->db->distinct($table.'.assign_id');
             if(!empty($group_by))
                 $this->db->group_by($group_by);
@@ -59,6 +61,7 @@ class Mdl_perfectmodel extends CI_Model {
             $this->db->order_by('assign_id','desc');
             /*$this->db->order_by("FIELD(`assign_status`, 'OverDue', 'Review', 'Open','Approval','Completed'),".$table.".assign_id", '', FALSE);*/
             $query=$this->db->get();
+          
             return $query;
         }
         function get_all_check_list_from_db($where,$outlet_id,$where_frequency){
@@ -82,10 +85,11 @@ class Mdl_perfectmodel extends CI_Model {
           $table=$outlet_id."_product_checks product_checks";
           $this->db->from($table);
             $this->db->where($where);
-          $this->db->where('checktype !=','wip_profile ');
-          $this->db->where('checktype !=','bowl_filling ');
+          $this->db->where('checktype !=','wip_profile');
+          $this->db->where('checktype !=','bowl_filling');
           if(!empty($where_frequency))
             $this->db->where_in('product_checks.frequency',$where_frequency);
+          
           $query=$this->db->get();
           return $query;
         }
@@ -302,5 +306,69 @@ class Mdl_perfectmodel extends CI_Model {
             $query=$this->db->get();
             return $query;
         }
+        function get_static_forms($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where,$and_where,$having){
+          $offset=($page_number-1)*$limit;
+          $this->db->select($select);
+          $this->db->from($outlet_id.'_static_form');
+          $this->db->join($outlet_id.'_static_checks_inspection',$outlet_id.'_static_form.sf_id ='.$outlet_id.'_static_checks_inspection.sci_check_id','left');
+          if(!empty($group_by))
+              $this->db->group_by($group_by);
+          if(!empty($cols))
+              $this->db->where($cols);
+          if(!empty($or_where))
+              $this->db->where($or_where);
+          if(!empty($and_where))
+              $this->db->where($and_where);
+          if(!empty($having))
+              $this->db->having($having);
+          if($limit != 0)
+              $this->db->limit($limit, $offset);
+          $this->db->order_by($order_by);
+          $query=$this->db->get();
+          return $query;
+        }
          /////////////// END WIP PROFILE FUNCTIONS????????///////////////
+         
+         function get_all_scheduled_checks($where,$outlet_id){
+            $table=$outlet_id."_product_checks product_checks";
+            $this->db->select('product_checks.*,catagories.cat_name');
+            $this->db->join("catagories","catagories.id=product_checks.check_cat_id","left");
+            $this->db->from($table);
+             if(!empty($where))
+            $this->db->where($where);
+            //$this->db->where_in('catagories.cat_name ',array('USDA','FDA','Organic','Refrigerated','Frozen'));
+            $query=$this->db->get();
+          return $query;
+         }
+          function get_product_for_schedule_checks($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having=''){
+          $offset=($page_number-1)*$limit;
+          $this->db->select($select);
+          $this->db->from($outlet_id.'_product_schedules as product_schedules');
+          $this->db->join($outlet_id.'_product as product','product_schedules.ps_product=product.id','left');
+          if(!empty($group_by))
+              $this->db->group_by($group_by);
+          if(!empty($cols))
+              $this->db->where($cols);
+          if(!empty($or_where))
+              $this->db->where($or_where);
+          if(!empty($and_where))
+              $this->db->where($and_where);
+          if(!empty($having))
+              $this->db->having($having);
+          if($limit != 0)
+              $this->db->limit($limit, $offset);
+          $this->db->order_by($order_by);
+          $query=$this->db->get();
+          return $query;
+        }
+        function get_check_category_details($checkid){
+             $table=DEFAULT_OUTLET."_product_checks product_checks";
+            $this->db->select('product_checks.*,catagories.cat_name');
+            $this->db->join("catagories","catagories.id=product_checks.check_cat_id","left");
+            $this->db->from($table);
+            $this->db->where('product_checks.id',$checkid);
+          
+            $query=$this->db->get();
+          return $query;
+        }
 }

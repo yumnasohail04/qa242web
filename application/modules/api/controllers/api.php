@@ -18,6 +18,57 @@ class Api extends MX_Controller {
         $this->lang->load('english', 'english');
         parent::__construct();
     }
+    function static_form_response()
+    {
+        $status=FALSE;
+        $message="Missing data";
+        $response = json_decode($this->input->post('response'));
+        $check_id=$this->input->post("check_id");
+        $user_id=$this->input->post("user_id");
+        $line_no=$this->input->post("line_no");
+        $shift_no=$this->input->post("shift_no");
+        if(!empty($response) && !empty($check_id) && !empty($user_id) && !empty($line_no) && !empty($shift_no)){
+            $check_detail =$this->_get_specific_table_with_pagination(array("sf_id" =>$check_id), 'sf_id desc',DEFAULT_OUTLET.'_static_form','sf_start_datetime,sf_end_datetime,sf_reviewer,sf_approver,','1','1')->result_array();
+            date_default_timezone_set("Asia/karachi");
+            $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id desc','general_setting','timezones','1','1')->result_array();
+            if(isset($timezones[0]['timezones']) && !empty($timezones[0]['timezones']))
+            date_default_timezone_set($timezones[0]['timezones']);
+            foreach($check_detail as $key =>$value)
+            {
+                $assign['check_id']=$check_id;
+                $assign['inspection_team']=$user_id;
+                $assign['start_datetime']=$value['sf_start_datetime'];
+                $assign['end_datetime']=$value['sf_end_datetime'];
+                $assign['review_team']=$value['sf_reviewer'];
+                $assign['approval_team']=$value['sf_approver'];
+                $assign['outlet_id']=DEFAULT_OUTLET;
+                $assign['complete_datetime']=date('Y-m-d H:m:i'); 
+                $assign['assign_status']="Pending"; 
+            }
+            $data['assignment_id']=$this->insert_into_specific_table($assign,DEFAULT_OUTLET.'_static_assignments');
+            $assign['check_id']=$check_id;
+            $assign['user_id']=$user_id;
+            foreach ($response as $key => $res_data) {
+                $data['line_no']=$line_no;
+                $data['user_id']=$user_id;
+                $data['shift_no']=$shift_no;
+                $data['selection']=$res_data->selection;
+                if(empty($res_data->selection))
+                $data['selection']="single_select";
+                $data['answer_type']=$res_data->quesType;
+                $data['question_id']=$res_data->quesId;
+                $data['answer_id']=$res_data->selecetedAnsId;
+                $data['given_answer']=$res_data->givenAns;
+                $data['comments']=$res_data->comment;
+                $data['is_acceptable']=$res_data->isAcceptableAnswer;
+                $this->insert_into_specific_table($data,DEFAULT_OUTLET.'_static_assignment_answer');
+                $status=TRUE;
+                $message="Form Submitted Successfully";
+            }
+        }
+        header('Content-Type: application/json');
+        echo json_encode(array("status"=> $status, "message"=>$message));
+    }
     function mailing() {
 		$to      = 'umar7400@gmail.com';
 		$subject = 'Booking';

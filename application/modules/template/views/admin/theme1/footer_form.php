@@ -85,6 +85,22 @@
          </div>
       </div>
    </div>
+   <div class="modal fade" id="myModallarge1" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Current Attributes</h4>
+        </div>
+        <div class="modal-body">
+          <p>This is a large modal.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 
 <script type="text/javascript">
@@ -141,7 +157,7 @@ $arrTime = $this->config->item('time_Format_Type_JS');
           clear: 'fa fa-trash'
         },
         //viewMode: 'years',
-        format: '<?=$arrDate[DEFAULT_DATE_FORMAT]?>'
+        format: 'DD/MM/YYYY'
     });
 
      $('.datetimepicker2').datetimepicker({
@@ -170,7 +186,7 @@ $arrTime = $this->config->item('time_Format_Type_JS');
           today: 'fa fa-crosshairs',
           clear: 'fa fa-trash'
         },
-       format: '<?=$arrDate[DEFAULT_DATE_FORMAT]?> <?=$arrTime[DEFAULT_TIME_FORMAT]?>'
+       format: 'DD/MM/YYYY'
     });
 
        // only time

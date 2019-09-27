@@ -29,6 +29,8 @@ date_default_timezone_set("Asia/karachi");
         $master_attributes=array();
         if (is_numeric($update_id) && $update_id != 0) {
             $data['news'] = $this->_get_data_from_db($update_id);
+            $data['inspection_team'] = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$update_id), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+        
            $arr_where['checkid']=$update_id;
            $resonce = Modules::run('api/_get_specific_table_with_pagination',$arr_where, 'assign_id desc',DEFAULT_OUTLET.'_assignments','*','1','0')->result_array();
            if(!empty($resonce)){
@@ -79,9 +81,11 @@ date_default_timezone_set("Asia/karachi");
         }
         $data['arr_process']=$arr_process;
         $data['groups'] = $groups;
-        
+          for ($i = 1; $i <= 500; $i++) { 	$resultRank[$i] = $i; 	}
+        $data['rank'] = $resultRank;
         $data['products'] = $arrCategories;
         $data['update_id'] = $update_id;
+        $data['datacheck']=false;
         $data['view_file'] = 'newsform';
         $this->load->module('template');
         $this->template->admin_form($data);
@@ -134,6 +138,7 @@ date_default_timezone_set("Asia/karachi");
             $data['check_cat_id'] = $row->check_cat_id;
             $data['check_subcat_id'] = $row->check_subcat_id;
             $data['start_day'] = $row->start_day;
+            $data['is_dates']=$row->is_dates;
         }
         return $data;
     }
@@ -156,13 +161,31 @@ date_default_timezone_set("Asia/karachi");
         $start_time = $this->input->post('start_time');
         $end_date =   date('Y-m-d', strtotime($this->input->post('end_date')));
         $end_time =  $this->input->post('end_time');
-        $data['start_datetime']=date('Y-m-d H:i:s', strtotime($start_date.$start_time));
-        $data['end_datetime']=date('Y-m-d H:i:s', strtotime($end_date.$end_time));
+       /* $data['start_datetime']=date('Y-m-d H:i:s', strtotime($start_date.$start_time));
+        $data['end_datetime']=date('Y-m-d H:i:s', strtotime($end_date.$end_time));*/
+       $is_dates= $this->input->post('is_dates');
+       
+       
+         if(!empty($is_dates)) {
+            $data['is_dates'] = '1';
+            $data['start_datetime'] = "";
+            if(!empty($start_date) || !empty($start_time))
+                $data['start_datetime'] = date("Y-m-d H:i:s", strtotime($start_date." ".$start_time));
+            
+            
+            $data['end_datetime'] = "";
+            if(($end_date != '0000-00-00 00:00:00') && (!empty($end_date) || !empty($end_time)))
+                $data['end_datetime'] = date("Y-m-d H:i:s", strtotime($end_date." ".$end_time));
+            else {
+                $data['end_datetime'] = date('Y-m-d H:i:s', strtotime('+18 years', strtotime(date("Y-m-d H:i:s"))));
+            }
+         }
         $data['outlet_id'] =DEFAULT_OUTLET;
-        $data['inspection_team'] = $this->input->post('inspection_team');
+     //   $data['inspection_team'] = $this->input->post('inspection_team');
         $data['review_team'] = $this->input->post('review_team');
         $data['approval_team'] = $this->input->post('approval_team');
         $data['status'] = $this->input->post('hdnActive');
+      
         return $data;
     }
      function _get_attribute_data_from_post($check_id) {
@@ -209,6 +232,244 @@ date_default_timezone_set("Asia/karachi");
         $attribute_type=$this->input->post('attribute_type');
         $possible_value=$this->input->post('possible_value');
         $possible_answer=$this->input->post('possible_answers');
+        $page_rank=$this->input->post('page_rank');
+        
+     
+       
+        $total=count($attribute_list);
+        for ($i=0; $i< $total;  $i++) { 
+            $where_attr['id']=$attribute_list[$i];
+            $arr_attr_data= $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('check_catagories_attributes.id'=>$attribute_list[$i]), 'id desc','check_catagories_attributes','id,attribute_name','1','0')->result_array();
+            $attribute_name=$arr_attr_data[0]['attribute_name'];
+            $data['checkid']=$checkid;
+            $data['type']=$attribute_type[$i];
+            $data['question']=$attribute_name;
+            $data['page_rank']=$page_rank[$i];
+            
+            //$insert_id=$this->insert_check_questions_db($data);
+            $a=0;
+            $insert_or_update=$this->insert_or_update(array("checkid"=>$checkid,"question"=>$attribute_name),$data,DEFAULT_OUTLET."_checks_questions");
+            
+            $ans_data['question_id']=$insert_or_update;
+            if($attribute_type[$i]=="Choice" ){
+                $ans_array=explode(" ",$possible_answer);
+
+                if($possible_answer[$i]=="yes/no"){
+                    $insert_answer_data=array();
+                    $insert_answer_data[0]['possible_answer']='yes';
+                    $insert_answer_data[0]['min']=0;
+                    $insert_answer_data[0]['max']= 0;
+                    $insert_answer_data[0]['is_acceptable']=1;
+                    $insert_answer_data[0]['checkid']=$checkid;
+                    $insert_answer_data[0]['question_id']=$insert_or_update;
+
+                    $insert_answer_data[1]['possible_answer']='no';
+                    $insert_answer_data[1]['min']=0;
+                    $insert_answer_data[1]['max']= 0;
+                    $insert_answer_data[1]['is_acceptable']=0;
+                    $insert_answer_data[1]['checkid']=$checkid;
+                    $insert_answer_data[1]['question_id']=$insert_or_update;
+                }elseif($possible_answer[$i]=="acceptable/unacceptable" ||  $possible_answer[$i]=="acceptable/not acceptable"){
+                    $insert_answer_data=array();
+                    $insert_answer_data[0]['possible_answer']='acceptable';
+                    $insert_answer_data[0]['min']=0;
+                    $insert_answer_data[0]['max']= 0;
+                    $insert_answer_data[0]['is_acceptable']=1;
+                    $insert_answer_data[0]['checkid']=$checkid;
+                    $insert_answer_data[0]['question_id']=$insert_or_update;
+
+                    $insert_answer_data[1]['possible_answer']='unacceptable';
+                    $insert_answer_data[1]['min']=0;
+                    $insert_answer_data[1]['max']= 0;
+                    $insert_answer_data[1]['is_acceptable']=0;
+                    $insert_answer_data[1]['checkid']=$checkid;
+                    $insert_answer_data[1]['question_id']=$insert_or_update;
+                }
+                elseif($possible_answer[$i]=="completed/not completed"){
+                    $insert_answer_data=array();
+                    $insert_answer_data[0]['possible_answer']='completed';
+                    $insert_answer_data[0]['min']=0;
+                    $insert_answer_data[0]['max']= 0;
+                    $insert_answer_data[0]['is_acceptable']=1;
+                    $insert_answer_data[0]['checkid']=$checkid;
+                    $insert_answer_data[0]['question_id']=$insert_or_update;
+
+                    $insert_answer_data[1]['possible_answer']='not completed';
+                    $insert_answer_data[1]['min']=0;
+                    $insert_answer_data[1]['max']= 0;
+                    $insert_answer_data[1]['is_acceptable']=0;
+                    $insert_answer_data[1]['checkid']=$checkid;
+                    $insert_answer_data[1]['question_id']=$insert_or_update;
+
+
+ 
+
+
+                }
+                elseif($possible_answer[$i]=="cleaned/uncleaned"){
+                    $insert_answer_data=array();
+                    $insert_answer_data[0]['possible_answer']='cleaned';
+                    $insert_answer_data[0]['min']=0;
+                    $insert_answer_data[0]['max']= 0;
+                    $insert_answer_data[0]['is_acceptable']=1;
+                    $insert_answer_data[0]['checkid']=$checkid;
+                     $insert_answer_data[0]['question_id']=$insert_or_update;
+
+                    $insert_answer_data[1]['possible_answer']='uncleaned';
+                    $insert_answer_data[1]['min']=0;
+                    $insert_answer_data[1]['max']= 0;
+                    $insert_answer_data[1]['is_acceptable']=0;
+                    $insert_answer_data[1]['checkid']=$checkid;
+                    $insert_answer_data[1]['question_id']=$insert_or_update;
+                }
+                elseif($possible_answer[$i]=="cleaned/completed"){
+                    $insert_answer_data=array();
+                    $insert_answer_data[0]['possible_answer']='cleaned';
+                    $insert_answer_data[0]['min']=0;
+                    $insert_answer_data[0]['max']= 0;
+                    $insert_answer_data[0]['is_acceptable']=1;
+                    $insert_answer_data[0]['checkid']=$checkid;
+                    $insert_answer_data[0]['question_id']=$insert_or_update;
+
+                    $insert_answer_data[1]['possible_answer']='completed';
+                    $insert_answer_data[1]['min']=0;
+                    $insert_answer_data[1]['max']= 0;
+                    $insert_answer_data[1]['is_acceptable']=0;
+                    $insert_answer_data[1]['checkid']=$checkid;
+                    $insert_answer_data[1]['question_id']=$insert_or_update;
+                }
+                elseif($possible_answer[$i]=="'release/hold"){
+                    $insert_answer_data=array();
+                    $insert_answer_data[0]['possible_answer']='release';
+                    $insert_answer_data[0]['min']=0;
+                    $insert_answer_data[0]['max']= 0;
+                    $insert_answer_data[0]['is_acceptable']=1;
+                    $insert_answer_data[0]['checkid']=$checkid;
+                    $insert_answer_data[0]['question_id']=$insert_or_update;
+
+                    $insert_answer_data[1]['possible_answer']='hold';
+                    $insert_answer_data[1]['min']=0;
+                    $insert_answer_data[1]['max']= 0;
+                    $insert_answer_data[1]['is_acceptable']=0;
+                    $insert_answer_data[1]['checkid']=$checkid;
+                    $insert_answer_data[1]['question_id']=$insert_or_update;
+                }
+                elseif($possible_answer[$i]=="pass/fail"){
+                    $insert_answer_data=array();
+                    $insert_answer_data[0]['possible_answer']='pass';
+                    $insert_answer_data[0]['min']=0;
+                    $insert_answer_data[0]['max']= 0;
+                    $insert_answer_data[0]['is_acceptable']=1;
+                    $insert_answer_data[0]['checkid']=$checkid;
+                    $insert_answer_data[0]['question_id']=$insert_or_update;
+
+                    $insert_answer_data[1]['possible_answer']='fail';
+                    $insert_answer_data[1]['min']=0;
+                    $insert_answer_data[1]['max']= 0;
+                    $insert_answer_data[1]['is_acceptable']=0;
+                    $insert_answer_data[1]['checkid']=$checkid;
+                    $insert_answer_data[1]['question_id']=$insert_or_update;
+                }
+                elseif($possible_answer[$i]=="positive/negative"){
+                    $insert_answer_data=array();
+                    $insert_answer_data[0]['possible_answer']='positive';
+                    $insert_answer_data[0]['min']=0;
+                    $insert_answer_data[0]['max']= 0;
+                    $insert_answer_data[0]['is_acceptable']=1;
+                    $insert_answer_data[0]['checkid']=$checkid;
+                    $insert_answer_data[0]['question_id']=$insert_or_update;
+
+                    $insert_answer_data[1]['possible_answer']='negative';
+                    $insert_answer_data[1]['min']=0;
+                    $insert_answer_data[1]['max']= 0;
+                    $insert_answer_data[1]['is_acceptable']=0;
+                    $insert_answer_data[1]['checkid']=$checkid;
+                    $insert_answer_data[1]['question_id']=$insert_or_update;
+                }
+                elseif($possible_answer[$i]=="sealed/locked"){
+                    $insert_answer_data=array();
+                    $insert_answer_data[0]['possible_answer']='sealed';
+                    $insert_answer_data[0]['min']=0;
+                    $insert_answer_data[0]['max']= 0;
+                    $insert_answer_data[0]['is_acceptable']=1;
+                    $insert_answer_data[0]['checkid']=$checkid;
+                    $insert_answer_data[0]['question_id']=$insert_or_update;
+
+                    $insert_answer_data[1]['possible_answer']='locked';
+                    $insert_answer_data[1]['min']=0;
+                    $insert_answer_data[1]['max']= 0;
+                    $insert_answer_data[1]['is_acceptable']=0;
+                    $insert_answer_data[1]['checkid']=$checkid;
+                    $insert_answer_data[1]['question_id']=$insert_or_update;
+                }else{
+
+                    $insert_answer_data=array();
+                    $insert_answer_data[0]['possible_answer']='yes';
+                    $insert_answer_data[0]['min']=0;
+                    $insert_answer_data[0]['max']= 0;
+                    $insert_answer_data[0]['is_acceptable']=1;
+                    $insert_answer_data[0]['checkid']=$checkid;
+                    $insert_answer_data[0]['question_id']=$insert_or_update;
+
+
+                    
+                }
+                
+                //$this->insert_question_answer_data($ans_data);
+                if(!empty($insert_answer_data)){
+                    foreach ($insert_answer_data as $key => $valueddd) {
+                       // print_r($insert_answer_data);echo "<br><br>";exit();
+                      $this->insert_question_answer_data($valueddd);
+                    }
+                }
+               
+               
+            }elseif($attribute_type[$i]=="Fixed"){
+                $ans_data['possible_answer']=$possible_value[$i];
+                $ans_data['min']=0;
+                $ans_data['max']= 0;
+                $ans_data['is_acceptable']=1;
+                $ans_data['checkid']=$checkid;
+                $ans_data['question_id']=$insert_or_update;
+                //$this->insert_question_answer_data($ans_data);
+               
+               $this->insert_question_answer_data($ans_data);
+            }
+            else{
+
+                $ans_data=array();
+                $ans_data['possible_answer']='';
+                $ans_data['min']= $min_value[$i];
+                $ans_data['max']= $max_value[$i];
+                $ans_data['is_acceptable']=0;
+                $ans_data['checkid']=$checkid;
+                $ans_data['question_id']=$insert_or_update;
+                
+                $a=$a+1;
+                //////////update data table in check catagories attribute////////
+                $update_data['possible_value']='';
+                $update_data['min']=$min_value[$i];
+                $update_data['max']= $max_value[$i];
+                $update_data['target']=$target_value[$i];;
+                ///////////// update data table in check catagories attribute///////
+                
+                $this->insert_question_answer_data($ans_data);
+                
+               // $insert_or_updatess=$this->insert_or_update(array("checkid"=>$checkid,"question_id"=>$ans_data['question_id']),$ans_data,DEFAULT_OUTLET."_checks_answers");
+            }
+            
+            //$this->update_general_check_attribute_data($where,$update_data);
+        } 
+    }
+    ////////// code for adding new attribute//////////
+    function new_updated_get_general_checks_attribute_data_from_post($checkid){
+        $attribute_list= $this->input->post('new_attribute_name');
+        $min_value=$this->input->post('new_min_value');
+        $max_value=$this->input->post('new_max_value');
+        $target_value=$this->input->post('new_target_val');
+        $attribute_type=$this->input->post('new_attribute_type');
+        $possible_value=$this->input->post('new_possible_value');
+        $possible_answer=$this->input->post('new_possible_answers');
         
         
        
@@ -436,6 +697,9 @@ date_default_timezone_set("Asia/karachi");
             //$this->update_general_check_attribute_data($where,$update_data);
         } 
     }
+    
+     ////////// code for adding new attribute//////////
+
 
   function get_team_data_from_post($checkid){
     
@@ -457,6 +721,7 @@ date_default_timezone_set("Asia/karachi");
         $data['start_time'] = $this->input->post('start_time');
         $data['end_date'] =   date('Y-m-d', strtotime($this->input->post('end_date')));
         $data['end_time'] =  $this->input->post('end_time');
+        
          $this->insert_checkteam_data($data);
     }
 
@@ -475,6 +740,13 @@ date_default_timezone_set("Asia/karachi");
         $data['check_cat_id'] =  $this->input->post('check_cat_id');
         $data['check_subcat_id'] =  $this->input->post('check_subcat_id');*/
         if (is_numeric($update_id) && $update_id != 0) {
+             Modules::run('api/delete_from_specific_table',array("sci_check_id"=>$update_id),DEFAULT_OUTLET.'_scheduled_checks_inspection');
+             $inspection_team = $this->input->post('inspection_team');
+            if(!empty($inspection_team)) {
+                foreach ($inspection_team as $key => $it):
+                    Modules::run('api/insert_or_update',array("sci_check_id"=>$update_id,"sci_team_id"=>$it),array("sci_check_id"=>$update_id,"sci_team_id"=>$it),DEFAULT_OUTLET.'_scheduled_checks_inspection');
+                endforeach;
+            }
             $where['id'] = $update_id;
             $arr_where['checkid']=$update_id;
             
@@ -490,8 +762,16 @@ date_default_timezone_set("Asia/karachi");
             }else{
                 unset($data['check_cat_id']);
                 unset($data['check_subcat_id']);
+                
+                 
                  $this->_update($where, $data);
             }
+            /////////// code for adding new attribute 
+            $new_attribute_data=$this->input->post('new_attribute_name');
+            if(!empty($new_attribute_data)){
+                $this->new_updated_get_general_checks_attribute_data_from_post($update_id);
+            }
+             /////////// code for adding new attribute 
             Modules::run('api/delete_from_specific_table',array("fc_check_id"=>$update_id),DEFAULT_OUTLET."_checks_frequency");
             if(isset($update_data['frequency']) && !empty($update_data['frequency'])) {
                 if($update_data['frequency'] == 'Shift') {
@@ -532,6 +812,12 @@ date_default_timezone_set("Asia/karachi");
         if (is_numeric($update_id) && $update_id == 0) {
             $checktype = $this->input->post('checktype');
             $id = $this->_insert($data);
+            $inspection_team = $this->input->post('inspection_team');
+            if(!empty($inspection_team)) {
+                foreach ($inspection_team as $key => $it):
+                    Modules::run('api/insert_or_update',array("sci_check_id"=>$id,"sci_team_id"=>$it),array("sci_check_id"=>$id,"sci_team_id"=>$it),DEFAULT_OUTLET.'_scheduled_checks_inspection');
+                endforeach;
+            }
             if(isset($data['frequency']) && !empty($data['frequency'])) {
                 if($data['frequency'] == 'Shift') {
                     $shift_timing = $this->input->post('start_shift');
@@ -656,7 +942,27 @@ date_default_timezone_set("Asia/karachi");
         else
             $status = 1;
         $data = array('status' => $status);
-        $status = $this->_update_id($id, $data);
+        if($status == 1) {
+            $data['is_dates']='1';
+            $check_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('id'=>$id),'id desc','id',DEFAULT_OUTLET.'_product_checks','start_datetime,end_datetime','1','0','','','')->result_array();
+            $sf_start_datetime = date("Y-m-d H:i:s");
+            $sf_end_datetime = date('Y-m-d H:i:s', strtotime('+18 years'));
+            if(!empty($check_detail)) {
+                if(isset($check_detail[0]['start_datetime']) && !empty($check_detail[0]['start_datetime'])) 
+                    if($check_detail[0]['start_datetime'] != '0000-00-00 00:00:00')
+                        $sf_start_datetime = $check_detail[0]['start_datetime'];
+               
+                if(isset($check_detail[0]['end_datetime']) && !empty($check_detail[0]['end_datetime']))
+                    if($check_detail[0]['end_datetime'] != '0000-00-00 00:00:00')
+                        $sf_end_datetime = $check_detail[0]['end_datetime'];
+
+            }
+            $data['start_datetime'] = $sf_start_datetime;
+            $data['end_datetime'] = $sf_end_datetime;
+           
+        }
+        Modules::run('api/update_specific_table',array("id"=>$id),$data,DEFAULT_OUTLET.'_product_checks');
+      
         echo $status;
     }
     function detail() {
@@ -813,7 +1119,9 @@ date_default_timezone_set("Asia/karachi");
 
         $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('check_cat_id'=>$cat_id), 'id asc','check_catagories_attributes','*','1','0')->result_array();
         $data['master_attributes']=$master_catagories;
-        
+           for ($i = 1; $i <= 500; $i++) { 	$resultRank[$i] = $i; 	}
+        $data['rank'] = $resultRank;
+        $data['update_id']=0;
         echo $this->load->view('check_attributes',$data,TRUE);
 
     }
@@ -831,6 +1139,26 @@ date_default_timezone_set("Asia/karachi");
         echo json_encode(array("status"=> $status, "data_array"=>$data_array));
 
     }
+    function delete_specific_check_attribute(){
+        $question_id=$this->input->post('question_id');
+        $checkid=$this->input->post('checkid');
+        $this->delete_checks_question_answer($question_id,$checkid);
+        $this->delete_checks_question($question_id,$checkid);
+    }
+    function delete_checks_question_answer($question_id,$checkid){
+        $table=DEFAULT_OUTLET."_checks_answers";
+        $this->db->where(DEFAULT_OUTLET.'_checks_answers.question_id',$question_id);
+        $this->db->where(DEFAULT_OUTLET.'_checks_answers.checkid',$checkid);
+        $this->db->delete($table);
+       
+    }
+    function delete_checks_question($question_id,$checkid){
+        $table=DEFAULT_OUTLET."_checks_questions";
+        $this->db->where(DEFAULT_OUTLET.'_checks_questions.question_id',$question_id);
+        $this->db->where(DEFAULT_OUTLET.'_checks_questions.checkid',$checkid);
+        $this->db->delete($table);
+       
+    }
     ////////////
     function get_type_general_check($where){
         $this->load->model('mdl_product');
@@ -843,5 +1171,20 @@ date_default_timezone_set("Asia/karachi");
     function insert_or_update($where,$data,$table){
             $this->load->model('mdl_product');
             return $this->load->mdl_product->insert_or_update($where,$data,$table);
+        }
+        //////////////add new attributes///////////////
+      function  get_new_attributs_list_from_db(){
+             $cat_id=$this->input->post('subid');
+        $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('check_cat_id'=>$cat_id), 'id asc','check_catagories_attributes','*','1','0')->result_array();
+        $data['master_attributes']=$master_catagories;
+        
+        echo $this->load->view('addnew_attributes',$data,TRUE);
+        }
+        function  update_specific_attribute(){
+             $checkid=$this->input->post('checkid');
+             $attr_id=$this->input->post('attr_id');
+             $page_rank=$this->input->post('page_rank');
+            Modules::run('api/update_specific_table',array('checkid'=>$checkid,'question_id'=>$attr_id), array('page_rank'=>$page_rank),DEFAULT_OUTLET.'_checks_questions')->result_array();
+      
         }
 }

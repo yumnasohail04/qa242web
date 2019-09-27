@@ -213,18 +213,18 @@
                                              <div class="form-group">
                                                 <label class="col-sm-4 control-label">Responsible Team </label>
                                                 <div class="col-sm-8">
-                                                   <select  class="form-control restaurant_type" name="inspection_team" required="required">
-                                                       <option >Select</option>
-                                                      <?php
-                                                       
-                                                         if(!isset($groups) || empty($groups))
-                                                             $groups = array();
-                                                              if(!isset($news['inspection_team'])) $news['inspection_team'] = "";
-                                                           foreach ($groups as $value): ?>
-                                                      <option value="<?=$value['id']?>" 
-                                                      <?php if($value['id']== $news['inspection_team']) echo 'selected="selected"';?>><?= $value['group_title']?></option>
-                                                      <?php endforeach ?>
-                                                   </select>
+                                                   <select name="inspection_team[]" class="form-control chosen-select inspection_team" required="required" multiple>
+                                                      <option >Select</option>
+                                                      <?php if(!isset($groups) || empty($groups))
+                                                              $groups = array();
+                                                        foreach ($groups as $value): ?>
+                                                          <option value="<?=$value['id']?>" 
+                                                            <?php 
+                                                            $exist = array_search($value['id'], array_column($inspection_team, 'sci_team_id'));
+                                                            foreach($news as $new){ if(is_numeric($exist)) echo 'selected="selected"';}?>><?= $value['group_title']?>
+                                                          </option>
+                                                        <?php endforeach ?>
+                                                    </select>
                                                 </div>
                                              </div>
                                              

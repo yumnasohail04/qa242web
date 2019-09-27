@@ -35,10 +35,10 @@
             }
             else
             {
-               $strTitle = "Add attribute";
+               $strTitle = "New Attribute Detail ";
             }
                     
-                    echo $strTitle.'-'. '('.$cat_name.')';
+                    echo $strTitle;
                     ?>
                     <a href="<?php echo ADMIN_BASE_URL.'catagories/manage_sub_catagories/'.$parent_id.'/'.$cat_name; ?>"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-chevron-left"></i>&nbsp;&nbsp;&nbsp;Back</button></a>
     </h3>
@@ -90,7 +90,7 @@
                                                     );
                                                     $attribute = array('class' => 'control-label col-md-4');
                                                     ?>
-                                                    <?php echo form_label('Attibute`Name <span class="red" style="color:red;">*</span>', 'txtCatName', $attribute); ?>
+                                                    <?php echo form_label('Attibute Name <span class="red" style="color:red;">*</span>', 'txtCatName', $attribute); ?>
                                                     <div class="col-md-8">
                                                         <?php echo form_input($data); ?>
                                                     </div>
@@ -100,7 +100,7 @@
                                                 <div class="form-group">
                                                  <?php $attribute = array('class' => 'control-label col-md-4');
                                                     ?>
-                                                    <?php echo form_label('Attibute`type<span class="red" style="color:red;">*</span>', 'txtCatName', $attribute); ?>
+                                                    <?php echo form_label('Attibute type<span class="red" style="color:red;">*</span>', 'txtCatName', $attribute); ?>
                                                     <div class="col-md-8">
                                                        <select name="attribute_type" class="form-control answer_type" required="required">
                                                          <option value="">--Select--</option>
