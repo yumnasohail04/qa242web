@@ -385,4 +385,14 @@ if (isset($general_setting) && !empty($general_setting)) {
 }
 else
     define('DEFAULT_DOCUMENT_NAME','');
+if (isset($general_setting->fcm_configuration) && !empty($general_setting->fcm_configuration)) {
+        define('DEFAULT_FCM_CONFIGURATION', $general_setting->fcm_configuration);
+}
+else
+    define('DEFAULT_FCM_CONFIGURATION','');
+if (isset($general_setting->fcm_project) && !empty($general_setting->fcm_project)) {
+        define('DEFAULT_FCM_PROJECT', $general_setting->fcm_project);
+}
+else
+    define('DEFAULT_FCM_PROJECT','');
 

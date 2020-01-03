@@ -2,8 +2,8 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-   <meta charset="utf-8">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
    <meta name="description" content="DS Car Wash">
    <meta name="keywords" content="">
@@ -98,6 +98,11 @@
     max-height: 400px;
     overflow-x: hidden;
 }
+.message-counter > span
+{
+    left: 28px;
+    top: 8px;
+}
   </style>
 
  
@@ -120,10 +125,10 @@
             <div class="navbar-header" id="logo_<?php echo $logo_row['id']?>" <?php echo $displaymod;?>>
                <a href="<?php echo ADMIN_BASE_URL.'dashboard'; ?>" class="navbar-brand">
                   <div class="brand-logo">
-                    <img src="<?php echo STATIC_ADMIN_IMAGE.'logoqa.png' ?>" style="width:30%;">
+                    <img src="<?php echo STATIC_ADMIN_IMAGE.'eq_smart_log_f1.png' ?>" style="width:56%; margin-top:8%;">
                   </div>
                   <div class="brand-logo-collapsed">
-                     <img src="<?php echo STATIC_ADMIN_IMAGE.'logoqa.png' ?>" style="width:50%;">
+                     <img src="<?php echo STATIC_ADMIN_IMAGE.'eq_smart_log_f1.png' ?>" style="width:50%;">
                   </div>
                </a>
             </div>
@@ -146,7 +151,7 @@
                   </li>
                     <!--_________________________notification code________________________________!-->
                    <?php if(isset($total_notification) && !empty($total_notification)) { ?>
-                    <span class="badge"><?=$total_notification?></span>
+                    <span class="badge_noti"><?=$total_notification?></span>
                     <?php } ?>
                    <li class="header-icons dropdown ">
                      <i class="dropbtn" data-feather="bell" style="margin-top: 75%;color: black;" onclick="myFunction()"></i>
@@ -174,11 +179,12 @@
                       </div>
                   </li>
                   <!--_________________notification code end__ also add the sript(go down)___________!-->
-                  <li class="header-icons">
+                  <li class="header-icons message-counter">
                      <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
-                     <a  href="<?=ADMIN_BASE_URL.'chat'; ?>"  class="hidden-xs  header-icon-font">
+                     <a  href="javascript:void(0);"  class="hidden-xs  header-icon-font view_chat">
                      <i data-feather="message-square"></i>
                      </a>
+                     
                   </li>
                     <li class="header-icons">
                      <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
@@ -195,7 +201,7 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                           <span class="username"><img src="<?php   if(empty($data['user_image'])){
-                 echo STATIC_ADMIN_IMAGE.'no_item_image_small.jpg'; } else { echo BASE_URL.ACTUAL_OUTLET_USER_IMAGE_PATH.$data['user_image']; } ?>" style="width: 40px;border-radius: 23px;"></span>
+                 echo STATIC_ADMIN_IMAGE.'no_item_image_small.jpg'; } else { echo BASE_URL.ACTUAL_OUTLET_USER_IMAGE_PATH.$data['user_image']; } ?>" style="width:32px;border-radius: 23px;"></span>
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="change_password" rel="<?=$data['user_id']?>" href="#"><i class="fa fa-key"></i> Change Password</a></li>
@@ -277,8 +283,8 @@ window.onclick = function(event) {
         async: false,
         success: function(result) {
           $this.parent().parent().parent().parent().remove();
-          var number = parseInt($('.badge').text(), 10);
-          $('.badge').text(number-1);
+          var number = parseInt($('.badge_noti').text(),10);
+          $('.badge_noti').text(number-1);
         }
       });
     });

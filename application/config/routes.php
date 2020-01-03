@@ -54,6 +54,8 @@ $route['admin/login/submit_login'] = "login/submit_login";
 		////////////user profile routes by umar fAROOQ FOR WEB//////////
 	    $front_folder = 'front/';
 	    $route['index']=$front_folder.'index';
+	    $route['login/(:any)']=$front_folder.'login';
+	    $route['thanks']=$front_folder.'thanks';
 	    $route['default_controller'] = 'login';
 		$route['404_override'] = '';
 
@@ -154,6 +156,7 @@ $route['admin/login/submit_login'] = "login/submit_login";
 		$route['update-user-password'] = $admin_api_folder."update_user_password";
 		$route['user-chat-list'] = $admin_api_folder."user_chat_list";
 		$route['send-user-message'] = $admin_api_folder."send_user_message";
+		$route['change-messages-status-of-user'] = $admin_api_folder."change_messages_status_of_user";
 		$route['submit-truck-inspection'] = $admin_api_folder."submit_truck_inspection";
 		$route['submit-shipping-inspection'] = $admin_api_folder."submit_shipping_inspection";
 		$route['submit-palletizing-inspection'] = $admin_api_folder."submit_palletizing_inspection";
@@ -165,9 +168,10 @@ $route['admin/login/submit_login'] = "login/submit_login";
 		$route['delete-media-file'] = $admin_api_folder."delete_media_file";
 		$route['get-fixed-forms'] = $admin_api_folder."get_fixed_forms";
 		$route['get-fixed-forms-detail'] = $admin_api_folder."get_fixed_forms_detail";
-		$route['fixed-form-response'] = "api/static_form_response";
-		
-		
+		$route['fixed-form-response'] = $admin_api_folder."static_form_response";
+		$route['submit-draft'] = $admin_api_folder."submit_draft";
+		$route['draft-checks'] = $admin_api_folder."draft_checks";
+		$route['draft-checks-detail'] = $admin_api_folder."draft_checks_detail";
 		
 		$route['basic-outlet-detail'] = $admin_api_folder."basic_outlet_detail";
 		$route['outlet-order-list'] = $admin_api_folder."outlet_order_list";

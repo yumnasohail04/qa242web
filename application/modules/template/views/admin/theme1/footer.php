@@ -40,6 +40,7 @@
    <script src="<?php echo STATIC_ADMIN_JS?>bootstrap-datetimepicker.min.js"></script>
 
     <!-- RTL demo-->
+    <script src="<?php echo STATIC_ADMIN_JS?>demo-flot.js"></script>
     <script src="<?php echo STATIC_ADMIN_JS?>demo-rtl.js"></script>
     <script src="<?php echo STATIC_ADMIN_JS?>notify.js"></script>
 	<script src="<?php echo STATIC_ADMIN_JS?>notify.min.js"></script>
@@ -149,6 +150,22 @@
                $modal_title = preg_replace('/[^a-zA-Z0-9]+/', ' ', $module); echo ucfirst($modal_title); }?>&nbsp;Details</h4>
             </div>
             <div class="modal-body">...</div>
+            <div class="modal-footer">
+              
+            </div>
+         </div>
+      </div>
+   </div>
+ <div id="chat_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelLarge" aria-hidden="true" class="modal fade">
+      <div class="modal-dialog modal-lg" style="    bottom: 0px;position: absolute;right: 0;    margin-bottom: 0px;">
+         <div class="modal-content">
+            <div class="modal-header">
+               <button type="button" data-dismiss="modal" aria-label="Close" class="close">
+                  <span aria-hidden="true">&times;</span>
+               </button>
+              <h4 id="myModalLabel" class="modal-title">Chat</h4>
+            </div>
+            <div class="modal-body" style="padding: 0px;">...</div>
             <div class="modal-footer">
               
             </div>
@@ -316,9 +333,30 @@
 $arrDate = $this->config->item('Date_Format_Type_JS');
 $arrTime = $this->config->item('time_Format_Type_JS');
  ?>
-
+<?php if(!isset($chat_only)) { ?>
+  <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-firestore.js"></script>
+  <script src='//production-assets.codepen.io/assets/common/stopExecutionOnTimeout-b2a7b3fe212eaa732349046d8416e00a9dec26eb7fd347590fbced3ab38af52e.js'></script>
+  <script>
+    var firebaseConfig = <?=DEFAULT_FCM_CONFIGURATION?>;
+    firebase.initializeApp(firebaseConfig);
+  </script>
+<?php } ?>
 <script type="text/javascript">
-  
+$(document).on("click", ".view_chat", function(event){
+    event.preventDefault();
+    $.ajax({
+      type: 'POST',
+      url: "<?= ADMIN_BASE_URL ?>chat/show_chat",
+      data: {},
+      async: false,
+      success: function(test_body) {
+        var test_desc = test_body;
+        $('#chat_modal').modal('show')
+        $("#chat_modal .modal-body").html(test_desc);
+      }
+    });
+  });
 $(document).ready(function() {
     <?php if(!isset($dashboard_file)) { ?>
         $('.chosen-select').chosen();
@@ -445,7 +483,65 @@ $(document).ready(function() {
         });
       }
       date();
+	<?php if(!isset($chat_only)) {
+      if(!isset($total_counter) || empty($total_counter))
+        $total_counter = 0;
+      if(!isset($tracker_list) || empty($tracker_list))
+        $tracker_list = array();
+    ?>
+      var notificationlist = {'counter':<?=$total_counter?>,data:[
+        <?php $counter = 0; foreach($tracker_list as $key=>$tl):
+          if($counter != 0)
+            echo ",";
+          echo "{'tracking':'".$tl["trackig_id"]."','lastcheater':".$tl["last_chat"]."}";
+          $counter++;
+        endforeach;
+        ?>
+      ]}
+      notificationlist.data.forEach(function(item){
+        getRealtimeUpdatess(item.tracking)
+      })
+      function findIndexInData(data, property, value) {
+        var result = -1;
+        data.some(function (item, i) {
+          if (item[property] === value) {
+            result = i;
+            return true;
+          }
+        });
+        return result;
+      }
+      function getRealtimeUpdatess(tracking){
+        var user = '<?=$this->session->userdata['user_data']['user_id']?>';
+        var index = findIndexInData(notificationlist.data, 'tracking', tracking)
+        if(index != -1) {
+          var chat_id = notificationlist.data[index].lastcheater;
+          var chatRef = firebase.firestore().collection('/<?=DEFAULT_FCM_PROJECT?>/<?=DEFAULT_DOCUMENT_NAME?>/'+tracking).where("chat_id",">",chat_id).limit(1);
+          chatRef.onSnapshot(function(querySnapshot){
+            querySnapshot.forEach(function(doc) {
+              if(doc.data().chat_id > chat_id){
+                console.log(notificationlist.counter +'=='+doc.data().chat_id +'=='+ chat_id)
+                  counter = parseInt(notificationlist.counter)+1;
+                  notificationlist.counter = counter
+                  notificationlist.data[index].lastcheater = doc.data().chat_id
+                  messagecounter()
 
+              }
+              getRealtimeUpdatess(tracking);
+            });
+          });
+        }
+      }
+      function messagecounter(){
+        if(!$('.message-counter').find('.badge').length){
+          $('.message-counter').append('<span class="badge">'+notificationlist.counter+'</span>')
+        }
+        else {
+          $('.message-counter').find('.badge').text(notificationlist.counter)
+        }
+      }
+      messagecounter()
+    <?php }?>
       
 </script>
    <script src="<?php echo STATIC_ADMIN_JS?>app.js"></script>

@@ -1,26 +1,24 @@
-<!DOCTYPE html>
-<html class=''>
-  <head>
-    <meta charset='UTF-8'>
-    <meta name="robots" content="noindex">
+
     <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>chat_css.css"    id="maincss">
-    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css'>
-    <!-- DATATABLES--><!-- JQUERY-->
-    <script src="<?php echo STATIC_ADMIN_JS?>jquery.js"></script>
-    <!-- =============== BOOTSTRAP STYLES ===============-->
-    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>bootstrap.css" id="bscss">
-    <!-- BOOTSTRAP-->
-    <script src="<?php echo STATIC_ADMIN_JS?>bootstrap.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-firestore.js"></script>
-
-
-  </head>
-  <body>
+    <style type="text/css">
+    .counter {
+        background-color: #bdc3c7;
+        width: 24px;
+        border-radius: 32px;
+        font-size: 12px;
+        float: right;
+        color: #34495e;
+        text-align: center;
+        height: 22px;
+        padding-top: 2px;
+        font-weight: bold;
+        margin-top: 4px;
+    }
+    </style>
+  
     <div id="frame">
         <div id="sidepanel">
             <div id="profile">
-            <a href="<?php echo ADMIN_BASE_URL.'dashboard';  ?>"><i class="fa fa-arrow-left" style="font-size: 40px;margin-bottom: 18px; color: #e4e4e4;"></i></a>
                 <div class="wrap">
                     <img id="profile-img" src="<?=$user_image?>" class="online" alt="" />
                     <p><?=$user_name?></p>
@@ -42,10 +40,13 @@
                 <ul id="myInput">
                 <?php if(isset($left_panel) && !empty($left_panel)) {
                   foreach ($left_panel as $key => $lp): ?>
-                    <li class="contact chat_detail" chating="<?=$lp['id']?>" tracking="<?=$lp['trackig_id']?>"  next_chat="<?=$lp['next_chat']?>" chatimage ="<?=$lp['image']?>" cheater ="<?=$lp['name']?>" cheatertype="<?=$lp['type']?>" lastcheater="<?=$lp['last_chat'];?>">
+                    <li class="contact chat_detail" list="chating" chating="<?=$lp['id']?>" tracking="<?=$lp['trackig_id']?>"  next_chat="<?=$lp['next_chat']?>" chatimage ="<?=$lp['image']?>" cheater ="<?=$lp['name']?>" cheatertype="<?=$lp['type']?>" lastcheater="<?=$lp['last_chat'];?>" counter="<?=$lp['counter']?>">
                         <div class="wrap">
                             <?php if($lp['type'] == 'user') {?>
                             <span class="contact-status <?php  $online_status = 'away'; if(isset($lp['is_online']) && !empty($lp['is_online'])) {  if($lp['is_online'] == true) $online_status='online';} echo $online_status;?>"></span>
+                            <?php } 
+                            if(!empty($lp['counter'])) { ?>
+                                <div class="counter"><?=$lp['counter']?></div>
                             <?php } ?>
                             <img src="<?=$lp['image']?>" alt="" />
                             <div class="meta">
@@ -81,18 +82,6 @@
     </div>
   <script src='//production-assets.codepen.io/assets/common/stopExecutionOnTimeout-b2a7b3fe212eaa732349046d8416e00a9dec26eb7fd347590fbced3ab38af52e.js'></script>
   <script>
-    var firebaseConfig = {
-        apiKey: "AIzaSyDHlY36auT6kAnabdG2sQZCPPmVNYgfXOI",
-        authDomain: "testproject-6323c.firebaseapp.com",
-        databaseURL: "https://testproject-6323c.firebaseio.com",
-        projectId: "testproject-6323c",
-        storageBucket: "testproject-6323c.appspot.com",
-        messagingSenderId: "433696591781",
-        appId: "1:433696591781:web:dc94fb0c195d7500"
-    };
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-
     $("#profile-img").click(function() {
         $("#status-options").toggleClass("active");
     });
@@ -143,7 +132,7 @@
             success: function(data) {
                 console.log(data);
                 if(data.status == true) {
-                    firebase.firestore().collection('/qaproject/<?=DEFAULT_DOCUMENT_NAME?>/'+$(".contact-profile-image").attr("tracking")).doc().set({
+                    firebase.firestore().collection('/<?=DEFAULT_FCM_PROJECT?>/<?=DEFAULT_DOCUMENT_NAME?>/'+$(".contact-profile-image").attr("tracking")).doc().set({
                         chat_id : data.chat_id,
                         createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
                         text: data.text,
@@ -174,6 +163,11 @@
     });
     
     citycurrentRequest = null;
+    $("#contacts>ul>li[list=chating]").each(function(){
+        tracking=$(this).attr('tracking')
+        getRealtimeUpdates(tracking);
+    })
+    // getRealtimeUpdates('G_3');
     function clicking(){
     $(document).off('click', '.chat_detail').on('click', '.chat_detail', function(e){
         $('.messages ul').empty();
@@ -197,6 +191,8 @@
         $(".contact-profile-image").attr("lastcheater",lastcheater);
         $(".contact-profile-image").attr("page_number",'2');
         $(".contact-profile-name").text(cheater);
+        $this.attr('counter',"0");
+        $this.find('.counter').remove();
         getRealtimeUpdates(tracking);
         $.ajax({
             type: "POST",  
@@ -215,19 +211,44 @@
     clicking();
     function getRealtimeUpdates(tracking){
         var user = '<?=$this->session->userdata['user_data']['user_id']?>';
-        var chat_id = parseInt($(".contact-profile-image").attr("lastcheater"));
-        var chatRef = firebase.firestore().collection('/qaproject/<?=DEFAULT_DOCUMENT_NAME?>/'+tracking).where("chat_id",">",chat_id).limit(5);
+        var chat_id = parseInt( $("#contacts>ul>li[tracking="+tracking+"]").attr('lastcheater'));
+        var chatRef = firebase.firestore().collection('/<?=DEFAULT_FCM_PROJECT?>/<?=DEFAULT_DOCUMENT_NAME?>/'+tracking).where("chat_id",">",chat_id).limit(5);
         chatRef.onSnapshot(function(querySnapshot){
             querySnapshot.forEach(function(doc) {
-                if(doc.data().chat_id > $(".contact-profile-image").attr("lastcheater") && $(".contact-profile-image").attr("tracking") == tracking) {
-                    $(".contact-profile-image").attr("lastcheater",doc.data().chat_id);
-                    $("#contacts>ul>li.active").attr("lastcheater",doc.data().chat_id);
-                    var classes = "replies";
-                    if(user != doc.data().user_id)
-                        classes = "sent";
-                    $('<li class="'+classes+'"><img src="'+doc.data().user_pic+'" alt="" /><p>' + doc.data().text + '</p></li>').appendTo($('.messages ul'));
-                    $('.contact.active .preview').html('<span>You: </span>' + doc.data().text);
-                    $(".messages").scrollTop($('.heightt').height());
+                if($(".contact-profile-image").attr("tracking") == tracking) {
+                    if(doc.data().chat_id > $("#contacts>ul>li[tracking="+tracking+"]").attr('lastcheater')){
+                        $(".contact-profile-image").attr("lastcheater",doc.data().chat_id);
+                        $("#contacts>ul>li[tracking="+tracking+"]").attr("lastcheater",doc.data().chat_id);
+                        var classes = "replies";
+                        if(user != doc.data().user_id)
+                            classes = "sent";
+                        $('<li class="'+classes+'"><img src="'+doc.data().user_pic+'" alt="" /><p>' + doc.data().text + '</p></li>').appendTo($('.messages ul'));
+                        $('.contact.active .preview').html('<span>You: </span>' + doc.data().text);
+                        $(".messages").scrollTop($('.heightt').height());
+                        if(user != doc.data().user_id) {
+                            $.ajax({
+                                type: "POST",  
+                                url: '<?php echo ADMIN_BASE_URL;?>chat/change_message_status',  
+                                data: {'chat_id':doc.data().chat_id},
+                                success: function(result) {
+                                }
+                            });
+                        }
+                    }
+                } else {
+                    if(doc.data().chat_id > $("#contacts>ul>li[tracking="+tracking+"]").attr('lastcheater')){
+                        selector = $("#contacts>ul>li[tracking="+tracking+"]");
+                        counter = parseInt(selector.attr('counter'))+1;
+                        selector.attr('counter',counter);
+                        if(!$("#contacts>ul>li[tracking="+tracking+"]").find(".counter").length){
+                            $("#contacts>ul>li[tracking="+tracking+"]").find('.wrap').prepend('<div class="counter"></div>')
+                        }
+                        $("#contacts>ul>li[tracking="+tracking+"]").parent().prepend($("#contacts>ul>li[tracking="+tracking+"]"))
+                        $("#contacts>ul>li[tracking="+tracking+"]").attr("lastcheater",doc.data().chat_id);
+                        $("#contacts>ul>li[tracking="+tracking+"]").find('.counter').html(counter);
+                        $("#contacts>ul>li[tracking="+tracking+"]").find('.preview').html(doc.data().text);
+
+                    }
                 }
                 getRealtimeUpdates(tracking);
             });
@@ -260,4 +281,3 @@
         }
     });
   </script>
-</body></html>

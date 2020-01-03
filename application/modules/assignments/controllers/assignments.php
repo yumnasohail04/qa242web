@@ -3,35 +3,66 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class Assignments extends MX_Controller
 {
-
-function __construct() {
-parent::__construct();
-Modules::run('site_security/is_login');
-//Modules::run('site_security/has_permission');
-
-}
-
+	function __construct() {
+        parent::__construct();
+        Modules::run('site_security/is_login');
+        //Modules::run('site_security/has_permission');
+        date_default_timezone_set("Asia/karachi");
+        $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id desc','general_setting','timezones','1','1')->result_array();
+    	if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
+            date_default_timezone_set($timezone[0]['timezones']);
+    }
     function index() {
         $this->active_checks();
     }
 
     function active_checks() {
-
+    	$data['program_type'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id !="=>"12"), 'program_types.name asc','program_types.id',DEFAULT_OUTLET.'_program_types as program_types','program_types.id as program_id,program_types.name as program_name, program_types.status as program_status','1','0','','','')->result_array();
+        $data['total_pages'] = 0; 
+        $data['page_number'] = 1; 
+        $data['limit'] = 20;
         $where['assign_status']="Open";
-        $data['news'] = $this->_get('id desc',$where);
+        $data['news'] = $this->get_checklisting_data(array("assign_status"=>'Open',"assignments.start_datetime >="=>date('Y-m-d ').'00:00:00',"assignments.end_datetime <="=>date('Y-m-d ').'23:59:59'), 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype,plant_name,product_id',$data['page_number'],$data['limit'],'','','','');
+        if(!empty($data['news']->result_array())) {
+            $data['total_pages'] = $this->get_checklisting_data(array("assign_status"=>'Open',"assignments.start_datetime >="=>date('Y-m-d ').'00:00:00',"assignments.end_datetime <="=>date('Y-m-d ').'23:59:59'), 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype,plant_name,product_id','1','0','','','','')->num_rows();
+        }
         $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
         $data['groups'] = $groups;
-        $data['view_file'] = 'news';
+        $data['assign_status'] = 'active_checks';
+        $data['view_file'] = 'check_listing';
         $this->load->module('template');
         $this->template->admin($data);
     }
-    
-    function overdue_checks() {
-        $where['assign_status']="OverDue";
-        $data['news'] = $this->_get('id desc',$where);
+    function today_checks() {
+    	$data['program_type'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id !="=>"12"), 'program_types.name asc','program_types.id',DEFAULT_OUTLET.'_program_types as program_types','program_types.id as program_id,program_types.name as program_name, program_types.status as program_status','1','0','','','')->result_array();
+        $data['total_pages'] = 0; 
+        $data['page_number'] = 1; 
+        $data['limit'] = 20;
+        $where['assign_status']="Open";
+        $data['news'] = $this->get_checklisting_data(array("assignments.start_datetime >="=>date('Y-m-d ').'00:00:00',"assignments.end_datetime <="=>date('Y-m-d ').'23:59:59'), 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype,plant_name,product_id',$data['page_number'],$data['limit'],'','','','');
+        if(!empty($data['news']->result_array())) {
+            $data['total_pages'] = $this->get_checklisting_data(array("assignments.start_datetime >="=>date('Y-m-d ').'00:00:00',"assignments.end_datetime <="=>date('Y-m-d ').'23:59:59'), 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype,plant_name,product_id','1','0','','','','')->num_rows();
+        }
         $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
         $data['groups'] = $groups;
-        $data['view_file'] = 'news';
+        $data['assign_status'] = 'today_checks';
+        $data['view_file'] = 'check_listing';
+        $this->load->module('template');
+        $this->template->admin($data);
+    }
+    function overdue_checks() {
+    	$data['program_type'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id !="=>"12"), 'program_types.name asc','program_types.id',DEFAULT_OUTLET.'_program_types as program_types','program_types.id as program_id,program_types.name as program_name, program_types.status as program_status','1','0','','','')->result_array();
+        $data['total_pages'] = 0; 
+        $data['page_number'] = 1; 
+        $data['limit'] = 20;
+        $data['news'] = $this->get_checklisting_data(array("assign_status"=>'OverDue'), 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype,plant_name,product_id',$data['page_number'],$data['limit'],'','','','');
+        if(!empty($data['news']->result_array())) {
+            $data['total_pages'] = $this->get_checklisting_data(array("assign_status"=>'OverDue'), 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype,plant_name,product_id','1','0','','','','')->num_rows();
+        }
+        $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
+        $data['groups'] = $groups;
+        $data['assign_status'] = 'overdue_checks';
+        $data['view_file'] = 'check_listing';
         $this->load->module('template');
         $this->template->admin($data);
     }
@@ -65,22 +96,39 @@ Modules::run('site_security/is_login');
         $this->template->admin($data);
     }
     function static_forms_pending() {
-        date_default_timezone_set("Asia/karachi");
-        $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id desc','general_setting','timezones','1','1')->result_array();
-        if(isset($timezones[0]['timezones']) && !empty($timezones[0]['timezones']))
-        date_default_timezone_set($timezones[0]['timezones']);
         $data['total_pages'] = 0; 
         $data['page_number'] = 1; 
         $data['limit'] = 20;
-        $res = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Pending","start_datetime >="=> date("Y-m-d")." 00:00:00","end_datetime <="=>date("Y-m-d")." 23:59:59"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team',$data['page_number'],$data['limit'],'','','')->result_array();
-        foreach($res as $key=>$value)
-        {
-            $r_user = Modules::run('api/_get_specific_table_with_pagination_and_where',array("sf_id"=>$value['check_id']), 'sf_id desc',DEFAULT_OUTLET.'_static_form','sf_name','','','','','')->result_array();
-            $r_check = Modules::run('api/_get_specific_table_with_pagination_and_where',array("id"=>$value['inspection_team']), 'id desc',DEFAULT_OUTLET.'_groups','group_title','','','','','')->result_array();
-            $res[$key]['check_name']=$r_user[0]['sf_name'];
-            $res[$key]['group']=$r_check[0]['group_title'];
+        $user_data = $this->session->userdata('user_data');
+    	$or_where = '(review_team ="'.$user_data['group'].'" OR  review_team ="'.$user_data['second_group'].'")';
+        if(!empty($user_data['role'])) {
+            if(strtolower($user_data['role']) == 'admin')
+                $or_where = '';
         }
-        $data['total_pages'] = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Pending","start_datetime >="=> date("Y-m-d")." 00:00:00","end_datetime <="=>date("Y-m-d")." 23:59:59"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team','1','0','','','')->num_rows();
+        $res = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Pending"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team',$data['page_number'],$data['limit'],$or_where,'','')->result_array();
+        $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
+        foreach($res as $key=>$value) {
+            $r_user = Modules::run('api/_get_specific_table_with_pagination_and_where',array("sf_id"=>$value['check_id']), 'sf_id desc',DEFAULT_OUTLET.'_static_form','sf_name','','','','','')->result_array();
+            $res[$key]['check_name']=$r_user[0]['sf_name'];
+            $get_inspection_team = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['check_id'],'sci_status'=>'1'), 'sci_id desc',DEFAULT_OUTLET.'_static_checks_inspection','sci_team_id','1','0')->result_array();
+            $counter = 1;
+            $text = '';
+            if(!empty($get_inspection_team)) {
+                foreach ($get_inspection_team as $keyy => $git):
+                    if(!empty($git['sci_team_id'])) {
+                        $keying = array_search($git['sci_team_id'], array_column($groups, 'id'));
+                        if (is_numeric($keying)) {
+                            if($counter >1)
+                                $text= $text.",";
+                            $text=$text.$groups[$keying]['group_title'];
+                            $counter++;
+                        }
+                    }
+                endforeach;
+            }
+            $res[$key]['group'] = $text;
+        }
+        $data['total_pages'] = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Pending"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team','1','0',$or_where,'','')->num_rows();
         $data['result'] = $res;
         $data['assign_status'] = "Pending";
         $data['view_file'] = 'static_assignments_detail';
@@ -88,22 +136,39 @@ Modules::run('site_security/is_login');
         $this->template->admin($data);
     }
     function static_forms_reviewed() {
-        date_default_timezone_set("Asia/karachi");
-        $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id desc','general_setting','timezones','1','1')->result_array();
-        if(isset($timezones[0]['timezones']) && !empty($timezones[0]['timezones']))
-        date_default_timezone_set($timezones[0]['timezones']);
         $data['total_pages'] = 0; 
         $data['page_number'] = 1; 
         $data['limit'] = 20;
-        $res = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Reviewed","start_datetime >="=> date("Y-m-d")." 00:00:00","end_datetime <="=>date("Y-m-d")." 23:59:59"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team',$data['page_number'],$data['limit'],'','','')->result_array();
-        foreach($res as $key=>$value)
-        {
-            $r_user = Modules::run('api/_get_specific_table_with_pagination_and_where',array("sf_id"=>$value['check_id']), 'sf_id desc',DEFAULT_OUTLET.'_static_form','sf_name','','','','','')->result_array();
-            $r_check = Modules::run('api/_get_specific_table_with_pagination_and_where',array("id"=>$value['inspection_team']), 'id desc',DEFAULT_OUTLET.'_groups','group_title','','','','','')->result_array();
-            $res[$key]['check_name']=$r_user[0]['sf_name'];
-            $res[$key]['group']=$r_check[0]['group_title'];
+    	$user_data = $this->session->userdata('user_data');
+    	$or_where = '(approval_team ="'.$user_data['group'].'" OR  approval_team ="'.$user_data['second_group'].'")';
+        if(!empty($user_data['role'])) {
+            if(strtolower($user_data['role']) == 'admin')
+                $or_where = '';
         }
-        $data['total_pages'] = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Reviewed","start_datetime >="=> date("Y-m-d")." 00:00:00","end_datetime <="=>date("Y-m-d")." 23:59:59"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team','1','0','','','')->num_rows();
+        $res = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Reviewed"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team,review_user',$data['page_number'],$data['limit'],$or_where,'','')->result_array();
+        $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
+        foreach($res as $key=>$value) {
+            $r_user = Modules::run('api/_get_specific_table_with_pagination_and_where',array("sf_id"=>$value['check_id']), 'sf_id desc',DEFAULT_OUTLET.'_static_form','sf_name','','','','','')->result_array();
+            $res[$key]['check_name']=$r_user[0]['sf_name'];
+            $get_inspection_team = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['check_id'],'sci_status'=>'1'), 'sci_id desc',DEFAULT_OUTLET.'_static_checks_inspection','sci_team_id','1','0')->result_array();
+            $counter = 1;
+            $text = '';
+            if(!empty($get_inspection_team)) {
+                foreach ($get_inspection_team as $keyy => $git):
+                    if(!empty($git['sci_team_id'])) {
+                        $keying = array_search($git['sci_team_id'], array_column($groups, 'id'));
+                        if (is_numeric($keying)) {
+                            if($counter >1)
+                                $text= $text.",";
+                            $text=$text.$groups[$keying]['group_title'];
+                            $counter++;
+                        }
+                    }
+                endforeach;
+            }
+            $res[$key]['group'] = $text;
+        }
+        $data['total_pages'] = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Reviewed"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team,review_user','1','0',$or_where,'','')->num_rows();
         $data['result'] = $res;
         $data['assign_status'] = "Reviewed";
         $data['view_file'] = 'static_assignments_detail';
@@ -111,22 +176,34 @@ Modules::run('site_security/is_login');
         $this->template->admin($data);
     }
     function static_forms_approved() {
-        date_default_timezone_set("Asia/karachi");
-        $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id desc','general_setting','timezones','1','1')->result_array();
-        if(isset($timezones[0]['timezones']) && !empty($timezones[0]['timezones']))
-        date_default_timezone_set($timezones[0]['timezones']);
         $data['total_pages'] = 0; 
         $data['page_number'] = 1; 
         $data['limit'] = 20;
-        $res = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Approved","start_datetime >="=> date("Y-m-d")." 00:00:00","end_datetime <="=>date("Y-m-d")." 23:59:59"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team',$data['page_number'],$data['limit'],'','','')->result_array();
+        $res = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Approved"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team,review_user,approval_user',$data['page_number'],$data['limit'],'','','')->result_array();
+        $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
         foreach($res as $key=>$value)
         {
             $r_user = Modules::run('api/_get_specific_table_with_pagination_and_where',array("sf_id"=>$value['check_id']), 'sf_id desc',DEFAULT_OUTLET.'_static_form','sf_name','','','','','')->result_array();
-            $r_check = Modules::run('api/_get_specific_table_with_pagination_and_where',array("id"=>$value['inspection_team']), 'id desc',DEFAULT_OUTLET.'_groups','group_title','','','','','')->result_array();
             $res[$key]['check_name']=$r_user[0]['sf_name'];
-            $res[$key]['group']=$r_check[0]['group_title'];
+            $get_inspection_team = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['check_id'],'sci_status'=>'1'), 'sci_id desc',DEFAULT_OUTLET.'_static_checks_inspection','sci_team_id','1','0')->result_array();
+            $counter = 1;
+            $text = '';
+            if(!empty($get_inspection_team)) {
+                foreach ($get_inspection_team as $keyy => $git):
+                    if(!empty($git['sci_team_id'])) {
+                        $keying = array_search($git['sci_team_id'], array_column($groups, 'id'));
+                        if (is_numeric($keying)) {
+                            if($counter >1)
+                                $text= $text.",";
+                            $text=$text.$groups[$keying]['group_title'];
+                            $counter++;
+                        }
+                    }
+                endforeach;
+            }
+            $res[$key]['group'] = $text;
         }
-        $data['total_pages'] = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Approved","start_datetime >="=> date("Y-m-d")." 00:00:00","end_datetime <="=>date("Y-m-d")." 23:59:59"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team','1','0','','','')->num_rows();
+        $data['total_pages'] = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Approved"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team','1','0','','','')->num_rows();
         $data['assign_status'] = "Approved";
         $data['result'] = $res;
         $data['view_file'] = 'static_assignments_detail';
@@ -134,35 +211,73 @@ Modules::run('site_security/is_login');
         $this->template->admin($data);
     }
     
-     function static_assignment_search(){
+    function static_assignment_search(){
         $startdate = $this->input->post('startdate');
         $enddate = $this->input->post('enddate');
-        $assign_status = $this->input->post('assign_status');
+        $data['assign_status'] = $assign_status = $this->input->post('assign_status');
+    	if(empty($startdate) || empty($enddate))
+        	$check_start_end = true;
+    	else
+        	$check_start_end = false;
         if(empty($startdate))
             $startdate=date('Y-m-d');
-        $startdate=$startdate.' 00:00:00';
         if(empty($enddate))
             $enddate=date('Y-m-d');
-        $enddate=$enddate.' 23:59:59';
-        $startdate = date('Y-m-d H:i:s', strtotime($startdate));
-        $enddate = date('Y-m-d H:i:s', strtotime($enddate));
+        $startdate = date('Y-m-d', strtotime($startdate));
+        $enddate = date('Y-m-d', strtotime($enddate));
         $data['page_number'] = $this->input->post('page_number');
         if(empty($data['page_number']))
             $data['page_number'] = '1';
         $data['limit'] = $this->input->post('limit'); 
         $data['total_pages'] = 0;
-        $res = Modules::run('api/_get_specific_table_with_pagination_and_where',array("complete_datetime >="=> $startdate." 00:00:00","complete_datetime <="=>$enddate." 23:59:59","assign_status"=>$assign_status), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team',$data['page_number'],$data['limit'],'','','')->result_array();
-      
-         foreach($res as $key=>$value)
+        $user_data = $this->session->userdata('user_data');
+        if(strtolower($assign_status) == 'pending') {
+        	if($check_start_end == false)
+            	$or_where = '(`complete_datetime` >= "'.$startdate.' 00:00:00" AND `complete_datetime` <="'.$enddate.' 23:59:59" AND (review_team ="'.$user_data['group'].'" OR  review_team ="'.$user_data['second_group'].'"))';
+        	else
+            	$or_where = '(review_team ="'.$user_data['group'].'" OR  review_team ="'.$user_data['second_group'].'")';
+        }
+        elseif(strtolower($assign_status) == 'reviewed') {
+        	if($check_start_end == false)
+            	$or_where = '(`review_datetime` >= "'.$startdate.' 00:00:00" AND `review_datetime` <="'.$enddate.' 23:59:59"  AND (approval_team ="'.$user_data['group'].'" OR  approval_team ="'.$user_data['second_group'].'"))';
+        	else
+            	$or_where = '(approval_team ="'.$user_data['group'].'" OR  approval_team ="'.$user_data['second_group'].'")';
+        }
+        elseif(strtolower($assign_status) == 'approved') {
+        	if($check_start_end == false)
+            	$or_where = '(`approval_datetime` >= "'.$startdate.' 00:00:00" AND `approval_datetime` <="'.$enddate.' 23:59:59")';
+        	else
+            	$or_where = "";
+        }
+        else
+            $or_where = "";
+        $res = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>$assign_status), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team,review_user,approval_user',$data['page_number'],$data['limit'],$or_where,'','')->result_array();
+        $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
+        foreach($res as $key=>$value)
         {
             $r_user = Modules::run('api/_get_specific_table_with_pagination_and_where',array("sf_id"=>$value['check_id']), 'sf_id desc',DEFAULT_OUTLET.'_static_form','sf_name','','','','','')->result_array();
-            $r_check = Modules::run('api/_get_specific_table_with_pagination_and_where',array("id"=>$value['inspection_team']), 'id desc',DEFAULT_OUTLET.'_groups','group_title','','','','','')->result_array();
             $res[$key]['check_name']=$r_user[0]['sf_name'];
-            $res[$key]['group']=$r_check[0]['group_title'];
+            $res[$key]['group']='';
+            $get_inspection_team = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['check_id'],'sci_status'=>'1'), 'sci_id desc',DEFAULT_OUTLET.'_static_checks_inspection','sci_team_id','1','0')->result_array();
+            $counter = 1;
+            if(!empty($get_inspection_team)) {
+                foreach ($get_inspection_team as $keyy => $git):
+                    $text = '';
+                    if(!empty($git['sci_team_id'])) {
+                        $keying = array_search($git['sci_team_id'], array_column($groups, 'id'));
+                        if (is_numeric($keying)) {
+                            if($counter >1)
+                                $text= $text.",";
+                            $text=$text.$groups[$keying]['group_title'];
+                            $counter++;
+                        }
+                    }
+                    $res[$key]['group'] = $text;
+                endforeach;
+            }
         }
-            $data['total_pages'] = Modules::run('api/_get_specific_table_with_pagination_and_where',array("complete_datetime >="=> $startdate." 00:00:00","complete_datetime <="=>$enddate." 23:59:59","assign_status"=>$assign_status), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team','1','0','','','')->num_rows();
+        $data['total_pages'] = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>$assign_status), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team','1','0',$or_where,'','')->num_rows();
         $data['result'] = $res;
-        
         echo $this->load->view('static_assignment_search',$data,TRUE);
     }
         function assignments_detail() {
@@ -756,8 +871,51 @@ Modules::run('site_security/is_login');
         
         $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
         $data['groups'] = $groups;
-       
         echo $this->load->view('post_listing',$data,TRUE);
+    }
+    function get_check_listing_filter_data() {
+        $startdate = $this->input->post('startdate');
+        $searh = $this->input->post('like');
+        $data['like_search'] = $like_search = '';
+        if(!empty($searh))
+            $data['like_search'] = $like_search['LOWER(product_checks.checkname)'] = $searh;
+        $enddate = $this->input->post('enddate');
+        $data['assign_status'] = $assign_status = $this->input->post('assign_status');
+        $checking = false;
+        if(empty($startdate) && empty($enddate) && $data['assign_status'] =='overdue_checks')
+            $checking = true;
+        if(empty($startdate))
+            $startdate=date('Y-m-d');
+        $startdate=$startdate.' 00:00:00';
+        if(empty($enddate))
+            $enddate=date('Y-m-d');
+        $enddate=$enddate.' 23:59:59';
+        $startdate = date('Y-m-d H:i:s', strtotime($startdate));
+        $enddate = date('Y-m-d H:i:s', strtotime($enddate));
+        $data['page_number'] = $this->input->post('page_number');
+        if(empty($data['page_number']))
+            $data['page_number'] = '1';
+        $data['limit'] = $this->input->post('limit'); 
+        $data['total_pages'] = 0;
+        if($assign_status=='active_checks'){
+             $where['assign_status']="Open";
+        }
+        elseif($assign_status=='overdue_checks'){
+            $where['assign_status']="OverDue";
+        }
+        else
+            $where = array();
+        if($checking == false) {
+            $where['assignments.start_datetime >=']= $startdate;
+            $where['assignments.end_datetime <=']= $enddate;
+        }
+        $data['news'] = $this->get_checklisting_data($where, 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype,plant_name,product_id',$data['page_number'],$data['limit'],'','','',$like_search);
+        if(!empty($data['news']->result_array()))
+            $data['total_pages'] = $this->get_checklisting_data($where, 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype,plant_name,product_id','1','0','','','',$like_search)->num_rows();
+        $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
+        $data['groups'] = $groups;
+    	$data['program_type'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id !="=>"12"), 'program_types.name asc','program_types.id',DEFAULT_OUTLET.'_program_types as program_types','program_types.id as program_id,program_types.name as program_name, program_types.status as program_status','1','0','','','')->result_array();
+        echo $this->load->view('checklist_ajax_load',$data,TRUE);
     }
     function change_status() {
         $id = $this->input->post('id');
@@ -1056,38 +1214,32 @@ Modules::run('site_security/is_login');
         $this->session->set_flashdata('status', 'success');
         redirect(ADMIN_BASE_URL . 'assignments/pending_review');  
     }
-/////////////// for detail ////////////
+    /////////////// for detail ////////////
     function detail() {
         $update_id = $this->input->post('id');
         $data['function'] = $this->input->post('function');
         $questions=$this->get_question_for_assignment($update_id)->result_array();
         $i=0;
-        foreach ($questions as $key => $value) {
+        foreach ($questions as $key => $value):
             $arr_questions[$i]['question']=$value['question'];
             $arr_questions[$i]['type']=$value['type'];
-            if($value['type']=='Choice'){
-                 $arr_answers=$this->get_question_answer_detail($value['question_id'],$update_id)->result_array();
-              
-            if(isset($arr_answers) && !empty($arr_answers)){
-            $arr_questions[$i]['choice_type']=$arr_answers[0]['possible_answer'].'/'.$arr_answers[1]['possible_answer'];
-            }
+            if($value['type']=='Choice') {
+                $arr_answers=$this->get_question_answer_detail($value['question_id'],$update_id)->result_array();
+                if(isset($arr_answers) && !empty($arr_answers)) {
+                    $arr_questions[$i]['choice_type']=$arr_answers[0]['possible_answer'].'/'.$arr_answers[1]['possible_answer'];
+                }
             
-            }elseif($value['type']=='Range'){
-            $arr_answers=$this->get_question_answer_detail($value['question_id'],$update_id)->result_array();
-            if(isset($arr_answers) && !empty($arr_answers)){
-            $arr_questions[$i]['min']=$arr_answers[0]['min'];
-            $arr_questions[$i]['max']=$arr_answers[0]['max'];
-           
-            
-                
-            } 
             }
-           
+            elseif($value['type']=='Range') {
+                $arr_answers=$this->get_question_answer_detail($value['question_id'],$update_id)->result_array();
+                if(isset($arr_answers) && !empty($arr_answers)){
+                    $arr_questions[$i]['min']=$arr_answers[0]['min'];
+                    $arr_questions[$i]['max']=$arr_answers[0]['max'];                
+                } 
+            }
             $i=$i+1;
-         
-        }
+        endforeach;
         $data['questions']=$arr_questions;
-       
         $data['assign_detail']=$this->get_qa_checks_detail($update_id)->result_array();
         $data['checkname']=$data['assign_detail'][0]['checkname'];
         $data['update_id'] = $update_id;
@@ -1119,6 +1271,7 @@ Modules::run('site_security/is_login');
                 $data['reassign_questions'] = $this->get_assignment_question_detail(array("assignment_answer.assignment_id"=>$reassign_id), 'assign_ans_id desc','assign_ans_id','assignment_answer.question_id,assignment_answer.answer_id,assignment_answer.comments,assignment_answer.range,assignment_answer.is_acceptable,assignment_answer.answer_type,checks_questions.question','1','0','','','')->result_array();
             }
         }
+    	$review_approval = false;
         $sixten_groups = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("role"=>'116'),'id desc','id',DEFAULT_OUTLET.'_groups','id','1','0','','','')->result_array();
         $seventen_groups = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("role"=>'117'),'id desc','id',DEFAULT_OUTLET.'_groups','id','1','0','','','')->result_array();
         if(!empty($sixten_groups) && !empty($seventen_groups)){
@@ -1142,14 +1295,8 @@ Modules::run('site_security/is_login');
         $this->load->view('pending_review_detail', $data);
     }
     function static_checks_status() {
-        date_default_timezone_set("Asia/karachi");
-        $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id asc','general_setting','timezones','1','1')->result_array();
-        if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
-            date_default_timezone_set($timezone[0]['timezones']);
         $id = $this->input->post('id');
-        
         $txt = $this->input->post('txt');
-      
         if(!empty($id) && !empty($txt)) {
             if($txt == "Review & Approved" || $txt=="Approved") {
                 Modules::run('api/update_specific_table',array("assign_id"=>$id),array("review_user"=>$this->session->userdata['user_data']['user_id'],'review_datetime'=>date("Y-m-d H:i:s"),'approval_user'=>$this->session->userdata['user_data']['user_id'],'approval_datetime'=>date("Y-m-d H:i:s"),'assign_status'=>'Approved'),DEFAULT_OUTLET.'_static_assignments');
@@ -1187,6 +1334,11 @@ Modules::run('site_security/is_login');
     function _get($order_by,$where) {
         $this->load->model('mdl_assignments');
         $query = $this->mdl_assignments->_get($order_by,$where);
+        return $query;
+    }
+    function get_checklisting_data($cols, $order_by,$group_by='',$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having='',$like=''){
+        $this->load->model('mdl_assignments');
+        $query = $this->mdl_assignments->get_checklisting_data($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where,$and_where,$having,$like);
         return $query;
     }
 

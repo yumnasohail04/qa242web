@@ -81,6 +81,8 @@ define('STATIC_FRONT_CSS_QUICKFOOD', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$fo
 define('FIRE_BASE_API_KEY', "AAAAZPpUz6U:APA91bHhJVWRU7T1UvKXeiJgC7fQJLqgMVZ1q7gJkVfecrdKSaxCcNdcCK8AzihdBvnq3SQFCZuwH5B1qBEUMTFP3Au1vqwFzutGBB_Ehdks6OcWs61vjmvHEJJkahNXXViAeOaYnb95");
 
 define('INSIGHTS_STATIC_IMAGE', 'Patteren Food.jpg');
+define('SUPPLIER_DOCUMENTS_PATH', 'uploads/supplier_documents/');
+define('INGREDIENT_DOCUMENTS_PATH', 'uploads/ingredient_documents/');
 //define('STATIC_FRONT_IMAGE', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname.'static/front/theme1/images/');
 
 

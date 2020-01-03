@@ -92,6 +92,13 @@
 /* ========================================================================
    Component: bootstrap-reset.less
  ========================================================================== */
+ .title_bar{
+    padding: 1% 0% 3% 0%;
+    background-color: #D9E9FF;
+    color: #2f69b7;
+    font-size: 16px;
+    margin-bottom: 5%;
+ }
  .container
  {
      width:90%!important;
@@ -720,10 +727,10 @@ body {
     font-size: 15px;
     font-weight: 800;
 }
-.fileupload-exists
-{
-    visibility: hidden;
-}
+/*.fileupload-exists*/
+/*{*/
+/*    visibility: hidden;*/
+/*}*/
 .fileupload-new
 {
 margin-bottom: 0px;
@@ -1783,16 +1790,16 @@ _:-ms-lang(x),
     display: block;
     position: relative;
     padding: 10px 20px;
-    padding-left: 53px;
+    padding-left: 70px;
     font-weight: normal;
     background-color: transparent !important;
-    color: #515253;
+    color: #c2c1ce;
 }
 .sidebar-subnav>li>a:focus,
 .sidebar-subnav>li>.nav-item:focus,
 .sidebar-subnav>li>a:hover,
 .sidebar-subnav>li>.nav-item:hover {
-    color: #23b7e5;
+       color: #c2c1ce;
 }
 .sidebar-subnav>li>a>em,
 .sidebar-subnav>li>.nav-item>em {
@@ -8719,6 +8726,16 @@ p {
     top: 19px;
     left: 58px;
     padding: 3px 5px;
+    border-radius: 50%;
+    background-color: #f38787;
+    color: white;
+}
+.badge_noti {
+    position: absolute;
+    top: 19px;
+    left: 58px; 
+    font-size: 12px;
+    padding: 0px 5px;
     border-radius: 50%;
     background-color: #f38787;
     color: white;

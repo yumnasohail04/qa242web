@@ -68,7 +68,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                     $answered_user = "";
                                     if(isset($assignmet_answers[0]['user_id']) && !empty($assignmet_answers[0]['user_id']))
                                       $answered_user = $assignmet_answers[0]['user_id'];
-                                    $user_detail = Modules::run('api/_get_specific_table_with_pagination',array("id"=>$answered_user),'id desc','users','user_name','1','1')->result_array();
+                                    $user_detail = Modules::run('api/_get_specific_table_with_pagination',array("id"=>$answered_user),'id desc','users','user_name,first_name,last_name','1','1')->result_array();
 
                                    ?>                    
                                   <h3><?php if(isset($checkname)) echo $checkname;?></h3>        
@@ -87,7 +87,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                                   User name:
                                               </th>
                                               <td>
-                                                  <?php $name=''; if(isset($user_detail[0]['user_name']) && !empty($user_detail[0]['user_name'])) $name=$user_detail[0]['user_name']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; ?>
+                                                  <?php $name=''; if(isset($user_detail[0]['first_name']) && !empty($user_detail[0]['first_name']) ) $name=$user_detail[0]['first_name'].' '.$user_detail[0]['last_name']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; ?>
                                               </td>
                                           </tr>
                                           <?php if(empty($line_na)) { ?>
@@ -119,15 +119,6 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                                   } ?>
                                               </td>
                                           </tr>
-                                         
-                                          <tr class="bg-col">
-                                              <th>
-                                                  Image/Video:
-                                              </th>
-                                              <td>
-                                                  
-                                              </td>
-                                          </tr>
                                       </tbody>
                                 </table>
                                 <h3>Check Detail</h3>
@@ -136,7 +127,8 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                       <tr>
                                         <th  style="color: #6c9cde !important;">Attributes</th>
                                         <th style="color: #6c9cde !important;">Provided Values</th>
-                                        <?php if($review_approval == true && (($reviewable == false && $is_reasigned == true)OR ($reviewable == true && $is_reasigned == false))) { ?>
+                                        <th style="color: #6c9cde !important;">Corrective Action</th>
+                                        <?php if($function!="completed_checks" && $review_approval == true && (($reviewable == false && $is_reasigned == true)OR ($reviewable == true && $is_reasigned == false))) { ?>
                                           <th  style="color: #6c9cde !important;">Recheck</th>
                                         <?php } ?>
                                       </tr>
@@ -150,17 +142,24 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                         <td><?php echo $qa['question']; ?></td>
                                         <td>
                                           <?php 
-                                          if(isset($qa['comments'] ) && !empty($qa['comments']))  
-                                            echo $qa['comments'];
-                                          elseif($qa['answer_type'] == 'Range')
+                                          if($qa['answer_type'] == 'Range')
                                             echo $qa['range'];
-                                          elseif(strtolower($qa['answer_type']) == 'choice' || strtolower($qa['answer_type']) == 'fixed')
+                                          elseif(strtolower($qa['answer_type']) == 'choice' || strtolower($qa['answer_type']) == 'fixed' || strtolower($qa['answer_type']) == 'dropdown')
                                             echo $qa['given_answer'];
                                           elseif(isset($qa['answer_id']) && !empty($qa['answer_id'])) {
                                             $question_anwer = Modules::run('api/_get_specific_table_with_pagination',array("question_id"=>$qa['question_id'],"answer_id"=>$qa['answer_id']),'answer_id desc',DEFAULT_OUTLET.'_checks_answers','possible_answer','1','1')->result_array();
                                             $name=''; if(isset($question_anwer[0]['possible_answer']) && !empty($question_anwer[0]['possible_answer'])) $name=$question_anwer[0]['possible_answer']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name;
                                           }else echo "";?></td>
-                                          <?php $checked=""; if($review_approval == true && (($reviewable == false && $is_reasigned == true)OR ($reviewable == true && $is_reasigned == false))) {
+                                      <td>
+                                      <?php 
+                                      if(isset($qa['comments'] ) && !empty($qa['comments']))  
+                                            echo $qa['comments'];
+                                       else echo "-";
+                                          ?>
+                                      </td>
+                                      		
+                                          <?php $checked=""; 
+                                            if($function!="completed_checks" && $review_approval == true && (($reviewable == false && $is_reasigned == true)OR ($reviewable == true && $is_reasigned == false))) {
                                             if(isset($again_question) && !empty($again_question)) {
                                               $key = array_search($qa['question_id'], array_column($again_question, 'rq_question_id'));
                                               if(is_numeric($key))
@@ -361,7 +360,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                   $.ajax({
                     type: 'POST',
                     url: "<?= ADMIN_BASE_URL?>assignments/get_reassignment_detail",
-                    data: {'assign': <?=$original_assign_id?>,'user_id':'<?=$answered_user?>'},
+                    data: {'assign': '<?=$original_assign_id?>','user_id':'<?=$answered_user?>'},
                     async: false,
                     success: function(result) {
                       var datamain = $(result).find('datamain').html();

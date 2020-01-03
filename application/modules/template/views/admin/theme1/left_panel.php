@@ -66,12 +66,43 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                 else 
                     $permission = true;
                 if ($permission){?>
-                    <li class="<?php if($curr_url == 'product'){echo 'active';}    ?>">
-                        <a href="<?php $controller='product'; 
-                            echo ADMIN_BASE_URL . $controller ?>">
-                            <i class="fas fa-poll "></i>
+                    <li class="back_shadow">
+                        <a href="#products" title="Products" data-toggle="collapse" >
+                            <em class="fa fa-tasks "></em>
                             <span>Products</span>
                         </a>
+                        <ul id="products" class="nav sidebar-subnav collapse" style="background:#272C32">
+                            <li class="sidebar-subnav-header">Products</li>
+                            <?php $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'product');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'product/'){echo 'active';}?>" style="padding-left:0px">
+                                    <a class="color_check" href="<?php $controller='product'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-check"></em>
+                                        <span>Finished Goods</span>
+                                    </a>
+                                </li>
+                            <?php }
+                            $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'product');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'product/wip_products'){echo 'active';}?>" style="padding-left:0px">
+                                    <a class="color_check" href="<?php $controller='product/wip_products'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fas fa-utensils"></em>
+                                        <span>Wip Products</span>
+                                    </a>
+                                </li>
+                                 <?php
+                            } ?>
+                        </ul>
                     </li>
                     <li class="back_shadow">
                         <a href="#layout2" title="Layouts" data-toggle="collapse" >
@@ -92,7 +123,7 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             else 
                                 $permission = true;
                             if ($permission){?>
-                                <li class="<?php if($curr_url == 'catagories'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url == 'catagories'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='catagories'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-check"></em>
@@ -109,7 +140,7 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             else 
                                 $permission = true;
                             if ($permission){?>
-                                <li class="<?php if($curr_url == 'wip_profile'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url == 'wip_profile'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='wip_profile'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-outdent"></em>
@@ -138,7 +169,7 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             else 
                                 $permission = true;
                             if ($permission){?>
-                                <li class="<?php if($curr_url == 'product_checks'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url == 'product_checks'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='product_checks'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-clipboard"></em>
@@ -153,7 +184,7 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             else 
                                 $permission = true;
                             if ($permission){?>
-                                <li class="<?php if($curr_url == 'product_tests'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url == 'product_tests'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='product_tests'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-calendar"></em>
@@ -169,7 +200,7 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             else 
                                 $permission = true;
                             if ($permission){?>
-                                <li class="<?php if($curr_url == 'herbspice_checks' || $curr_url == 'herb_attributes' || $curr_url == 'herb_spice'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url == 'herbspice_checks' || $curr_url == 'herb_attributes' || $curr_url == 'herb_spice'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='herbspice_checks'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-outdent"></em>
@@ -185,7 +216,7 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             else 
                                 $permission = true;
                             if ($permission){?>
-                                <li class="<?php if($curr_url == 'scheduled_checks' || $curr_url == 'scheduled_checks' || $curr_url == 'scheduled_checks'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url == 'scheduled_checks' || $curr_url == 'scheduled_checks' || $curr_url == 'scheduled_checks'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='scheduled_checks'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-outdent"></em>
@@ -200,7 +231,7 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             else 
                                 $permission = true;
                             if ($permission){?>
-                                <li class="<?php if($curr_url == 'static_form'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url == 'static_form'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='static_form'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-tasks "></em>
@@ -235,7 +266,7 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             else 
                                 $permission = true;
                             if ($permission){?>
-                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/active_checks'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/active_checks'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='assignments/active_checks'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-check"></em>
@@ -250,7 +281,7 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             else 
                                 $permission = true;
                             if ($permission){?>
-                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/overdue_checks'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/overdue_checks'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='assignments/overdue_checks'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-close"></em>
@@ -258,7 +289,23 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                                     </a>
                                 </li>
                                  <?php
-                            } ?>
+                            } 
+                            /*$permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'assignments');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/today_checks'){echo 'active';}    ?>" style="padding-left:0px">
+                                    <a class="color_check" href="<?php $controller='assignments/today_checks'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-check"></em>
+                                        <span>Today Checks</span>
+                                    </a>
+                                </li>
+                                 <?php
+                            }*/
+                            ?>
                         </ul>
                     </li>
                     <li class="back_shadow">
@@ -274,7 +321,7 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             else 
                                 $permission = true;
                             if ($permission){?>
-                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/pending_review'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/pending_review'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='assignments/pending_review'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-paper-plane "></em>
@@ -289,7 +336,7 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             else 
                                 $permission = true;
                             if ($permission){?>
-                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/pending_approval'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/pending_approval'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='assignments/pending_approval'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-paper-plane "></em>
@@ -304,7 +351,7 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             else 
                                 $permission = true;
                             if ($permission){?>
-                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/completed_checks'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/completed_checks'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='assignments/completed_checks'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-check"></em>
@@ -320,7 +367,7 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             else 
                                 $permission = true;
                             if ($permission){?>
-                            <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/static_forms_pending'){echo 'active';}    ?>" style="padding-left:15px">
+                            <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/static_forms_pending'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='assignments/static_forms_pending'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-check"></em>
@@ -336,7 +383,7 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             else 
                                 $permission = true;
                             if ($permission){?>
-                            <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/static_forms_reviewed'){echo 'active';}    ?>" style="padding-left:15px">
+                            <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/static_forms_reviewed'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='assignments/static_forms_reviewed'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-check"></em>
@@ -352,7 +399,7 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             else 
                                 $permission = true;
                             if ($permission){?>
-                            <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/static_forms_approved'){echo 'active';}    ?>" style="padding-left:15px">
+                            <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/static_forms_approved'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='assignments/static_forms_approved'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-check"></em>
@@ -364,6 +411,173 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             
                             ?>
                             
+                        </ul>
+                    </li>
+                    
+                    <li class="back_shadow">
+                        <a href="#layout_supplier" title="Layouts" data-toggle="collapse" >
+                            <em class="fa fa-address-card"></em>
+                            <span>Supplier Management</span>
+                        </a>
+                        <ul id="layout_supplier" class="nav sidebar-subnav collapse" style="background:#272C32">
+                            <li class="sidebar-subnav-header">Supplier Management</li>
+                            <?php $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'ingredients');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                                <li class="<?php if($curr_url == 'ingredients'){echo 'active';}    ?>" style="padding-left:0px">
+                                    <a class="color_check" href="<?php $controller='ingredients'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fas fa-utensils"></em>
+                                        <span>Ingredients</span>
+                                    </a>
+                                </li>
+                                 <?php
+                            }
+                            $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'supplier');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                                <li class="<?php if($curr_url == 'supplier'){echo 'active';}    ?>" style="padding-left:0px">
+                                    <a class="color_check" href="<?php $controller='supplier'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-user"></em>
+                                        <span>Supplier</span>
+                                    </a>
+                                </li>
+                                 <?php
+                            }
+                            $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'document');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                                <li class="<?php if($curr_url== 'document'){echo 'active';}    ?>" style="padding-left:0px">
+                                    <a class="color_check" href="<?php $controller='document'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-clipboard"></em>
+                                        <span>Document detail</span>
+                                    </a>
+                                </li>
+                                 <?php
+                            }
+                            $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'scorecard_form');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                                <li class="<?php if($curr_url == 'scorecard_form'){echo 'active';}    ?>" style="padding-left:0px">
+                                    <a class="color_check" href="<?php $controller='scorecard_form'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-clipboard"></em>
+                                        <span>Scorecard Detail</span>
+                                    </a>
+                                </li>
+                                 <?php
+                            }
+                            
+                           /* $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'scorecard');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'scorecard'){echo 'active';}    ?>" style="padding-left:0px">
+                                    <a class="color_check" href="<?php $controller='scorecard'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-clipboard"></em>
+                                        <span>Scorecard</span>
+                                    </a>
+                                </li>
+                                 <?php
+                            }*/
+                            
+                            
+                            ?>
+                            <li class="back_shadow">
+                        <a href="#layout_scorecard" title="Layouts" data-toggle="collapse" >
+                            <em class="fa fa-clipboard "></em>
+                            <span>ScoreCard</span>
+                        </a>
+                            <ul id="layout_scorecard" class="nav sidebar-subnav collapse" style="background:#272C32">
+                            <li class="sidebar-subnav-header">Supplier Management</li>
+                            <?php $permission = true;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'scorecard');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'scorecard/manage'){echo 'active';}?>" style="padding-left:0px">
+                                    <a class="color_check" href="<?php $controller='scorecard/manage'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-check"></em>
+                                        <span>New Scorecard</span>
+                                    </a>
+                                </li>
+                                 <?php
+                            }?>
+                         
+                                 <?php
+                                  $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'scorecard');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'scorecard/inprogress_scorecard'){echo 'active';}?>" style="padding-left:0px">
+                                    <a class="color_check" href="<?php $controller='scorecard/inprogress_scorecard'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-outdent"></em>
+                                        <span>In Progress Scorecards</span>
+                                    </a>
+                                </li>
+                                 <?php
+                            } ?> 
+                            
+                            
+                                 <?php
+                                  $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'scorecard');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url  == 'scorecard/pending_scorecard'){echo 'active';}    ?>" style="padding-left:0px">
+                                    <a class="color_check" href="<?php $controller='scorecard/pending_scorecard'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-outdent"></em>
+                                        <span>In Progress <br>Pending Review</span>
+                                    </a>
+                                </li>
+                                 <?php
+                            } ?> 
+                            
+                                 <?php
+                                  $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'scorecard');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url  == 'scorecard/complete_scorecard'){echo 'active';}    ?>" style="padding-left:0px">
+                                    <a class="color_check" href="<?php $controller='scorecard/complete_scorecard'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-outdent"></em>
+                                        <span>Completed Scorecards</span>
+                                    </a>
+                                </li>
+                                 <?php
+                            } ?> 
+                           
+                        </ul>
+                            
+                        </li>
                         </ul>
                     </li>
                    <!-- <li class="back_shadow">
@@ -379,49 +593,49 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             else 
                                 $permission = true;
                             if ($permission){?>
-                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/truck_inspection'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/truck_inspection'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='assignments/truck_inspection'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-paper-plane "></em>
                                         <span>Receiving Inspection Log</span>
                                     </a>
                                 </li>
-                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/shipping_inspection'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/shipping_inspection'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='assignments/shipping_inspection'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-paper-plane "></em>
                                         <span>Shipping Inspection</span>
                                     </a>
                                 </li>
-                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/palletizing_inspection'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/palletizing_inspection'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='assignments/palletizing_inspection'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-paper-plane "></em>
                                         <span>Palletizing Inspection</span>
                                     </a>
                                 </li>
-                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/cleaning_inspection'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/cleaning_inspection'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='assignments/cleaning_inspection'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-paper-plane "></em>
                                         <span>cleaning Inspection</span>
                                     </a>
                                 </li>
-                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/bulk_tub_inspection'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/bulk_tub_inspection'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='assignments/bulk_tub_inspection'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-paper-plane "></em>
                                         <span>Bulk Pasta Temp. Log<br>(Every Tub)</span>
                                     </a>
                                 </li>
-                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/bulk_form_inspection'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/bulk_form_inspection'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='assignments/bulk_form_inspection'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-paper-plane "></em>
                                         <span>Bulk Pasta Temp. Log<br>(Every Bulk Form)</span>
                                     </a>
                                 </li>
-                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/recode_inspection'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/recode_inspection'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='assignments/recode_inspection'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-paper-plane "></em>
@@ -431,7 +645,7 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                                  <?php
                             }?>
                         </ul>
-                    </li>-->
+                        </li>-->
                     <?php $permission = false;
                     if ($user_data['role'] != 'Admin')
                         $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'static_form');
@@ -460,14 +674,14 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             else 
                                 $permission = true;
                             if ($permission){?>
-                                <li class="<?php if($curr_url == 'static_form'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url == 'static_form'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='static_form'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-tasks "></em>
                                         <span>Checks Detail</span>
                                     </a>
                                 </li>
-                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/static_assignments_detail'){echo 'active';}    ?>" style="padding-left:15px">
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url == 'assignments/static_assignments_detail'){echo 'active';}    ?>" style="padding-left:0px">
                                     <a class="color_check" href="<?php $controller='assignments/static_assignments_detail'; 
                                         echo ADMIN_BASE_URL . $controller ?>">
                                         <em class="fa fa-check"></em>
@@ -478,6 +692,20 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                             }?>
                         </ul>
                     </li>-->
+                    <?php $permission = false;
+                    if ($user_data['role'] != 'Admin')
+                        $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'reports');
+                    else 
+                        $permission = true;
+                    if ($permission){?>
+                        <li class="<?php if($curr_url == 'reports'){echo 'active';}    ?>">
+                            <a href="<?php $controller='reports'; 
+                                echo ADMIN_BASE_URL . $controller ?>">
+                                <i class="fa fa-user "></i>
+                                <span>Reports</span>
+                            </a>
+                        </li>
+                    <?php }?> 
             </ul>
         <!-- END sidebar nav-->
         </nav>

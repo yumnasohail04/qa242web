@@ -14,6 +14,69 @@ parent::__construct();
 
 
 	function admin($data){
+    	$data['total_counter'] = $user_id = 0; 
+		$outlet_id = DEFAULT_OUTLET;
+		$left_panel = array();
+		$primary_group = $secondry_group = 0;
+        if(isset($this->session->userdata['user_data']['user_id']) && !empty($this->session->userdata['user_data']['user_id']))
+            $user_id = $this->session->userdata['user_data']['user_id'];
+        if(!isset($chat_only)) {
+	        if(isset($this->session->userdata['user_data']['group']) && !empty($this->session->userdata['user_data']['group']))
+	        	$primary_group = $this->session->userdata['user_data']['group'];
+	        if(!empty($primary_group)) {
+		        $temp =array();
+		    	$temp['trackig_id'] = 'G_'.$primary_group;
+		    	$group_message = Modules::run('admin_api/get_chat_detail',array("group_id"=>$primary_group), 'chat_id desc','chat_id',$outlet_id,'message,chat_id','1','1','','','')->result_array();
+		        $temp['last_chat'] = 0; if(isset($group_message[0]['chat_id']) && !empty($group_message[0]['chat_id'])) $temp['last_chat']=$group_message[0]['chat_id']; $temp['last_chat']=  Modules::run('api/string_length',$temp['last_chat'],'8000',0);
+		        $data['total_counter'] = $data['total_counter'] + Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("group_id"=>$primary_group,"message_to"=>$user_id,"message_status"=>"1"),'chat_id desc','chat_id',$outlet_id.'_chat_detail','chat_id','1','0','','','')->num_rows();
+		        $left_panel[] = $temp;
+	    	}
+	        if(isset($this->session->userdata['user_data']['second_group']) && !empty($this->session->userdata['user_data']['second_group']))
+	        	$secondry_group = $this->session->userdata['user_data']['second_group'];
+	        if(!empty($second_group)) {
+	        	$temp =array();
+	        	$temp['trackig_id'] = 'G_'.$secondry_group;
+	        	$group_message = Modules::run('admin_api/get_chat_detail',array("group_id"=>$secondry_group), 'chat_id desc','chat_id',$outlet_id,'message,chat_id','1','1','','','')->result_array();
+	            $temp['last_chat'] = 0; if(isset($group_message[0]['chat_id']) && !empty($group_message[0]['chat_id'])) $temp['last_chat']=$group_message[0]['chat_id']; $temp['last_chat']=  Modules::run('api/string_length',$temp['last_chat'],'8000',0);
+	            $data['total_counter'] = $data['total_counter'] + Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("group_id"=>$secondry_group,"message_to"=>$user_id,"message_status"=>"1"),'chat_id desc','chat_id',$outlet_id.'_chat_detail','chat_id','1','0','','','')->num_rows();
+	            $left_panel[] = $temp;
+	        }
+	        if(!empty($secondry_group) || !empty($primary_group)) {
+		        $group_chat = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("group_id !="=>'0'), 'chat_id desc','group_id',$outlet_id.'_chat_detail','group_id','1','0','(`message_to` = "'.$user_id.'" OR `message_from` = "'.$user_id.'")','(`group_id` != "'.$primary_group.'" AND `group_id` != "'.$secondry_group.'")','')->result_array();
+		        if(!empty($group_chat)) {
+		            foreach ($group_chat as $key => $gc):
+		            	$temp = array();
+		                $temp['trackig_id'] = 'G_'.$gc['group_id'];
+		                $group_message = Modules::run('admin_api/get_chat_detail',array("group_id"=>$gc['group_id']), 'chat_id desc','group_id',DEFAULT_OUTLET,'message,chat_id','1','1','','','')->result_array();
+		                $temp['last_chat'] = "0";
+		                if(isset($group_message[0]['chat_id']) && !empty($group_message[0]['chat_id'])) 
+		                    $temp['last_chat']=$group_message[0]['chat_id'];
+		                $data['total_counter'] = $data['total_counter'] + Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("group_id"=>$gc['group_id'],"message_to"=>$user_id,"message_status"=>"1"),'chat_id desc','chat_id',$outlet_id.'_chat_detail','chat_id','1','0','','','')->num_rows();
+		                $left_panel[] = $temp;
+		                unset($temp);
+		            endforeach;
+		        }
+		    }
+	        $group_users= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("outlet_id" =>$outlet_id,"status"=>"1",'id !='=>$user_id),'id desc','id','users','id,first_name,last_name,user_image,is_online','1','0','','','')->result_array();    
+	        if(!empty($group_users)) {
+	            foreach ($group_users as $key => $gc):
+	                $pre_temp['user_id'] = $temp['id'] = $gc['id'];
+	                if($user_id > $gc['id'])
+	                    $pre_temp['trackig_id'] = $temp['trackig_id'] = 'U_'.$user_id.'_'.$gc['id'];
+	                else
+	                    $pre_temp['trackig_id'] = $temp['trackig_id'] = 'U_'.$gc['id'].'_'.$user_id;
+	                $last_detail = Modules::run('admin_api/get_chat_detail',array("group_id"=>'0'), 'chat_id desc','chat_id',$outlet_id,'message,chat_id','1','1','((`message_to` = "'.$user_id.'" AND `message_from` = "'.$gc['id'].'") OR (`message_to` = "'.$gc['id'].'" AND `message_from` = "'.$user_id.'"))','','')->result_array();
+	                $temp['last_chat'] = "0";
+	                if(isset($last_detail[0]['chat_id']) && !empty($last_detail[0]['chat_id'])) 
+	                    $temp['last_chat']=$last_detail[0]['chat_id'];
+	                $data['total_counter'] = $data['total_counter'] + Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("group_id"=>'0',"message_to"=>$user_id,"message_status"=>"1","message_from"=>$gc['id']),'chat_id desc','chat_id',$outlet_id.'_chat_detail','chat_id','1','0','','','')->num_rows();
+	                $left_panel[] = $temp;
+	                $previous_user[] = $pre_temp;
+	                unset($temp);
+	            endforeach;
+	        }
+        }
+        $data['tracker_list'] = $left_panel;
 		$data['outlets'] =	$this->get_outlets(); 
 		$data['user_data'] = $user_data = $this->session->userdata('user_data');
 		$role_id = 0;
@@ -176,11 +239,11 @@ parent::__construct();
 		$where_banner['status'] = 1;
 		$data['banner'] = Modules::run('banner_management/_get_by_arr_id', $where_banner);
 		
-		$this->load->view('common/front', $data);
+		$this->load->view('front/theme1/front', $data);
 	}
 	function footer($data)
 	{
-		$this->load->view('common/footer', $data);
+		$this->load->view('front/theme1/footer', $data);
 	}
 	
 

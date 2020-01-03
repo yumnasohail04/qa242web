@@ -20,7 +20,13 @@ $config = array(
 		 16 => 'product_tests',
 		 17 => 'wip_profile',
 		 18 => 'herbspice_checks',
-		 19 => 'assignments',
+    	 19 => 'reports',
+         20 => 'static_form',
+         21 => 'scorecard',
+         22 => 'ingredients',
+         23 => 'document',
+         24 => 'scorecard_form',
+         25 => 'supplier'
 		  
 	),
 );

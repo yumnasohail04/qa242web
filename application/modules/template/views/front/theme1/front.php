@@ -1,6 +1,6 @@
-<?php $this->load->view('front/theme1/'.$header_file);?> <!--HEADER + TOPPANEL-->
-
-<?php if($is_home==1){$this->load->view('front/theme1/header_banner');}?> <!--HEADER BANNER FOR HOME PAGE ONLY-->	
+<?php 
+$this->load->view('front/theme1/'.$header_file);?> <!--HEADER + TOPPANEL-->
+	
 
 <?php 
 if(!isset($view_file)){

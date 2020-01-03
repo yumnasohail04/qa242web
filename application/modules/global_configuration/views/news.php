@@ -1,5 +1,5 @@
+<link href="<?php echo STATIC_ADMIN_CSS;?>simplePagination.css" rel="stylesheet">
 <style type="text/css">
-  
   .backgroud-blue{
     background-color: #f7f7f7 !important;
     color: black;
@@ -121,7 +121,7 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                                             ?>
                                             <!-- BEGIN FORM-->
                                         <div class="form-body container" style="margin: 0 auto;">
-                                                  <h3 class="container" style="margin: 0 auto;">Who Should Recieve Overdue Notifications</h3>
+                                                  <h3 class="container" style="margin: 0 auto;">Who Should Receive Overdue Notifications</h3>
                                           <div class="col-sm-12">
                                              <div class="form-group">
                                                 <label class="col-sm-2 control-label">Select Groups </label>
@@ -338,7 +338,7 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                       <div class="row container" style="margin:0 auto;">
                         <div class="col-md-6">
                           <h3 style="margin-left: 66px;">
-                            Plants Detail
+                            Plants Details
                           </h3>
                         </div>
                         <div class="col-md-6">
@@ -407,7 +407,7 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                       <div class="row container" style="margin:0 auto;">
                         <div class="col-md-6">
                           <h3 style="margin-left: 66px;">
-                            Lines Detail
+                            Lines Details
                           </h3>
                         </div>
                         <div class="col-md-6">
@@ -422,7 +422,6 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                             <thead class="bg-th">
                               <tr class="bg-col">
                                 <th class="text-center">Line Name</th>
-                                 <th class="text-center">Status</th>
                                  <th class="text-center">Action</th>
                               </tr>
                             </thead>
@@ -433,12 +432,6 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                                 foreach ($lines as $key=>$li):?>
                                   <tr  id="Row_<?=$counter?>" class="odd gradeX " >
                                     <td class="text-center"><?=$li['line_name'];?></td>
-                                    <td class="text-center">
-                                        <select class="form-control" id="line_status" line_id="<?=$li['line_id']==""?>"> 
-                                        <option value="up" <?php if($li['active_status']=="up") echo 'selected="selected"';?>>Up</option>
-                                        <option value="down" <?php if($li['active_status']=="down") echo 'selected="selected"';?>>Down</option>
-                                        </select>
-                                    </td>
                                     <td class="text-center">
                                       <?php
                                       echo anchor('"javascript:;"', '<i class="fa fa-edit"></i>', array('class' => 'edit_line btn blue c-btn', 'rel' => $li['line_id'],'line_name' => $li['line_name'], 'title' => 'Edit Line'));
@@ -454,18 +447,49 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                       </div>
                       <hr>
                       <div class="row container" style="margin:0 auto;">
-                        <div class="col-md-6">
-                          <h3 style="margin-left: 66px;">
-                            Product Schedule
-                          </h3>
+                        <div class="row" style="width: 100%">
+                          <div class="col-md-6">
+                            <h3 style="margin-left: 66px;">
+                              Product Schedule
+                            </h3>
+                          </div>
+                          <div class="col-md-6">
+                            <h3 style="margin-left: 66px;">
+                              <button type="button" class="btn btn-primary  btn-lg upload_file" style="float:right;">File Upload</button>
+                            </h3>
+                            <h3 style="margin-left: 66px;">
+                              <button type="button" class="btn btn-primary  btn-lg product_schedules" style="float:right;">Add Product Schedule</button>
+                            </h3>
+                          </div>
                         </div>
-                        <div class="col-md-6">
-                          <h3 style="margin-left: 66px;">
-                            <button type="button" class="btn btn-primary  btn-lg upload_file" style="float:right;">File Upload</button>
-                          </h3>
-                          <h3 style="margin-left: 66px;">
-                            <button type="button" class="btn btn-primary  btn-lg product_schedules" style="float:right;">Add Product Schedule</button>
-                          </h3>
+                        <div class="row" style="width: 100%">
+                          <div class="col-md-2" style="float: right;">
+                              <div class="form-group" style="margin-top: 33px;">
+                                <button type="button" class="btn btn-primary form-control filter_search">Search</button>
+                              </div>
+                          </div>
+                          <div class="col-md-3" style="float: right;">
+                            <div class="form-group">
+                                <label>To:</label>
+                                <div class='input-group datetimepicker2'>
+                                    <input type='text' class="form-control" id="enddate" />
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                          </div>
+                          <div class="col-md-3" style="float: right;">
+                            <div class="form-group">
+                              <label>From:</label>
+                              <div class='input-group datetimepicker2'>
+                                  <input type='text' class="form-control" id="startdate" />
+                                  <span class="input-group-addon">
+                                      <span class="fa fa-calendar"></span>
+                                  </span>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div  class="row container" style="margin:0 auto;">
@@ -473,37 +497,53 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                           <table id="datatable11" class="table table-striped table-hover table-body table-bordered">
                             <thead class="bg-th">
                               <tr class="bg-col">
-                                <th class="text-center" style="width:120px;">Product Code</th>
-                                <th class="text-center" style="width:120px;">Product Name</th>
-                                <th class="text-center" style="width:120px;">Product Type</th>
-                                 <th class="text-center" style="width:120px;">Storage Type</th>
-                                <th class="text-center" style="width:120px;">Line</th>
-                                <th class="text-center" style="width:120px;">Action</th>
+                                <th class="text-center">Product Code</th>
+                                <th class="text-center">Product Name</th>
+                                <th class="text-center">Program Type</th>
+                                 <th class="text-center">Storage Type</th>
+                                 <th class="text-center">Plant</th>
+                                <th class="text-center">Line</th>
+                                <th class="text-center">Action</th>
                               </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="ajax_content_wrapper">
                               <?php $i = 0;
                               if (isset($product_schedule) && !empty($product_schedule)) {
                                 $counter = 1;
                                 foreach ($product_schedule as $keyy=>$produc):?>
                                   <tr id="Row_<?=$counter?>" class="backgroud-blue ">
-                                    <td class="border_color_blue"><?=$produc['day']?>(<?=$produc['date']?>)</td>
-                                    <td class="border_color_blue"></td>
-                                    <td class="border_color_blue"></td>
-                                    <td class="border_color_blue"></td>
-                                    <td class="border_color_blue"></td>
+                                    <td  colspan="7" class="border_color_blue"><?=$produc['day']?>(<?=$produc['date']?>)</td>
                                   </tr>
                                 <?php if(isset($produc['data']) && !empty($produc['data'])) {
                                   foreach ($produc['data'] as $key => $pro): ?>
                                   <tr  id="Row_<?=$counter?>" class="odd gradeX " >
                                     <td class="text-center"><?=$pro['navision_no'];?></td>
                                     <td class="text-center"><?=$pro['product_title'];?></td>
-                                    <td class="text-center"><?=$pro['product_type'];?></td>
+                                    <td class="text-center">
+                                    	<?php $get_ppt = Modules::run('api/_get_specific_table_with_pagination',array('ppt_product_id'=>$pro['ps_product']), 'ppt_id desc',DEFAULT_OUTLET.'_product_program_type','ppt_program_id','1','0')->result_array();
+                                    		$counter = 1;
+                                    		if(!empty($get_ppt)) {
+                                            	foreach ($get_ppt as $key => $gppt):
+                                                	if(!empty($gppt['ppt_program_id'])) {
+                                                    	$key = array_search($gppt['ppt_program_id'], array_column($program_type, 'program_id'));
+                                                    	if (is_numeric($key)) {
+                                                        	if($counter >1)
+                                                            	echo ",";
+                                                        	echo $program_type[$key]['program_name'];
+                                                        	$counter++;
+                                                    	}
+                                                	}
+                                            	endforeach;
+                                    		}
+                                		?>
+                                  	</td>
                                     <td class="text-center"><?=$pro['storage_type'];?></td>
-                                    <td class="text-center"><?=$pro['ps_line'];?></td>
+                                  	<td class="text-center"><?=$pro['plant_name'];?></td>
+                                    <td class="text-center"><?php if(!empty($pro['ps_line'])) { 
+                                      $line_name = Modules::run('api/_get_specific_table_with_pagination',array('line_id'=>$pro['ps_line']), 'line_id asc',DEFAULT_OUTLET.'_lines','line_name','1','1')->result_array(); if(isset($line_name[0]['line_name']) && !empty($line_name[0]['line_name'])) echo $line_name[0]['line_name']; }?></td>
                                     <td class="text-center">
                                       <?php
-                                      echo anchor('"javascript:;"', '<i class="fa fa-edit"></i>', array('class' => 'action_edit btn blue c-btn', 'rel' => $pro['ps_id'],'start_date' => $pro['ps_date'],'product' => $pro['ps_product'],'line' => $pro['ps_line'], 'title' => 'Edit Product'));
+                                      echo anchor('"javascript:;"', '<i class="fa fa-edit"></i>', array('class' => 'action_edit btn blue c-btn', 'rel' => $pro['ps_id'],'start_date' => $pro['ps_date'],'product' => $pro['ps_product'],'plant_id' => $pro['plant_id'],'line' => $pro['ps_line'], 'title' => 'Edit Product'));
                                       echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn  c-btn', 'rel' => $pro['ps_id'], 'title' => 'Delete Product'));
                                       ?>
                                     </td>
@@ -515,16 +555,15 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                                 else {
                                   $counter++; ?>
                                   <tr  id="Row_<?=$counter?>" class="odd gradeX " >
-                                    <td class="text-center" style="border:none !important;text-align: right"></td>
-                                    <td class="text-center red-color" style="border:none !important;text-align: right;font-weight:bold;">No schedules for the day</td>
-                                    <td class="text-center" style="border:none !important;"></td>
-                                    <td class="text-center" style="border:none !important;"></td>
+                                    <td  colspan="7" class="text-center red-color" style="border:none !important;text-align: center;font-weight:bold;width: 100%">No schedules for the day</td>
                                   </tr>
                                 <?php }
                               endforeach;
                               } ?>
                             </tbody>
                           </table>
+                          <br><br>
+                          <div class="mg-t-20-f floatright" style="clear: both" id="light-pagination"></div>
                         </div>
                       </div>
                       
@@ -719,17 +758,21 @@ $(document).off('click', '.action_edit').on('click', '.action_edit', function(e)
   var start_date = $(this).attr('start_date');
   var end_date = $(this).attr('end_date');
   var product = $(this).attr('product');
+  var plant_id = $(this).attr('plant_id');
   var line = $(this).attr('line');
   e.preventDefault();
     $.ajax({
       type: 'POST',
       url: "<?php ADMIN_BASE_URL?>global_configuration/get_product_schedules",
-      data: {'id': id,'start_date':start_date,'product':product,'line':line},
+      data: {'id': id,'start_date':start_date,'product':product,'plant':plant_id,'line':line},
       async: false,
       success: function(test_body) {
         $('#product_schedules').modal('show');
         $("#product_schedules .modal-body").html(test_body);
         $("#product_schedules .modal-footer").html('<button type="submit" class="btn-primary btn pull-right submit_from" style="clear: both; margin-top: 10px;">Submit</button>');
+
+        $('.selectpicker').selectpicker('refresh');
+        $( ".selectpicker" ).addClass('selectbox-class');
       }
     });
 });
@@ -986,4 +1029,89 @@ $('.line_product').on('change', function() {
     else
       toastr.error(msg);
   };
+  var firstclick = "one";
+  $(document).ready(function() {
+      $('.filter_search').on('click', function() {
+          var startdate=$('#startdate').val();
+          var enddate=$('#enddate').val();
+          if(startdate == '' || enddate == '') {
+              toastr.success('Please Select Date Range');
+          }
+          else {
+              firstclick="fdafdas";
+              ajax_call('1',startdate,enddate);
+          }    
+      });
+  });
+  function pagination_call(total_number_pages,active) {
+    $.getScript("<?php echo STATIC_ADMIN_JS;?>jquery.simplePagination.js").done(function( s, Status ) {
+      $('#light-pagination').pagination({
+        items: total_number_pages,
+        itemsOnPage: <?=$limit?>,
+        cssStyle: 'light-theme'
+        });
+        $('#light-pagination').pagination('selectPage', active);
+        $('#light-pagination').off('click').click(function(event) {
+            var valuecheck = '';
+            if($(this).find('.active').text() == 'Next') {
+                valuecheck = parseInt($('#light-pagination').find('.active').find('.current').text());
+            }
+            else if($(this).find('.active').text() == 'Prev') {
+                valuecheck = parseInt($('#light-pagination').find('.active').find('.current').text());
+            }
+            else {
+                valuecheck = $(this).find('.active').text();
+            }
+            var StartDate=$('#startdate').val();
+            var EndDate=$('#enddate').val();
+            if(firstclick != "fdafdas") {
+                StartDate = "";
+                EndDate = "";
+            }
+            ajax_call(valuecheck,StartDate,EndDate);
+            
+        });
+        $('#light-pagination').find('.page-link').each(function(){
+            $(this).attr('href','javascript:void(0);');
+        });
+    });
+  }
+  var citycurrentRequest=null;
+  function ajax_call(page_number,startdate,enddate) {
+      citycurrentRequest= $.ajax({
+          type: "POST",  
+          url: '<?= ADMIN_BASE_URL?>global_configuration/product_schedule_filter_search',  
+          data: {'page_number':page_number,'startdate':startdate,'enddate':enddate,'limit':'7'},
+          dataType: 'html',
+          beforeSend : function()    {           
+            if(citycurrentRequest != null) {
+              citycurrentRequest.abort();
+            }
+          },
+          success: function(result) {
+              var datamain = $(result).find('datamain').html();
+              var tablecreat = ''
+              var active= $(result).find('pagenumber').text();
+              var total_number_pages= $(result).find('totalpage').text();
+              $(result).find('datamain').find('trr').each(function(){
+                  tablecreat = tablecreat+'<tr id="'+$(this).attr('id')+'" class="'+$(this).attr('class')+'" style="'+$(this).attr('style')+'">';
+                  $(this).find('tdd').each(function(){
+                      tablecreat = tablecreat+'<td id="'+$(this).attr('id')+'" class="'+$(this).attr('class')+'" style="'+$(this).attr('style')+'">'+$(this).html()+'</td>';
+                  })
+              })
+              tablecreat = tablecreat+'<tr>';
+              if(total_number_pages == '0')
+                      tablecreat = tablecreat+'<td colspan="6">No data available in table</td>';
+                  tablecreat = tablecreat+'</tr>';
+              $('#ajax_content_wrapper').html(tablecreat);
+              if(total_number_pages > 1)
+                  pagination_call(total_number_pages,active);
+              else
+                  pagination_call('1','1');
+          }
+      });
+  }
+  <?php if(isset($page_number) && is_numeric($page_number) && isset($total_pages) && is_numeric($total_pages)) { if($total_pages>1) {?>
+        pagination_call('<?=$total_pages;?>','<?=$page_number;?>');
+    <?php }}?>
 </script>

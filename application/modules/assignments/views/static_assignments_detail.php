@@ -44,6 +44,16 @@
                                     <th class="text-center" style="width:120px;">Inspection Datetime <i class="fa fa-sort" style="font-size:13px;"></th>
                                     <th class="text-center"style="width:200px;" >Check Name<i class="fa fa-sort" style="font-size:13px;"></th>
                                     <th class="text-center" style="width:200px;">Inspection Group<i class="fa fa-sort" style="font-size:13px;"></th>
+                                    <?php
+                                    if(isset($assign_status) && !empty($assign_status)) {
+                                        if(strtolower($assign_status)  == 'approved' || strtolower($assign_status)  == 'reviewed') { ?>
+                                            <th class="text-center" style="width:200px;">Reviewer<i class="fa fa-sort" style="font-size:13px;"></th>
+                                        <?php }
+                                        if(strtolower($assign_status)  == 'approved') { ?>
+                                            <th class="text-center" style="width:200px;">Approver<i class="fa fa-sort" style="font-size:13px;"></th>
+                                        <?php }
+                                    }
+                                    ?>
                                     <th class="text-center"style="width:200px;" >Status<i class="fa fa-sort" style="font-size:13px;"></th>
                                     <th class="text-center" style="width:500px;" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actions</th>
                                 </tr>
@@ -65,6 +75,42 @@
                                         <td class="text-center">
                                             <?php echo $value['group'];?>
                                         </td>
+                                        <?php
+                                        if(isset($assign_status) && !empty($assign_status)) {
+                                            if(strtolower($assign_status)  == 'approved' || strtolower($assign_status)  == 'reviewed') { ?>
+                                                <td class="text-center">
+                                                    <?php 
+                                                    if(isset($value['review_user']) && !empty($value['review_user'])) {
+                                                        $review_user_detail = Modules::run('api/_get_specific_table_with_pagination',array("id"=>$value['review_user']),'id desc','users','first_name,last_name','1','1')->result_array();
+                                                        $fisrt_name=''; 
+                                                        if(isset($review_user_detail[0]['first_name']) && !empty($review_user_detail[0]['first_name'])) 
+                                                          $fisrt_name=$review_user_detail[0]['first_name']; 
+                                                        $last_name=''; 
+                                                        if(isset($review_user_detail[0]['last_name']) && !empty($review_user_detail[0]['last_name'])) 
+                                                          $last_name=$review_user_detail[0]['last_name']; 
+                                                        $name=  Modules::run('api/string_length',$fisrt_name,'8000','',$last_name); echo $name;   
+                                                    }
+                                                    ?>
+                                                </td>
+                                            <?php }
+                                            if(strtolower($assign_status)  == 'approved') { ?>
+                                                <td class="text-center">
+                                                    <?php 
+                                                    if(isset($value['approval_user']) && !empty($value['approval_user'])) {
+                                                        $review_user_detail = Modules::run('api/_get_specific_table_with_pagination',array("id"=>$value['approval_user']),'id desc','users','first_name,last_name','1','1')->result_array();
+                                                        $fisrt_name=''; 
+                                                        if(isset($review_user_detail[0]['first_name']) && !empty($review_user_detail[0]['first_name'])) 
+                                                          $fisrt_name=$review_user_detail[0]['first_name']; 
+                                                        $last_name=''; 
+                                                        if(isset($review_user_detail[0]['last_name']) && !empty($review_user_detail[0]['last_name'])) 
+                                                          $last_name=$review_user_detail[0]['last_name']; 
+                                                        $name=  Modules::run('api/string_length',$fisrt_name,'8000','',$last_name); echo $name;   
+                                                    }
+                                                    ?>
+                                                </td>
+                                            <?php }
+                                        }
+                                        ?>
                                         <td class="text-center">
                                             <?php echo $value['assign_status'];?>
                                         </td>
@@ -97,18 +143,19 @@ $(document).ready(function(){
             var id = $(this).attr('rel');
               $.ajax({
                         type: 'POST',
-                        url: "<?= ADMIN_BASE_URL?>assignments/assignments_detail",
-                        data: {'id': id},
+                        url: "<?= ADMIN_BASE_URL?>static_form/static_form_detail",
+                        data: {'id': id,'function':'<?=$this->uri->segment(3);?>'},
                         async: false,
                         success: function(test_body) {
+                        	 $("#truct_inspection .modal-footer").html('<button type="button" data-dismiss="modal" class="btn btn-primary  pull-right">Cancel</button>');
                             var test_desc = test_body;
                             $('#truct_inspection').modal('show');
                             $("#truct_inspection .modal-body").html(test_desc);
-                            if($('.form-body').find('.status_value').text()) {
-                                $("#truct_inspection .modal-footer").find('.status_button').remove();
-                                $("#truct_inspection .modal-footer").append('<button type="button" data-dismiss="modal" class="btn btn-primary  pull-right status_button" rel="'+id+'" status="'+$('.form-body').find('.status_value').text()+'" >'+$('.form-body').find('.status_value').text()+'</button>');
+                            var review_status = $("#truct_inspection").find(".review_status").text();
+                            if(review_status == true) {
+                                var review_text = $("#truct_inspection").find(".review_text").text();
+                                $("#truct_inspection .modal-footer").html('<button type="button" data-dismiss="modal" class="btn btn-primary  pull-right">Cancel</button> <button type="button" class="btn btn-primary pull-right submit_check" >'+review_text+'</button>');
                             }
-                            $('.form-body').find('.status_value').remove();
                             submit_status();
                         }
                     });

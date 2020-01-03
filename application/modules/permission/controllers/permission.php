@@ -107,7 +107,6 @@ function manage(){
 
 
 function submit($arr_rights='',$role_id='',$outlet_id=''){
-	
 	if($this->input->post('btnSubmit') == 'Save'){
 		
 		$arr_rights = $this->input->post('chkRight');

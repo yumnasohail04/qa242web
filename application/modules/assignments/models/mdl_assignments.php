@@ -31,6 +31,31 @@ class Mdl_assignments extends CI_Model {
         $this->db->order_by('assignments.assign_id asc');
         return $this->db->get();
     }
+    function get_checklisting_data($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having,$like){
+            $table = $outlet_id."_assignments assignments";
+            $offset=($page_number-1)*$limit;
+            $this->db->select($select);
+            $this->db->from($table);
+            $this->db->join($outlet_id.'_product_checks product_checks' , 'product_checks.id = assignments.checkid' , 'left');
+            $this->db->join($outlet_id.'_plants plants' , 'assignments.plant_no = plants.plant_id' , 'left');
+            if(!empty($group_by))
+                $this->db->group_by($group_by);
+            if(!empty($cols))
+                $this->db->where($cols);
+            if(!empty($or_where))
+                $this->db->where($or_where);
+            if(!empty($and_where))
+                $this->db->where($and_where);
+            if(!empty($having))
+                $this->db->having($having);
+            if(!empty($like))
+                $this->db->like($like,'%');
+            if($limit != 0)
+                $this->db->limit($limit, $offset);
+            $this->db->order_by($order_by);
+            $query=$this->db->get();
+            return $query;
+    }
     function _update($arr_col, $data) {
         $table = $this->get_table();
         $this->db->where($arr_col);
