@@ -26,9 +26,7 @@
                         <th  style="display:none;width:2%">S.No</th>
                         <th width="400px">Attribute`s Name</th>
                         <th width="400px">Type</th>
-                        <th width="400px">Min</th>
-                        <th width="400px">Max</th>
-                        <th width="400px">Target</th>
+                        <th width="400px">Selection Type</th>
 
 
                         
@@ -56,9 +54,7 @@
                                           <td class="table-checkbox" style="display:none;"><?php echo $i; ?></td>
                                             <td><?php echo $row->attribute_name; ?></td>
                                             <td><?php if($row->attribute_type=="Fixed") echo 'Text';else echo $row->attribute_type; ?></td>
-                                            <td><?php if($row->attribute_type=="Range")  echo $row->min; ?></td>
-                                            <td><?php if($row->attribute_type=="Range")  echo $row->max; ?></td>
-                                            <td><?php if($row->attribute_type=="Range") echo $row->target; ?></td>
+                                            <td><?php if($row->selection_type=="multi_select")  echo "Multi Select"; else echo "Single Select";?></td>
                                            
                                             <td class="table_action">
                                            

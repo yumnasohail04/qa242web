@@ -68,29 +68,31 @@
                                       </tbody>
                                     </table>
                                 </div>
-                       <legend> Documents</legend>
-                            <div class="form-body">
-                                     <table id="datatable1" class="table table-bordered">
-                                        <tbody class="table-body">
-                                            <?php
-                                            if(!empty($doc)){
-                                            foreach($doc as $key => $value){ ?>
-                                          <tr class="bg-col">
-                                              <th style="color: #6c9cde!important;">
-                                                  <?php echo $value['doc_name']; ?>:
-                                              </th>
-                                              <td>
-                                                  <a href="<?php echo BASE_URL.SUPPLIER_DOCUMENTS_PATH.$value['document'];?>" download><?php echo $value['document']; ?></a>
-                                              </td>
-                                          </tr>
-                                          <?php }
-                                          }else {
-                                          echo "No documents Uploaded";
-                                          } ?>
-                                      </tbody>
-                                    </table>
-                                </div>
-                        
+                               <legend> Documents</legend>
+                                    <div class="form-body">
+                                             <table id="datatable1" class="table table-bordered">
+                                                <tbody class="table-body">
+                                                    <?php
+                                                    if(!empty($doc)){
+                                                    foreach($doc as $key => $value){ ?>
+                                                  <tr class="bg-col">
+                                                      <th style="color: #6c9cde!important;">
+                                                          <?php echo $value['doc_name']; ?>:
+                                                      </th>
+                                                      <td <?php if($value['expiry_date']<= date('Y-m-d') ){?> style="color:red;"<?php }?>>
+                                                          <?php echo $value['expiry_date']; ?>
+                                                      </td>
+                                                      <td>
+                                                          <a href="<?php echo BASE_URL.SUPPLIER_DOCUMENTS_PATH.$value['document'];?>" download <?php if($value['expiry_date']<= date('Y-m-d') ){?> style="color:red;"<?php }?>><?php echo $value['document']; ?></a>
+                                                      </td>
+                                                  </tr>
+                                                  <?php }
+                                                  }else {
+                                                  echo "No documents Uploaded";
+                                                  } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
                         <!-- END FORM-->
                     </div>
                 </div>

@@ -35,7 +35,15 @@ class Mdl_perfectmodel extends CI_Model {
             return $query;
         }
         ////////////////////////////////////// Qa project api///////////
-        
+        function get_expiring_documents($where){
+            $this->db->select("supplier_documents.id as record_id,supplier_documents.doc_name, supplier_documents.s_doc_id,supplier_documents.expiry_date, supplier.*");
+            $this->db->from("supplier_documents");
+            $this->db->join("supplier","supplier_documents.supplier_id=supplier.id","LEFT");
+            $this->db->order_by("supplier_documents.id desc");
+            if(!empty($where))
+                $this->db->where($where);
+            return $this->db->get();
+        }
       ////////////////////////////// Qa project functions///////////
         function get_checks_lists_from_db($cols,$group_by,$table,$select,$page_number,$limit,$or_where,$and_where,$having,$like){
             $offset=($page_number-1)*$limit;

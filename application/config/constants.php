@@ -81,8 +81,6 @@ define('STATIC_FRONT_CSS_QUICKFOOD', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$fo
 define('FIRE_BASE_API_KEY', "AAAAZPpUz6U:APA91bHhJVWRU7T1UvKXeiJgC7fQJLqgMVZ1q7gJkVfecrdKSaxCcNdcCK8AzihdBvnq3SQFCZuwH5B1qBEUMTFP3Au1vqwFzutGBB_Ehdks6OcWs61vjmvHEJJkahNXXViAeOaYnb95");
 
 define('INSIGHTS_STATIC_IMAGE', 'Patteren Food.jpg');
-define('SUPPLIER_DOCUMENTS_PATH', 'uploads/supplier_documents/');
-define('INGREDIENT_DOCUMENTS_PATH', 'uploads/ingredient_documents/');
 //define('STATIC_FRONT_IMAGE', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname.'static/front/theme1/images/');
 
 
@@ -91,7 +89,8 @@ define('STATIC_ANALYTIC_CSS', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname
 define('STATIC_ANALYTIC_IMAGE', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname.'static/admin/analytic/images/');
 define('STATIC_ANALYTIC_JS', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname.'static/admin/analytic/js/');
 
-
+define('SUPPLIER_DOCUMENTS_PATH', 'uploads/supplier_documents/');
+define('INGREDIENT_DOCUMENTS_PATH', 'uploads/ingredient_documents/');
 
 
 define('ACTUAL_ASSIGNMENT_ANSWER_IMAGE_PATH', 'uploads/assignment_files/actual_images/');

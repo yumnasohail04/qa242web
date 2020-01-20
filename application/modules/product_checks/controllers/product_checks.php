@@ -44,6 +44,20 @@ date_default_timezone_set("Asia/karachi");
                 }
                 $where_attr['id']=$productid;
                 $master_attributes=$this->get_attriutes_list($update_id)->result_array();
+                foreach($master_attributes as $key => $ma)
+                {
+                    if($ma['possible_answers']=="other"){
+                        $sub_attributes=Modules::run('supplier/_get_data_from_db_table',array("opt_question_id" =>$ma['id'],"opt_delete"=>"0"),"attribute_other_options","id asc","","opt_option,opt_acceptance,id","")->result_array();
+                        $attr="";
+                        foreach($sub_attributes as $keys => $value)
+                        {
+                            $attr=$attr.$value['opt_option'];
+                            $attr=$attr."/";
+                        }
+                        $attr = rtrim($attr, "/");
+                        $master_attributes[$key]['possible_answers']=$attr;
+                    }
+                }
             }
             /*else{
                 $where_attr['id']=$productid;
@@ -232,13 +246,12 @@ date_default_timezone_set("Asia/karachi");
         $possible_answer=$this->input->post('possible_answers');
         $page_rank=$this->input->post('page_rank');
         
-     
-       
         $total=count($attribute_list);
         for ($i=0; $i< $total;  $i++) { 
             $where_attr['id']=$attribute_list[$i];
-            $arr_attr_data= $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('check_catagories_attributes.id'=>$attribute_list[$i]), 'id desc','check_catagories_attributes','id,attribute_name','1','0')->result_array();
+            $arr_attr_data= $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('check_catagories_attributes.id'=>$attribute_list[$i]), 'id desc','check_catagories_attributes','id,attribute_name,selection_type','1','0')->result_array();
             $attribute_name=$arr_attr_data[0]['attribute_name'];
+            $data['question_selection']=$arr_attr_data[0]['selection_type'];
             $data['checkid']=$checkid;
             $data['type']=$attribute_type[$i];
             $data['question']=$attribute_name;
@@ -247,7 +260,7 @@ date_default_timezone_set("Asia/karachi");
             //$insert_id=$this->insert_check_questions_db($data);
             $a=0;
             $insert_or_update=$this->insert_or_update(array("checkid"=>$checkid,"question"=>$attribute_name),$data,DEFAULT_OUTLET."_checks_questions");
-            
+            $slash=substr_count($possible_answer[$i], '/');
             $ans_data['question_id']=$insert_or_update;
             if($attribute_type[$i]=="Choice" ){
                 $ans_array=explode(" ",$possible_answer);
@@ -298,11 +311,6 @@ date_default_timezone_set("Asia/karachi");
                     $insert_answer_data[1]['is_acceptable']=0;
                     $insert_answer_data[1]['checkid']=$checkid;
                     $insert_answer_data[1]['question_id']=$insert_or_update;
-
-
- 
-
-
                 }
                 elseif($possible_answer[$i]=="cleaned/uncleaned"){
                     $insert_answer_data=array();
@@ -399,7 +407,23 @@ date_default_timezone_set("Asia/karachi");
                     $insert_answer_data[1]['is_acceptable']=0;
                     $insert_answer_data[1]['checkid']=$checkid;
                     $insert_answer_data[1]['question_id']=$insert_or_update;
-                }else{
+                }elseif($slash>1){
+                    $insert_answer_data=array();
+                    $sub_attributes=Modules::run('supplier/_get_data_from_db_table',array("opt_question_id" =>$attribute_list[$i],"opt_delete"=>"0"),"attribute_other_options","id asc","","opt_option,opt_acceptance,id","")->result_array();
+                    foreach($sub_attributes as $keys => $value)
+                    {
+                        $insert_answer_data[$keys]['possible_answer']=$value['opt_option'];
+                        $insert_answer_data[$keys]['min']=0;
+                        $insert_answer_data[$keys]['max']= 0;
+                        if($value['opt_acceptance']=="acceptable")
+                        {$insert_answer_data[$keys]['is_acceptable']=1;}
+                        else
+                        {$insert_answer_data[$keys]['is_acceptable']=0;}
+                        $insert_answer_data[$keys]['checkid']=$checkid;
+                        $insert_answer_data[$keys]['question_id']=$insert_or_update;
+                    }      
+                }
+                else{
 
                     $insert_answer_data=array();
                     $insert_answer_data[0]['possible_answer']='yes';
@@ -412,7 +436,6 @@ date_default_timezone_set("Asia/karachi");
 
                     
                 }
-                
                 //$this->insert_question_answer_data($ans_data);
                 if(!empty($insert_answer_data)){
                     foreach ($insert_answer_data as $key => $valueddd) {
@@ -475,8 +498,9 @@ date_default_timezone_set("Asia/karachi");
         $total=count($attribute_list);
         for ($i=0; $i< $total;  $i++) { 
             $where_attr['id']=$attribute_list[$i];
-            $arr_attr_data= $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('check_catagories_attributes.id'=>$attribute_list[$i]), 'id desc','check_catagories_attributes','id,attribute_name','1','0')->result_array();
+            $arr_attr_data= $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('check_catagories_attributes.id'=>$attribute_list[$i]), 'id desc','check_catagories_attributes','id,attribute_name,selection_type','1','0')->result_array();
             $attribute_name=$arr_attr_data[0]['attribute_name'];
+            $data['question_selection']=$arr_attr_data[0]['selection_type'];
             $data['checkid']=$checkid;
             $data['type']=$attribute_type[$i];
             $data['question']=$attribute_name;
@@ -484,7 +508,7 @@ date_default_timezone_set("Asia/karachi");
             //$insert_id=$this->insert_check_questions_db($data);
             $a=0;
             $insert_or_update=$this->insert_or_update(array("checkid"=>$checkid,"question"=>$attribute_name),$data,DEFAULT_OUTLET."_checks_questions");
-            
+            $slash=substr_count($possible_answer[$i], '/');
             $ans_data['question_id']=$insert_or_update;
             if($attribute_type[$i]=="Choice" ){
                 $ans_array=explode(" ",$possible_answer);
@@ -636,7 +660,24 @@ date_default_timezone_set("Asia/karachi");
                     $insert_answer_data[1]['is_acceptable']=0;
                     $insert_answer_data[1]['checkid']=$checkid;
                     $insert_answer_data[1]['question_id']=$insert_or_update;
-                }else{
+                }
+                elseif($slash>1){
+                    $insert_answer_data=array();
+                    $sub_attributes=Modules::run('supplier/_get_data_from_db_table',array("opt_question_id" =>$attribute_list[$i],"opt_delete"=>"0"),"attribute_other_options","id asc","","opt_option,opt_acceptance,id","")->result_array();
+                    foreach($sub_attributes as $keys => $value)
+                    {
+                        $insert_answer_data[$keys]['possible_answer']=$value['opt_option'];
+                        $insert_answer_data[$keys]['min']=0;
+                        $insert_answer_data[$keys]['max']= 0;
+                        if($value['opt_acceptance']=="acceptable")
+                        {$insert_answer_data[$keys]['is_acceptable']=1;}
+                        else
+                        {$insert_answer_data[$keys]['is_acceptable']=0;}
+                        $insert_answer_data[$keys]['checkid']=$checkid;
+                        $insert_answer_data[$keys]['question_id']=$insert_or_update;
+                    }      
+                }
+                else{
 
                     $insert_answer_data=array();
                     $insert_answer_data[0]['possible_answer']='yes';
@@ -649,7 +690,6 @@ date_default_timezone_set("Asia/karachi");
 
                     
                 }
-                
                 //$this->insert_question_answer_data($ans_data);
                 if(!empty($insert_answer_data)){
                     foreach ($insert_answer_data as $key => $valueddd) {
@@ -1142,8 +1182,22 @@ date_default_timezone_set("Asia/karachi");
         $update_id=$this->input->post('update_id');
 
         $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('check_cat_id'=>$cat_id,'delete_status'=>0), 'id asc','check_catagories_attributes','*','1','0')->result_array();
+        foreach($master_catagories as $key => $ma)
+        {
+            if($ma['possible_answers']=="other"){
+                $sub_attributes=Modules::run('supplier/_get_data_from_db_table',array("opt_question_id" =>$ma['id'],"opt_delete"=>"0"),"attribute_other_options","id asc","","opt_option,opt_acceptance,id","")->result_array();
+                $attr="";
+                foreach($sub_attributes as $keys => $value)
+                {
+                    $attr=$attr.$value['opt_option'];
+                    $attr=$attr."/";
+                }
+                $attr = rtrim($attr, "/");
+                $master_catagories[$key]['possible_answers']=$attr;
+            }
+        }
         $data['master_attributes']=$master_catagories;
-           for ($i = 1; $i <= 500; $i++) { 	$resultRank[$i] = $i; 	}
+        for ($i = 1; $i <= 500; $i++) { 	$resultRank[$i] = $i; 	}
         $data['rank'] = $resultRank;
         $data['update_id']=0;
         echo $this->load->view('check_attributes',$data,TRUE);
@@ -1199,7 +1253,21 @@ date_default_timezone_set("Asia/karachi");
         //////////////add new attributes///////////////
       function  get_new_attributs_list_from_db(){
              $cat_id=$this->input->post('subid');
-        $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('check_cat_id'=>$cat_id), 'id asc','check_catagories_attributes','*','1','0')->result_array();
+        $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('check_cat_id'=>$cat_id,'delete_status'=>0), 'id asc','check_catagories_attributes','*','1','0')->result_array();
+        foreach($master_catagories as $key => $ma)
+                {
+                    if($ma['possible_answers']=="other"){
+                        $sub_attributes=Modules::run('supplier/_get_data_from_db_table',array("opt_question_id" =>$ma['id'],"opt_delete"=>"0"),"attribute_other_options","id asc","","opt_option,opt_acceptance,id","")->result_array();
+                        $attr="";
+                        foreach($sub_attributes as $keys => $value)
+                        {
+                            $attr=$attr.$value['opt_option'];
+                            $attr=$attr."/";
+                        }
+                        $attr = rtrim($attr, "/");
+                        $master_catagories[$key]['possible_answers']=$attr;
+                    }
+                }
         $data['master_attributes']=$master_catagories;
         echo $this->load->view('addnew_attributes',$data,TRUE);
         }

@@ -470,7 +470,7 @@
                 </div>
                 <br>
                 <div>
-                    <button class="add_field_button btn btn-primary" style="float:right;margin-right: 30px;">Add more Attributes</button>
+                    <button class="add_field_button btn btn-primary" style="float:right;margin-right: 30px;">Add Supplier</button>
                 </div>
                 <br>
                 <div class="row">

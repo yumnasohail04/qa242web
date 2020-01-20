@@ -6,9 +6,6 @@
     background-color: white;
     color: #3a3f51;
   }
-  .disable_class {
-    display: none;
-  }
 </style>
 <div class="page-content-wrapper">
         <div class="row">
@@ -55,48 +52,26 @@
                                   	</div>
                                     <br><br>
                                     <div class="group_div" style="clear: both; padding-top: 10px;">
-                                      <div class="col-sm-12">
-                                          <div class="form-group">
-                                            <label class="col-sm-4 control-label">Plant</label>
-                                            <div class="col-sm-8">
-                                                <select  class="form-control plants_team validate_form" name="plants" required="required">
-                                                  <option  value="">Select</option>
-                                                  <?php
-                                                  if(!isset($plant))
-                                                    $plant = '';
-                                                  if(!isset($get_plants) || empty($get_plants))
-                                                    $get_plants = array();
-                                                  foreach ($get_plants as $value): 
-                                                  if($value['plant_status'] == '1' || $value['plant_id'] ==  $plant) { ?>
-                                                      <option value="<?=$value['plant_id']?>" <?php if($plant == $value['plant_id']) echo 'selected="selected"';?>><?=$value['plant_name']?>
-                                                      </option>
-                                                  <?php } endforeach ?>
-                                                </select>
-                                            </div>
-                                          </div>
-                                      </div>
-                                    </div>
-                                    <br><br>
-                                    <div class="group_line_div <?php if(!isset($line) || empty($line)) echo 'disable_class';?>" style="clear: both; padding-top: 10px;">
-                                      <div class="col-sm-12">
-                                      	<div class="form-group">
-                                        	<label class="col-sm-4 control-label">Line</label>
-                                        	<div class="col-sm-8">
-                                          		<select  class="form-control responsible_team validate_form" name="shift" required="required">
-                                                <?php 
-                                                  if(!empty($line) && !empty($get_lines)) {
-                                                    foreach ($get_lines as $value): 
-                                                      if($value['line_status'] == '1' || $value['line_id'] ==  $line) { ?>
-                                                          <option value="<?=$value['line_id']?>" <?php if($line == $value['line_id']) echo 'selected="selected"';?>><?=$value['line_name']?>
-                                                          </option>
-                                                      <?php }
-                                                    endforeach;
-                                                  }
-                                                ?>
-                                          		</select>
-                                        	</div>
-                                      	</div>
-                                      </div>
+                                        <div class="col-sm-12">
+                                          	<div class="form-group">
+                                            	<label class="col-sm-4 control-label">Line</label>
+                                            	<div class="col-sm-8">
+                                              		<select  class="form-control responsible_team validate_form" name="shift" required="required">
+                                                		<option  value="">Select</option>
+                                                		<?php
+                                                    if(!isset($line))
+                                                      $line = '';
+                                                		if(!isset($get_lines) || empty($get_lines))
+                                                   		$get_lines = array();
+                                                		foreach ($get_lines as $value): 
+                                                    if($value['line_status'] == '1' || $value['line_status'] ==  $line) ?>
+                                                  			<option value="<?=$value['line_id']?>" <?php if($line == $value['line_id']) echo 'selected="selected"';?>><?=$value['line_name']?>
+                                                  			</option>
+                                                		<?php endforeach ?>
+                                              		</select>
+                                            	</div>
+                                          	</div>
+                                        </div>
                                     </div>
                                     <input type="hidden" name="update_id" value="<?=$update_id;?>">
                                     <br><br>
@@ -136,10 +111,6 @@
         }
       }
     });
-  	if($('#selectboxing').find(":selected").val() == '' || $('#selectboxing').find(":selected").val() == null || $('#selectboxing').find(":selected").val() == 'undefined')
-      $('.btn.dropdown-toggle.selectpicker.btn-default.selectbox-class').addClass('red');
-    else
-      $('.btn.dropdown-toggle.selectpicker.btn-default.selectbox-class').removeClass('red');
     if($('.scheduledate').val() == '' || $('.scheduledate').val() == null || $('.scheduledate').val()== 'undefined')
   		$('.scheduledate').addClass('red');
   	else
@@ -165,27 +136,8 @@
         //viewMode: 'years',
         format:'MM/DD/YYYY'
     });
-  $(document).off("change", ".plants_team").on("change", ".plants_team", function (event) {
-    event.preventDefault();
-    var abc = $(this);
-    var plant = abc.val();
-    $('.group_line_div').addClass('disable_class');
-    if(plant == '' || plant == null || plant == 'undefined' || plant.toLowerCase() == 'select' ) {
-      $(".responsible_team").html('<option  value="">Select</option>');
-      showToastr("Please select the plant", false);
-    }
-    else {
-      $.ajax({
-        type: 'POST',
-        url: "<?php ADMIN_BASE_URL?>global_configuration/get_plant_lines",
-        data: {'plant': plant,'line':'<?=$line?>'},
-        async: false,
-        success: function(data) {
-          $('.group_line_div').removeClass('disable_class');
-          $(".responsible_team").html(data);
-        }
-      });
-    }
-  });
+  /*$('#datetimepicker6').datetimepicker({ 
+  	minDate: new Date()
+  }); */
 </script>
 

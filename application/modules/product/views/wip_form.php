@@ -109,7 +109,7 @@
                                 </div>
                             </div>
                         </div>
-                    	<div class="col-sm-5">
+                        <div class="col-sm-5">
                             <div class="form-group">
                                 <?php
                                 if(!isset($news[0]['document_name']))

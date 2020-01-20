@@ -360,7 +360,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                   $.ajax({
                     type: 'POST',
                     url: "<?= ADMIN_BASE_URL?>assignments/get_reassignment_detail",
-                    data: {'assign': '<?=$original_assign_id?>','user_id':'<?=$answered_user?>'},
+                    data: {'assign': <?=$original_assign_id?>,'user_id':'<?=$answered_user?>'},
                     async: false,
                     success: function(result) {
                       var datamain = $(result).find('datamain').html();

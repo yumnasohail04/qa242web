@@ -60,6 +60,7 @@ class Mdl_supplier extends CI_Model {
         $this->db->insert($table, $data);
             
     }
+    
     function _get_data_from_db_table($where,$table,$order_by,$group_by,$select,$limit)
     {
         $this->db->from($table);

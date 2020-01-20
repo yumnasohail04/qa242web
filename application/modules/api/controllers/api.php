@@ -6185,7 +6185,7 @@ function get_restaurant_catagories(){
                 
         }
     }
-    function string_length($first,$limit,$default_text,$second) {
+    function string_length($first,$limit,$default_text,$second='') {
         if(!isset($default_text))
             $default_text="";
         if(!isset($first))

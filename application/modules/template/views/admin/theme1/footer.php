@@ -137,13 +137,14 @@
 
    <!-- Modal Large-->
    <div id="myModalLarge" tabindex="-1" role="dialog" aria-labelledby="myModalLabelLarge" aria-hidden="true" class="modal fade">
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog modal-lg" >
          <div class="modal-content">
             <div class="modal-header">
                <button type="button" data-dismiss="modal" aria-label="Close" class="close">
                   <span aria-hidden="true">&times;</span>
                </button>
-              <h4 id="myModalLabel" class="modal-title"><?php $module = $this->uri->segment(2); 
+              <h4 id="myModalLabel" class="modal-title">
+              <?php $module = $this->uri->segment(2); 
                if ($module=='outlet') {
                  $modal_title=str_replace($module,"Mosque",$module); echo ucfirst($modal_title); }
                  else{
@@ -156,7 +157,8 @@
          </div>
       </div>
    </div>
- <div id="chat_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelLarge" aria-hidden="true" class="modal fade">
+   
+   <div id="chat_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelLarge" aria-hidden="true" class="modal fade">
       <div class="modal-dialog modal-lg" style="    bottom: 0px;position: absolute;right: 0;    margin-bottom: 0px;">
          <div class="modal-content">
             <div class="modal-header">

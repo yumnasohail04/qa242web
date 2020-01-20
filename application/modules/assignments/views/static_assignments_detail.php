@@ -147,7 +147,6 @@ $(document).ready(function(){
                         data: {'id': id,'function':'<?=$this->uri->segment(3);?>'},
                         async: false,
                         success: function(test_body) {
-                        	 $("#truct_inspection .modal-footer").html('<button type="button" data-dismiss="modal" class="btn btn-primary  pull-right">Cancel</button>');
                             var test_desc = test_body;
                             $('#truct_inspection').modal('show');
                             $("#truct_inspection .modal-body").html(test_desc);

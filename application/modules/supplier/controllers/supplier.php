@@ -23,12 +23,13 @@ date_default_timezone_set("Asia/karachi");
         $this->load->module('template');
         $this->template->admin($data);
     }
+    
     function create() {
         $update_id = $this->uri->segment(4);
         $data['doc'] = $this->_get_data_from_db_table(array("assign_to"=>"supplier","status"=>"1"),"document","","","id,doc_name","")->result_array();
         if (is_numeric($update_id) && $update_id != 0) {
             $data['news'] = $this->_get_data_from_db($update_id);
-            $data['uploaded_doc']=$this->_get_data_from_db_table(array("supplier_id"=>$update_id),"supplier_documents","","","id,doc_name,document","")->result_array();
+            $data['uploaded_doc']=$this->_get_data_from_db_table(array("supplier_id"=>$update_id),"supplier_documents","","","id,doc_name,document,expiry_date","")->result_array();
         } else {
             $data['news'] = $this->_get_data_from_post();
         }
@@ -81,7 +82,8 @@ date_default_timezone_set("Asia/karachi");
                             if(isset($itemInfo->document) && !empty($itemInfo->document)) 
                                 $this->delete_images_by_name(SUPPLIER_DOCUMENTS_PATH,$itemInfo->document);
                                 $this->delete_from_table(array("s_doc_id"=>$value['id'],"supplier_id"=>$update_id),"supplier_documents");
-                            $this->upload_dynamic_image(SUPPLIER_DOCUMENTS_PATH,$update_id,"news_main_page_file_$key",'document','id','supplier_documents',$value['id'],$value['doc_name']);
+                                $exp_date=$this->input->post("expiry_date_$key");
+                            $this->upload_dynamic_image(SUPPLIER_DOCUMENTS_PATH,$update_id,"news_main_page_file_$key",'document','id','supplier_documents',$value['id'],$value['doc_name'],$exp_date);
                         }
                 }
             }
@@ -94,7 +96,8 @@ date_default_timezone_set("Asia/karachi");
                 foreach($doc as $key => $value){
                     if(isset($_FILES["news_main_page_file_$key"]['size']) )
                         if($_FILES["news_main_page_file_$key"]['size'] > 0)
-                        $this->upload_dynamic_image(SUPPLIER_DOCUMENTS_PATH,$id,"news_main_page_file_$key",'document','id','supplier_documents',$value['id'],$value['doc_name']);
+                        $exp_date=$this->input->post("expiry_date_$key");
+                        $this->upload_dynamic_image(SUPPLIER_DOCUMENTS_PATH,$id,"news_main_page_file_$key",'document','id','supplier_documents',$value['id'],$value['doc_name'],$exp_date);
                 }
             }
             $this->send_email($id);
@@ -144,7 +147,8 @@ date_default_timezone_set("Asia/karachi");
         }
         return $randomString;
     }
-    function upload_dynamic_image($actual,$nId,$input_name,$image_field,$image_id_fild,$table,$s_doc_id,$doc_name) {
+    function upload_dynamic_image($actual,$nId,$input_name,$image_field,$image_id_fild,$table,$s_doc_id,$doc_name,$exp_date) {
+        
         $upload_image_file = $_FILES[$input_name]['name'];
         $upload_image_file = str_replace(' ', '_', $upload_image_file);
         $file_name = $doc_name.'_' . $nId . '_' . $upload_image_file;
@@ -159,9 +163,11 @@ date_default_timezone_set("Asia/karachi");
         if (isset($_FILES[$input_name])) {
             $this->upload->do_upload($input_name);
         }
+        if(!empty($exp_date))
+        $exp_date=date("Y-m-d", strtotime($exp_date));
         $upload_data = $this->upload->data();
         unset($data);unset($where);
-        $data = array($image_field => $file_name,"supplier_id"=>$nId,"s_doc_id"=>$s_doc_id,"doc_name"=>$doc_name);
+        $data = array($image_field => $file_name,"supplier_id"=>$nId,"s_doc_id"=>$s_doc_id,"doc_name"=>$doc_name,"expiry_date"=>$exp_date);
         $this->insert_or_update_user_review($data,$table);
     }
        function delete_images_by_name($actual_path) {
@@ -259,7 +265,7 @@ date_default_timezone_set("Asia/karachi");
     function detail() {
         $update_id = $this->input->post('id');
         $data['post'] = $this->_get_data_from_db($update_id);
-        $data['doc'] = $this->_get_data_from_db_table(array("supplier_id"=>$update_id),"supplier_documents","","","doc_name,document","")->result_array();
+        $data['doc'] = $this->_get_data_from_db_table(array("supplier_id"=>$update_id),"supplier_documents","","","doc_name,document,expiry_date","")->result_array();
         $data['update_id'] = $update_id;
         $this->load->view('detail', $data);
     }

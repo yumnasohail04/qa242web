@@ -22,9 +22,9 @@ class Assignments extends MX_Controller
         $data['page_number'] = 1; 
         $data['limit'] = 20;
         $where['assign_status']="Open";
-        $data['news'] = $this->get_checklisting_data(array("assign_status"=>'Open',"assignments.start_datetime >="=>date('Y-m-d ').'00:00:00',"assignments.end_datetime <="=>date('Y-m-d ').'23:59:59'), 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype,plant_name,product_id',$data['page_number'],$data['limit'],'','','','');
+        $data['news'] = $this->get_checklisting_data(array("assign_status"=>'Open',"assignments.start_datetime >="=>date('Y-m-d ').'00:00:00',"assignments.end_datetime <="=>date('Y-m-d ').'23:59:59'), 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype',$data['page_number'],$data['limit'],'','','','');
         if(!empty($data['news']->result_array())) {
-            $data['total_pages'] = $this->get_checklisting_data(array("assign_status"=>'Open',"assignments.start_datetime >="=>date('Y-m-d ').'00:00:00',"assignments.end_datetime <="=>date('Y-m-d ').'23:59:59'), 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype,plant_name,product_id','1','0','','','','')->num_rows();
+            $data['total_pages'] = $this->get_checklisting_data(array("assign_status"=>'Open',"assignments.start_datetime >="=>date('Y-m-d ').'00:00:00',"assignments.end_datetime <="=>date('Y-m-d ').'23:59:59'), 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype','1','0','','','','')->num_rows();
         }
         $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
         $data['groups'] = $groups;
@@ -39,9 +39,9 @@ class Assignments extends MX_Controller
         $data['page_number'] = 1; 
         $data['limit'] = 20;
         $where['assign_status']="Open";
-        $data['news'] = $this->get_checklisting_data(array("assignments.start_datetime >="=>date('Y-m-d ').'00:00:00',"assignments.end_datetime <="=>date('Y-m-d ').'23:59:59'), 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype,plant_name,product_id',$data['page_number'],$data['limit'],'','','','');
+        $data['news'] = $this->get_checklisting_data(array("assignments.start_datetime >="=>date('Y-m-d ').'00:00:00',"assignments.end_datetime <="=>date('Y-m-d ').'23:59:59'), 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype',$data['page_number'],$data['limit'],'','','','');
         if(!empty($data['news']->result_array())) {
-            $data['total_pages'] = $this->get_checklisting_data(array("assignments.start_datetime >="=>date('Y-m-d ').'00:00:00',"assignments.end_datetime <="=>date('Y-m-d ').'23:59:59'), 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype,plant_name,product_id','1','0','','','','')->num_rows();
+            $data['total_pages'] = $this->get_checklisting_data(array("assignments.start_datetime >="=>date('Y-m-d ').'00:00:00',"assignments.end_datetime <="=>date('Y-m-d ').'23:59:59'), 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype','1','0','','','','')->num_rows();
         }
         $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
         $data['groups'] = $groups;
@@ -55,9 +55,9 @@ class Assignments extends MX_Controller
         $data['total_pages'] = 0; 
         $data['page_number'] = 1; 
         $data['limit'] = 20;
-        $data['news'] = $this->get_checklisting_data(array("assign_status"=>'OverDue'), 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype,plant_name,product_id',$data['page_number'],$data['limit'],'','','','');
+        $data['news'] = $this->get_checklisting_data(array("assign_status"=>'OverDue'), 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype',$data['page_number'],$data['limit'],'','','','');
         if(!empty($data['news']->result_array())) {
-            $data['total_pages'] = $this->get_checklisting_data(array("assign_status"=>'OverDue'), 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype,plant_name,product_id','1','0','','','','')->num_rows();
+            $data['total_pages'] = $this->get_checklisting_data(array("assign_status"=>'OverDue'), 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype','1','0','','','','')->num_rows();
         }
         $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
         $data['groups'] = $groups;
@@ -65,6 +65,40 @@ class Assignments extends MX_Controller
         $data['view_file'] = 'check_listing';
         $this->load->module('template');
         $this->template->admin($data);
+    }
+     function delete_current_date_checks() {
+        $outlet_id = '1';
+        $start_time = date('Y-m-d H:i:s',strtotime('2019-01-01 00:00:00'));
+        $end_time= date('Y-m-d H:i:s');
+        $checks = Modules::run('admin_api/get_checks_for_delete',array("assignments.start_datetime >="=>$start_time),'assign_id desc','assign_id',$outlet_id,'checkid,assign_id,checktype,assign_status','1','0','(lower(assign_status)="overdue")','','')->result_array();
+        
+        if(isset($checks) && !empty($checks)) {
+            foreach ($checks as $key => $ck):
+                if(strtolower($ck['checktype']) == 'product attribute') {
+                    $questions = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("checkid"=>$ck['checkid'],"assignment_id"=>$ck['assign_id']),'question_id desc','question_id',$outlet_id.'_checks_questions','question_id','1','0','','','')->result_array();
+                    echo "<br><br><br>questions<br>";
+                    print_r($questions);
+                    echo "<br>";
+                    if(!empty($questions)) {
+                        foreach ($questions as $key => $qa):
+                            echo "<br><br><br>delete specific questions<br>";
+                            print_r($qa);
+                            echo "<br>";
+                            if(isset($qa['question_id']) && !empty($qa['question_id']))
+                                Modules::run('api/delete_from_specific_table',array("question_id"=>$qa['question_id']),$outlet_id."_checks_answers");
+
+                            Modules::run('api/delete_from_specific_table',array("question_id"=>$qa['question_id']),$outlet_id."_checks_questions");
+                        endforeach;
+                    }
+                    else
+                        echo "<br><br>no questions available of current check  ".$ck['checkid']."<br>";
+                }
+                Modules::run('api/delete_from_specific_table',array("assign_id"=>$ck['assign_id']),$outlet_id."_assignments");
+            endforeach;
+        }
+        else
+            echo "<br><br>no checks available during start datetime ".$start_time." and end datetime ".$end_time."<br>";
+        redirect(ADMIN_BASE_URL.'assignments/overdue_checks');
     }
     function pending_review() {
         $where['assign_status']="Review";
@@ -100,12 +134,7 @@ class Assignments extends MX_Controller
         $data['page_number'] = 1; 
         $data['limit'] = 20;
         $user_data = $this->session->userdata('user_data');
-    	$or_where = '(review_team ="'.$user_data['group'].'" OR  review_team ="'.$user_data['second_group'].'")';
-        if(!empty($user_data['role'])) {
-            if(strtolower($user_data['role']) == 'admin')
-                $or_where = '';
-        }
-        $res = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Pending"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team',$data['page_number'],$data['limit'],$or_where,'','')->result_array();
+        $res = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Pending"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team',$data['page_number'],$data['limit'],'(review_team ="'.$user_data['group'].'" OR  review_team ="'.$user_data['second_group'].'")','','')->result_array();
         $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
         foreach($res as $key=>$value) {
             $r_user = Modules::run('api/_get_specific_table_with_pagination_and_where',array("sf_id"=>$value['check_id']), 'sf_id desc',DEFAULT_OUTLET.'_static_form','sf_name','','','','','')->result_array();
@@ -128,7 +157,7 @@ class Assignments extends MX_Controller
             }
             $res[$key]['group'] = $text;
         }
-        $data['total_pages'] = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Pending"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team','1','0',$or_where,'','')->num_rows();
+        $data['total_pages'] = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Pending"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team','1','0','(review_team ="'.$user_data['group'].'" OR  review_team ="'.$user_data['second_group'].'")','','')->num_rows();
         $data['result'] = $res;
         $data['assign_status'] = "Pending";
         $data['view_file'] = 'static_assignments_detail';
@@ -140,12 +169,7 @@ class Assignments extends MX_Controller
         $data['page_number'] = 1; 
         $data['limit'] = 20;
     	$user_data = $this->session->userdata('user_data');
-    	$or_where = '(approval_team ="'.$user_data['group'].'" OR  approval_team ="'.$user_data['second_group'].'")';
-        if(!empty($user_data['role'])) {
-            if(strtolower($user_data['role']) == 'admin')
-                $or_where = '';
-        }
-        $res = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Reviewed"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team,review_user',$data['page_number'],$data['limit'],$or_where,'','')->result_array();
+        $res = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Reviewed"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team,review_user',$data['page_number'],$data['limit'],'(approval_team ="'.$user_data['group'].'" OR  approval_team ="'.$user_data['second_group'].'")','','')->result_array();
         $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
         foreach($res as $key=>$value) {
             $r_user = Modules::run('api/_get_specific_table_with_pagination_and_where',array("sf_id"=>$value['check_id']), 'sf_id desc',DEFAULT_OUTLET.'_static_form','sf_name','','','','','')->result_array();
@@ -168,7 +192,7 @@ class Assignments extends MX_Controller
             }
             $res[$key]['group'] = $text;
         }
-        $data['total_pages'] = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Reviewed"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team,review_user','1','0',$or_where,'','')->num_rows();
+        $data['total_pages'] = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>"Reviewed"), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team,review_user','1','0','(approval_team ="'.$user_data['group'].'" OR  approval_team ="'.$user_data['second_group'].'")','','')->num_rows();
         $data['result'] = $res;
         $data['assign_status'] = "Reviewed";
         $data['view_file'] = 'static_assignments_detail';
@@ -215,40 +239,26 @@ class Assignments extends MX_Controller
         $startdate = $this->input->post('startdate');
         $enddate = $this->input->post('enddate');
         $data['assign_status'] = $assign_status = $this->input->post('assign_status');
-    	if(empty($startdate) || empty($enddate))
-        	$check_start_end = true;
-    	else
-        	$check_start_end = false;
         if(empty($startdate))
             $startdate=date('Y-m-d');
+        $startdate=$startdate.' 00:00:00';
         if(empty($enddate))
             $enddate=date('Y-m-d');
-        $startdate = date('Y-m-d', strtotime($startdate));
-        $enddate = date('Y-m-d', strtotime($enddate));
+        $enddate=$enddate.' 23:59:59';
+        $startdate = date('Y-m-d H:i:s', strtotime($startdate));
+        $enddate = date('Y-m-d H:i:s', strtotime($enddate));
         $data['page_number'] = $this->input->post('page_number');
         if(empty($data['page_number']))
             $data['page_number'] = '1';
         $data['limit'] = $this->input->post('limit'); 
         $data['total_pages'] = 0;
         $user_data = $this->session->userdata('user_data');
-        if(strtolower($assign_status) == 'pending') {
-        	if($check_start_end == false)
-            	$or_where = '(`complete_datetime` >= "'.$startdate.' 00:00:00" AND `complete_datetime` <="'.$enddate.' 23:59:59" AND (review_team ="'.$user_data['group'].'" OR  review_team ="'.$user_data['second_group'].'"))';
-        	else
-            	$or_where = '(review_team ="'.$user_data['group'].'" OR  review_team ="'.$user_data['second_group'].'")';
-        }
-        elseif(strtolower($assign_status) == 'reviewed') {
-        	if($check_start_end == false)
-            	$or_where = '(`review_datetime` >= "'.$startdate.' 00:00:00" AND `review_datetime` <="'.$enddate.' 23:59:59"  AND (approval_team ="'.$user_data['group'].'" OR  approval_team ="'.$user_data['second_group'].'"))';
-        	else
-            	$or_where = '(approval_team ="'.$user_data['group'].'" OR  approval_team ="'.$user_data['second_group'].'")';
-        }
-        elseif(strtolower($assign_status) == 'approved') {
-        	if($check_start_end == false)
-            	$or_where = '(`approval_datetime` >= "'.$startdate.' 00:00:00" AND `approval_datetime` <="'.$enddate.' 23:59:59")';
-        	else
-            	$or_where = "";
-        }
+        if(strtolower($assign_status) == 'pending')
+            $or_where = '(`complete_datetime` >= "'.$startdate.' 00:00:00" AND `complete_datetime` <="'.$enddate.' 23:59:59" AND (review_team ="'.$user_data['group'].'" OR  review_team ="'.$user_data['second_group'].'"))';
+        elseif(strtolower($assign_status) == 'reviewed')
+            $or_where = '(`review_datetime` >= "'.$startdate.' 00:00:00" AND `review_datetime` <="'.$enddate.' 23:59:59"  AND (approval_team ="'.$user_data['group'].'" OR  approval_team ="'.$user_data['second_group'].'"))';
+        elseif(strtolower($assign_status) == 'approved')
+            $or_where = '(`approval_datetime` >= "'.$startdate.' 00:00:00" AND `approval_datetime` <="'.$enddate.' 23:59:59")';
         else
             $or_where = "";
         $res = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>$assign_status), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team,review_user,approval_user',$data['page_number'],$data['limit'],$or_where,'','')->result_array();
@@ -909,9 +919,9 @@ class Assignments extends MX_Controller
             $where['assignments.start_datetime >=']= $startdate;
             $where['assignments.end_datetime <=']= $enddate;
         }
-        $data['news'] = $this->get_checklisting_data($where, 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype,plant_name,product_id',$data['page_number'],$data['limit'],'','','',$like_search);
+        $data['news'] = $this->get_checklisting_data($where, 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype',$data['page_number'],$data['limit'],'','','',$like_search);
         if(!empty($data['news']->result_array()))
-            $data['total_pages'] = $this->get_checklisting_data($where, 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype,plant_name,product_id','1','0','','','',$like_search)->num_rows();
+            $data['total_pages'] = $this->get_checklisting_data($where, 'assign_id','assign_id',DEFAULT_OUTLET,'assignments.* ,product_checks.checkname,product_checks.checktype','1','0','','','',$like_search)->num_rows();
         $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
         $data['groups'] = $groups;
     	$data['program_type'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id !="=>"12"), 'program_types.name asc','program_types.id',DEFAULT_OUTLET.'_program_types as program_types','program_types.id as program_id,program_types.name as program_name, program_types.status as program_status','1','0','','','')->result_array();
@@ -1271,7 +1281,6 @@ class Assignments extends MX_Controller
                 $data['reassign_questions'] = $this->get_assignment_question_detail(array("assignment_answer.assignment_id"=>$reassign_id), 'assign_ans_id desc','assign_ans_id','assignment_answer.question_id,assignment_answer.answer_id,assignment_answer.comments,assignment_answer.range,assignment_answer.is_acceptable,assignment_answer.answer_type,checks_questions.question','1','0','','','')->result_array();
             }
         }
-    	$review_approval = false;
         $sixten_groups = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("role"=>'116'),'id desc','id',DEFAULT_OUTLET.'_groups','id','1','0','','','')->result_array();
         $seventen_groups = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("role"=>'117'),'id desc','id',DEFAULT_OUTLET.'_groups','id','1','0','','','')->result_array();
         if(!empty($sixten_groups) && !empty($seventen_groups)){

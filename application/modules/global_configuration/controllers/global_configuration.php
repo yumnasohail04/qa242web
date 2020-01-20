@@ -88,7 +88,7 @@ class Global_configuration extends MX_Controller
         for ($i=0; $i <=6; $i++) { 
           $temp['date'] = date('m-d-Y', strtotime($week_start));
           $temp['day'] = date('l', strtotime($week_start));
-          $temp['data'] = $this->get_product_schedules_from_db(array("ps_date >="=>$week_start,"ps_end_date <="=>$week_start),'ps_date desc','ps_id',DEFAULT_OUTLET,'product_title,ps_line,ps_id,ps_product,navision_no,product_type,storage_type,ps_date,plant_name,plant_id','1','0','','','')->result_array();
+          $temp['data'] = $this->get_product_schedules_from_db(array("ps_date >="=>$week_start,"ps_end_date <="=>$week_start),'ps_date desc','ps_id',DEFAULT_OUTLET,'product_title,ps_line,ps_id,ps_product,navision_no,product_type,storage_type,ps_date','1','0','','','')->result_array();
           $week_start = date('Y-m-d',strtotime($week_start . "+1 days"));
           $temp_product[] = $temp;
           if(!empty($temp['data']))
@@ -107,7 +107,7 @@ class Global_configuration extends MX_Controller
             for ($i=0; $i <=6; $i++) { 
               $temp['date'] = date('m-d-Y', strtotime($week_start));
               $temp['day'] = date('l', strtotime($week_start));
-              $temp['data'] = $this->get_product_schedules_from_db(array("ps_date >="=>$week_start,"ps_end_date <="=>$week_start),'ps_date desc','ps_id',DEFAULT_OUTLET,'product_title,ps_line,ps_id,ps_product,navision_no,product_type,storage_type,ps_date,plant_name,plant_id','1','0','','','')->result_array();
+              $temp['data'] = $this->get_product_schedules_from_db(array("ps_date >="=>$week_start,"ps_end_date <="=>$week_start),'ps_date desc','ps_id',DEFAULT_OUTLET,'product_title,ps_line,ps_id,ps_product,navision_no,product_type,storage_type,ps_date','1','0','','','')->result_array();
               $week_start = date('Y-m-d',strtotime($week_start . "+1 days"));
               $temp_product[] = $temp;
               unset($temp);
@@ -118,7 +118,7 @@ class Global_configuration extends MX_Controller
       $data['line_plants'] = Modules::run('api/_get_specific_table_with_pagination',array('plant_status'=>'1'), 'plant_id asc',DEFAULT_OUTLET.'_plants','plant_id,plant_name,plant_status','1','0')->result_array();
       $data['all_plants'] = Modules::run('api/_get_specific_table_with_pagination',array(), 'plant_id asc',DEFAULT_OUTLET.'_plants','plant_id,plant_name,plant_status','1','0')->result_array();
       $data['lines'] = Modules::run('api/_get_specific_table_with_pagination',array('line_status'=>'1'), 'line_id asc',DEFAULT_OUTLET.'_lines','line_id,line_name,line_status','1','0')->result_array();
-      $data['all_lines'] = Modules::run('api/_get_specific_table_with_pagination',array('line_status'=>'1'), 'line_id asc',DEFAULT_OUTLET.'_lines','line_id,line_name,line_status','1','0')->result_array();
+      $data['all_lines'] = Modules::run('api/_get_specific_table_with_pagination',array(), 'line_id asc',DEFAULT_OUTLET.'_lines','line_id,line_name,line_status','1','0')->result_array();
       $data['shifts'] = Modules::run('api/_get_specific_table_with_pagination',array('shift_status'=>'1'), 'shift_id asc',DEFAULT_OUTLET.'_shifts','shift_id,shift_name,shift_status','1','0')->result_array();
       $shift_timing = Modules::run('api/_get_specific_table_with_pagination',array('st_status'=>'1'), 'st_id asc',DEFAULT_OUTLET.'_shift_timing','st_shift,st_day,st_start,st_end,st_id','1','0')->result_array();
       if(!empty($shift_timing)) {
@@ -183,7 +183,7 @@ class Global_configuration extends MX_Controller
         $timezone = $this->input->post('timezone');
         if(isset($timezone) && !empty($timezone)) {
           $api_status = true;
-        $message = "Time-Zone changed";
+        $message = "TimeZone chnaged";
           Modules::run('api/update_specific_table',array("outlet_id"=>DEFAULT_OUTLET),array("timezones"=>$timezone),'general_setting');
         }
         header('Content-Type: application/json');
@@ -266,10 +266,7 @@ class Global_configuration extends MX_Controller
       $data['selected_product'] = $this->input->post('product');
       $data['line'] = $this->input->post('line');
       $data['products'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("status" =>'1'),'id desc','id',DEFAULT_OUTLET.'_product','id,product_title,navision_no','1','0','','','')->result_array();
-      $data['plant'] = $this->input->post('plant');
-      $data['get_plants'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array(),'plant_id desc','plant_id',DEFAULT_OUTLET.'_plants','plant_id,plant_name,plant_status','1','0','','','')->result_array();
-      if(!empty($data['line']) && !empty($data['plant']))
-        $data['get_lines'] = $this->get_lines_by_plant(array("lp_plant"=>$data['plant']),'lp_id desc','lp_id',DEFAULT_OUTLET,'line_id,line_name,line_status','1','0','','','')->result_array();
+      $data['get_lines'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array(),'line_id desc','line_id',DEFAULT_OUTLET.'_lines','line_id,line_name,line_status','1','0','','','')->result_array();
       $this->load->view('product_schedule',$data);
     }
     function submit_plant_data() {
@@ -279,13 +276,6 @@ class Global_configuration extends MX_Controller
       else
         Modules::run('api/insert_or_update',array("plant_name"=>$this->input->post('plant_name')),array("plant_name"=>$this->input->post('plant_name')),DEFAULT_OUTLET.'_plants');
       redirect(ADMIN_BASE_URL.'global_configuration');
-    }
-	function get_plant_lines() {
-      $plant = $this->input->post('plant');
-      $data['line'] = $this->input->post('line');
-      if(!empty($plant))
-        $data['get_lines'] = $this->get_lines_by_plant(array("lp_plant"=>$plant),'lp_id desc','lp_id',DEFAULT_OUTLET,'line_id,line_name,line_status','1','0','','','')->result_array();
-      $this->load->view('plant_lines',$data);
     }
     function submit_line_data() {
       $update_id = $this->input->post('update_id');
@@ -324,15 +314,15 @@ class Global_configuration extends MX_Controller
     }
     function submit_product_reschedule() {
       $product = $this->input->post('product_name');
-      $enddate = $date = date('Y-m-d', strtotime($this->input->post('scheduledate')));
+      $date = date('Y-m-d', strtotime($this->input->post('scheduledate')));
+      $enddate = date('Y-m-d', strtotime($this->input->post('enddate')));
       $shift = $this->input->post('shift');
-      $plants = $this->input->post('plants');
       $update_id = $this->input->post('update_id');
-      if(!empty($product) && !empty($date) && !empty($shift) && !empty($enddate) && !empty($plants))  {
+      if(!empty($product) && !empty($date) && !empty($shift) && !empty($enddate))  {
         if(!empty($update_id))
-          Modules::run('api/insert_or_update',array("ps_id"=>$update_id),array("ps_product"=>$product,"ps_date"=>$date,"ps_end_date"=>$date,"ps_line"=>$shift,"ps_plant"=>$plants),DEFAULT_OUTLET.'_product_schedules');
+          Modules::run('api/insert_or_update',array("ps_id"=>$update_id),array("ps_product"=>$product,"ps_date"=>$date,"ps_end_date"=>$date,"ps_line"=>$shift),DEFAULT_OUTLET.'_product_schedules');
         else
-          Modules::run('api/insert_or_update',array("ps_product"=>$product,"ps_date"=>$date,"ps_end_date"=>$enddate,"ps_plant"=>$plants,"ps_line"=>$shift),array("ps_product"=>$product,"ps_date"=>$date,"ps_end_date"=>$date,"ps_line"=>$shift,"ps_plant"=>$plants),DEFAULT_OUTLET.'_product_schedules');
+          Modules::run('api/insert_or_update',array("ps_product"=>$product,"ps_date"=>$date,"ps_end_date"=>$enddate),array("ps_product"=>$product,"ps_date"=>$date,"ps_end_date"=>$date,"ps_line"=>$shift),DEFAULT_OUTLET.'_product_schedules');
       }
       redirect(ADMIN_BASE_URL.'global_configuration');
     }
@@ -365,29 +355,15 @@ class Global_configuration extends MX_Controller
                 $store_date = date('Y-m-d', strtotime($date));
               } 
               if($checking == true) {
-                $next_checking = false;
-                $plant_id = $line_id = "";
                 $line = $worksheet->getCellByColumnAndRow(1, $row)->getValue();
-                $line_name = preg_replace('/[^0-9]/', '', $line);
-                $line_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("lower(line_name)"=>$line_name),'line_id desc','line_id',DEFAULT_OUTLET.'_lines','line_id','1','1','','','')->row_array();
-              if(isset($line_detail['line_id']) && !empty($line_detail['line_id'])) {
-                  $line_id = $line_detail['line_id'];
-                  $plant_name = substr(preg_replace('/[^a-zA-Z]/', '', $line), 0, 2);
-                  $plant_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("lower(plant_name)"=>$plant_name),'plant_id desc','plant_id',DEFAULT_OUTLET.'_plants','plant_id','1','1','','','')->row_array();
-                  if(isset($plant_detail['plant_id']) && !empty($plant_detail['plant_id'])) {
-                    $plant_id = $plant_detail['plant_id'];
-                    $next_checking = true;
-                  }
-                }
                 $navigation_number = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
-                if(!empty($line) && !empty($navigation_number) && !empty($store_date) && $next_checking == true) {
+                if(!empty($line) && !empty($navigation_number) && !empty($store_date) && $storing_check == true) {
                   $line = substr($line, -1);
                   $counter ++;
                   $navigation_number = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
                   $product = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("navision_no"=>$navigation_number),'id desc','id',DEFAULT_OUTLET.'_product','id','1','0','','','')->result_array();
-
-                if(!empty($product[0]['id']))
-                    Modules::run('api/insert_or_update',array("ps_product"=>$product[0]['id'],"ps_date"=>$store_date,"ps_end_date"=>$store_date),array("ps_product"=>$product[0]['id'],"ps_date"=>$store_date,"ps_end_date"=>$store_date,"ps_line"=>$line_id ,"ps_plant"=>$plant_id),DEFAULT_OUTLET.'_product_schedules');
+                  if(!empty($product[0]['id']))
+                    Modules::run('api/insert_or_update',array("ps_product"=>$product[0]['id'],"ps_date"=>$store_date,"ps_end_date"=>$store_date),array("ps_product"=>$product[0]['id'],"ps_date"=>$store_date,"ps_end_date"=>$store_date,"ps_line"=>$line),DEFAULT_OUTLET.'_product_schedules');
                 }
               }
             }
@@ -542,7 +518,7 @@ class Global_configuration extends MX_Controller
         $counter = 0;
         if(isset($startdate) && !empty($enddate)) {
           for ($startdate; $startdate <= $enddate; $startdate = date('Y-m-d',strtotime($startdate . "+1 days"))) {
-            $check_data = $this->get_product_schedules_from_db(array(),'ps_date desc','ps_id',DEFAULT_OUTLET,'product_title,ps_line,ps_id,ps_product,navision_no,product_type,storage_type,ps_date,plant_name,plant_id','1','0','("'.$startdate.'" BETWEEN `ps_date` and `ps_end_date`)','','')->result_array();
+            $check_data = $this->get_product_schedules_from_db(array(),'ps_date desc','ps_id',DEFAULT_OUTLET,'product_title,ps_line,ps_id,ps_product,navision_no,product_type,storage_type,ps_date','1','0','("'.$startdate.'" BETWEEN `ps_date` and `ps_end_date`)','','')->result_array();
             if(!empty($check_data)) {
               $counter++;
               if($counter >= $calculate_start and $counter <= ($calculate_start+$data['limit']-1)) {
@@ -589,10 +565,5 @@ class Global_configuration extends MX_Controller
             $this->load->model('mdl_global_configuration');
         $query = $this->mdl_global_configuration->get_product_schedules_from_db($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where,$and_where,$having);
         return $query;
-    }
-	function get_lines_by_plant($cols, $order_by,$group_by='',$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having=''){
-      $this->load->model('mdl_global_configuration');
-      $query = $this->mdl_global_configuration->get_lines_by_plant($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where,$and_where,$having);
-      return $query;
     }
 }

@@ -42,7 +42,6 @@ class Admin_api extends MX_Controller {
         $api_key = $this->check_developer_api_key();
         $document_name = "";
         $data= array();
-        $new_message = 0;
         if($api_key['key_status'] == true) {
             if(!empty($username) && !empty($password)) {
                 $row= Modules::run('api/_get_specific_table_with_pagination',array("user_name" =>$username,"password" =>$password,"status"=>"1"),'id desc','users','id,user_name,group,outlet_id,user_image,second_group,phone,first_name,last_name,email','1','1')->row();
@@ -124,37 +123,9 @@ class Admin_api extends MX_Controller {
                                             $data['groups'][1]['status'] = $sec_status;
                                             $data['groups'][1]['role'] = strtolower($sec_role);
                                             $data['groups'][1]['primary'] = false;
-                                            $general_setting = Modules::run('api/_get_specific_table_with_pagination',array('outlet_id' => $data['outlet_id']),'id asc','general_setting','document_name','1','1')->result_array();
+                                        	$general_setting = Modules::run('api/_get_specific_table_with_pagination',array('outlet_id' => $data['outlet_id']),'id asc','general_setting','document_name','1','1')->result_array();
                                             if (isset($general_setting[0]['document_name']) && !empty($general_setting[0]['document_name']))
                                                 $document_name = $general_setting[0]['document_name'];
-                                            $counter_check = false;
-                                            if(!empty($row->group)) {
-                                                $counter = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("group_id"=>$row->group,"message_to"=>$row->id,"message_status"=>"1","message_from !="=>"0"),'chat_id desc','chat_id',$row->outlet_id.'_chat_detail','chat_id','1','0','','','')->num_rows();
-                                                if(!empty($counter)) {
-                                                    $counter_check = ture;
-                                                    $new_message = 1;
-                                                }
-                                            }
-                                            if(!empty($row->second_group) && $counter_check == false) {
-                                                $counter = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("group_id"=>$row->second_group,"message_to"=>$row->id,"message_status"=>"1","message_from !="=>"0"),'chat_id desc','chat_id',$row->outlet_id.'_chat_detail','chat_id','1','0','','','')->num_rows();
-                                                if(!empty($counter)) {
-                                                    $counter_check = ture;
-                                                    $new_message = 1;
-                                                }
-                                            }
-                                            if($counter_check == false) {
-                                                $group_users = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("outlet_id" =>$row->outlet_id,"status"=>"1",'id !='=>$row->id),'id desc','id','users','id,first_name,last_name,user_image,is_online','1','0','','','')->result_array();    
-                                                if(!empty($group_users)) {
-                                                    foreach ($group_users as $key => $gc):
-                                                        $counter = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("group_id"=>'0',"message_to"=>$row->id,"message_status"=>"1","message_from"=>$gc['id']),'chat_id desc','chat_id',$row->outlet_id.'_chat_detail','chat_id','1','0','','','')->num_rows();
-                                                        if(!empty($counter)) {
-                                                            $counter_check = ture;
-                                                            $new_message = 1;
-                                                            break;
-                                                        }
-                                                    endforeach;
-                                                }
-                                            }
                                         }
                                         else
                                             $message = "Please change the role of group, contact to admin";
@@ -181,7 +152,7 @@ class Admin_api extends MX_Controller {
         else
             $message = $api_key['key_message'];
         header('Content-Type: application/json');
-        echo json_encode(array("status"=>$status,"message"=>$message,"data"=>$data,'document_name'=>$document_name,"new_message"=>$new_message));
+        echo json_encode(array("status"=>$status,"message"=>$message,"data"=>$data,'document_name'=>$document_name));
     }
     function user_profile_update() {
         $status=false;
@@ -507,7 +478,6 @@ class Admin_api extends MX_Controller {
         $outlet_id = $this->input->post("outlet_id");
         $api_key = $this->check_user_api_key();
         $key = $this->input->post('session_token');
-        $total_counter = 0;
         $left_panel = array();
         if($api_key['key_status'] == true) {
             if(!empty($outlet_id) && !empty($user_id) && is_numeric($outlet_id) && is_numeric($user_id) && $outlet_id > 0 && $user_id > 0) {
@@ -525,10 +495,8 @@ class Admin_api extends MX_Controller {
                         $group_message = Modules::run('admin_api/get_chat_detail',array("group_id"=>$user_detail[0]['group']), 'chat_id desc','chat_id',$outlet_id,'message,chat_id','1','1','','','')->result_array();
                         $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','');
                         $temp['last_chat'] = "0";
-                        if(isset($group_message[0]['chat_id']) && !empty($group_message[0]['chat_id']))
+                        if(isset($group_message[0]['chat_id']) && !empty($group_message[0]['chat_id'])) 
                             $temp['last_chat']=$group_message[0]['chat_id'];
-                        $temp['counter'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("group_id"=>$primary_group,"message_to"=>$user_id,"message_status"=>"1","message_from !="=>"0"),'chat_id desc','chat_id',$outlet_id.'_chat_detail','chat_id','1','0','','','')->num_rows();
-                        $total_counter = $total_counter + $temp['counter'];
                         $temp['type'] = 'group';
                         $temp['image'] = STATIC_FRONT_IMAGE.'group.png';
                         $temp['next_chat'] = true;
@@ -550,14 +518,31 @@ class Admin_api extends MX_Controller {
                             $temp['last_chat'] = "0";
                             if(isset($group_message[0]['chat_id']) && !empty($group_message[0]['chat_id'])) 
                                 $temp['last_chat']=$group_message[0]['chat_id'];
-                            $temp['counter'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("group_id"=>$secondry_group,"message_to"=>$user_id,"message_status"=>"1","message_from !="=>"0"),'chat_id desc','chat_id',$outlet_id.'_chat_detail','chat_id','1','0','','','')->num_rows();
-                            $total_counter = $total_counter + $temp['counter'];
                             $temp['type'] = 'group';
                             $temp['image'] = STATIC_FRONT_IMAGE.'group.png';
                             $temp['next_chat'] = true;
                             $left_panel[] = $temp;
                             unset($temp);
                         }
+                    }
+                    $group_chat = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("group_id !="=>'0'), 'chat_id desc','group_id',$outlet_id.'_chat_detail','group_id','1','0','(`message_to` = "'.$user_id.'" OR `message_from` = "'.$user_id.'")','(`group_id` != "'.$primary_group.'" AND `group_id` != "'.$secondry_group.'")','')->result_array();
+                    if(!empty($group_chat)) {
+                        foreach ($group_chat as $key => $gc):
+                            $temp['id'] = $gc['group_id'];
+                            $group_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$gc['group_id']),'id desc','id',$outlet_id.'_groups','group_title','1','0','','','')->result_array();
+                            $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','');
+                            $temp['trackig_id'] = 'G_'.$user_detail[0]['second_group'];
+                            $group_message = Modules::run('admin_api/get_chat_detail',array("group_id"=>$gc['group_id']), 'chat_id desc','group_id',$outlet_id,'message,chat_id','1','1','','','')->result_array();
+                            $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','');
+                            $temp['last_chat'] = "0";
+                            if(isset($group_message[0]['chat_id']) && !empty($group_message[0]['chat_id'])) 
+                                $temp['last_chat']=$group_message[0]['chat_id'];
+                            $temp['type'] = 'group';
+                            $temp['image'] = STATIC_FRONT_IMAGE.'user.png';
+                            $temp['next_chat'] = false;
+                            $left_panel[] = $temp;
+                            unset($temp);
+                        endforeach;
                     }
                     $previous_user = array();
                     $group_chat = Modules::run('admin_api/get_chat_detail',array("group_id"=>'0'), 'chat_id desc','chat_id',$outlet_id,'message_to,message_from,chat_detail.message_id,message,chat_id','1','0','(`message_to` = "'.$user_id.'" OR `message_from` = "'.$user_id.'")','','','')->result_array();
@@ -585,8 +570,7 @@ class Admin_api extends MX_Controller {
                                         $temp['last_chat'] = "0";
                                         if(isset($gc['chat_id']) && !empty($gc['chat_id'])) 
                                             $temp['last_chat']=$gc['chat_id'];
-                                        $temp['counter'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("group_id"=>'0',"message_to"=>$user_id,"message_status"=>"1","message_from"=>$gc['message_to']),'chat_id desc','chat_id',$outlet_id.'_chat_detail','chat_id','1','0','','','')->num_rows();
-                                        $total_counter = $total_counter + $temp['counter'];
+                                        $temp['last_message'];
                                         $temp['is_online'] = false;
                                         if(isset($user_detail[0]['is_online']) && !empty($user_detail[0]['is_online'])) 
                                             $temp['is_online']=true;
@@ -623,8 +607,7 @@ class Admin_api extends MX_Controller {
                                         $temp['last_chat'] = "0";
                                         if(isset($gc['chat_id']) && !empty($gc['chat_id'])) 
                                             $temp['last_chat']=$gc['chat_id'];
-                                        $temp['counter'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("group_id"=>'0',"message_to"=>$user_id,"message_status"=>"1","message_from"=>$gc['message_from']),'chat_id desc','chat_id',$outlet_id.'_chat_detail','chat_id','1','0','','','')->num_rows();
-                                        $total_counter = $total_counter + $temp['counter'];
+                                        $temp['last_message'];
                                         $temp['is_online'] = false;
                                         if(isset($user_detail[0]['is_online']) && !empty($user_detail[0]['is_online'])) 
                                             $temp['is_online']=true;
@@ -652,7 +635,7 @@ class Admin_api extends MX_Controller {
         else
             $message = $api_key['key_message'];
         header('Content-Type: application/json');
-        echo json_encode(array("status" => $status, "message" => $message, "left_panel" => $left_panel,'total_counter'=>$total_counter));
+        echo json_encode(array("status" => $status, "message" => $message, "left_panel" => $left_panel));
     }
     function get_users_list() {
         $status = false;
@@ -759,30 +742,20 @@ class Admin_api extends MX_Controller {
                 $status = true;
                 $message = "Message Send";
                 $message_id = Modules::run('api/insert_into_specific_table',array("message"=>$send_message),$outlet_id.'_messages');
-                $token = array();
                 if($cheatertype == 'user') {
                     $chat_id = Modules::run('api/insert_into_specific_table',array("message_to"=>$to,"message_from"=>$from,"message_id"=>$message_id,"message_datetime"=>$createdat,"group_id"=>"0"),$outlet_id.'_chat_detail');
-                    $token_user = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$to),'id desc','id','users','fcm_token','1','1','','','')->result_array();
-                    if(isset($token_user[0]['fcm_token']) && !empty($token_user[0]['fcm_token']))
-                        $token[] = $token_user[0]['fcm_token'];
                 }
                 elseif($cheatertype == 'group') {
-                    $group_users = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','id,fcm_token','1','0','(`second_group`="'.$to.'" or `group`="'.$to.'")','','')->result_array();
+                    $group_users = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','id','1','0','(`second_group`="'.$to.'" or `group`="'.$to.'")','','')->result_array();
                     if(!empty($group_users)) {
                         foreach ($group_users as $key => $gu):
-                            if($gu['id'] != $from) {
-                                $chat_id = Modules::run('api/insert_into_specific_table',array("message_to"=>$gu['id'],"message_from"=>$from,"message_id"=>$message_id,"message_datetime"=>$createdat,"group_id"=>$to),$outlet_id.'_chat_detail');
-                                if(isset($gu['fcm_token']) && !empty($gu['fcm_token']))
-                                    $token[] = $gu['fcm_token'];
-                            }
-                            else
-                                $chat_id = Modules::run('api/insert_into_specific_table',array("message_to"=>$gu['id'],"message_from"=>$from,"message_id"=>$message_id,"message_datetime"=>$createdat,"group_id"=>$to,"message_status"=>"0"),$outlet_id.'_chat_detail');
+                            $chat_id = Modules::run('api/insert_into_specific_table',array("message_to"=>$gu['id'],"message_from"=>$from,"message_id"=>$message_id,"message_datetime"=>$createdat,"group_id"=>$to),$outlet_id.'_chat_detail');
                         endforeach;
                     }
                 }
                 else
                     echo "";
-                $user_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$from),'id desc','id','users','first_name,last_name,user_image,fcm_token','1','1','','','')->result_array();
+                $user_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$from),'id desc','id','users','first_name,last_name,user_image','1','1','','','')->result_array();
                 $first_name = "";
                 if(isset($user_detail[0]['first_name']) && !empty($user_detail[0]['first_name'])) 
                     $first_name=$user_detail[0]['first_name'];
@@ -795,59 +768,12 @@ class Admin_api extends MX_Controller {
                     $user_image=$user_detail[0]['user_image']; 
                 $user_image=  Modules::run('api/string_length',$user_image,'8000','');
                 $user_image = Modules::run('api/image_path_with_default',ACTUAL_OUTLET_USER_IMAGE_PATH,$user_image,STATIC_FRONT_IMAGE,'user.png');
-                if(!empty($token) && !empty($token)) {
-                    $fcm_token = $token;
-                    $fcm_data['data']=Modules::run('api/notifiction_message',"chat_message","chat_message",true,false,"");
-                    Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
-                }
             }
         }
         else
             $message = $api_key['key_message'];
         header('Content-Type: application/json');
         echo json_encode(array("status" => $status, "message" => $message, "chat_id" => $chat_id, "chat_id" => $chat_id, "createdAt" => $createdat, "text" => $send_message, "user_id" => $from, "user_name" => $name, "user_image" => $user_image));
-    }
-    function change_messages_status_of_user() {
-        $status = false;
-        $message="Please fill the code.";
-        $user_id = $this->input->post("user_id");
-        $outlet_id = $this->input->post("outlet_id");
-        $chat_type = $this->input->post("chat_type");
-        $type_id = $this->input->post("type_id");
-        $calling_type = $this->input->post("calling_type");
-        if(empty($calling_type))
-            $calling_type = 'overall';
-        $api_key = $this->check_user_api_key();
-        $key = $this->input->post('session_token');
-        if($api_key['key_status'] == true) {
-            if(!empty($outlet_id) && !empty($user_id) && is_numeric($outlet_id) && is_numeric($user_id) && $outlet_id > 0 && $user_id > 0 && !empty($chat_type)) {
-                $checking_status = false;
-                if(strtolower($calling_type) != 'single') {
-                    if(strtolower($chat_type) =='group' && !empty($type_id)) {
-                        $checking_status = true;
-                        Modules::run('api/update_specific_table',array("group_id"=>$type_id,"message_to"=>$user_id,'message_status !='=>'0'),array("message_status"=>'0'),$outlet_id.'_chat_detail');
-                    }
-                    elseif(strtolower($chat_type) =='user' && !empty($type_id)) {
-                        $checking_status = true;
-                        Modules::run('api/update_specific_table',array("group_id"=>'0','message_from'=>$type_id,"message_to"=>$user_id,'message_status !='=>'0'),array("message_status"=>'0'),$outlet_id.'_chat_detail');
-                    }
-                }
-                else {
-                    $checking_status = true;
-                    Modules::run('api/update_specific_table',array("chat_id"=>$type_id,'message_status !='=>'0'),array("message_status"=>'0'),$outlet_id.'_chat_detail');
-                }
-                if($checking_status != false) {
-                    $status = true;
-                    $message = "message stuats change";
-                }
-            }
-            else
-                $message = "Bad Request";
-        }
-        else
-            $message = $api_key['key_message'];
-        header('Content-Type: application/json');
-        echo json_encode(array("status" => $status, "message" => $message));
     }
     function change_status_for_review() {
         $status = false;
@@ -1688,9 +1614,11 @@ class Admin_api extends MX_Controller {
                         Modules::run('api/insert_or_update',array("driver_id"=>$driver_id,"order_id"=>$order_id,"outlet_id"=>$outlet_id),array("driver_id"=>$driver_id,"order_id"=>$order_id,"notification_type"=>"order_assign","outlet_id"=>$outlet_id,"notification_status"=>"1","notification_message"=>"fixed"),'notification');
                         if(isset($driver_detail[0]['driver_fcm_token']) && !empty($driver_detail[0]['driver_fcm_token'])) {
                             $fcmToken[] = $driver_detail[0]['driver_fcm_token'];
-                            $notification_data['data'] =  $this->notifiction_message($order_id,"fixed",$outlet_id);
-                            $notification_data['fcmToken'] =  $fcmToken;
-                            $this->load->view('firebase_notification', $notification_data);
+                            $fcm_data['data']= Modules::run('api/notifiction_message',"Order Id: ".$order_detail[0]['id'],"Order no. ".$order_detail[0]['id']." has been assign to you.",false,true,"");
+                            echo Modules::run('api/send_fcm_message',$fcmToken,$fcm_data['data']);
+                            //$notification_data['data'] =  $this->notifiction_message($order_id,"fixed",$outlet_id);
+                            //$notification_data['fcmToken'] =  $fcmToken;
+                            //$this->load->view('firebase_notification', $notification_data);
                         }
                     }
                     else
@@ -1839,7 +1767,6 @@ class Admin_api extends MX_Controller {
         $outlet_id=$this->input->post('outlet_id');
         $line_timing=$this->input->post('line_timing');
         $product_id = $this->input->post('product_id');
-        $plant_name = $this->input->post('plant_name');
         if(!isset($line_timing) || empty($line_timing))
             $line_timing = '1,2,3';
         $role=$this->input->post('role');
@@ -1865,7 +1792,7 @@ class Admin_api extends MX_Controller {
                         Modules::run('api/update_specific_table',"(`assign_status` = 'Closed' AND `product_id` = '".$product_id."' AND `line_timing` = '".$line_timing."')",array("assign_status"=>'Open'),$outlet_id.'_assignments');
                     }
                     $status=true;
-                    $checklist_or_where = '(assignments.inspection_team ="'.$group_id.'" OR assignments.reassign_user ="'.$user_id.'") AND (product_id ="0" or ( product_id !="0" and plant_no="'.$plant_name.'"))';
+                    $checklist_or_where = '(assignments.inspection_team ="'.$group_id.'" OR assignments.reassign_user ="'.$user_id.'")';
                     if(!empty($calling_status))
                         if(strtolower($calling_status) !='Completed')
                             $checklist_where = array('assignments.assign_status'=>$calling_status);
@@ -1875,7 +1802,6 @@ class Admin_api extends MX_Controller {
                         }
                     else
                         $checklist_where = array('assignments.assign_status'=>'Open');
-                	//$checklist_or_where = $checklist_or_where.'AND (product_id !="0" and plant_no="'.$plant_name.'")';
                     if(empty($calling_status)|| (!empty($calling_status) && strtolower($calling_status) != strtolower('Completed'))) {
                         $checklist_data = $this->get_checks_lists_from_db($checklist_where,'',$outlet_id.'_assignments assignments','assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status,assignments.start_datetime,assignments.assignment_type',$page_number,$limit,$checklist_or_where,'','',$line_timing)->result_array();
                     }
@@ -1917,8 +1843,8 @@ class Admin_api extends MX_Controller {
                     }
                     else
                         $message="No checklist found";
-                    $open = $this->get_checks_lists_from_db(array('assignments.assign_status'=>"Open"),'',$outlet_id.'_assignments assignments','assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status','1','0','(assignments.inspection_team ="'.$group_id.'" OR assignments.reassign_user ="'.$user_id.'") AND (product_id ="0" or ( product_id !="0" and plant_no="'.$plant_name.'"))','','',$line_timing)->num_rows();
-                    $overdue = $this->get_checks_lists_from_db(array('assignments.assign_status'=>"OverDue"),'',$outlet_id.'_assignments assignments','assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status','1','0','(assignments.inspection_team ="'.$group_id.'" OR assignments.reassign_user ="'.$user_id.'") AND (product_id ="0" or ( product_id !="0" and plant_no="'.$plant_name.'"))','','',$line_timing)->num_rows();
+                    $open = $this->get_checks_lists_from_db(array('assignments.assign_status'=>"Open"),'',$outlet_id.'_assignments assignments','assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status','1','0','(assignments.inspection_team ="'.$group_id.'" OR assignments.reassign_user ="'.$user_id.'")','','',$line_timing)->num_rows();
+                    $overdue = $this->get_checks_lists_from_db(array('assignments.assign_status'=>"OverDue"),'',$outlet_id.'_assignments assignments','assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status','1','0','(assignments.inspection_team ="'.$group_id.'" OR assignments.reassign_user ="'.$user_id.'")','','',$line_timing)->num_rows();
                     $complete = $this->get_complete_by_user(array("user_id"=>$user_id), 'assignments.assign_id',"assignment_answer.assignment_id",$outlet_id,'assign_id','1','0',$this->get_and_where(array('OverDue','Open'),'assignments.assign_status !'),'','')->num_rows();
                     $in_progress = $this->get_in_progress_counter(array("sd_outlet_id"=>$outlet_id,"static_checks_inspection.sci_team_id"=>$group_id),'sd_id desc','sd_id',$outlet_id,'sd_id','1','0','','','')->num_rows();
                 }
@@ -2247,7 +2173,7 @@ class Admin_api extends MX_Controller {
                                 $assignment_type = true;
                         if(isset($assignment_detail[0]['product_id']) && !empty($assignment_detail[0]['product_id']) && $assignment_type == true)
                             $question_condtion['assignment_id'] = $assign_id;
-                        $questions = Modules::run('api/_get_specific_table_with_pagination_where_groupby',$question_condtion,"page_rank asc","question_id desc",$outlet_id.'_checks_questions','type,question_id,question','1','0','','','')->result_array();
+                        $questions = Modules::run('api/_get_specific_table_with_pagination_where_groupby',$question_condtion,"page_rank asc","question_id desc",$outlet_id.'_checks_questions','type,question_id,question,question_selection','1','0','','','')->result_array();
                         $reassign_question = array();
                         if(!empty($assignment_detail[0]['reassign_id'])) {
                             $reassign_question = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("rq_assign_id"=>$assign_id),"rq_id desc","rq_id",$outlet_id.'_reassign_questions','rq_question_id,','1','0','','','')->result_array();
@@ -2263,6 +2189,8 @@ class Admin_api extends MX_Controller {
                                     $arr_question[$j]['question_id']=$row['question_id'];
                                     $arr_question[$j]['question_title']=$row['question'];
                                     $arr_question[$j]['question_type']=$row['type'];
+                                    if($row['question_selection']=="multi_select")
+                                    $arr_question[$j]['question_type']="multi_select";
                                     $where_ans['question_id']=$row['question_id'];
                                     $ans_data=$this->get_question_answers($where_ans,$outlet_id)->result_array();
                                     $arr_question[$j]['answers']=$ans_data;
@@ -2395,6 +2323,8 @@ class Admin_api extends MX_Controller {
                                             $reassign_data['question'][$j]['question_id']=$row['question_id'];
                                             $reassign_data['question'][$j]['question_title']=$row['question'];
                                             $reassign_data['question'][$j]['question_type']=$row['type'];
+                                            if($row['question_selection']=="multi_select")
+                                            $reassign_data['question'][$j]['question_type']="multi_select";
                                             $where_ans['question_id']=$row['question_id'];
                                             $ans_data=$this->get_question_answers($where_ans,$outlet_id)->result_array();
                                             $reassign_data['question'][$j]['answers']=$ans_data;
@@ -2488,7 +2418,7 @@ class Admin_api extends MX_Controller {
                                 date_default_timezone_set($timezone[0]['timezones']);
                         }
                         $check = 1;
-                        $pf_status = 'pass';
+                    	$pf_status = 'pass';
                         foreach ($ques_response as $key => $qs):
                             if(isset($qs->resp->quesId) && !empty($qs->resp->quesId)) {
                                 $check = $check+1;
@@ -2496,6 +2426,8 @@ class Admin_api extends MX_Controller {
                                 $data['line_no']=$line_no;
                                 $data['shift_no']=$shift_no;
                                 $data['answer_type']=$qs->resp->quesType;
+                                if($data['answer_type']=="multi_select")
+                                    $data['answer_type']="Choice";
                                 if($data['answer_type']=="Range")
                                     $data['range']=$qs->resp->givenRange;
                                 else
@@ -2504,7 +2436,7 @@ class Admin_api extends MX_Controller {
                                 $data['question_id']=$qs->resp->quesId;
                                 $data['answer_id']=$qs->resp->selecetedAnsId;
                                 $data['comments']=$qs->resp->comment;
-                                if(!empty($data['comments']))
+                            	if(!empty($data['comments']))
                                     $pf_status = "false";
                                 $data['given_answer']=$qs->resp->givenAns;
                                 $data['user_id']=$user_id;
@@ -2904,12 +2836,9 @@ class Admin_api extends MX_Controller {
                             }
                             elseif($qa['question_type'] == 'range') {
                                 $possible_answer[0]['name'] = 'refrigerated';
-                                $possible_answer[0]['data'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("sfa_status"=>'1',"sfa_delete"=>"0","sfa_question_id"=>$qa['question_id'],'sfa_answer_acceptance'=>'refrigerated'),'sfa_id desc','sfa_id',$outlet_id.'_static_form_answer','sfa_id as answer_id,sfa_min as min,sfa_max as max,sfa_target as target','1','1','','','')->result_array();
-                                $frozen_data = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("sfa_status"=>'1',"sfa_delete"=>"0","sfa_question_id"=>$qa['question_id'],'sfa_answer_acceptance'=>'frozen'),'sfa_id desc','sfa_id',$outlet_id.'_static_form_answer','sfa_id as answer_id,sfa_min as min,sfa_max as max,sfa_target as target','1','1','','','')->result_array();
-                                if(!empty($frozen_data)) {
-                                    $possible_answer[1]['name'] = 'frozen';
-                                    $possible_answer[1]['data'] = $frozen_data;
-                                }
+                                $possible_answer[0]['data'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("sfa_status"=>'1',"sfa_delete"=>"0","sfa_question_id"=>$qa['question_id'],'sfa_answer_acceptance'=>'refrigerated'),'sfa_id desc','sfa_id',$outlet_id.'_static_form_answer','sfa_id as answer_id,sfa_min as min,sfa_max as max,sfa_target as target','1','0','','','')->result_array();
+                                $possible_answer[1]['name'] = 'frozen';
+                                $possible_answer[1]['data'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("sfa_status"=>'1',"sfa_delete"=>"0","sfa_question_id"=>$qa['question_id'],'sfa_answer_acceptance'=>'frozen'),'sfa_id desc','sfa_id',$outlet_id.'_static_form_answer','sfa_id as answer_id,sfa_min as min,sfa_max as max,sfa_target as target','1','0','','','')->result_array();
                                 $qa['possible_answer'] = $possible_answer;
                                 unset($possible_answer);
                             }
@@ -3130,7 +3059,7 @@ class Admin_api extends MX_Controller {
         $this->email->message('<p>Dear  Cron job,<br><br> Your reset password verification code is <b> 133</b>. Please use with in 5 minutes to verifiy your account. </br>With Best Regards,<br>' . 'QA242' . 'Team');
         echo ($this->email->send());
     }
-    function create_schedule_aqchecks_list_thirty() {
+	function create_schedule_aqchecks_list_thirty() {
         date_default_timezone_set("Asia/karachi");
         $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id asc','general_setting','timezones','1','1')->result_array();
             if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
@@ -3218,7 +3147,7 @@ class Admin_api extends MX_Controller {
                                 }
                             }
                             else {
-                                $product_schedules = $this->get_product_schedules_from_db(array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d')),'ps_id desc','ps_id',DEFAULT_OUTLET,'ps_product,product_title,ps_line,unit_weight,shape,ps_plant','1','0','','','')->result_array();
+                                $product_schedules = $this->get_product_schedules_from_db(array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d')),'ps_id desc','ps_id',DEFAULT_OUTLET,'ps_product,product_title,ps_line,unit_weight,shape','1','0','','','')->result_array();
                                 $products_counter = count($product_schedules);
                                 if(!empty($product_schedules)) {
                                     foreach ($product_schedules as $key => $ps):
@@ -3240,7 +3169,6 @@ class Admin_api extends MX_Controller {
                                                     if(!empty($inspection_team_array)) {
                                                         foreach ($inspection_team_array as $ina_key => $ina):
                                                             $assign_data['line_timing'] = $ps['ps_line'];
-                                                            $assign_data['plant_no'] = $ps['ps_plant'];
                                                             $assign_data['product_id'] = $ps['ps_product'];
                                                             $outlet_id = $value['outlet_id'];
                                                             $assign_data['checkid'] = $value['id'];
@@ -3258,7 +3186,6 @@ class Admin_api extends MX_Controller {
                                                             $where_assign['checkid'] = $value['id'];
                                                             $where_assign['product_id'] = $ps['ps_product'];
                                                             $where_assign['line_timing'] = $ps['ps_line'];
-                                                            $where_assign['plant_no'] = $ps['plant_no'];
                                                             $where_assign['program_type'] = $pd['program_id'];
                                                             $where_assign['inspection_team']=$ina['inspection_team'];
                                                             $where_assign['review_team'] = $value['review_team'];
@@ -3422,8 +3349,8 @@ class Admin_api extends MX_Controller {
                 }
             }
             $this->create_scheduled_checks_by_umar('30 mins',date('Y-m-d H:i:s'),date('Y-m-d H:i:s',strtotime('+30 minutes',strtotime(date('Y-m-d H:i:s')))),DEFAULT_OUTLET);
-            $this->create_scheduled_checks_by_umar('shift',date('Y-m-d H:i:s'),date('Y-m-d H:i:s',strtotime('+30 minutes',strtotime(date('Y-m-d H:i:s')))),DEFAULT_OUTLET);
-            $this->create_seafood_checks(date('Y-m-d'),date('Y-m-d'),date('Y-m-d'),date('H:i:s'),date('Y-m-d'),date('H:i:s',strtotime('+30 minutes',strtotime(date('H:i:s')))),date('l'),DEFAULT_OUTLET,'30 mins');
+        	$this->create_scheduled_checks_by_umar('shift',date('Y-m-d H:i:s'),date('Y-m-d H:i:s',strtotime('+30 minutes',strtotime(date('Y-m-d H:i:s')))),DEFAULT_OUTLET);
+        	$this->create_seafood_checks(date('Y-m-d'),date('Y-m-d'),date('Y-m-d'),date('H:i:s'),date('Y-m-d'),date('H:i:s',strtotime('+30 minutes',strtotime(date('H:i:s')))),date('l'),DEFAULT_OUTLET,'30 mins');
             $this->create_seafood_checks(date('Y-m-d'),date('Y-m-d'),date('Y-m-d'),date('H:i:s'),date('Y-m-d'),date('H:i:s',strtotime('+30 minutes',strtotime(date('H:i:s')))),date('l'),DEFAULT_OUTLET,'shift');
         }
     }
@@ -3514,7 +3441,7 @@ class Admin_api extends MX_Controller {
                                 }
                             }
                             else {
-                                $product_schedules = $this->get_product_schedules_from_db(array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d')),'ps_id desc','ps_id',DEFAULT_OUTLET,'ps_product,product_title,ps_line,unit_weight,shape,ps_plant','1','0','','','')->result_array();
+                                $product_schedules = $this->get_product_schedules_from_db(array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d')),'ps_id desc','ps_id',DEFAULT_OUTLET,'ps_product,product_title,ps_line,unit_weight,shape','1','0','','','')->result_array();
                                 $products_counter = count($product_schedules);
                                 if(!empty($product_schedules)) {
                                     foreach ($product_schedules as $key => $ps):
@@ -3538,7 +3465,6 @@ class Admin_api extends MX_Controller {
                                                             $assign_data =array();
                                                             $where_assign = array();
                                                             $assign_data['line_timing'] = $ps['ps_line'];
-                                                            $assign_data['plant_no'] = $ps['ps_plant'];
                                                             $assign_data['product_id'] = $ps['ps_product'];
                                                             $outlet_id = $value['outlet_id'];
                                                             $assign_data['checkid'] = $value['id'];
@@ -3556,7 +3482,6 @@ class Admin_api extends MX_Controller {
                                                             $where_assign['checkid'] = $value['id'];
                                                             $where_assign['product_id'] = $ps['ps_product'];
                                                             $where_assign['line_timing'] = $ps['ps_line'];
-                                                            $where_assign['plant_no'] = $ps['ps_plant'];
                                                             $where_assign['program_type'] = $pd['program_id'];
                                                             $where_assign['inspection_team']=$ina['sci_team_id'];
                                                             $where_assign['review_team'] = $value['review_team'];
@@ -3739,7 +3664,7 @@ class Admin_api extends MX_Controller {
                             else {
                                 $today_valid = Modules::run('api/_get_specific_table_with_pagination',array("fc_check_id" =>$value['id'],'fc_frequency'=>date("l")), 'fc_id asc',DEFAULT_OUTLET.'_checks_frequency','fc_frequency','1','0')->result_array();
                                 if((!empty($today_valid) && strtolower($value['frequency']) == strtolower("Weekly")) || strtolower($value['frequency']) == strtolower("Daily")) {
-                                    $product_schedules = $this->get_product_schedules_from_db(array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d')),'ps_id desc','ps_id',DEFAULT_OUTLET,'ps_product,product_title,ps_line,unit_weight,shape,ps_plant','1','0','','','')->result_array();
+                                    $product_schedules = $this->get_product_schedules_from_db(array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d')),'ps_id desc','ps_id',DEFAULT_OUTLET,'ps_product,product_title,ps_line,unit_weight,shape','1','0','','','')->result_array();
                                     $products_counter = count($product_schedules);
                                     if(!empty($product_schedules)) {
                                         foreach ($product_schedules as $key => $ps):
@@ -3761,7 +3686,6 @@ class Admin_api extends MX_Controller {
                                                         if(!empty($inspection_team_array)) {
                                                             foreach ($inspection_team_array as $ina_key => $ina):
                                                                 $assign_data['line_timing'] = $ps['ps_line'];
-                                                                $assign_data['plant_no'] = $ps['ps_plant'];
                                                                 $assign_data['product_id'] = $ps['ps_product'];
                                                                 $outlet_id = $value['outlet_id'];
                                                                 $assign_data['checkid'] = $value['id'];
@@ -3779,7 +3703,6 @@ class Admin_api extends MX_Controller {
                                                                 $where_assign['checkid'] = $value['id'];
                                                                 $where_assign['product_id'] = $ps['ps_product'];
                                                                 $where_assign['line_timing'] = $ps['ps_line'];
-                                                                $assign_data['plant_no'] = $ps['ps_plant'];
                                                                 $where_assign['program_type'] = $pd['program_id'];
                                                                 $where_assign['inspection_team']=$ina['sci_team_id'];
                                                                 $where_assign['review_team'] = $value['review_team'];
@@ -3841,16 +3764,70 @@ class Admin_api extends MX_Controller {
                     }
                 endforeach;
             }
-            $this->create_scheduled_checks_by_umar('daily',date('Y-m-d').' 00:00:00',date('Y-m-d').' 23:59:59',DEFAULT_OUTLET);
+        	$this->create_scheduled_checks_by_umar('daily',date('Y-m-d').' 00:00:00',date('Y-m-d').' 23:59:59',DEFAULT_OUTLET);
             $this->create_scheduled_checks_by_umar('weekly',date('Y-m-d').' 00:00:00',date('Y-m-d').' 23:59:59',DEFAULT_OUTLET);
             $this->create_scheduled_checks_by_umar('monthly',date('Y-m-d').' 00:00:00',date('Y-m-d').' 23:59:59',DEFAULT_OUTLET);
             $this->create_seafood_checks(date('Y-m-d'),date('Y-m-d'),date('Y-m-d', strtotime(date('Y-m-d') . ' +1 day')),"00:00:00",date('Y-m-d', strtotime(date('Y-m-d') . ' +1 day')),"23:59:59",date('l', strtotime(date('l') . ' +1 day')),DEFAULT_OUTLET,'daily');
             $this->create_seafood_checks(date('Y-m-d'),date('Y-m-d'),date('Y-m-d', strtotime(date('Y-m-d') . ' +1 day')),"00:00:00",date('Y-m-d', strtotime(date('Y-m-d') . ' +1 day')),"23:59:59",date('l', strtotime(date('l') . ' +1 day')),DEFAULT_OUTLET,'weekly');
             $this->create_seafood_checks(date('Y-m-d'),date('Y-m-d'),date('Y-m-d', strtotime(date('Y-m-d') . ' +1 day')),"00:00:00",date('Y-m-d', strtotime(date('Y-m-d') . ' +1 day')),"23:59:59",date('l', strtotime(date('l') . ' +1 day')),DEFAULT_OUTLET,'monthly');
+            
+        }
+             $date=date('Y-m-d');
+            $date=date('Y-m-d', strtotime($date. ' + 30 days'));
+            $where=array("expiry_date "=>$date);
+            $result=Modules::run('admin_api/get_expiring_documents',$where)->result_array();
+            if(!empty($result) && isset($result)){
+                $this->reminder_email($result,30);
+            }
+            $date=date('Y-m-d');
+            $date=date('Y-m-d', strtotime($date. ' + 7 days'));
+            $where=array("expiry_date "=>$date);
+            $result=Modules::run('admin_api/get_expiring_documents',$where)->result_array();
+            if(!empty($result) && isset($result)){
+                $this->reminder_email($result,7);
+            }
+            $date=date('Y-m-d');
+            $where=array("expiry_date "=>$date);
+            $result=Modules::run('admin_api/get_expiring_documents',$where)->result_array();
+            if(!empty($result) && isset($result)){
+                $this->reminder_email($result,0);
+            }    
+    }
+    function reminder_email($result,$days){
+        foreach($result as $key => $value)
+        {
+            if(!empty($value['email'])){
+                $this->load->library('email');
+                $port = 465;
+                $user = "info@qa.hwryk.com";
+                $pass = "-,YKKY8JM*j{";
+                $host = 'ssl://qa.hwryk.com';  
+                $mailtitle="EQ Smart";
+                $config = Array(
+                  'protocol' => 'smtp',
+                  'smtp_host' => $host,
+                  'smtp_port' => $port,
+                  'smtp_user' =>  $user,
+                  'smtp_pass' =>  $pass,
+                  'mailtype'  => 'html', 
+                  'starttls'  => true,
+                  'newline'   => "\r\n"
+                ); 
+                $this->email->initialize($config);
+                $this->email->from($user, $mailtitle);
+                $this->email->to($value['email']);
+                $this->email->subject($mailtitle . ' - Document Expiration Reminder');
+                if($days=="0"){
+                    $this->email->message($value['name'].',<br><br>This is a Reminder message to update your document.Your Document "'.$value['doc_name'].'" has expired.   <br>With Best Regards,<br>' . $mailtitle . 'Team');
+                }else{
+                    $this->email->message($value['name'].',<br><br>This is a Reminder message to update your document.Your Document "'.$value['doc_name'].'" will expire in '.$days.' days.   <br>With Best Regards,<br>' . $mailtitle . 'Team');
+                }
+                $this->email->send();
+            }
         }
     }
-    function create_seafood_checks($checking_start_date,$checking_end_date,$day_start_date,$day_start_time,$day_end_date,$day_end_time,$day_name,$outlet_id,$frequency) {
-        $seafood_products = $this->get_schedules_product(array("ps_date <="=>$checking_start_date,"ps_end_date >="=>$checking_end_date),$outlet_id.'_product.id',$outlet_id.'_product.id',$outlet_id,$outlet_id.'_product.id as ps_product,ps_line,ps_plant','1','0','','','')->result_array();
+	function create_seafood_checks($checking_start_date,$checking_end_date,$day_start_date,$day_start_time,$day_end_date,$day_end_time,$day_name,$outlet_id,$frequency) {
+        $seafood_products = $this->get_schedules_product(array("ps_date <="=>$checking_start_date,"ps_end_date >="=>$checking_end_date),$outlet_id.'_product.id',$outlet_id.'_product.id',$outlet_id,$outlet_id.'_product.id as ps_product,ps_line','1','0','','','')->result_array();
         echo "<br><br>all scheduled products<br>";
         print_r($seafood_products);
         echo "<br><br>";
@@ -4020,7 +3997,6 @@ class Admin_api extends MX_Controller {
         $assign_data =array();
         $where_assign = array();
         $assign_data['line_timing'] = $data['ps_line'];
-        $assign_data['plant_no'] = $data['ps_plant'];
         $assign_data['product_id'] = $data['ps_product'];
         $assign_data['assignment_type'] = $data['assignment_type'];
         $assign_data['checkid'] = $data['id'];
@@ -4066,7 +4042,7 @@ class Admin_api extends MX_Controller {
             }
         }*/
     }
-    function get_schedules_product($cols, $order_by,$group_by='',$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having=''){
+	function get_schedules_product($cols, $order_by,$group_by='',$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having=''){
         $this->load->model('mdl_perfectmodel');
         $query = $this->mdl_perfectmodel->get_schedules_product($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where,$and_where,$having='');
         return $query;
@@ -4320,33 +4296,33 @@ class Admin_api extends MX_Controller {
                                 $end_date_time= date('Y-m-d H:i:s',strtotime('+30 minutes',strtotime(date('Y-m-d H:i:s'))));
                                 $this->create_wip_profile_assignments($value,$start_date_time,$end_date_time);
                             }
-                            elseif ($value['frequency'] == "hourly") {
+                        	elseif ($value['frequency'] == "hourly") {
                                 $start_date_time='';
                                 $end_date_time='';
                                 $start_date_time=date('Y-m-d H:i:s');
                                 $end_date_time= date('Y-m-d H:i:s',strtotime('+1 hour',strtotime(date('Y-m-d H:i:s'))));
                                 $this->create_wip_profile_assignments($value,$start_date_time,$end_date_time);
                             }
-                            elseif ($value['frequency'] == "Daily") {
+                        	elseif ($value['frequency'] == "Daily") {
                                 $start_date_time='';
                                 $end_date_time='';
                                 $start_date_time=date('Y-m-d H:i:s');
-                                $end_date_time=  date('Y-m-d 23:59:00');
+                               	$end_date_time=  date('Y-m-d 23:59:00');
                                 $this->create_wip_profile_assignments($value,$start_date_time,$end_date_time);
                             }
-                            elseif ($value['frequency']=="Weekly") {
+                        	elseif ($value['frequency']=="Weekly") {
                                 $today_valid = Modules::run('api/_get_specific_table_with_pagination',array("fc_check_id" =>$value['id'],'fc_frequency'=>date("l")), 'fc_id asc',DEFAULT_OUTLET.'_checks_frequency','fc_frequency','1','0')->result_array();
                                 if(!empty($today_valid)) {
-                                    $start_date_time='';
-                                    $end_date_time='';
-                                    $start_date_time=date('Y-m-d H:i:s');
-                                    $end_date_time=$cenvertedTime = date('Y-m-d').' 23:59:59';
-                                    $this->create_wip_profile_assignments($value,$start_date_time,$end_date_time);
+                                	$start_date_time='';
+                                	$end_date_time='';
+                                	$start_date_time=date('Y-m-d H:i:s');
+                                	$end_date_time=$cenvertedTime = date('Y-m-d').' 23:59:59';
+                                 	$this->create_wip_profile_assignments($value,$start_date_time,$end_date_time);
                                 }
                             }
                         }
-                        elseif(strtolower($value['checktype']) == strtolower('bowl_filling')){
-                            if($value['frequency']=="30 Mins") {
+                     	elseif(strtolower($value['checktype']) == strtolower('bowl_filling')){
+                        	if($value['frequency']=="30 Mins") {
                                 $start_date_time='';
                                 $end_date_time='';
                                 $start_date_time=date('Y-m-d H:i:s');
@@ -4387,7 +4363,7 @@ class Admin_api extends MX_Controller {
     function create_wip_profile_assignments($value,$start_date_time,$end_date_time){
         $counter = 1;
         $outlet_id = DEFAULT_OUTLET;
-        $product_schedules = $this->get_product_schedules_from_db(array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d')),'ps_id desc','ps_id',DEFAULT_OUTLET,'ps_product,product_title,ps_line,unit_weight,shape,ps_plant','1','0','','','')->result_array(); 
+        $product_schedules = $this->get_product_schedules_from_db(array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d')),'ps_id desc','ps_id',DEFAULT_OUTLET,'ps_product,product_title,ps_line,unit_weight,shape','1','0','','','')->result_array(); 
         $products_counter = count($product_schedules);
         if(!empty($product_schedules)) {
             foreach ($product_schedules as $key => $ps):
@@ -4408,7 +4384,6 @@ class Admin_api extends MX_Controller {
                                 foreach ($inspection_team_array as $ina_key => $ina):
                                     $assign_data = $where_assign = array();
                                     $assign_data['line_timing'] = $ps['ps_line'];
-                                    $assign_data['plant_no'] = $ps['ps_plant'];
                                     $assign_data['product_id'] = $ps['ps_product'];
                                     $outlet_id=$value['outlet_id'];
                                     $assign_data['checkid'] = $value['id'];
@@ -4427,7 +4402,6 @@ class Admin_api extends MX_Controller {
                                     $where_assign['checkid']=$value['id'];
                                     $where_assign['product_id'] = $ps['ps_product'];
                                     $where_assign['line_timing'] = $ps['ps_line'];
-                                    $where_assign['plant_no'] = $ps['ps_plant'];
                                     $where_assign['program_type'] = $pd['program_id'];
                                     $where_assign['inspection_team']=$ina['inspection_team'];
                                     $where_assign['review_team'] = $value['review_team'];
@@ -4955,7 +4929,7 @@ class Admin_api extends MX_Controller {
                                 $assign_data['assign_status']='Closed';
                                 /////////////check for already exists
                                 $where_assign['checkid']=$value['id'];
-                                $where_assign['product_id'] = $ps['ps_product'];
+                            	$where_assign['product_id'] = $ps['ps_product'];
                                // $where_assign['inspection_team']=$value['inspection_team'];
                                 $where_assign['review_team']=$value['review_team'];
                                 $where_assign['approval_team']=$value['approval_team'];
@@ -4964,7 +4938,7 @@ class Admin_api extends MX_Controller {
                                 $check_if=$this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
                                  
                                  $inspection_team_array=array();
-                                $inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+                    	        $inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
                                             
                                 if(empty($check_if) && !empty($inspection_team_array)){
                                      $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
@@ -5015,7 +4989,7 @@ class Admin_api extends MX_Controller {
                                                 $check = false;
                                                 $start_time = date('H:i:s');
                                                 $end_time = date('H:i:s',strtotime('+30 minutes',strtotime(date('H:i:s'))));
-                                                $start_time = date('H:i:s',strtotime('-1 minutes',strtotime($start_time)));
+                                            	$start_time = date('H:i:s',strtotime('-1 minutes',strtotime($start_time)));
                                                 foreach ($shift_timing as $key => $st):
                                                     $check = false;
                                                     if($st['fc_frequency'] == 'Start') {
@@ -5058,7 +5032,7 @@ class Admin_api extends MX_Controller {
                                                         $assign_data['assign_status']='Closed';
                                                         /////////////check for already exists
                                                         $where_assign['checkid']=$value['id'];
-                                                        $where_assign['product_id'] = $ps['ps_product'];
+                                                    	$where_assign['product_id'] = $ps['ps_product'];
                                                         //$where_assign['inspection_team']=$value['inspection_team'];
                                                         $where_assign['review_team']=$value['review_team'];
                                                         $where_assign['approval_team']=$value['approval_team'];
@@ -5408,7 +5382,7 @@ class Admin_api extends MX_Controller {
         $query = $this->mdl_perfectmodel->get_all_check_list_from_db($where,$outlet_id,$where_frequency);
         return $query;
     }
-    function get_all_check_list_from_db_without_join($where,$outlet_id,$where_frequency){
+	function get_all_check_list_from_db_without_join($where,$outlet_id,$where_frequency){
           $this->load->model('mdl_perfectmodel');
         $query = $this->mdl_perfectmodel->get_all_check_list_from_db_without_join($where,$outlet_id,$where_frequency);
         return $query;
@@ -5434,8 +5408,8 @@ class Admin_api extends MX_Controller {
     $open_close='Closed';
       
                 date_default_timezone_set('Asia/karachi');
-                $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id asc','general_setting','timezones','1','1')->result_array();
-                if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
+     			$timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id asc','general_setting','timezones','1','1')->result_array();
+            	if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
                 date_default_timezone_set($timezone[0]['timezones']);
                 $timing=Modules::run('outlet/outlet_open_close',array("timing.outlet_id"=>$outlet_id,"timing.day"=>date('l'),"timing.opening <="=>date('H:i:s'),"timing.closing >="=>date('H:i:s')),"(CASE WHEN closing < opening THEN '23:59:59' else  closing END) AS closssing,is_closed",array("closssing >="=>date('H:i:s')))->result_array();
                 if(!empty($timing)) {
@@ -5511,7 +5485,7 @@ class Admin_api extends MX_Controller {
         $query = $this->mdl_perfectmodel->get_plants_lines($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where,$and_where,$having);
         return $query;
     }
-    function delete_current_date_checks() {
+	function delete_current_date_checks() {
         $outlet_id = '1';
         $start_time = date('Y-m-d H:i:s',strtotime('2019-01-01 00:00:00'));
         $end_time= "2019-12-12 15:39:31";
@@ -5549,8 +5523,8 @@ class Admin_api extends MX_Controller {
         $query = $this->mdl_perfectmodel->get_static_forms($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where,$and_where,$having);
         return $query;
     }
-    function create_scheduled_checks_by_umar($frequency,$check_start_time,$check_end_time,$outlet_id) {
-        $product_schedules = $this->get_product_schedules_from_db(array("ps_date <="=>date('Y-m-d',strtotime($check_start_time)),"ps_end_date >="=>date('Y-m-d',strtotime($check_end_time))),'ps_id desc','ps_id',$outlet_id,'ps_product,product_title,storage_type,ps_line,ps_plant','1','0','','','')->result_array();
+	function create_scheduled_checks_by_umar($frequency,$check_start_time,$check_end_time,$outlet_id) {
+        $product_schedules = $this->get_product_schedules_from_db(array("ps_date <="=>date('Y-m-d',strtotime($check_start_time)),"ps_end_date >="=>date('Y-m-d',strtotime($check_end_time))),'ps_id desc','ps_id',$outlet_id,'ps_product,product_title,storage_type,ps_line','1','0','','','')->result_array();
         $products_counter = count($product_schedules);
         echo "<br>product<br><br>";
         print_r($product_schedules);
@@ -5660,7 +5634,6 @@ class Admin_api extends MX_Controller {
                                             $assign_data =array();
                                             $where_assign = array();
                                             $assign_data['line_timing'] = $ps['ps_line'];
-                                            $assign_data['plant_no'] = $ps['ps_plant'];
                                             $assign_data['product_id'] = $ps['ps_product'];
                                             $assign_data['checkid'] = $cl['id'];
                                             $assign_data['inspection_team'] = $insp_team['sci_team_id'];
@@ -5677,7 +5650,6 @@ class Admin_api extends MX_Controller {
                                                 $assign_data['assign_status']='Closed';
                                             /////////////check for already exists
                                             $where_assign['line_timing'] = $ps['ps_line'];
-                                            $where_assign['plant_no'] = $ps['ps_plant'];
                                             $where_assign['product_id'] = $ps['ps_product'];
                                             $where_assign['inspection_team'] = $insp_team['sci_team_id'];
                                             $where_assign['checkid'] = $cl['id'];
@@ -5724,7 +5696,7 @@ class Admin_api extends MX_Controller {
         }
     }
     /////////////////
-    function create_scheduled_checks(){
+   function create_scheduled_checks(){
           date_default_timezone_set("Asia/karachi");
             $outlet_id=DEFAULT_OUTLET;
             $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id asc','general_setting','timezones','1','1')->result_array();
@@ -5831,7 +5803,7 @@ class Admin_api extends MX_Controller {
                                 $assign_data['assign_status']='Closed';
                                 /////////////check for already exists
                                 $where_assign['checkid']=$value['id'];
-                                $where_assign['product_id'] = $ps['ps_product'];
+                            	$where_assign['product_id'] = $ps['ps_product'];
                                // $where_assign['inspection_team']=$value['inspection_team'];
                                 $where_assign['review_team']=$value['review_team'];
                                 $where_assign['approval_team']=$value['approval_team'];
@@ -5891,7 +5863,7 @@ class Admin_api extends MX_Controller {
                                                 $check = false;
                                                 $start_time = date('H:i:s');
                                                 $end_time = date('H:i:s',strtotime('+30 minutes',strtotime(date('H:i:s'))));
-                                                $start_time = date('H:i:s',strtotime('-1 minutes',strtotime($start_time)));
+                                            	$start_time = date('H:i:s',strtotime('-1 minutes',strtotime($start_time)));
                                                 foreach ($shift_timing as $key => $st):
                                                     $check = false;
                                                     if($st['fc_frequency'] == 'Start') {
@@ -6039,7 +6011,7 @@ class Admin_api extends MX_Controller {
         $response = json_decode($this->input->post('response'));
         $check_id = $this->input->post("check_id");
         $user_id = $this->input->post("user_id");
-        $plant_name = $this->input->post("plant_name");
+    	$plant_name = $this->input->post("plant_name");
         $line_no = $this->input->post("line_no");
         $shift_no = $this->input->post("shift_no");
         $outlet_id = $this->input->post("outlet_id");
@@ -6047,11 +6019,11 @@ class Admin_api extends MX_Controller {
         $api_key = $this->check_user_api_key();
         if($api_key['key_status'] == true) {
             if(!empty($response) && !empty($check_id) && !empty($user_id) && !empty($shift_no)){
-                if(isset($assign_id) && !empty($assign_id)) {
+            	if(isset($assign_id) && !empty($assign_id)) {
                     Modules::run('api/delete_from_specific_table',array("sd_id"=>$assign_id),$outlet_id."_static_draft");
                     Modules::run('api/delete_from_specific_table',array("da_draft_id"=>$assign_id),$outlet_id."_draft_answer");
                 }    
-                $check_detail = Modules::run('api/_get_specific_table_with_pagination',array("sf_id" =>$check_id), 'sf_id desc',$outlet_id.'_static_form','sf_start_datetime,sf_end_datetime,sf_reviewer,sf_approver,','1','1')->result_array();
+            	$check_detail = Modules::run('api/_get_specific_table_with_pagination',array("sf_id" =>$check_id), 'sf_id desc',$outlet_id.'_static_form','sf_start_datetime,sf_end_datetime,sf_reviewer,sf_approver,','1','1')->result_array();
                 date_default_timezone_set("Asia/karachi");
                 $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>$outlet_id), 'id desc','general_setting','timezones','1','1')->result_array();
                 if(isset($timezones[0]['timezones']) && !empty($timezones[0]['timezones']))
@@ -6063,7 +6035,7 @@ class Admin_api extends MX_Controller {
                     $assign['end_datetime']=$value['sf_end_datetime'];
                     $assign['review_team']=$value['sf_reviewer'];
                     $assign['approval_team']=$value['sf_approver'];
-                    $statuss = 'Pending';
+                	$statuss = 'Pending';
                     if(empty($value['sf_reviewer']) && empty($value['sf_approver']))
                         $statuss = 'Approved';
                     $assign['outlet_id']= $outlet_id;
@@ -6073,9 +6045,9 @@ class Admin_api extends MX_Controller {
                 $data['assignment_id'] = Modules::run('api/insert_into_specific_table',$assign,$outlet_id.'_static_assignments');
                 $assign['check_id']=$check_id;
                 $assign['user_id']=$user_id;
-                $pf_status = 'pass';
+            	$pf_status = 'pass';
                 foreach ($response as $key => $res_data) {
-                    $data['plant_id'] = $plant_name;
+                	$data['plant_id'] = $plant_name;
                     $data['line_no']=$line_no;
                     $data['user_id']=$user_id;
                     $data['shift_no']=$shift_no;
@@ -6085,20 +6057,18 @@ class Admin_api extends MX_Controller {
                     $data['answer_type']=$res_data->quesType;
                     $data['question_id']=$res_data->quesId;
                     $data['answer_id']=$res_data->selecetedAnsId;
-                    if(!isset($res_data->givenAns) || empty($res_data->givenAns))
-                        $res_data->givenAns = '';
+                	if(!isset($res_data->givenAns) || empty($res_data->givenAns))
+                    	$res_data->givenAns = '';
                     $data['given_answer']=$res_data->givenAns;
                     $data['comments']=$res_data->comment;
-                    if(!empty($data['comments']))
+                	if(!empty($data['comments']))
                         $pf_status = 'fail';
-                    else
-                        $data['comments']= '';
                     $data['is_acceptable']=$res_data->isAcceptableAnswer;
                     Modules::run('api/insert_into_specific_table',$data,$outlet_id.'_static_assignment_answer');
                     $status=TRUE;
                     $message="Form Submitted Successfully";
                 }
-                if($pf_status != 'pass')
+            	if($pf_status != 'pass')
                     Modules::run('api/update_specific_table',array("assign_id"=>$data['assignment_id']),array("pf_status"=>$pf_status),$outlet_id.'_static_assignments');
             }
         }
@@ -6107,18 +6077,18 @@ class Admin_api extends MX_Controller {
         header('Content-Type: application/json');
         echo json_encode(array("status"=> $status, "message"=>$message));
     }
-    function submit_draft() {
+	function submit_draft() {
         $status=FALSE;
         $message = "Missing data";
         $response = json_decode($this->input->post('response'));
         $check_id = $this->input->post("check_id");
         $assign_id = $this->input->post("assign_id");
         $user_id = $this->input->post("user_id");
-        $outlet_id = $this->input->post("outlet_id");
+    	$outlet_id = $this->input->post("outlet_id");
         $api_key = $this->check_user_api_key();
         if($api_key['key_status'] == true) {
             if(!empty($response) && !empty($check_id) && !empty($user_id)){
-                if(isset($assign_id) && !empty($assign_id)) {
+            	if(isset($assign_id) && !empty($assign_id)) {
                     Modules::run('api/delete_from_specific_table',array("sd_id"=>$assign_id),$outlet_id."_static_draft");
                     Modules::run('api/delete_from_specific_table',array("da_draft_id"=>$assign_id),$outlet_id."_draft_answer");
                 }
@@ -6143,13 +6113,11 @@ class Admin_api extends MX_Controller {
                     $data['da_answer_type'] = $res_data->quesType;
                     $data['da_question_id'] = $res_data->quesId;
                     $data['da_answer_id'] = $res_data->selecetedAnsId;
-                    if(!isset($res_data->givenAns) || empty($res_data->givenAns))
-                        $data['da_given_answer'] = '';
-                    else
-                        $data['da_given_answer'] = $res_data->givenAns;
+                	if(!isset($res_data->givenAns) || empty($res_data->givenAns))
+                    	$data['da_given_answer'] = '';
+                	else
+                    	$data['da_given_answer'] = $res_data->givenAns;
                     $data['da_comment'] = $res_data->comment;
-                    if(empty($data['da_comment']))
-                        $data['da_comment']= '';
                     $data['da_is_acceptable'] = $res_data->isAcceptableAnswer;
                     Modules::run('api/insert_into_specific_table',$data,$outlet_id.'_draft_answer');
                     $status = TRUE;
@@ -6162,7 +6130,7 @@ class Admin_api extends MX_Controller {
         header('Content-Type: application/json');
         echo json_encode(array("status"=> $status, "message"=>$message));
     }
-    function draft_checks() {
+	function draft_checks() {
         $status=FALSE;
         $message = "Missing data";
         $outlet_id = $this->input->post("outlet_id");
@@ -6199,7 +6167,7 @@ class Admin_api extends MX_Controller {
                     $check_array = $temp;
                     unset($temp);
                     $total_pages = $this->get_in_progress_counter(array("sd_outlet_id"=>$outlet_id,"static_checks_inspection.sci_team_id"=>$group_id),'sd_id desc','sd_id',$outlet_id,'sd_id,sd_datetime,sf_name','1','0','','','')->num_rows();
-                    $diviser = ($total_pages/$limit);
+                	$diviser = ($total_pages/$limit);
                     $reminder = ($total_pages%$limit);
                     if($reminder>0)
                        $total_pages = intval($diviser)+1;
@@ -6213,7 +6181,7 @@ class Admin_api extends MX_Controller {
         header('Content-Type: application/json');
         echo json_encode(array("status"=> $status, "message"=>$message,'check_array'=>$check_array,'total_pages'=>$total_pages));
     }
-    function draft_checks_detail() {
+	function draft_checks_detail() {
         $status=false;
         $message="Bad request";
         $check_id = $this->input->post('check_id');
@@ -6225,9 +6193,6 @@ class Admin_api extends MX_Controller {
         $final_array = array();
         if($user_key['key_status'] == true) {
             if(is_numeric($check_id) && is_numeric($outlet_id) && is_numeric($assign_id)) {
-                $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>$outlet_id), 'id asc','general_setting','timezones','1','1')->result_array();
-                if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
-                    date_default_timezone_set($timezone[0]['timezones']);
                 $status = true;
                 $message = "Successfuly executed";
                 $questions= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("sfq_status"=>'1',"sfq_delete"=>"0","sfq_check_id"=>$check_id),'page_rank asc','sfq_id',$outlet_id.'_static_form_question','sfq_id as question_id,sfq_question as question,sfq_question_type as question_type,sfq_question_selection as selection,sfq_selection_type as custom_answers','1','0','','','')->result_array();
@@ -6249,21 +6214,12 @@ class Admin_api extends MX_Controller {
                             else
                                 echo "";
                             $previous_answer = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("da_draft_id"=>$assign_id,"da_question_id"=>$qa['question_id']),'da_ia desc','da_ia',$outlet_id.'_draft_answer','da_answer_id as answer_id,da_answer_type,da_given_answer as answer,da_is_acceptable as acceptance,da_comment as comment','1','1','','','')->result_array();
+                            $qa['given_answer'] = array();
                             if(!empty($previous_answer)){
-                                $qa['given_answer'] = array();
                                 foreach ($previous_answer as $pa_key => $pa):
                                     if(!empty($pa['da_answer_type'])) {
-                                        if(strtolower($pa['da_answer_type']) == strtolower($qa['question_type'])) {
-                                            if(strtolower($pa['da_answer_type']) == 'date')
-                                                $pa['answer'] = date("Y-m-d",strtotime(str_replace("-","/",$pa['answer'])));
-                                            elseif(strtolower($pa['da_answer_type']) == 'datetime')
-                                                $pa['answer'] = date("Y-m-d H:i:s",strtotime(str_replace("-","/",$pa['answer'])));
-                                            elseif(strtolower($pa['da_answer_type']) == 'time')
-                                                $pa['answer'] = date("Y-m-d ").date("H:i:s",strtotime(str_replace("-","/",$pa['answer'])));
-                                            else
-                                                echo "";
+                                        if(strtolower($pa['da_answer_type']) == strtolower($qa['question_type']))
                                             $qa['given_answer'] = $pa;
-                                        }
                                     }
                                 endforeach;
                             }
@@ -6279,7 +6235,7 @@ class Admin_api extends MX_Controller {
         header('Content-Type: application/json');
         echo json_encode(array("status"=>$status,"message"=>$message,"final_array"=>$final_array));
     }
-    function get_checks_program($cols, $order_by,$group_by='',$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having=''){
+	function get_checks_program($cols, $order_by,$group_by='',$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having=''){
         $this->load->model('mdl_perfectmodel');
         $query = $this->mdl_perfectmodel->get_checks_program($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where,$and_where,$having);
         return $query;
@@ -6289,19 +6245,25 @@ class Admin_api extends MX_Controller {
         $query = $this->mdl_perfectmodel->get_product_program($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where,$and_where,$having);
         return $query;
     }
-    function get_checks_detail_with_program_type($cols, $order_by,$group_by='',$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having=''){
+	function get_checks_detail_with_program_type($cols, $order_by,$group_by='',$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having=''){
         $this->load->model('mdl_perfectmodel');
         $query = $this->mdl_perfectmodel->get_checks_detail_with_program_type($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where,$and_where,$having);
         return $query;
     }
-    function get_checks_for_delete($cols, $order_by,$group_by='',$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having=''){
+	function get_checks_for_delete($cols, $order_by,$group_by='',$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having=''){
         $this->load->model('mdl_perfectmodel');
         $query = $this->mdl_perfectmodel->get_checks_for_delete($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where,$and_where,$having);
         return $query;
     }
-    function get_in_progress_counter($cols, $order_by,$group_by='',$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having=''){
+	function get_in_progress_counter($cols, $order_by,$group_by='',$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having=''){
         $this->load->model('mdl_perfectmodel');
         $query = $this->mdl_perfectmodel->get_in_progress_counter($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where,$and_where,$having);
+        return $query;
+    }
+    function get_expiring_documents($where)
+    {
+        $this->load->model('mdl_perfectmodel');
+        $query = $this->mdl_perfectmodel->get_expiring_documents($where);
         return $query;
     }
 }

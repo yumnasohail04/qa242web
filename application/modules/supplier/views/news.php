@@ -53,7 +53,7 @@
                                         'title' => $publis_title,'rel' => $new->id,'id' => $new->id, 'status' => $new->status));
                                         echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit supplier'));
 
-                                        echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $new->id, 'title' => 'Delete supplier'));
+                                        /*echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $new->id, 'title' => 'Delete supplier'));*/
                                         ?>
                                         </td>
                                     </tr>

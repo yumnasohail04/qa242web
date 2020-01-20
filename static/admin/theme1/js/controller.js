@@ -153,8 +153,7 @@ class ClassArray {
 
 //#endregion
 
-//#region
-//var url_base =  (window.location.hostname=="http://lantixapp1.lantix.com")?"/admin/":"/qa/";
+//#region Variables
 var url_base =  (window.location.hostname=="http://lantixapp1.lantix.com")?"/admin/":"/";
 //var arr_ddl = {};
 var class_array = new ClassArray();
@@ -192,6 +191,9 @@ function gen_save(arr_ddl) {
                 if (arr.success){
                     arr.success();
                 }
+                else{
+                    alert(data.msg);
+                }
             }
         });
     });
@@ -222,17 +224,12 @@ function load_ddl(arr_ddl) {
                     select.append($("<option></option>").attr("value", 0).text(arr.default_text));
                 }
                 $.each(data, function (index, d) {
-                    var attributes = "";
-                    if(d.attribute)
-                        attributes = ' attributes="'+d.attribute+'" ';
-                    if(d.text != 0) {
-                        if (d.selected){
-                            //console.log(d.selected);
-                            select.append($("<option "+(d.selected=="1"?"selected":"")+" "+attributes+"></option>").attr("value", d.value).text(d.text));
-                        }
-                        else {
-                            select.append($("<option"+attributes+"></option>").attr("value", d.value).text(d.text));
-                        }
+                    if (d.selected){
+                        //console.log(d.selected);
+                        select.append($("<option "+(d.selected=="1"?"selected":"")+" ></option>").attr("value", d.value).text(d.text));
+                    }
+                    else {
+                        select.append($("<option></option>").attr("value", d.value).text(d.text));
                     }
                 });
                 $('#' + arr.div_id).html(select);
@@ -251,27 +248,23 @@ function load_model_detail_events(p_url,p_data) {
     $(document).on("click", ".view_details", function (event) {
         event.preventDefault();
         var id = $(this).attr('rel');
-    	var unique_url = $(this).attr('unique_url');
-        var new_url = p_url+unique_url;
         p_data.id = id;
-        detail_model_call(new_url,p_data);
+        //alert("<?=$this->uri->segment(3);?>"); return false;
+        $.ajax({
+            type: 'POST',
+            url: p_url,
+            data: p_data,
+            async: false,
+            success: function(test_body) {
+                var test_desc = test_body;
+                //var test_body = '<ul class="list-group"><li class="list-group-item"><b>Description:</b> Akabir Abbasi Test</li></ul>';
+                $('#myModalLarge').modal('show')
+                //$("#myModal .modal-title").html(test_title);
+                $("#myModalLarge .modal-body").html(test_desc);
+            }
+        });
     });
 
-}
-function detail_model_call(p_url,p_data) {
-    $.ajax({
-        type: 'POST',
-        url: p_url,
-        data: p_data,
-        async: false,
-        success: function(test_body) {
-            var test_desc = test_body;
-            //var test_body = '<ul class="list-group"><li class="list-group-item"><b>Description:</b> Akabir Abbasi Test</li></ul>';
-            $('#myModalLarge').modal('show')
-            //$("#myModal .modal-title").html(test_title);
-            $("#myModalLarge .modal-body").html(test_desc);
-        }
-    });
 }
 //#endregion
 
@@ -382,11 +375,11 @@ function load_charts(arr_chart) {
 }
 
 function load_chart_for_totals(div_id_or_class,total_1,total_2,total_3,bootstrap_cols) {
-    $(div_id_or_class).append('<div class="'+bootstrap_cols+'"> <div class="card text-white white_bg" style="height: 270px"> <div class="card-body pb-0"> <h4 class="mb-0" style="background: '+color_others+'">Total </h4> <div class="row sub_row"> <div class="col-lg-4 cards" style="color:#929292"> <h4 class="mb"> <span class="count">'+total_1+'</span> </h4> <span class="font-head">Forms</span> <i class=" fa fa-list-alt fa_icons"></i> </div><div class="col-lg-4 cards" style="color:#929292"> <h4 class="mb"> <span class="count">'+total_2+'</span> </h4> <span class="font-head">Records</span> <i class="fa fa-archive fa_icons"></i> </div><div class="col-lg-4 cards" style="color:#929292"> <h4 class="mb"> <span class="count">'+total_3+'</span> </h4> <span class="font-head">Users</span> <i class="fa fa-user fa_icons"></i> </div></div></div></div></div>');
+    $(div_id_or_class).append('<div class="'+bootstrap_cols+'"> <div class="card text-white white_bg" style="height: 350px"> <div class="card-body pb-0"> <h4 class="mb-0" style="background: '+color_others+'">Totals </h4> <div class="row sub_row"> <div class="col-lg-4 cards" style="color:#929292"> <h4 class="mb"> <span class="count">'+total_1+'</span> </h4> <span class="font-head">Forms</span> <i class=" fa fa-list-alt fa_icons"></i> </div><div class="col-lg-4 cards" style="color:#929292"> <h4 class="mb"> <span class="count">'+total_2+'</span> </h4> <span class="font-head">Records</span> <i class="fa fa-archive fa_icons"></i> </div><div class="col-lg-4 cards" style="color:#929292"> <h4 class="mb"> <span class="count">'+total_3+'</span> </h4> <span class="font-head">Users</span> <i class="fa fa-user fa_icons"></i> </div></div></div></div></div>');
 }
 
 function load_chart_for_compliants(div_id_or_class,p_percentage,is_compliants,bootstrap_cols) {
-    $(div_id_or_class).append('<div class="'+bootstrap_cols+'"> <div class="card text-white white_bg" style="height: 270px"> <div class="card-body pb-0"> <h4 class="mb-0" style="background: '+color_others+'">'+(is_compliants?" ":" Non-")+'Compliance </h4> <div class="row sub_row"> <div class="col-lg-6 cards" style="color:#929292"> <h4 class="mb"> <span class="count" style="font-size: 40px;color:'+(is_compliants?color_passed:color_failed)+'; ">'+p_percentage.toFixed(2)+'</span> %</h4> <span class="font-head">Forms</span> </div><div class="col-lg-6 cards" style="color:#929292"> <i style="font-size: 90px;color:'+(is_compliants?color_passed:color_failed)+';" class=" fa '+(is_compliants?"fa-check-circle":"fa-times-circle" )+' fa_icons"></i> </div></div><div class="prog"> <div id="myProgress"> <div id="myBar" style="background-color:'+(is_compliants?"green":"red")+'; width: '+p_percentage+'% !important;"></div></div></div></div></div></div>');
+    $(div_id_or_class).append('<div class="'+bootstrap_cols+'"> <div class="card text-white white_bg" style="height: 350px"> <div class="card-body pb-0"> <h4 class="mb-0" style="background: '+color_others+'">'+(is_compliants?" ":" Non-")+'Compliants </h4> <div class="row sub_row"> <div class="col-lg-6 cards" style="color:#929292"> <h4 class="mb"> <span class="count" style="font-size: 40px;color:'+(is_compliants?color_passed:color_failed)+'; ">'+p_percentage.toFixed(2)+'</span> %</h4> <span class="font-head">Forms</span> </div><div class="col-lg-6 cards" style="color:#929292"> <i style="font-size: 90px;color:'+(is_compliants?color_passed:color_failed)+';" class=" fa '+(is_compliants?"fa-check-circle":"fa-times-circle" )+' fa_icons"></i> </div></div><div class="prog"> <div id="myProgress"> <div id="myBar" style="background-color:'+(is_compliants?"green":"red")+'; width: '+p_percentage+'% !important;"></div></div></div></div></div></div>');
 }
 
 function load_chart_for_corrections(div_id_or_class,arr_non_compliants) {
@@ -1183,7 +1176,7 @@ function arrr_get_assignment_compliants(){
     is_compliants = true;
     arr_tbl.forEach(function (item,index){
         //console.log(item)
-            is_compliants = item[class_array.get_index("result_status")] == "pass"?true:false;
+            is_compliants = item[class_array.get_index("result_status")] == "Passed"?true:false;
             arr_assignments.push(
                 {     assign_id : item[class_array.get_index("assign_id")]
                     , date:(item[class_array.get_index("assign_day")] + ' ' + item[class_array.get_index("assign_date")])

@@ -230,29 +230,55 @@
                         <fieldset>
                             <legend>Documents</legend>
                         <?php foreach($doc as $key => $value){ ?>
-                         <div class="col-md-5">
+                         <div class="col-md-12">
                             <div class="form-group">
-                                <label class="control-label col-md-4"><?php echo $value['doc_name']; ?></label>
-                                <div class="col-md-8">
-                                    <input type="file" name="news_main_page_file_<?php echo $key; ?>" id="news_d_file" class="default"/>
+                                <label class="control-label col-md-2"><?php echo $value['doc_name']; ?></label>
+                                <div class="col-md-4">
+                                    <input type="file" data-doc-name="<?php echo $value['doc_name']; ?>" name="news_main_page_file_<?php echo $key; ?>" id="news_d_file" >
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                     <label class="control-label col-md-3">Expiry Date</label>
+                                        <div class='input-group datetimepicker2'>
+                                        <input type='text' class="form-control" name="expiry_date_<?php echo $key; ?>" />
+                                        <span class="input-group-addon">
+                                            <span class="fa fa-calendar"></span>
+                                        </span>
+                                     </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <?php } ?>
-                        
-                                <?php if(!empty($uploaded_doc)){?>
-                            <div class="col-md-12" style="margin-top:2%;">
-                                <h4 style="font-weight: 400;">Uploaded File</h4>
-                               <?php  foreach($uploaded_doc as $key => $value){?>
-                                <div class="col-md-12">
-                                    <p class="col-md-5" style="font-size: 15px;"><a href="<?php echo BASE_URL.SUPPLIER_DOCUMENTS_PATH.$value['document']; ?>" download><?php echo $value['document']; ?></a></p>
-                                    <p class="col-md-1" style="font-size: 15px; cursor:pointer;" id="delete_doc" data-doc-id="<?php echo $value['id']; ?>"><i class="fa fa-close"></i></p>
-                                </div>
-                                <?php
-                                   }?>
+                        <?php if(!empty($uploaded_doc)){?>
+                        <legend> Uploaded Files</legend>
+                            <div class="form-body">
+                                <table id="datatable1" class="table table-bordered">
+                                    <tbody class="table-body">
+                                        <thead class="bg-th">
+                                        <tr class="bg-col">
+                                            <th>Document</th>
+                                            <th>Expiration Date</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        </thead>
+                                     <?php  foreach($uploaded_doc as $key => $value){?>
+                                      <tr class="bg-col">
+                                          <td>
+                                              <a href="<?php echo BASE_URL.SUPPLIER_DOCUMENTS_PATH.$value['document']; ?>" download <?php if($value['expiry_date']<= date('Y-m-d') ){?> style="color:red;"<?php }?>><?php echo $value['document']; ?></a>
+                                          </td>
+                                          <td <?php if($value['expiry_date']<= date('Y-m-d') ){?> style="color:red;"<?php }?>>
+                                              <?php echo $value['expiry_date']; ?>
+                                          </td>
+                                          <td>
+                                              <p class="col-md-1" style="font-size: 15px; cursor:pointer;" id="delete_doc" data-doc-id="<?php echo $value['id']; ?>"><i class="fa fa-close"></i></p>
+                                          </td>
+                                      </tr>
+                                      <?php } ?>
+                                  </tbody>
+                                </table>
                             </div>
-                            <?php    } ?>
-                        
+                        <?php } ?>
                     </fieldset>
                 <div class="form-actions fluid no-mrg">
                   <div class="row">
@@ -318,6 +344,22 @@
                 swal("Deleted!", "Document has been deleted.", "success");
               });
 
+            });
+            
+            $(document).off('change', '#news_d_file').on('change', '#news_d_file', function(e){
+                e.preventDefault();
+                var str=$("#news_d_file").val();
+                var name=$(this).attr("data-doc-name");
+                str=str.split("\\"); 
+                str = str[str.length - 1];
+                str = str.substring( 0, str.indexOf("."));
+                var lowerCaseName = name.toLowerCase();
+                alert(lowerCaseName);
+                if(str!=name || str!=lowerCaseName)
+                {
+                    toastr.error("Document and title name must be same");
+                    $(this).val('')
+                }
             });
 
 </script>

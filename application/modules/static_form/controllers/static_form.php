@@ -358,34 +358,20 @@ class Static_form extends MX_Controller
         $data['url'] = $_SERVER['HTTP_REFERER'];
         $data['update_id'] = $data['assignment_detailid'] = $update_id = $this->input->post('id');
         $data['function'] = $this->input->post('function');
-    	if(empty($data['function']) || !isset($data['function']))
-    	{
-        	$data['function']="static_forms_approved";
-    	}
         $data['questions'] = $this->get_static_question_detail(array("saa.assignment_id"=>$update_id), 'assign_ans_id desc','assign_ans_id','saa.question_id,saa.answer_id,saa.comments,saa.is_acceptable,saa.given_answer,saa.answer_type,static_form_question.sfq_question as question,user_id,line_no','1','0','','','')->result_array();
         $data['assign_detail']=$this->get_static_checks_detail($update_id)->result_array();
         $user_data = $this->session->userdata('user_data');
         $data['review_text'] = '';
         $data['review_status'] = false;
         $data['permission'] = '';
-    	$check_review_approval= false;
-        if(isset($user_data['role']) && !empty($user_data['role'])) {
-            if(strtolower($user_data['role']) == 'admin' && $data['function'] != 'static_forms_approved') {
-                $data['review_text'] = 'Review & Approved';
-                $data['review_status'] = true;
-                $data['permission'] = 'both';
-                $check_review_approval = true;
-            }
-        }
-        if($check_review_approval == false && $data['function'] != 'static_forms_approved') {
-        	if(isset($data['assign_detail'][0]['review_team']) && $data['assign_detail'][0]['review_team'] && empty($data['assign_detail'][0]['review_user'])) {
+        if(isset($data['assign_detail'][0]['review_team']) && $data['assign_detail'][0]['review_team'] && empty($data['assign_detail'][0]['review_user'])) {
             if((!empty($user_data['group']) && is_numeric($user_data['group']) &&  $user_data['group'] == $data['assign_detail'][0]['review_team']) || (!empty($user_data['second_group']) && is_numeric($user_data['second_group']) && $user_data['second_group'] == $data['assign_detail'][0]['review_team'])) {
                 $data['review_text'] = 'Reviewed';
                 $data['review_status'] = true;
                 $data['permission'] = 'review';
             }
         }
-        	if(isset($data['assign_detail'][0]['approval_team']) && $data['assign_detail'][0]['approval_team']  && empty($data['assign_detail'][0]['approval_user'])) {
+        if(isset($data['assign_detail'][0]['approval_team']) && $data['assign_detail'][0]['approval_team']  && empty($data['assign_detail'][0]['approval_user'])) {
             if((!empty($user_data['group']) && is_numeric($user_data['group']) && $user_data['group'] == $data['assign_detail'][0]['approval_team']) || (!empty($user_data['second_group']) && is_numeric($user_data['second_group']) && $user_data['second_group'] == $data['assign_detail'][0]['approval_team'])) {
                 if($data['review_status'] == true) {
                     $data['permission'] = 'both';
@@ -399,8 +385,6 @@ class Static_form extends MX_Controller
                 $data['review_status'] = true;
             }
         }
-        }
-        //print_r($data);echo "<br><br>";print_r($user_data);exit;
         $this->load->view('static_detail', $data);
     }
     function change_static_form_permission() {

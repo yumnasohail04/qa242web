@@ -121,7 +121,7 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                                             ?>
                                             <!-- BEGIN FORM-->
                                         <div class="form-body container" style="margin: 0 auto;">
-                                                  <h3 class="container" style="margin: 0 auto;">Who Should Receive Overdue Notifications</h3>
+                                                  <h3 class="container" style="margin: 0 auto;">Who Should Recieve Overdue Notifications</h3>
                                           <div class="col-sm-12">
                                              <div class="form-group">
                                                 <label class="col-sm-2 control-label">Select Groups </label>
@@ -338,7 +338,7 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                       <div class="row container" style="margin:0 auto;">
                         <div class="col-md-6">
                           <h3 style="margin-left: 66px;">
-                            Plants Details
+                            Plants Detail
                           </h3>
                         </div>
                         <div class="col-md-6">
@@ -407,7 +407,7 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                       <div class="row container" style="margin:0 auto;">
                         <div class="col-md-6">
                           <h3 style="margin-left: 66px;">
-                            Lines Details
+                            Lines Detail
                           </h3>
                         </div>
                         <div class="col-md-6">
@@ -497,13 +497,12 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                           <table id="datatable11" class="table table-striped table-hover table-body table-bordered">
                             <thead class="bg-th">
                               <tr class="bg-col">
-                                <th class="text-center">Product Code</th>
-                                <th class="text-center">Product Name</th>
-                                <th class="text-center">Program Type</th>
-                                 <th class="text-center">Storage Type</th>
-                                 <th class="text-center">Plant</th>
-                                <th class="text-center">Line</th>
-                                <th class="text-center">Action</th>
+                                <th class="text-center" style="width:120px;">Product Code</th>
+                                <th class="text-center" style="width:120px;">Product Name</th>
+                                <th class="text-center" style="width:120px;">Program Type</th>
+                                 <th class="text-center" style="width:120px;">Storage Type</th>
+                                <th class="text-center" style="width:120px;">Line</th>
+                                <th class="text-center" style="width:120px;">Action</th>
                               </tr>
                             </thead>
                             <tbody id="ajax_content_wrapper">
@@ -512,7 +511,12 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                                 $counter = 1;
                                 foreach ($product_schedule as $keyy=>$produc):?>
                                   <tr id="Row_<?=$counter?>" class="backgroud-blue ">
-                                    <td  colspan="7" class="border_color_blue"><?=$produc['day']?>(<?=$produc['date']?>)</td>
+                                    <td class="border_color_blue"><?=$produc['day']?>(<?=$produc['date']?>)</td>
+                                    <td class="border_color_blue"></td>
+                                    <td class="border_color_blue"></td>
+                                    <td class="border_color_blue"></td>
+                                    <td class="border_color_blue"></td>
+                                    <td class="border_color_blue"></td>
                                   </tr>
                                 <?php if(isset($produc['data']) && !empty($produc['data'])) {
                                   foreach ($produc['data'] as $key => $pro): ?>
@@ -538,12 +542,11 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                                 		?>
                                   	</td>
                                     <td class="text-center"><?=$pro['storage_type'];?></td>
-                                  	<td class="text-center"><?=$pro['plant_name'];?></td>
                                     <td class="text-center"><?php if(!empty($pro['ps_line'])) { 
                                       $line_name = Modules::run('api/_get_specific_table_with_pagination',array('line_id'=>$pro['ps_line']), 'line_id asc',DEFAULT_OUTLET.'_lines','line_name','1','1')->result_array(); if(isset($line_name[0]['line_name']) && !empty($line_name[0]['line_name'])) echo $line_name[0]['line_name']; }?></td>
                                     <td class="text-center">
                                       <?php
-                                      echo anchor('"javascript:;"', '<i class="fa fa-edit"></i>', array('class' => 'action_edit btn blue c-btn', 'rel' => $pro['ps_id'],'start_date' => $pro['ps_date'],'product' => $pro['ps_product'],'plant_id' => $pro['plant_id'],'line' => $pro['ps_line'], 'title' => 'Edit Product'));
+                                      echo anchor('"javascript:;"', '<i class="fa fa-edit"></i>', array('class' => 'action_edit btn blue c-btn', 'rel' => $pro['ps_id'],'start_date' => $pro['ps_date'],'product' => $pro['ps_product'],'line' => $pro['ps_line'], 'title' => 'Edit Product'));
                                       echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn  c-btn', 'rel' => $pro['ps_id'], 'title' => 'Delete Product'));
                                       ?>
                                     </td>
@@ -555,7 +558,12 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                                 else {
                                   $counter++; ?>
                                   <tr  id="Row_<?=$counter?>" class="odd gradeX " >
-                                    <td  colspan="7" class="text-center red-color" style="border:none !important;text-align: center;font-weight:bold;width: 100%">No schedules for the day</td>
+                                    <td class="text-center" style="border:none !important;text-align: right"></td>
+                                    <td class="text-center red-color" style="border:none !important;text-align: right;font-weight:bold;">No schedules for the day</td>
+                                    <td class="text-center" style="border:none !important;"></td>
+                                    <td class="text-center" style="border:none !important;"></td>
+                                    <td class="text-center" style="border:none !important;"></td>
+                                    <td class="text-center" style="border:none !important;"></td>
                                   </tr>
                                 <?php }
                               endforeach;
@@ -758,21 +766,17 @@ $(document).off('click', '.action_edit').on('click', '.action_edit', function(e)
   var start_date = $(this).attr('start_date');
   var end_date = $(this).attr('end_date');
   var product = $(this).attr('product');
-  var plant_id = $(this).attr('plant_id');
   var line = $(this).attr('line');
   e.preventDefault();
     $.ajax({
       type: 'POST',
       url: "<?php ADMIN_BASE_URL?>global_configuration/get_product_schedules",
-      data: {'id': id,'start_date':start_date,'product':product,'plant':plant_id,'line':line},
+      data: {'id': id,'start_date':start_date,'product':product,'line':line},
       async: false,
       success: function(test_body) {
         $('#product_schedules').modal('show');
         $("#product_schedules .modal-body").html(test_body);
         $("#product_schedules .modal-footer").html('<button type="submit" class="btn-primary btn pull-right submit_from" style="clear: both; margin-top: 10px;">Submit</button>');
-
-        $('.selectpicker').selectpicker('refresh');
-        $( ".selectpicker" ).addClass('selectbox-class');
       }
     });
 });

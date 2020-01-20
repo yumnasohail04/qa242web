@@ -3,7 +3,8 @@
 <div class="old_search" style="display: none;"></div>
 <div class="content-wrapper">
     <input type="hidden" id="assign_type" value="<?=$this->uri->segment(3);?>" />
-    <h3><?php if($assign_status == 'active_checks') echo "Active"; elseif($assign_status == 'overdue_checks') echo "Overdue";elseif($assign_status == 'today_checks') echo "Overdue"; else echo ""; ?> Assignments</h3>
+    <h3><?php if($assign_status == 'active_checks') echo "Active"; elseif($assign_status == 'overdue_checks') echo "Overdue";elseif($assign_status == 'today_checks') echo "Overdue"; else echo ""; ?> Assignments  <?php if($assign_status == 'overdue_checks') { ?><a href="assignments/delete_current_date_checks"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Delete Overdue Checks </button></a><?php } ?></h3>
+    
     <div class="container-fluid">
         <!-- START DATATABLE 1 -->
         <div class="row">
@@ -67,18 +68,13 @@
                                         Responsible Team <i class="fa fa-sort" style="font-size:13px;">
                                     </th>
                                     <th class="text-center"style="width:200px;" >
-                                        Plant<i class="fa fa-sort" style="font-size:13px;">
-                                    </th>
-                                    <th class="text-center"style="width:200px;" >
-                                        Lines<i class="fa fa-sort" style="font-size:13px;">
-                                    </th>
-                                    <th class="text-center"style="width:200px;" >
-                                        Product<i class="fa fa-sort" style="font-size:13px;">
+                                            Lines<i class="fa fa-sort" style="font-size:13px;">
                                     </th>
                                     <?php if($this->uri->segment(3) == 'today_checks'){ ?>
                                         <th class="text-center"style="width:200px;" >
                                             Status<i class="fa fa-sort" style="font-size:13px;">
                                         </th>
+                                        
                                     <?php }?>
                                     <th class="text-center" style="width:200px;" >
                                         Program Type
@@ -86,7 +82,7 @@
                                 </tr>
                             </thead>
                             <tbody  id="ajax_content_wrapper">
-                                <?php $i = 0; $previous_product = array();
+                                <?php $i = 0;
                                 if (isset($news)) {
                                     foreach ($news->result() as
                                             $new):
@@ -122,14 +118,6 @@
                                             </td>
                                             <?php } ?>
                                         	<td class="text-center">
-                                                <?php 
-                                                    if(!isset($new->plant_name) && empty($new->plant_name)) 
-                                                        echo "-";
-                                                    else
-                                                        echo $new->plant_name;
-                                                ?>
-                                            </td>
-                                        	<td class="text-center">
                                                 <?php if(isset($new->line_timing) && !empty($new->line_timing)) {
                                                     $line_timing = explode(",",$new->line_timing);
                                                     if(!empty($line_timing)) {
@@ -145,23 +133,6 @@
                                                         endforeach;
                                                     }
                                                     
-                                                } ?>
-                                            </td>
-                                        	<td class="text-center">
-                                                <?php
-                                                if(isset($new->product_id) && !empty($new->product_id)) {
-                                                    $keying = array_search($new->product_id, array_column($previous_product, 'product_id'));
-                                                    if(is_numeric($keying))
-                                                        echo $previous_product[$keying]['product_name'];
-                                                    else {
-                                                        $product_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$new->product_id),'id desc','id',DEFAULT_OUTLET.'_product','id,product_title','1','1','','','')->row_array();
-                                                        if(isset($product_detail['id']) && !empty($product_detail['id'])) {
-                                                            echo $product_detail['product_title'];
-                                                            $temparary = array();
-                                                            $temparary['product_id'] = $product_detail['id'];
-                                                            $temparary['product_name'] = $product_detail['product_title'];
-                                                        }
-                                                    }
                                                 } ?>
                                             </td>
                                         	<td>

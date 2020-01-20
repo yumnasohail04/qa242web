@@ -37,7 +37,6 @@ class Mdl_assignments extends CI_Model {
             $this->db->select($select);
             $this->db->from($table);
             $this->db->join($outlet_id.'_product_checks product_checks' , 'product_checks.id = assignments.checkid' , 'left');
-            $this->db->join($outlet_id.'_plants plants' , 'assignments.plant_no = plants.plant_id' , 'left');
             if(!empty($group_by))
                 $this->db->group_by($group_by);
             if(!empty($cols))

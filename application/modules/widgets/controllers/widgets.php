@@ -31,14 +31,7 @@ class widgets extends MX_Controller {
         echo json_encode($this->db->query("call proc_load_lines_by_plant_id_for_ddl(".$this->input->post('plant_id').')')->result_array());
     }
     function load_product_checks() {
-    	$array = $this->db->query('call proc_load_product_checks_for_ddl()')->result_array();
-    	if(!empty($array)) {
-			foreach ($array as $key => $row) {
-         		$vc_array_name[$key] = $row['text'];
-        	}
-        	array_multisort($vc_array_name, SORT_ASC, $array);
-        }
-        echo json_encode($array);
+        echo json_encode($this->db->query('call proc_load_product_checks_for_ddl()')->result_array());
     }
     function load_products() {
         echo json_encode($this->db->query('call proc_load_products_for_ddl()')->result_array());
@@ -47,18 +40,11 @@ class widgets extends MX_Controller {
         echo json_encode($this->db->query('call proc_load_lines_for_ddl()')->result_array());
     }
     function load_program_types() {
-		$array = $this->db->query('call proc_load_program_types_for_ddl()')->result_array();
-    	if(!empty($array)) {
-			foreach ($array as $key => $row) {
-         		$vc_array_name[$key] = $row['text'];
-        	}
-        	array_multisort($vc_array_name, SORT_ASC, $array);
-        }
-        echo json_encode($array);
+        echo json_encode($this->db->query('call proc_load_program_types_for_ddl()')->result_array());
     }
     function load_questions_by_program_type_or_product_checks(){
         echo json_encode($this->db->query("call proc_load_questions_by_program_type_or_product_checks_for_ddl("
-                                          .$this->input->post("program_types"). " ," .$this->input->post("product_checks") ." ,'".$this->input->post("product_type")."')")->result_array());
+                                          .$this->input->post("program_types"). " ," .$this->input->post("product_checks") . " )")->result_array());
     }
     function load_report_by_check(){
 //        echo "call proc_get_assignment_answers_by_check_complete(".$this->input->post("product_checks")
@@ -70,29 +56,19 @@ class widgets extends MX_Controller {
 //            .' , \''.date("y-m-d", strtotime($this->input->post("start_date")))
 //            .' \' , \''.date("y-m-d", strtotime($this->input->post("end_date")))
 //            .' \' , \''.$this->input->post("program_types").' \' , \''.$this->input->post("questions").'\')';
-        $attribute_type = $this->input->post('attribute_type');
-        if(empty($attribute_type))
-            $attribute_type = '';
-        if(!empty($attribute_type)) {
-            if(strtolower($attribute_type) == 'undefine')
-                $attribute_type = '';
-        }
-    	$ques = $this->input->post("questions");
-        if (!empty($ques) && strpos($ques, ',') == false)
-            $ques = $ques.',';
-    	$check_id = $this->input->post("product_checks");
-        if(empty($check_id))
-            $check_id = 0;
-        $arr_orignal = $this->db->query("call proc_get_assignment_answers_by_check_complete(".$check_id." , ".$this->input->post("lines")." , ".$this->input->post("productid")." , ".$this->input->post("status")
+
+        $arr_orignal = $this->db->query("call proc_get_assignment_answers_by_check_complete(".$this->input->post("product_checks")
+            ." , ".$this->input->post("lines")." , ".$this->input->post("productid")." , ".$this->input->post("status")
             ." , '".date("y-m-d", strtotime($this->input->post("start_date")))
-            ." 00:00:00' , '".date("y-m-d", strtotime($this->input->post("end_date")))
-            ." 23:59:59' , ".$this->input->post("program_types")." , '".$ques."' , '".$attribute_type."' , '".$this->input->post("plants")."')")->result_array();
+            ."' , '".date("y-m-d", strtotime($this->input->post("end_date")))
+            ."' , ".$this->input->post("program_types")." , '".$this->input->post("questions")."')")->result_array();
         $data['arr_orignal']=$arr_orignal;
         $Mode = 0;
         if($this->input->post("view_request") == "dashboard_home") $Mode = 1;
         else if($this->input->post("view_request") == "report_home") $Mode = 2;
         $data['Mode'] = $Mode;
         //$data['tbl_id_name']=$this->input->post('tbl_id_name');
+
         echo $this->load->view('report_by_product_check',$data ,TRUE);
     }
 

@@ -49,6 +49,7 @@ function is_login(){
 	}
 }
 
+
 function has_permission($outlet_id = ''){
 	if($outlet_id == '')
 	{
