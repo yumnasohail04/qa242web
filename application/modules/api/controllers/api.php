@@ -14,8 +14,6 @@ class Api extends MX_Controller {
     protected $data = '';
 
     function __construct() {
-        date_default_timezone_set('Asia/Karachi');
-        $this->lang->load('english', 'english');
         parent::__construct();
     }
     function static_form_response()
@@ -6185,7 +6183,7 @@ function get_restaurant_catagories(){
                 
         }
     }
-    function string_length($first,$limit,$default_text,$second='') {
+    function string_length($first,$limit,$default_text,$second) {
         if(!isset($default_text))
             $default_text="";
         if(!isset($first))

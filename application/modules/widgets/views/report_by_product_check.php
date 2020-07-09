@@ -49,7 +49,8 @@ $count_row = 0;
 <!--            <th data-htmltoarray="true" data-arrayclassth="assign_given_answer">Given Answer</th>-->
 <!--            <th data-htmltoarray="true" data-arrayclassth="assign_comments">Comments</th>-->
 
-            <? foreach ($arr_questions as $key => $item) {
+            <?php if(!isset($arr_questions) || empty($arr_questions)) $arr_questions = array();
+            foreach ($arr_questions as $key => $item) {
                 if($Mode == 1) {
                 ?><th style="display: none"><?php } else { ?><th><?php }?><?= $arr_orignal[$key]['question'] ?></th>
                 <?php }?>
@@ -57,7 +58,9 @@ $count_row = 0;
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($arr_assignments as $key_assignment => $item_assignment) { $count_row++; ?>
+        <?php 
+        if(isset($arr_assignments) && !empty($arr_assignments)) {
+        foreach ($arr_assignments as $key_assignment => $item_assignment) { $count_row++; ?>
             <?php if($Mode == 1 && $count_row>10){ ?>
                 <tr style="display: none">
             <?php }
@@ -65,8 +68,8 @@ $count_row = 0;
                 <tr>
             <?php } ?>
             <td data-htmltoarray="true" >
-                <a data-arrayclasstd="assign_id" class="btn c-btn view_details" style="color: #A4D014;" rel="<?= $arr_orignal[$key_assignment]['assign_id'] ?>"><?= $arr_orignal[$key_assignment]['assign_id'] ?></a></td>
-            <td data-htmltoarray="true" data-arrayclasstd="assign_date"><?= $arr_orignal[$key_assignment]['Date'] ?></td>
+                <a data-arrayclasstd="assign_id" class="btn c-btn view_details" style="color: #A4D014;" unique_url="<?= $arr_orignal[$key_assignment]['unique_url'] ?>" rel="<?= $arr_orignal[$key_assignment]['assign_id'] ?>"><?= $arr_orignal[$key_assignment]['assign_id'] ?></a></td>
+            <td data-htmltoarray="true" data-arrayclasstd="assign_date"><?= date("Y-m-j", strtotime($arr_orignal[$key_assignment]['Date']))  ?></td>
             <td data-htmltoarray="true" data-arrayclasstd="assign_time"><?= $arr_orignal[$key_assignment]['Time'] ?></td>
             <td style="display: none" data-htmltoarray="true" data-arrayclasstd="assign_day"><?= date_format(date_create($arr_orignal[$key_assignment]['Date']), "l") ?></td>
             <td style="display: none" data-htmltoarray="true" data-arrayclasstd="assign_month"><?= date_format(date_create($arr_orignal[$key_assignment]['Date']), "M") ?></td>
@@ -112,7 +115,7 @@ $count_row = 0;
             <?php }?>
 
         </tr>
-        <?php } ?>
+        <?php } } ?>
         </tbody>
     </table>
 </div>

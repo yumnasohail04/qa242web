@@ -126,6 +126,13 @@ parent::__construct();
                             Modules::run("api/upload_dynamic_image",ACTUAL_OUTLET_USER_IMAGE_PATH,LARGE_OUTLET_USER_IMAGE_PATH,MEDIUM_OUTLET_USER_IMAGE_PATH,SMALL_OUTLET_USER_IMAGE_PATH,$update_id,"user_image","user_image","id","users");
                         }
                     }
+                    if(isset($_FILES['sign_image']) && !empty($_FILES['sign_image'])) {
+                        if($_FILES['sign_image']['size']>0) {
+                            if(isset($itemInfo->user_image) && !empty($itemInfo->sign_image))
+                            Modules::run("api/delete_images_by_name",ACTUAL_SIGNATURE_IMAGE_PATH,LARGE_SIGNATURE_IMAGE_PATH,MEDIUM_SIGNATURE_IMAGE_PATH,SMALL_SIGNATURE_IMAGE_PATH,$itemInfo->sign_image);
+                            Modules::run("api/upload_dynamic_image",ACTUAL_SIGNATURE_IMAGE_PATH,LARGE_SIGNATURE_IMAGE_PATH,MEDIUM_SIGNATURE_IMAGE_PATH,SMALL_SIGNATURE_IMAGE_PATH,$update_id,"sign_image","sign_image","id","users");
+                        }
+                    }
                     $previous_primary = $this->input->post('previous_primary');
                     if(!empty($data['group']) && !empty($previous_primary)) {
                         if($previous_primary != $data['group']) {
@@ -207,6 +214,11 @@ parent::__construct();
                         Modules::run("api/upload_dynamic_image",ACTUAL_OUTLET_USER_IMAGE_PATH,LARGE_OUTLET_USER_IMAGE_PATH,MEDIUM_OUTLET_USER_IMAGE_PATH,SMALL_OUTLET_USER_IMAGE_PATH,$id,"user_image","user_image","id","users");
                     }
                 }
+                if(isset($_FILES['sign_image']) && !empty($_FILES['sign_image'])) {
+                    if($_FILES['sign_image']['size']>0) {
+                        Modules::run("api/upload_dynamic_image",ACTUAL_OUTLET_USER_IMAGE_PATH,LARGE_OUTLET_USER_IMAGE_PATH,MEDIUM_OUTLET_USER_IMAGE_PATH,SMALL_OUTLET_USER_IMAGE_PATH,$id,"sign_image","sign_image","id","users");
+                    }
+                }
                 if(!empty($data['group'])) {
                     $previous_history = Modules::run('api/_get_specific_table_with_pagination',array("history_user_id"=>$id,"history_group_id"=>$data['group'],"history_end_datetime >="=>date("Y-m-d H:i:s")), 'history_id desc','group_joining_history','history_id','1','1')->result_array();
                     if(empty($previous_history))
@@ -240,7 +252,8 @@ parent::__construct();
             $data['email'] = $row->email;
             $data['password'] = $row->password;
 			$data['role_id'] = $row->role_id;
-			$data['user_image'] = $row->user_image;
+            $data['user_image'] = $row->user_image;
+            $data['sign_image'] = $row->sign_image;
 			$data['second_group'] = $row->second_group;
             $data['group'] = $row->group;
         }
@@ -252,17 +265,25 @@ parent::__construct();
         $data['update_id'] = $update_id;
         $this->load->view('password_form', $data);
     }
+function check_if_editor()
+{
+    $sec_grp = $this->input->post('sec_grp');
+    $prim_grp = $this->input->post('prim_grp');
+    if (!empty($sec_grp) || !empty($prim_grp)) 
+        $check1 = Modules::run('api/_get_specific_table_with_pagination',array("id"=>$sec_grp), 'id desc',DEFAULT_OUTLET.'_groups','role','1','1')->row_array();
+        $check2 = Modules::run('api/_get_specific_table_with_pagination',array("id"=>$prim_grp), 'id desc',DEFAULT_OUTLET.'_groups','role','1','1')->row_array();
+        if($check1['role']=="115" || $check1['role']=="116" || $check1['role']=="117" || $check2['role']=="115" || $check2['role']=="116" || $check2['role']=="117")
+            echo '1';
+        else echo '0';
+}
 function validate (){
     $user_name = $this->input->post('user_name');
         if (defined('DEFAULT_CHILD_OUTLET'))   $nOutlet_id = DEFAULT_CHILD_OUTLET;
         else  $nOutlet_id = DEFAULT_OUTLET;    
     $id = $nOutlet_id;
-  //  echo $user_name.$id; exit();
-  $query = $this->_get_where_validate($id,$user_name);
- //print 'rows here '.$query->num_rows();exit;
- //echo  $query->num_rows();
- if ($query->num_rows() > 0) echo '1';
- else echo '0';
+    $query = $this->_get_where_validate($id,$user_name);
+    if ($query->num_rows() > 0) echo '1';
+    else echo '0';
 
 }
 function _get_data_from_post() {

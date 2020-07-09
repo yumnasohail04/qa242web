@@ -9,7 +9,7 @@
 </select>
 
 <div class="table-responsive">
-    <table class="table" id="tblReportData1">
+    <table class="table" id="tblReportData1" >
         <thead style="background-color: #7BABED;">
         <tr>
             <th data-htmltoarray="true" data-arrayclassth="assign_id">Check</th>

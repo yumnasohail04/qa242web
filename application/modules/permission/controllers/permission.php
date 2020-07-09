@@ -16,7 +16,7 @@ function __construct() {
 }
 
 function manage(){
-	$rs_rights = array();
+	$rs_rights = '';
 	$outlets = array();
 	$role_id = intval($this->uri->segment(4));
 	if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
@@ -107,7 +107,6 @@ function manage(){
 
 
 function submit($arr_rights='',$role_id='',$outlet_id=''){
-	
 	if($this->input->post('btnSubmit') == 'Save'){
 		
 		$arr_rights = $this->input->post('chkRight');
@@ -153,8 +152,8 @@ function set_permission($role_id,$outlet_id){
   	 $where['role_id'] = $role_id;
 	 $where['outlet_id'] = $outlet_id;
 	 $result = $this->_get_where_cols($where); 
-	 $arr_rights = array();
-	 $controller = array();
+	 $arr_rights = '';
+	 $controller = '';
 	 $parent_id = '';
 	 foreach($result->result() as $right){
 		if($right->parent_id == 0 ){
@@ -215,7 +214,7 @@ function has_control_permission($role_id,$outlet_id=DEFAULT_OUTLET,$controller){
 	 $allowed_modules = array('login', 'rights');
 //		echo "===>>> user_".$role_id."_".$outlet_id."_rights";exit;
 	 $rights = $this->cache->get("user_".$role_id."_".$outlet_id."_rights");
-$rights=array_filter($rights);
+
 	 if(in_array($controller, $allowed_modules)){
 		 return true;
 	 }
@@ -223,11 +222,14 @@ $rights=array_filter($rights);
 	 		
 	 		 	
 	 		 foreach($rights as $ctrl=>$act){
-	 		 	if ( $ctrl === $controller)
+	 		 	/*if ($controller=='reports' && $ctrl === $controller)
 		 		{
 		 			print'<pre>';print_r($act);
-		 		
-		 		}
+		 			print'<br>this =act=====>>>'.$act;
+		 			print'<br>this =ctrl=====>>>'.$ctrl;
+		 			print'<br> this =controller====>>>'.$controller;
+		 			exit;
+		 		}*/
 	 			if ($ctrl === $controller) {
 	 				return true; 
 	 			}

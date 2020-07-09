@@ -123,17 +123,28 @@
                                           <h3 style="margin-left: 15px;">QA Checks</h3>
                                           <div class="col-sm-8" >
                                              <div class="form-group">
-                                                <?php  $checks = array('product attribute'=>"Product Atrribute","wip_profile"=>"WIP Profile","bowl_filling"=>"Bowl Filling");
+                                                <?php  $checks = array('product attribute'=>"Product Atrribute",'unit weight(tray+pasta)'=>"Unit Weight(Tray+Pasta)","wip_profile"=>"WIP Profile","bowl_filling"=>"Bowl Filling");
                                                    if(!isset($news['checktype'])) $news['checktype'] = ""; ?>
                                                 <?php $options = array('' => 'Select')+$checks ;
                                                    $attribute = array('class' => 'control-label col-md-4');
                                                    echo form_label('Select Check Type <span style="color:red">*</span>', 'role_id', $attribute);?>
                                                 <div class="col-md-8">
-                                                   <?php echo form_dropdown('checktype', $options, $news['checktype'],  'class="form-control  required validatefield" id="role_id" tabindex ="8"'); ?>
+                                                   <?php echo form_dropdown('checktype', $options, $news['checktype'],  'class="form-control checktype required validatefield" id="role_id" tabindex ="8"'); ?>
                                                 </div>
                                              </div>
                                           </div>
-                                           
+                                          <div class="col-sm-8 subtype";>
+                                             <div class="form-group">
+                                                <?php  $checks = array('Filling Check'=>"Filling Check",'Dough Check'=>"Dough Check");
+                                                   if(!isset($news['checksubtype'])) $news['checksubtype'] = ""; ?>
+                                                <?php $options = array('' => 'Select')+$checks ;
+                                                   $attribute = array('class' => 'control-label col-md-4');
+                                                   echo form_label('Select Check Sub Type <span style="color:red">*</span>', 'role_id', $attribute);?>
+                                                <div class="col-md-8">
+                                                   <?php echo form_dropdown('checksubtype', $options, $news['checksubtype'],  'class="form-control  required validatefield" id="role_id" tabindex ="8"'); ?>
+                                                </div>
+                                             </div>
+                                          </div>
                                           
                                           <div class="col-sm-8">
                                              <div class="form-group">
@@ -210,7 +221,7 @@
                                         <div class="col-md-12">
                                           <h3 style="margin-left: 15px;">Select Responsible Team </h3>
                                           <div class="col-sm-5">
-                                             <div class="form-group">
+                                             <div class="form-group"> 
                                                 <label class="col-sm-4 control-label">Responsible Team </label>
                                                 <div class="col-sm-8">
                                                    <select name="inspection_team[]" class="form-control chosen-select inspection_team" required="required" multiple>
@@ -441,6 +452,28 @@
           $('.gen_checktype').attr('style','display:block')
           $('#checkheading').text('Check Attributes')
 
+      }
+   })
+
+
+   $(document).ready(function() {
+      $('.subtype').attr('style','display:none')
+      if($('.checktype').val() == 'wip_profile' || $('.checktype').val() == 'bowl_filling' ){
+         $('.subtype').attr('style','display:block')
+      }
+      else
+      {
+          $('.subtype').attr('style','display:none')
+      }
+   });
+   $('.checktype').change(function(){
+      $('.subtype').attr('style','display:none')
+      if($('.checktype').val() == 'wip_profile' || $('.checktype').val() == 'bowl_filling' ){
+         $('.subtype').attr('style','display:block')
+      }
+      else
+      {
+          $('.subtype').attr('style','display:none')
       }
    })
    

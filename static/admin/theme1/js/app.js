@@ -447,7 +447,7 @@
         // Line chart
         // ----------------------------------- 
 
-        var lineData = {
+     /*   var lineData = {
             labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
             datasets: [{
                     label: 'My First dataset',
@@ -490,12 +490,12 @@
         };
 
         var linectx = document.getElementById("chartjs-linechart").getContext("2d");
-        var lineChart = new Chart(linectx).Line(lineData, lineOptions);
+        var lineChart = new Chart(linectx).Line(lineData, lineOptions);  */
 
         // Bar chart
         // ----------------------------------- 
 
-        var barData = {
+      /*  var barData = {
             labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
             datasets: [{
                     fillColor: '#23b7e5',
@@ -527,12 +527,12 @@
         };
 
         var barctx = document.getElementById("chartjs-barchart").getContext("2d");
-        var barChart = new Chart(barctx).Bar(barData, barOptions);
+        var barChart = new Chart(barctx).Bar(barData, barOptions); */
 
         //  Doughnut chart
         // ----------------------------------- 
 
-        var doughnutData = [{
+       /* var doughnutData = [{
                 value: 300,
                 color: '#7266ba',
                 highlight: '#7266ba',
@@ -565,12 +565,12 @@
         };
 
         var doughnutctx = document.getElementById("chartjs-doughnutchart").getContext("2d");
-        var doughnutChart = new Chart(doughnutctx).Doughnut(doughnutData, doughnutOptions);
+        var doughnutChart = new Chart(doughnutctx).Doughnut(doughnutData, doughnutOptions);*/
 
         // Pie chart
         // ----------------------------------- 
 
-        var pieData = [{
+        /* var pieData = [{
                 value: 300,
                 color: '#7266ba',
                 highlight: '#7266ba',
@@ -603,12 +603,12 @@
         };
 
         var piectx = document.getElementById("chartjs-piechart").getContext("2d");
-        var pieChart = new Chart(piectx).Pie(pieData, pieOptions);
+        var pieChart = new Chart(piectx).Pie(pieData, pieOptions); */
 
         // Polar chart
         // ----------------------------------- 
 
-        var polarData = [{
+       /* var polarData = [{
                 value: 300,
                 color: '#f532e5',
                 highlight: '#f532e5',
@@ -704,7 +704,7 @@
         };
 
         var radarctx = document.getElementById("chartjs-radarchart").getContext("2d");
-        var radarChart = new Chart(radarctx).Radar(radarData, radarOptions);
+        var radarChart = new Chart(radarctx).Radar(radarData, radarOptions);*/
 
     });
 

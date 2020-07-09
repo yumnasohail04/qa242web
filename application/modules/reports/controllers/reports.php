@@ -21,8 +21,12 @@ class Reports extends MX_Controller{
 	}
 
 	function save_report_default_questions(){
+		$question = $this->input->post("questions");
+		if (!empty($question) && strpos($question, ',') == false)
+			$question = $question.',';
+
         echo json_encode($this->db->query("call proc_save_report_default_questions("
             .$this->input->post("program_types"). " ," .$this->input->post("product_checks")
-            . " , '" .$this->input->post("questions"). "' )")->result_array()[0]);
+            . " , '" .$question. "', '".$this->input->post("product_type")."' )")->result_array()[0]);
     }
 }

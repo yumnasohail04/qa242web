@@ -45,6 +45,22 @@ function get_data_for_completed_assignments_from_db($where,$sNeedle,$group_by){
 	
 }
 
+function get_scorecard_reporting()
+{
+	$this->db->select('count(*) as total,(CASE  
+    when total_percentage between 0 and 50 THEN "less than 50%" ELSE "0"
+    when total_percentage between 51 and 75 THEN "51% - 75%" ELSE "0"
+    when total_percentage between 76 and 89 THEN "76% - 89%" ELSE "0"
+    else "above 90%" ELSE "0" END )AS total_percentage');
+	$this->db->from(DEFAULT_OUTLET."_scorecard_assignment");
+	$this->db->group_by("total_percentage");
+	return $query=$this->db->get();
+	
+}
+ function update_attribute_data($where,$attribute_data,$table){
+        $this->db->where($where);
+        $this->db->update($table, $attribute_data);
+    }
 function get_static_data_for_completed_assignments($where,$sNeedle,$group_by){
 	if(!empty($group_by)){
 		$this->db->select('count(*) as count,Year( `approval_datetime` ) as year , MONTHNAME( `approval_datetime` ) as month,(CASE WHEN comments !="" THEN "Failed" else  "passed" END) AS Status' );
@@ -59,7 +75,6 @@ function get_static_data_for_completed_assignments($where,$sNeedle,$group_by){
 		$this->db->where($where);
 		if(!empty($sNeedle)){
 			$this->db->like('static_form.sf_name',$sNeedle);
-			
 		}
 		if(!empty($group_by)){
 			
@@ -124,10 +139,7 @@ function get_sites_checkreport_plantwise($where,$table,$j_table1)
         return $this->db->get();
  }
 
- function update_attribute_data($where,$attribute_data,$table){
-        $this->db->where($where);
-        $this->db->update($table, $attribute_data);
-    }
+
  function get_trendline_graph_data_db($where,$sNeedle,$group_by){
  		$this->db->select('Year( `approval_datetime` ) as year ,date( `approval_datetime` ) as date , MONTHNAME( `approval_datetime` ) as month,(CASE WHEN pf_status !="pass" THEN "Failed" else  "Passed" END) AS Status' );
 		$this->db->from('1_assignments assignments');

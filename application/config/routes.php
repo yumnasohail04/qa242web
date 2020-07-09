@@ -39,25 +39,32 @@
 */
 /////////////// ADMIN PAGES ////////////////
 $route['admin/login/submit_login'] = "login/submit_login";
-
-	
-	
 	$route['admin'] = "login";
+	$route['admin/logout'] = "login/logout";
+	$route['admin/(:any)'] = "$1/$1";
 	$strHost = $_SERVER['SERVER_NAME'];
 	$strHost = preg_replace('/www./', '', $strHost, 1);
+	$route['default_controller'] = 'login';
+	$route['404_override'] = '';
+	$route['([a-zA-Z-]+)'] = "front/pages/$1";
+	$route['error'] = "front/error";
 
-	//$strHost == 'mixmat.no' ||
-
-	 	$route['admin'] = "login";
-		$route['admin/logout'] = "login/logout";
-		$route['admin/(:any)'] = "$1/$1";
+	
 		////////////user profile routes by umar fAROOQ FOR WEB//////////
 	    $front_folder = 'front/';
 	    $route['index']=$front_folder.'index';
 	    $route['login/(:any)']=$front_folder.'login';
-	    $route['thanks']=$front_folder.'thanks';
+		$route['thanks']=$front_folder.'thanks';
+		$route['logout/(:any)']=$front_folder.'logout';
 	    $route['default_controller'] = 'login';
 		$route['404_override'] = '';
+
+
+		$front_folder = 'carrier_front/';
+		$route['carrier/index']=$front_folder.'index';
+	    $route['carrier/login/(:any)']=$front_folder.'login';
+		$route['carrier/thanks']=$front_folder.'thanks';
+		$route['carrier/logout/(:any)']=$front_folder.'logout';
 
 
 		///////////////////////////umar apis start/////////////////////////
@@ -97,6 +104,7 @@ $route['admin/login/submit_login'] = "login/submit_login";
 		$route['register-user-data'] = $api_folder."register_user_data";
 		$route['resend-user-email'] = $api_folder."resend_user_email";
 		$route['code-verification'] = $api_folder."code_verification";
+		$route['password-reset-email'] = $api_folder."password_reset_email";
 		$route['get-restaurant-catagories'] = $api_folder."get_restaurant_catagories";
 		$route['register-restaurant'] = $api_folder."register_restaurant";
 		$route['search-outlet'] = $api_folder."search_outlet";
@@ -155,6 +163,7 @@ $route['admin/login/submit_login'] = "login/submit_login";
 		$route['update-user-password'] = $admin_api_folder."update_user_password";
 		$route['user-chat-list'] = $admin_api_folder."user_chat_list";
 		$route['send-user-message'] = $admin_api_folder."send_user_message";
+		$route['change-messages-status-of-user'] = $admin_api_folder."change_messages_status_of_user";
 		$route['submit-truck-inspection'] = $admin_api_folder."submit_truck_inspection";
 		$route['submit-shipping-inspection'] = $admin_api_folder."submit_shipping_inspection";
 		$route['submit-palletizing-inspection'] = $admin_api_folder."submit_palletizing_inspection";
@@ -167,6 +176,8 @@ $route['admin/login/submit_login'] = "login/submit_login";
 		$route['get-fixed-forms'] = $admin_api_folder."get_fixed_forms";
 		$route['get-fixed-forms-detail'] = $admin_api_folder."get_fixed_forms_detail";
 		$route['fixed-form-response'] = $admin_api_folder."static_form_response";
+		$route['static-media-file'] = $admin_api_folder."submit_static_media_file";
+		$route['upload-static-media-files'] = $admin_api_folder."upload_answer_static_media_files";
 		$route['submit-draft'] = $admin_api_folder."submit_draft";
 		$route['draft-checks'] = $admin_api_folder."draft_checks";
 		$route['draft-checks-detail'] = $admin_api_folder."draft_checks_detail";
@@ -199,7 +210,6 @@ $route['admin/login/submit_login'] = "login/submit_login";
 		$route['get-checklists-data']=$admin_api_folder."get_user_check_lists";
 		$route['checklists-detail']=$admin_api_folder."checklists_detail";
 		$route['submit-assignment-answer']=$admin_api_folder."submit_assignments_answers";
-		
 		$route['get-products-lists']=$admin_api_folder."get_scheduled_checks_products";
 		
 		

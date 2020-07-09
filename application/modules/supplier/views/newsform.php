@@ -12,6 +12,16 @@
     fieldset .form-group {
     margin-bottom: 15px;
 }
+.odd
+{
+    display:none;
+}
+.gif {
+    background: url(https://clipartix.com/wp-content/uploads/2018/09/green-clipart-2018-24.png);
+    width: 30px;
+    height: 34px;
+    background-size: contain;
+}
 </style>
 <div class="page-content-wrapper">
   <div class="page-content"> 
@@ -165,6 +175,26 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-sm-5">
+                            <div class="form-group">
+                                <?php
+                                $data = array(
+                                    'name' => 'address',
+                                    'id' => 'address',
+                                    'class' => 'form-control',
+                                    'value' => $news['address'],
+                                    'type' => 'text',
+                                    'required' => 'required',
+                                    'data-parsley-maxlength'=>TEXT_BOX_RANGE
+                                );
+                                $attribute = array('class' => 'control-label col-md-4');
+                                ?>
+                                <?php echo form_label('Address<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
+                                <div class="col-md-8">
+                                    <?php echo form_input($data); ?>
+                                </div>
+                            </div>
+                        </div>
                          <div class="col-sm-5">
                             <div class="form-group">
                                 <?php
@@ -225,31 +255,27 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-sm-5">
+                            <div class="form-group">
+                            <label class="control-label col-md-4">Supplier Type<span class="required" style="color:#ff60a3">*</span></label>
+                                <div class="col-md-8">
+                                    <select class="form-control"  name="supplier_type" id="supplier_type">
+                                        <?php foreach($supplier_types as $key => $value){?>
+                                            <option  value="<?php echo $value['id'] ?>" 
+                                            <?php  if($news['supplier_type']==$value['id']) echo "selected"; ?>
+                                            ><?php echo $value['name'] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                         </fieldset>
                         </div>
                         <fieldset>
                             <legend>Documents</legend>
-                        <?php foreach($doc as $key => $value){ ?>
-                         <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="control-label col-md-2"><?php echo $value['doc_name']; ?></label>
-                                <div class="col-md-4">
-                                    <input type="file" data-doc-name="<?php echo $value['doc_name']; ?>" name="news_main_page_file_<?php echo $key; ?>" id="news_d_file" >
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                     <label class="control-label col-md-3">Expiry Date</label>
-                                        <div class='input-group datetimepicker2'>
-                                        <input type='text' class="form-control" name="expiry_date_<?php echo $key; ?>" />
-                                        <span class="input-group-addon">
-                                            <span class="fa fa-calendar"></span>
-                                        </span>
-                                     </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="append_doc">
+                            
                         </div>
-                        <?php } ?>
                         <?php if(!empty($uploaded_doc)){?>
                         <legend> Uploaded Files</legend>
                             <div class="form-body">
@@ -262,13 +288,14 @@
                                             <th>Action</th>
                                         </tr>
                                         </thead>
-                                     <?php  foreach($uploaded_doc as $key => $value){?>
+                                     <?php 
+                                     foreach($uploaded_doc as $key => $value){?>
                                       <tr class="bg-col">
                                           <td>
                                               <a href="<?php echo BASE_URL.SUPPLIER_DOCUMENTS_PATH.$value['document']; ?>" download <?php if($value['expiry_date']<= date('Y-m-d') ){?> style="color:red;"<?php }?>><?php echo $value['document']; ?></a>
                                           </td>
                                           <td <?php if($value['expiry_date']<= date('Y-m-d') ){?> style="color:red;"<?php }?>>
-                                              <?php echo $value['expiry_date']; ?>
+                                              <?php echo date("m-d-Y", strtotime($value['expiry_date'])); ?> 
                                           </td>
                                           <td>
                                               <p class="col-md-1" style="font-size: 15px; cursor:pointer;" id="delete_doc" data-doc-id="<?php echo $value['id']; ?>"><i class="fa fa-close"></i></p>
@@ -284,7 +311,7 @@
                   <div class="row">
                     <div class="col-md-6">
                       <div class="col-md-offset-2 col-md-9" style="padding-bottom:15px;">
-                       <span style="margin-left:40px"></span> <button type="submit" class="btn btn-primary submited_form"><i class="fa fa-check"></i>&nbsp;Save</button>
+                       <span style="margin-left:40px"></span> <button  class="btn btn-primary " id="submited_form"><i class="fa fa-check"></i>&nbsp;Save</button>
                         <a href="<?php echo ADMIN_BASE_URL . 'supplier'; ?>">
                         <button type="button" class="btn green btn-default" style="margin-left:20px;"><i class="fa fa-undo"></i>&nbsp;Cancel</button>
                         </a> </div>
@@ -348,18 +375,80 @@
             
             $(document).off('change', '#news_d_file').on('change', '#news_d_file', function(e){
                 e.preventDefault();
-                var str=$("#news_d_file").val();
-                var name=$(this).attr("data-doc-name");
+                var str=$(this).val();
+                var name=$(this).attr("data-doc-name").toLowerCase().replace(/\s/g, '');
                 str=str.split("\\"); 
                 str = str[str.length - 1];
-                str = str.substring( 0, str.indexOf("."));
-                var lowerCaseName = name.toLowerCase();
-                alert(lowerCaseName);
-                if(str!=name || str!=lowerCaseName)
+                str = str.substring( 0, str.indexOf(".")).toLowerCase().replace(/\s/g, '');
+                if(str!=name)
                 {
                     toastr.error("Document and title name must be same");
                     $(this).val('')
+                }else{
+                    $(this).parent().parent().find('.tick').find('.addtick').addClass('gif')
+                }
+            });
+            
+
+            $(document).off('click', '.#submited_form').on('click', '#submited_form', function(e){
+                e.preventDefault();
+                var valid="1";
+                <?php foreach($doc as $key => $value){ ?>
+                var vul=$("input[name=news_main_page_file_<?php echo $key?>]").val();
+                var exp=$("input[name=expiry_date_<?php echo $key?>]").val();
+                if(vul!=="")
+                {
+                    if(exp=="" || exp=="undefined")
+                    {
+                        valid=="0";
+                        toastr.error("Please Provide Expiration date of the uploaded documents");
+                        return false;
+                    }
+                }
+                <?php } ?>
+                if(valid="1")
+                {
+                    $( ".form-horizontal" ).submit();
                 }
             });
 
+
+            $(document).on("change", "#supplier_type", function(event){
+            event.preventDefault();
+            supplier_data();
+    });
+
+    $(document).ready(function(){
+      supplier_data();
+    });
+    function  supplier_data()
+      {
+        var supplier_type=$('#supplier_type').val();
+            $('.append_doc').html('');
+            if(supplier_type!="0"){
+              $.ajax({
+              type: 'POST',
+              url: "<?php echo BASE_URL?>supplier/get_supplier_documents",
+              data: {'supplier_type':supplier_type,'update_id':<?php echo $update_id ?>},
+              async: false,
+              success: function(result) {
+                  $('.append_doc').html(result);
+              }
+          });
+        }
+        $('.datetimepicker2').datetimepicker({
+            icons: {
+            time: 'fa fa-clock-o',
+            date: 'fa fa-calendar',
+            up: 'fa fa-chevron-up',
+            down: 'fa fa-chevron-down',
+            previous: 'fa fa-chevron-left',
+            next: 'fa fa-chevron-right',
+            today: 'fa fa-crosshairs',
+            clear: 'fa fa-trash'
+            },
+            //viewMode: 'years',
+            format:'MM/DD/YYYY'
+        });
+      }
 </script>

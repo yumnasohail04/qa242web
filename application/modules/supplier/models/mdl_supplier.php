@@ -25,6 +25,17 @@ class Mdl_supplier extends CI_Model {
         $query = $this->db->get($table);
         return $query;
     }
+	function ingredient_list_supplier($id)
+    {
+     	$table = DEFAULT_OUTLET."_ingredients_supplier";
+    	$table1= DEFAULT_OUTLET."_ingredients";
+    	$this->db->select("$table1.item_name,$table1.item_no,$table1.plm_no,$table.role");
+    	$this->db->from($table);
+    	$this->db->join("$table1","$table.ingredient_id=$table1.id","LEFT");
+    	$this->db->where("$table.supplier_id",$id);
+        $query = $this->db->get();
+        return $query;
+    }
     function check_if_exists($where)
     {
         $table = $this->get_table();

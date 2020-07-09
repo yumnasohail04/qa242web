@@ -139,47 +139,7 @@
                                 </div>
                             </div>
                         </div>
-                         <div class="col-sm-5">
-                            <div class="form-group">
-                                <?php
-                                $data = array(
-                                    'name' => 'unit_weight',
-                                    'id' => 'unit_weight',
-                                    'class' => 'form-control',
-                                    'value' => $news['unit_weight'],
-                                    'type' => 'text',
-                                    'required' => 'required',
-                                    'data-parsley-type'=>"integer",
-                                    'data-parsley-maxlength'=>TEXT_BOX_RANGE
-                                );
-                                $attribute = array('class' => 'control-label col-md-4');
-                                ?>
-                                <?php echo form_label('Unit Weight (oz)<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
-                                </div>
-                            </div>
-                        </div>
-                         <div class="col-sm-5">
-                            <div class="form-group">
-                                <?php
-                                $data = array(
-                                    'name' => 'shape',
-                                    'id' => 'shape',
-                                    'class' => 'form-control',
-                                    'value' => $news['shape'],
-                                    'type' => 'text',
-                                    'required' => 'required',
-                                    'data-parsley-maxlength'=>TEXT_BOX_RANGE
-                                );
-                                $attribute = array('class' => 'control-label col-md-4');
-                                ?>
-                                <?php echo form_label('Product Shape <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
-                                </div>
-                            </div>
-                        </div>
+                         
                          <div class="col-sm-5">
                             <div class="form-group">
                                 <?php
@@ -289,7 +249,181 @@
                         </div>
                     </div>
                 </div>
-                <div class="row rap_clone section-box">
+                <div class="row section-box" style="box-shadow:none;">
+                   <fieldset>
+  					<legend>Fixed Attributes</legend>
+                     <div class="col-sm-5">
+                            <div class="form-group">
+                                <?php
+                                $data = array(
+                                    'name' => 'unit_weight',
+                                    'id' => 'unit_weight',
+                                    'class' => 'form-control',
+                                    'value' => $news['unit_weight'],
+                                    'type' => 'text',
+                                    'required' => 'required',
+                                    'data-parsley-type'=>"integer",
+                                    'data-parsley-maxlength'=>TEXT_BOX_RANGE
+                                );
+                                $attribute = array('class' => 'control-label col-md-4');
+                                ?>
+                                <?php echo form_label('Min Unit Weight (oz)<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
+                                <div class="col-md-8">
+                                    <?php echo form_input($data); ?>
+                                </div>
+                            </div>
+                        </div>
+                   		<div class="col-sm-5">
+                            <div class="form-group">
+                                <?php
+                                $data = array(
+                                    'name' => 'max_unitweight',
+                                    'id' => 'max_unitweight',
+                                    'class' => 'form-control',
+                                    'value' => $news['max_unitweight'],
+                                    'type' => 'text',
+                                    'required' => 'required',
+                                    'data-parsley-type'=>"integer",
+                                    'data-parsley-maxlength'=>TEXT_BOX_RANGE
+                                );
+                                $attribute = array('class' => 'control-label col-md-4');
+                                ?>
+                                <?php echo form_label('Max Unit Weight (oz)<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
+                                <div class="col-md-8">
+                                    <?php echo form_input($data); ?>
+                                </div>
+                            </div>
+                         </div>
+                         <div class="col-sm-5">
+                            <div class="form-group">
+                                <?php
+                                $data = array(
+                                    'name' => 'machine_number',
+                                    'id' => 'machine_number',
+                                    'class' => 'form-control',
+                                    'value' => $news['machine_number'],
+                                    'type' => 'text',
+                                    'required' => 'required',
+                                    'data-parsley-type'=>"integer",
+                                    'data-parsley-maxlength'=>TEXT_BOX_RANGE
+                                );
+                                $attribute = array('class' => 'control-label col-md-4');
+                                ?>
+                                <?php echo form_label('Machine Number<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
+                                <div class="col-md-8">
+                                    <?php echo form_input($data); ?>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-sm-5">
+                            <div class="form-group">
+                                <?php
+                                $data = array(
+                                    'name' => 'whole_weight',
+                                    'id' => 'whole_weight',
+                                    'class' => 'form-control',
+                                    'value' => $news['whole_weight'],
+                                    'type' => 'text',
+                                    'required' => 'required',
+                                    'data-parsley-type'=>"integer",
+                                    'data-parsley-maxlength'=>TEXT_BOX_RANGE
+                                );
+                                $attribute = array('class' => 'control-label col-md-4');
+                                ?>
+                                <?php echo form_label('Whole Weight<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
+                                <div class="col-md-8">
+                                    <?php echo form_input($data); ?>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-sm-5">
+                            <div class="form-group">
+                                <?php
+                                $data = array(
+                                    'name' => 'dough_weight',
+                                    'id' => 'dough_weight',
+                                    'class' => 'form-control',
+                                    'value' => $news['dough_weight'],
+                                    'type' => 'text',
+                                    'required' => 'required',
+                                    'data-parsley-type'=>"integer",
+                                    'data-parsley-maxlength'=>TEXT_BOX_RANGE
+                                );
+                                $attribute = array('class' => 'control-label col-md-4');
+                                ?>
+                                <?php echo form_label('Dough Weight<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
+                                <div class="col-md-8">
+                                    <?php echo form_input($data); ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="form-group">
+                                <?php
+                                $data = array(
+                                    'name' => 'filling_weight',
+                                    'id' => 'filling_weight',
+                                    'class' => 'form-control',
+                                    'value' => $news['filling_weight'],
+                                    'type' => 'text',
+                                    'required' => 'required',
+                                    'data-parsley-type'=>"integer",
+                                    'data-parsley-maxlength'=>TEXT_BOX_RANGE
+                                );
+                                $attribute = array('class' => 'control-label col-md-4');
+                                ?>
+                                <?php echo form_label('Filling Weight<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
+                                <div class="col-md-8">
+                                    <?php echo form_input($data); ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="form-group">
+                                <?php
+                                $data = array(
+                                    'name' => 'filling_percentage',
+                                    'id' => 'filling_percentage',
+                                    'class' => 'form-control',
+                                    'value' => $news['filling_percentage'],
+                                    'type' => 'text',
+                                    'required' => 'required',
+                                    'data-parsley-type'=>"integer",
+                                    'data-parsley-maxlength'=>TEXT_BOX_RANGE
+                                );
+                                $attribute = array('class' => 'control-label col-md-4');
+                                ?>
+                                <?php echo form_label('Filling Percentage<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
+                                <div class="col-md-8">
+                                    <?php echo form_input($data); ?>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-sm-5">
+                            <div class="form-group">
+                                <?php
+                                $data = array(
+                                    'name' => 'shape',
+                                    'id' => 'shape',
+                                    'class' => 'form-control',
+                                    'value' => $news['shape'],
+                                    'type' => 'text',
+                                    'required' => 'required',
+                                    'data-parsley-maxlength'=>TEXT_BOX_RANGE
+                                );
+                                $attribute = array('class' => 'control-label col-md-4');
+                                ?>
+                                <?php echo form_label('Product Shape <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
+                                <div class="col-md-8">
+                                    <?php echo form_input($data); ?>
+                                </div>
+                            </div>
+                        </div>
+                </fieldset> 
+                  </div>
+                <div class="row rap_clone section-box" >
+                <fieldset>
+  				 <legend> Range Attributes</legend>
                     <?php if(isset($product_attribute) && !empty($product_attribute)){
                         foreach($product_attribute as $value){ ?>
                     <div class="input_fields_wrap">
@@ -467,10 +601,11 @@
                         </div>
                     </div>
                     <?}?>
+                </fieldset> 
                 </div>
                 <br>
                 <div>
-                    <button class="add_field_button btn btn-primary" style="float:right;margin-right: 30px;">Add Supplier</button>
+                    <button class="add_field_button btn btn-primary" style="float:right;margin-right: 30px;">Add Attribute</button>
                 </div>
                 <br>
                 <div class="row">

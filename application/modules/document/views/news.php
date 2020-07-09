@@ -12,7 +12,6 @@
                         <tr class="bg-col">
                         <th>Document Name <i class="fa fa-sort" style="font-size:13px;"></i></th>
                         <th>Type <i class="fa fa-sort" style="font-size:13px;"></i></th>
-                        <th>Level <i class="fa fa-sort" style="font-size:13px;"></i></th>
                         <th>Assigned to <i class="fa fa-sort" style="font-size:13px;"></i></th>
                         <th class="" style="width:300px;text-align: center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actions</th>
                         </tr>
@@ -32,7 +31,6 @@
                                     <tr id="Row_<?=$new['id']?>" class="odd gradeX " >
                                         <td><?php echo wordwrap($new['doc_name'] , 50 , "<br>\n")  ?></td>
                                         <td><?php echo $new['type_name'];  ?></td>
-                                        <td><?php echo $new['level'];  ?></td>
                                         <td><?php echo $new['assign_to'];  ?></td>
                                         <td class="table_action" style="text-align: center;">
                                         <a class="btn yellow c-btn view_details" rel="<?=$new['id']?>"><i class="fa fa-list"  title="See Detail"></i></a>

@@ -28,7 +28,7 @@ class Mdl_assignments extends CI_Model {
         $this->db->join(DEFAULT_OUTLET.'_product_checks product_checks' , 'product_checks.id = assignments.checkid' , 'left');
         if(!empty($where))
         $this->db->where($where);
-        $this->db->order_by('assignments.assign_id asc');
+        $this->db->order_by('assignments.assign_id desc');
         return $this->db->get();
     }
     function get_checklisting_data($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having,$like){

@@ -574,10 +574,73 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                                 </li>
                                  <?php
                             } ?> 
-                           
+                                <?php
+                                  $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'scorecard');
+                            else 
+                                $permission = true;
+                            if ($permission){?>
+                                <li class="<?php if($curr_url.'/'.$secon_curr_url  == 'scorecard/scorecard_report'){echo 'active';}    ?>" style="padding-left:0px">
+                                    <a class="color_check" href="<?php $controller='scorecard/scorecard_report'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-outdent"></em>
+                                        <span>ScoreCard Report</span>
+                                    </a>
+                                </li>
+                                 <?php
+                            } ?> 
                         </ul>
                             
                         </li>
+                        </ul>
+                    </li>
+
+
+
+
+
+
+
+
+
+                    <li class="back_shadow">
+                        <a href="#layout_distributor" title="Layouts" data-toggle="collapse" >
+                            <em class="fa fa-address-card"></em>
+                            <span>Storage & distribution</span>
+                        </a>
+                        <ul id="layout_distributor" class="nav sidebar-subnav collapse" style="background:#272C32">
+                            <li class="sidebar-subnav-header">Storage & distribution</li>
+                            <?php $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'carrier');
+                                $permission = true;
+                            if ($permission){?>
+                                <li class="<?php if($curr_url == 'carrier'){echo 'active';}    ?>" style="padding-left:0px">
+                                    <a class="color_check" href="<?php $controller='carrier'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-clipboard"></em>
+                                        <span>Carrier and Storage</span>
+                                    </a>
+                                </li>
+                                 <?php
+                            } ?> 
+
+                            <?php 
+                            $permission = false;
+                            if ($user_data['role'] != 'Admin')
+                                $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'document_file');
+                                $permission = true;
+                            if ($permission){?>
+                                <li class="<?php if($curr_url == 'document_file'){echo 'active';}    ?>" style="padding-left:0px">
+                                    <a class="color_check" href="<?php $controller='document_file'; 
+                                        echo ADMIN_BASE_URL . $controller ?>">
+                                        <em class="fa fa-clipboard"></em>
+                                        <span>Documents detail</span>
+                                    </a>
+                                </li>
+                                 <?php
+                            } ?>
                         </ul>
                     </li>
                    <!-- <li class="back_shadow">

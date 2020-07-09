@@ -44,8 +44,18 @@ date_default_timezone_set("Asia/karachi");
                 endforeach;
                 $type = $temp;
             }
-        $data['level']=array("crucial"=>"Crucial","Critical"=>"Critical");
+        $supplier_type = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("status" =>'1'),'id desc','id','supplier_type','id,name','1','0','','','')->result_array();
+        if(!empty($supplier_type)) {
+            $temp= array();
+            foreach ($supplier_type as $key => $gp):
+                $temp[$gp['id']] = $gp['name'];
+            endforeach;
+            $supplier_type = $temp;
+        }
+        $data['supplier_type'] = $supplier_type;
+        $data['level']=array("Mandatory"=>"Mandatory","Not Mandatory"=>"Not Mandatory");
         $data['assign']=array("supplier"=>"Supplier","ingredient"=>"Ingredient");
+        $data['doc_type']=array("location specific"=>"Location Specific","ingredient specific"=>"Ingredient Specific");
         $data['type'] = $type;    
         $data['update_id'] = $update_id;
         $data['view_file'] = 'newsform';
@@ -53,8 +63,7 @@ date_default_timezone_set("Asia/karachi");
         $this->template->admin_form($data);
     }
  
-   
-     function _get_data_from_db($update_id) {
+    function _get_data_from_db($update_id) {
         $where['id'] = $update_id;
         $query = $this->_get_by_arr_id($where);
         foreach ($query->result() as $row) {
@@ -62,19 +71,26 @@ date_default_timezone_set("Asia/karachi");
             $data['type_id'] = $row->type_id;
             $data['level'] = $row->level;
             $data['assign_to'] = $row->assign_to;
+            $data['doc_type'] = $row->doc_type;
+            $data['supplier_type'] = $row->supplier_type;
             $result = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id" =>$data['type_id']),'id desc','id','ingredient_types','name','1','0','','','')->row_array();
             $data['type_name'] = "None";
             if(isset($result['name']) && !empty($result['name']))
             $data['type_name'] = $result['name'];
+            $result = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id" =>$data['supplier_type']),'id desc','id','supplier_type','name','1','0','','','')->row_array();
+            $data['supplier_type_name'] = "None";
+            if(isset($result['name']) && !empty($result['name']))
+            $data['supplier_type_name'] = $result['name'];
         }
         return $data;
     }
-    
     function _get_data_from_post() {
         $data['doc_name'] = $this->input->post('doc_name');
         $data['type_id'] = $this->input->post('type_id');
         $data['level'] = $this->input->post('level');
         $data['assign_to'] = $this->input->post('assign_to');
+        $data['supplier_type'] = $this->input->post('supplier_type');
+        $data['doc_type'] = $this->input->post('doc_type');
         if($data['assign_to']=="supplier")
         {
             $data['type_id'] = " ";

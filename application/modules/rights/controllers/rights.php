@@ -26,7 +26,7 @@ Modules::run('site_security/has_permission');
 		//echo 'wasimm<pre>';
 		//print_r($rights );
 		//exit();
-		$arr_rights = array();
+		$arr_rights = '';
 		foreach($rights as $ctrl => $methods){
 			foreach($methods as $method1){
 				$_score = substr($method1,0,1); 

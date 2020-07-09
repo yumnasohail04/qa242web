@@ -25,11 +25,13 @@
                                         $i++;
                                         ?>
                                     <tr id="Row_<?=$new['id']?>" class="odd gradeX " >
-                                        <td><?php echo wordwrap($new['name'] , 50 , "<br>\n")  ?></td>
+                                        <td class="view_supplier" style="cursor:pointer" rel="<?php echo $new['supplier_id']; ?>"><?php echo wordwrap($new['name'] , 50 , "<br>\n")  ?></td>
                                         <td><?php echo wordwrap($new['at_reviewed_date'] , 50 , "<br>\n")  ?></td>
-                                        <td><?php echo wordwrap(number_format((float)$new['total_percentage'], 2, '.', '').'%' , 50 , "<br>\n")  ?></td>
+                                        <td><?php echo wordwrap(number_format((float)$new['total_percentage'], 0, '.', '').'%' , 50 , "<br>\n")  ?></td>
                                         <td class="table_action" style="text-align: center;">
                                         <a class="btn yellow c-btn view_details" rel="<?=$new['id']?>"><i class="fa fa-list"  title="See Detail"></i></a>
+                                       <?php  echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $new['id'], 'title' => 'Delete')); ?>
+
                                         </td>
                                     </tr>
                                     <?php } ?>    
@@ -63,6 +65,54 @@ $(document).ready(function(){
             });
 
 
+     
+            $(document).off('click', '.delete_record').on('click', '.delete_record', function(e){
+                var id = $(this).attr('rel');
+                e.preventDefault();
+              swal({
+                title : "Are you sure to delete the ScoreCard?",
+                text : "You can't restore this!",
+                type : "warning",
+                showCancelButton : true,
+                confirmButtonColor : "#DD6B55",
+                confirmButtonText : "Yes, delete it!",
+                closeOnConfirm : false
+              },
+                function () {
+                    
+                       $.ajax({
+                            type: 'POST',
+                            url: "<?=ADMIN_BASE_URL?>scorecard/delete_scorecard",
+                            data: {'id': id},
+                            async: false,
+                            success: function() {
+                            location.reload();
+                            }
+                        });
+                swal("Deleted!", "ScoreCard has been deleted.", "success");
+              });
+
+            });
+
 });
+  $(document).on("click", ".view_supplier", function(event){
+            event.preventDefault();
+            var id = $(this).attr('rel');
+            //alert(id); return false;
+              $.ajax({
+                        type: 'POST',
+                        url: "<?php echo ADMIN_BASE_URL?>supplier/detail",
+                        data: {'id': id},
+                        async: false,
+                        success: function(test_body) {
+                       var test_desc = test_body;
+                         $('#myModalLarge').modal('show')
+                         $("#myModalLarge .modal-body").html(test_desc);
+                          
+                         
+ 
+                     }
+                    });
+            });
 </script>
 

@@ -48,6 +48,7 @@ class Login extends MX_Controller{
 		$data['group'] = $row->group;
 		$data['last_login'] =  date("d-m-Y h:i:s", strtotime($row->last_login));
 		$data['is_supperadmin'] = 1;
+		$data['log_id']=Modules::run('api/insert_into_specific_table',array("user_id"=>$row->id,"name"=>$row->user_name,"login_time"=>date('Y-m-d H:i:s')),'logs');
 		$this->session->set_userdata('user_data', $data);
 		$user_data = $this->session->userdata('user_data');
 		$current_date = date('Y-m-d');
@@ -148,8 +149,10 @@ class Login extends MX_Controller{
 	///////////////////////////////////////////////////////////////////////////////////
 	
 	function logout(){
-		if(isset($this->session->userdata['user_data']['user_id']) && !empty($this->session->userdata['user_data']['user_id']))
-        	Modules::run('api/update_specific_table',array("id"=>$this->session->userdata['user_data']['user_id']),array("is_online"=>'0'),'users');
+		if(isset($this->session->userdata['user_data']['user_id']) && !empty($this->session->userdata['user_data']['user_id'])){
+			Modules::run('api/update_specific_table',array("id"=>$this->session->userdata['user_data']['user_id']),array("is_online"=>'0'),'users');
+			Modules::run('api/update_specific_table',array("id"=>$this->session->userdata['user_data']['log_id']),array("logout_time"=>date('Y-m-d H:i:s')),'logs');
+		}
 		$this->session->unset_userdata('user_data');
 		$this->session->unset_userdata('outlet_data');
 		$this->session->unset_userdata('f_station_id');

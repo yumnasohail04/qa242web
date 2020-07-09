@@ -337,7 +337,7 @@
                             <button class="add_field_button btn btn-primary" style="float:right;margin-right: 30px;">Add Supplier</button>
                         </div>
                 
-                        </fieldset>
+                        <!-- </fieldset>
                         </div>
                         <fieldset>
                         <legend>Documents</legend>
@@ -360,7 +360,7 @@
                         </div>
                        <?php
                     } ?> 
-                    </fieldset>
+                    </fieldset> -->
                 <div class="form-actions fluid no-mrg">
                   <div class="row">
                     <div class="col-md-6">

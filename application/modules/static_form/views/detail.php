@@ -87,7 +87,6 @@ if(isset($static_form[0]['sf_id']) && !empty($static_form[0]['sf_id']))
                                       </tbody>
                                 </table>
                             </div>
-                            
                         <!-- END FORM-->
                     </div>
                 </div>

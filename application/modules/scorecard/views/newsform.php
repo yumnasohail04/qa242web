@@ -101,7 +101,7 @@
                           </div>
                         </div>
                      </div>
-                     <div class="col-sm-5">
+                     <!-- <div class="col-sm-5">
                         <div class="form-group">
                           <?php if(!isset($groups)) $groups = array();
                            $options = $groups ;
@@ -111,7 +111,7 @@
                             <?php echo form_dropdown('group_id', $options, '',  'class="form-control select2me required validatefield" id="group_id" tabindex ="8"'); ?>
                           </div>
                         </div>
-                     </div>
+                     </div> -->
                 </div>
                 <div class="form-actions fluid no-mrg">
                   <div class="row">
@@ -134,6 +134,62 @@
             </div>
           </div>
         </div>
+        <div class="">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                    <h3>Recently Created ScoreCards</h3>
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                            <table id="datatable1" class="table table-body  table-bordered">
+                                <thead class="bg-th">
+                                <tr class="bg-col" align="center" class="text-center">
+                                <th class="text-center" style="display:none;"><b>S.no </b><i class="fa fa-sort" style="font-size:13px;"></i></th>
+                                <th class="text-center"><b>Supplier </b><i class="fa fa-sort" style="font-size:13px;"></i></th>
+                                <th class="text-center">Created Date<i class="fa fa-sort" style="font-size:13px;"></i></th>
+                                <th class="" style="width:198px;text-align: center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <?php
+                                        $i = 0;
+                                        if (isset($news)) {
+                                            foreach ($scorecards as $key => $new) {
+                                                $i++;
+                                                $delete_url = ADMIN_BASE_URL . 'scorecard/delete/' . $new['id'];
+                                                ?>
+                                                <tr id="Row_<?=$new['id']?>" class="odd gradeX " >
+                                                <td style="display:none;"><?php echo $i ?></td>
+                                                <td><?php echo $new['name'] ?></td>
+                                                <td><?php echo $new['create_date'] ?></td>
+                                                
+                                                <td class="table_action" style="text-align: center;">
+                                                <a class="btn yellow c-btn view_details" rel="<?=$new['id']?>"><i class="fa fa-list"  title="See Detail"></i></a> 
+                                                <?php
+                                                $publish_class = ' table_action_publish';
+                                                $publis_title = 'Set Un-Publish';
+                                                $icon = '<i class="fas fa-arrow-up"></i>';
+                                                $iconbgclass = ' btn greenbtn c-btn';
+                                                if ($new['status'] != 1) {
+                                                $publish_class = ' table_action_unpublish';
+                                                $publis_title = 'Set Publish';
+                                                $icon = '<i class="fas fa-arrow-down red"></i>';
+                                                $iconbgclass = ' btn default c-btn';
+                                                }
+                                                echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $new['id'], 'title' => 'Delete product_checks'));
+                                                ?>
+                                                </td>
+                                            </tr>
+                                            <?php } ?>    
+                                        <?php } ?>
+                                    </tbody>
+                              </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>    
       </div>
     </div>
   </div>
@@ -144,12 +200,58 @@
 
 <script>
 
+
     $(document).ready(function() {
         $("#news_file").change(function() {
             var img = $(this).val();
             var replaced_val = img.replace("C:\\fakepath\\", '');
             $('#hdn_image').val(replaced_val);
         });
+
+
+        $(document).on("click", ".view_details", function(event){
+            event.preventDefault();
+            var id = $(this).attr('rel');
+            //alert(id); return false;
+              $.ajax({
+                        type: 'POST',
+                        url: "<?=ADMIN_BASE_URL?>scorecard/detail_view",
+                        data: {'id': id},
+                        async: false,
+                        success: function(test_body) {
+                        var test_desc = test_body;
+                         $('#myModalLarge').modal('show')
+                         $("#myModalLarge .modal-body").html(test_desc);
+                     }
+                    });
+            });
+            $(document).off('click', '.delete_record').on('click', '.delete_record', function(e){
+                var id = $(this).attr('rel');
+                e.preventDefault();
+              swal({
+                title : "Are you sure to delete the selected ScoreCard?",
+                text : "You will not be able to recover this ScoreCard!",
+                type : "warning",
+                showCancelButton : true,
+                confirmButtonColor : "#DD6B55",
+                confirmButtonText : "Yes, delete it!",
+                closeOnConfirm : false
+              },
+                function () {
+                    
+                       $.ajax({
+                            type: 'POST',
+                            url: "<?=ADMIN_BASE_URL?>scorecard/delete_scorecard",
+                            data: {'id': id},
+                            async: false,
+                            success: function() {
+                            location.reload();
+                            }
+                        });
+                swal("Deleted!", "ScoreCard has been deleted.", "success");
+              });
+
+            });
     });
 
 

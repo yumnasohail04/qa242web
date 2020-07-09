@@ -13,6 +13,7 @@
                                 <th>Full Name <i class="fa fa-sort" style="font-size:13px;"></i></th>
                                 <th>Email <i class="fa fa-sort" style="font-size:13px;"></i></th>
                                 <th>Phone <i class="fa fa-sort" style="font-size:13px;"></i></th>
+                                <th>Group <i class="fa fa-sort" style="font-size:13px;"></i></th>
                                 <th style="width:350px;text-align: center;">Actions</th>
                           </tr>
                     </thead>
@@ -31,6 +32,7 @@
                         <td><?php echo $row['first_name']." ".$row['last_name']?></td>
                         <td><?php echo $row['email']?></td>
                         <td><?php echo $row['phone']?></td>
+                        <td><?php echo $row['group']?></td>
                 
 
                        <td class="table_action" style="text-align: center;">

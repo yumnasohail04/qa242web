@@ -255,11 +255,12 @@ date_default_timezone_set("Asia/karachi");
             $data['checkid']=$checkid;
             $data['type']=$attribute_type[$i];
             $data['question']=$attribute_name;
+            $data['attribute_id']=$attribute_list[$i];
             $data['page_rank']=$page_rank[$i];
             
             //$insert_id=$this->insert_check_questions_db($data);
             $a=0;
-            $insert_or_update=$this->insert_or_update(array("checkid"=>$checkid,"question"=>$attribute_name),$data,DEFAULT_OUTLET."_checks_questions");
+            $insert_or_update=$this->insert_or_update(array("checkid"=>$checkid,"attribute_id"=>$data['attribute_id']),$data,DEFAULT_OUTLET."_checks_questions");
             $slash=substr_count($possible_answer[$i], '/');
             $ans_data['question_id']=$insert_or_update;
             if($attribute_type[$i]=="Choice" ){
@@ -503,11 +504,12 @@ date_default_timezone_set("Asia/karachi");
             $data['question_selection']=$arr_attr_data[0]['selection_type'];
             $data['checkid']=$checkid;
             $data['type']=$attribute_type[$i];
+            $data['attribute_id']=$attribute_list[$i];
             $data['question']=$attribute_name;
             
             //$insert_id=$this->insert_check_questions_db($data);
             $a=0;
-            $insert_or_update=$this->insert_or_update(array("checkid"=>$checkid,"question"=>$attribute_name),$data,DEFAULT_OUTLET."_checks_questions");
+            $insert_or_update=$this->insert_or_update(array("checkid"=>$checkid,"attribute_id"=>$data['attribute_id']),$data,DEFAULT_OUTLET."_checks_questions");
             $slash=substr_count($possible_answer[$i], '/');
             $ans_data['question_id']=$insert_or_update;
             if($attribute_type[$i]=="Choice" ){

@@ -12,21 +12,95 @@ class Dashboard extends MX_Controller{
         // Modules::run('site_security/is_login');
         //Modules::run('site_security/has_permission');
         date_default_timezone_set("Asia/karachi");
-    	$timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id asc','general_setting','timezones','1','1')->result_array();
-        if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
-            date_default_timezone_set($timezone[0]['timezones']);
     }
 
     function index(){
-        
-        $data['sites_report']=$this->get_sites_checkreport();
-       // data['ppc_report']);exit();
-        $data['view_file'] = 'home';
+        $user_data = $this->session->userdata('user_data');
+    	$role=$user_data['role'];
+    	if(strtolower($role)=="purchasing admin" || strtolower($role)=="purchasing team" )
+    	{
+    		//$this->get_scorecard_reporting();
+    		$data=$this->scoring_detail();
+    		$data['view_file'] = 'home2';
+    	}
+    	else
+    	{
+    		$data['sites_report']=$this->get_sites_checkreport();
+        	$where=array(DEFAULT_OUTLET."_scorecard_assignment.status"=>"Complete");
+        	$data['card_list'] =Modules::run('scorecard/get_completed_scorecard',$where)->result_array();
+    		$data['view_file'] = 'home';
+    	}
         $data['dashboard_file'] = 'asdfsadf';
         $this->load->module('template');
         $this->template->admin($data);
     }
-     function change_all_notification_status()
+	function get_scorecard_list()
+	{
+    	$start=$this->input->post('start_range');
+    	$end=$this->input->post('end_range');
+        $where=array(DEFAULT_OUTLET."_scorecard_assignment.status"=>"Complete",
+                     DEFAULT_OUTLET."_scorecard_assignment.total_percentage >= "=>$start, DEFAULT_OUTLET."_scorecard_assignment.total_percentage <= "=>$end);
+        $data['card_list'] =Modules::run('scorecard/get_completed_scorecard',$where)->result_array();
+    	echo  $this->load->view('report_scorecard',$data,TRUE);
+	}
+	function dashboard_audit_list(){
+        $audit_val=$this->input->post('audit');
+    	$where['audit']=$audit_val;
+        $result =Modules::run('scorecard/get_completed_scorecard',$where)->result_array();
+        $data['card_list']=$result;
+        echo  $this->load->view('report_scorecard',$data,TRUE);
+    }
+    function dashboard_scorecard_list()
+    {
+        if(!empty($this->input->post("start")))
+            $where['total_percentage >=']=$this->input->post("start");
+        if(!empty($this->input->post("end")))
+        	$where['total_percentage <=']=$this->input->post("end");
+    	$where['1_scorecard_assignment.status']="Complete";
+        $result =Modules::run('scorecard/get_completed_scorecard',$where)->result_array();
+        $data['card_list']=$result;
+        echo  $this->load->view('report_scorecard',$data,TRUE);
+    }
+	function ingredient_detail()
+    {
+    	$id=$this->input->post("id");
+    	$data['list'] = Modules::run('scorecard/get_supplier_ingreients',array("supplier_id"=>$id))->result_array();
+    	echo  $this->load->view('ingredient_list',$data,TRUE);
+    }
+	function scoring_detail()
+	{
+    	$total = Modules::run('api/_get_specific_table_with_pagination',array("status"=>'Complete'),'id desc',DEFAULT_OUTLET."_scorecard_assignment",'id','','')->num_rows();
+		$query = Modules::run('api/_get_specific_table_with_pagination',"total_percentage BETWEEN  0 AND 50  AND  status='Complete'",'id desc',DEFAULT_OUTLET."_scorecard_assignment",'id','','')->num_rows();
+        $data['morris_one'][0]['label']="Less than 50%";
+        $data['morris_one'][0]['value']=$query;
+    	// $data['morris_one'][1]['label']="";
+    	// $data['morris_one'][1]['value']=$total-$query;
+        $query = Modules::run('api/_get_specific_table_with_pagination',"total_percentage BETWEEN  51 AND 75 AND  status='Complete'",'id desc',DEFAULT_OUTLET."_scorecard_assignment",'id','','')->num_rows();
+        $data['morris_two'][0]['label']="51%-75%";
+        $data['morris_two'][0]['value']=$query;
+    	// $data['morris_two'][1]['label']="";
+    	// $data['morris_two'][1]['value']=$total-$query;
+        $query = Modules::run('api/_get_specific_table_with_pagination',"total_percentage BETWEEN  76 AND 89 AND  status='Complete'",'id desc',DEFAULT_OUTLET."_scorecard_assignment",'id','','')->num_rows();
+        $data['morris_three'][0]['label']="76%-89%";
+        $data['morris_three'][0]['value']=$query;
+    	// $data['morris_three'][1]['label']="";
+    	// $data['morris_three'][1]['value']=$total-$query;
+        $query = Modules::run('api/_get_specific_table_with_pagination',"total_percentage BETWEEN  90 AND 100 AND  status='Complete'",'id desc',DEFAULT_OUTLET."_scorecard_assignment",'id','','')->num_rows();
+        $data['morris_four'][0]['label']="Above 90%";
+        $data['morris_four'][0]['value']=$query;
+    	// $data['morris_four'][1]['label']="";
+        // $data['morris_four'][1]['value']=$total-$query;
+        $query = Modules::run('api/_get_specific_table_with_pagination',array("audit"=>"1"),'id desc',DEFAULT_OUTLET."_scorecard_assignment",'id','','')->num_rows();
+        $data['morris_five'][0]['label']="Facility Visit";
+        $data['morris_five'][0]['value']=$query;
+        $query = Modules::run('api/_get_specific_table_with_pagination',array("audit"=>"0"),'id desc',DEFAULT_OUTLET."_scorecard_assignment",'id','','')->num_rows();
+        $data['morris_six'][0]['label']="Not Approved";
+        $data['morris_six'][0]['value']=$query;
+        
+
+    return $data;
+	}
+  function change_all_notification_status()
     {
         $this->update_attribute_data(array(),array("notification_status"=>"0"),"notification");
     }
@@ -47,35 +121,38 @@ class Dashboard extends MX_Controller{
             $plant_graph = $this->create_plant_chart(date("Y-m-d", strtotime(date("Y-m-d") . "-6 days")),date("Y-m-d"),'+1 day','Y-m-d');
         }
         elseif($data_type == "month") {
-            $top = $this->create_top_charts(date("Y-m-01", strtotime(date("Y-m-01") . "-2 months")).' 00:00:00',date("Y-m-d"),'1',"months",'M y','');
-            $trendline_graph_data = $this->create_trend_line_chart(date("Y-m-01"),date("Y-m-d"),"+1 day",'j M','-1 months');
-            $plant_graph = $this->create_plant_chart(date("Y-m-01"),date("Y-m-d"),"+1 day",'Y-m-d');
+            $top = $this->create_top_charts(date("Y-m-d", strtotime(date("Y-m-d") . "-3 months")).' 00:00:00',date("Y-m-d"),'1',"months",'j M','j M');
+            $trendline_graph_data = $this->create_trend_line_chart(date("Y-m-d", strtotime(date("Y-m-d")."-30 days")),date("Y-m-d"),"+1 day",'j M','-1 months');
+            $plant_graph = $this->create_plant_chart(date("Y-m-d", strtotime(date("Y-m-d")."-1 months")),date("Y-m-d"),"+1 day",'Y-m-d');  
         }
         elseif($data_type == "threemonth") {
-            $top = $this->create_top_charts(date("Y-m-01", strtotime(date("Y-m-01") . "-8 months")).' 00:00:00',date("Y-m-d"),'3',"months",'M y','M y');
+            $top = $this->create_top_charts(date("Y-m-d", strtotime(date("Y-m-d") . "-9 months")).' 00:00:00',date("Y-m-d"),'3',"months",'j M y','j M y');
             $trendline_graph_data = $this->create_trend_line_chart(date("Y-m-d", strtotime(date("Y-m-01")."-2 months")),date("Y-m-d"),"+3 day",'j M','-3 months');
-            $plant_graph = $this->create_plant_chart(date("Y-m-d", strtotime(date("Y-m-01")."-2 months")),date("Y-m-d"),"+3 day",'Y-m-d');
+            $plant_graph = $this->create_plant_chart(date("Y-m-d", strtotime(date("Y-m-d")."-2 months")),date("Y-m-d"),"+3 day",'Y-m-d');
         }
         elseif($data_type == "sixmonth") {
-            $top = $this->create_top_charts(date("Y-m-01", strtotime(date("Y-m-01") . "-17 months")).' 00:00:00',date("Y-m-d"),'6',"months",'M y','M y');
+            $top = $this->create_top_charts(date("Y-m-d", strtotime(date("Y-m-d") . "-18 months")).' 00:00:00',date("Y-m-d"),'6',"months",'j M y','j M y');
             $trendline_graph_data = $this->create_trend_line_chart(date("Y-m-d", strtotime(date("Y-m-01")."-5 months")),date("Y-m-d"),"+1 months",'M y','-6 months');
-            $plant_graph = $this->create_plant_chart(date("Y-m-d", strtotime(date("Y-m-01")."-5 months")),date("Y-m-d"),"+1 months",'Y-m-d');
+            $plant_graph = $this->create_plant_chart(date("Y-m-d", strtotime(date("Y-m-d")."-5 months")),date("Y-m-d"),"+1 months",'Y-m-d');
         }
         elseif($data_type == "oneyear") {
-            $top = $this->create_top_charts(date("Y-01-01", strtotime(date("Y-m-d") . "-2 years")).' 00:00:00',date("Y-m-d"),'1',"years",'Y','');
-            $trendline_graph_data = $this->create_trend_line_chart(date("Y-m-d", strtotime(date("Y-01-01"))),date("Y-m-d"),"+1 months",'M y','-1 year');
-            $plant_graph = $this->create_plant_chart(date("Y-m-d", strtotime(date("Y-01-01"))),date("Y-m-d"),"+1 months",'Y-m-d');
+            //$top = $this->create_top_charts(date("Y-m-01", strtotime(date("Y-01-01") . "-24 months")).' 00:00:00',date("Y-m-d"),'11',"months",'M y','M y');
+            //$trendline_graph_data = $this->create_trend_line_chart(date("Y-m-d", strtotime(date("Y-01-01")."-11 months")),date("Y-m-d"),"+1 months",'M y','-11 months');
+            //$plant_graph = $this->create_plant_chart(date("Y-m-d", strtotime(date("Y-01-01")."-11 months")),date("Y-m-d"),"+1 months",'Y-m-d');
+            $top = $this->create_top_charts(date("Y-m-d", strtotime(date("Y-m-d") . "-36 months")).' 00:00:00',date("Y-m-d"),'12',"months",'j M y','j M y');
+            $trendline_graph_data = $this->create_trend_line_chart(date("Y-m-d", strtotime(date("Y-m-01")."-11 months")),date("Y-m-d"),"+1 months",'M y','-12 months');
+            $plant_graph = $this->create_plant_chart(date("Y-m-d", strtotime(date("Y-m-d")."-11 months")),date("Y-m-d"),"+1 months",'Y-m-d');
         }
         else {
             $top = $this->create_top_charts(date("Y-01-01", strtotime(date("Y-m-d") . "-5 years")).' 00:00:00',date("Y-m-d"),'2',"years",'Y','Y');
-            $trendline_graph_data = $this->create_trend_line_chart(date('Y-01-01', strtotime('-1 years')),date("Y-m-d"),"+1 months",'M y','-2 year');
-            $plant_graph = $this->create_plant_chart(date('Y-01-01', strtotime('-1 years')),date("Y-m-d"),"+1 months",'Y-m-d');
+            $trendline_graph_data = $this->create_trend_line_chart(date('Y-01-01', strtotime('-2 years')),date("Y-m-d"),"+1 months",'M y','-2 year');
+            $plant_graph = $this->create_plant_chart(date('Y-01-01', strtotime('-2 years')),date("Y-m-d"),"+1 months",'Y-m-d');
         }
         echo json_encode(array("ppc_pie_report"=>$top['ppc_pie_report_data'],"ccp_pie_report"=>$top['ccp_pie_report_data'],"atp_swab_pie_report"=>$top['atp_swab_pie_report_data'],"receivinglog_pie_report"=>$top['receivinglog_pie_report_data'],"ppc_bar_report"=>$top['ppc_bar_report'],"ccp_bar_report"=>$top['ccp_bar_report'],"atp_swab_bar_report"=>$top['atp_swab_bar_report'],"receivinglog_bar_report"=>$top['receivinglog_bar_report'],"trendline_graph_data"=> $trendline_graph_data,"data_type"=>$data_type,"final"=>$plant_graph['final'],"plants_name"=>$plant_graph['plants_name'],"plant_indexes"=>$plant_graph['plant_indexes']));
     }
     function get_date_wise_pie_report($startdate,$enddate,$name,$itertion,$start_format,$end_format) {
         $pass = $this->get_standard_complete_assignments_data(array("LOWER(pf_status)"=>'pass'), 'assign_id desc','assign_id',DEFAULT_OUTLET,'assign_id','1','0','(approval_datetime between "'.$startdate.'" AND "'.$enddate.'") AND LOWER(pro_check.checkname) LIKE  "%'.strtolower($name).'%"','','')->num_rows();
-        $fail = $this->get_standard_complete_assignments_data(array("LOWER(pf_status)"=>'fail'), 'assign_id desc','assign_id',DEFAULT_OUTLET,'assign_id','1','0','(approval_datetime between "'.$startdate.'" AND "'.$enddate.'") AND LOWER(pro_check.checkname) LIKE  "%'.strtolower($name).'%"','','')->num_rows();
+        $fail = $this->get_standard_complete_assignments_data(array("LOWER(pf_status)"=>'false'), 'assign_id desc','assign_id',DEFAULT_OUTLET,'assign_id','1','0','(approval_datetime between "'.$startdate.'" AND "'.$enddate.'") AND LOWER(pro_check.checkname) LIKE  "%'.strtolower($name).'%"','','')->num_rows();
         $pass = $pass + $this->get_static_complete_assignments_data(array("LOWER(pf_status)"=>'pass'), 'assign_id desc','assign_id',DEFAULT_OUTLET,'assign_id','1','0','(approval_datetime between "'.$startdate.'" AND "'.$enddate.'") AND LOWER(static_form.sf_name) LIKE  "%'.strtolower($name).'%"','','')->num_rows();
         $fail = $fail + $this->get_static_complete_assignments_data(array("LOWER(pf_status)"=>'fail'), 'assign_id desc','assign_id',DEFAULT_OUTLET,'assign_id','1','0','(approval_datetime between "'.$startdate.'" AND "'.$enddate.'") AND LOWER(static_form.sf_name) LIKE  "%'.strtolower($name).'%"','','')->num_rows();
         if(!empty($end_format))
@@ -102,7 +179,7 @@ class Dashboard extends MX_Controller{
             $bar_result[$itertion] = $data['bar_chart'];
             $startdate = date("Y-m-d", strtotime($startdate. "+".($diff_no)." ".$diff_text)).' 00:00:00';
         }
-        $return['ppc_pie_report_data'] = $this->get_passed_failed_perecntage($pass,$fail,'Pre-op');
+        $return['ppc_pie_report_data'] = $this->get_passed_failed_perecntage($data['pass'],$data['fail'],'Pre-op');
         $return['ppc_bar_report'] = array_reverse(array_reverse($bar_result));
         /////////// End PPC////
         ////////////////CCP ////
@@ -112,13 +189,13 @@ class Dashboard extends MX_Controller{
         $bar_result = array();
         for ($itertion = 3; $itertion >= 1; $itertion--) {
             $enddate = date("Y-m-d", strtotime(date("Y-m-d", strtotime($startdate . "+".($diff_no)." ".$diff_text)) . "-1 days")).' 23:59:59';
-            $data = $this->get_date_wise_pie_report($startdate,$enddate,'Ccp',$itertion,$start_format,$end_format);
+            $data = $this->get_date_wise_pie_report($startdate,$enddate,'CCP',$itertion,$start_format,$end_format);
             $pass = $pass + $data['pass'];
             $fail = $fail + $data['fail'];
             $bar_result[$itertion] = $data['bar_chart'];
             $startdate = date("Y-m-d", strtotime($startdate. "+".($diff_no)." ".$diff_text)).' 00:00:00';
         }
-        $return['ccp_pie_report_data'] = $this->get_passed_failed_perecntage($pass,$fail,'CCP');
+        $return['ccp_pie_report_data'] = $this->get_passed_failed_perecntage($data['pass'],$data['fail'],'CCP');
         $return['ccp_bar_report'] = array_reverse(array_reverse($bar_result));
         /////////// End CCP////
         ////////////////ATP swab ////
@@ -134,7 +211,7 @@ class Dashboard extends MX_Controller{
             $bar_result[$itertion] = $data['bar_chart'];
             $startdate = date("Y-m-d", strtotime($startdate. "+".($diff_no)." ".$diff_text)).' 00:00:00';
         }
-        $return['atp_swab_pie_report_data'] = $this->get_passed_failed_perecntage($pass,$fail,'ATP Swab');
+        $return['atp_swab_pie_report_data'] = $this->get_passed_failed_perecntage($data['pass'],$data['fail'],'ATP Swab');
         $return['atp_swab_bar_report'] = array_reverse(array_reverse($bar_result));
         /////////// End ATP swab////
         ////////////////Receiving Log ////
@@ -150,16 +227,42 @@ class Dashboard extends MX_Controller{
             $bar_result[$itertion] = $data['bar_chart'];
             $startdate = date("Y-m-d", strtotime($startdate. "+".($diff_no)." ".$diff_text)).' 00:00:00';
         }
-        $return['receivinglog_pie_report_data'] = $this->get_passed_failed_perecntage($pass,$fail,'Receiving');
+        $return['receivinglog_pie_report_data'] = $this->get_passed_failed_perecntage($data['pass'],$data['fail'],'Receiving');
         $return['receivinglog_bar_report'] = array_reverse(array_reverse($bar_result));
         return $return;
+    }
+ function get_table_data()
+    {
+ 		$start_data=date('Y-m-d',strtotime($this->input->post("start_date")));
+        $end_date=date('Y-m-d 23:59:59',strtotime($this->input->post("end_date")));
+        $var_time_period=$this->input->post("var_time_period");
+        $start_data= $this->converted_dates_using_switch($var_time_period,$end_date);
+ 		$row = $this->input->post('row');
+    	if($row['label']=="Receiving"){$row['label']="Receiving Inpection Log";}
+    	$where=array("approval_datetime >=" => $start_data, "approval_datetime <=" => $end_date,"comments !="=>" ");
+        $result=$this->get_data_for_completed_assignments_from_db($where,$row['label'],'')->result_array();
+        foreach($result as $key => $value)
+        {
+        	$result[$key]['is_static']="0";
+        }
+        $static_result=$this->get_static_data_for_completed_assignments($where,$row['label'],'')->result_array();
+		foreach($static_result as $keys => $value)
+        {
+        	$static_result[$keys]['is_static']="1";
+        }
+        $final_array = array_merge($result,$static_result);
+        
+        $final_array = array_map("unserialize", array_unique(array_map("serialize", $final_array)));
+        
+        $data['final_array']=$final_array;
+        echo  $this->load->view('reports',$data,TRUE);
     }
     function create_trend_line_chart($startdate,$enddate,$increment,$date_formate,$decrement) {
         $tacking = $pass = $fail = $previous = array();
         for ($i = $startdate; $i <= $enddate ; ) {
             $end = date("Y-m-d", strtotime(date("Y-m-d", strtotime($i.$increment)).'-1 days'));
             $passing = $this->get_standard_complete_assignments_data(array("LOWER(pf_status)"=>'pass'), 'assign_id desc','assign_id',DEFAULT_OUTLET,'assign_id','1','0','(approval_datetime between "'.$i.' 00:00:00'.'" AND "'.date("Y-m-d", strtotime(date("Y-m-d", strtotime($i.$increment)).'-1 days')).' 23:59:59'.'")','','')->num_rows();
-            $failing = $this->get_standard_complete_assignments_data(array("LOWER(pf_status)"=>'fail'), 'assign_id desc','assign_id',DEFAULT_OUTLET,'assign_id','1','0','(approval_datetime between "'.$i.' 00:00:00'.'" AND "'.date("Y-m-d", strtotime(date("Y-m-d", strtotime($i.$increment)).'-1 days')).' 23:59:59'.'")','','')->num_rows();
+            $failing = $this->get_standard_complete_assignments_data(array("LOWER(pf_status)"=>'false'), 'assign_id desc','assign_id',DEFAULT_OUTLET,'assign_id','1','0','(approval_datetime between "'.$i.' 00:00:00'.'" AND "'.date("Y-m-d", strtotime(date("Y-m-d", strtotime($i.$increment)).'-1 days')).' 23:59:59'.'")','','')->num_rows();
             $passing = $passing + $this->get_static_complete_assignments_data(array("LOWER(pf_status)"=>'pass'), 'assign_id desc','assign_id',DEFAULT_OUTLET,'assign_id','1','0','(approval_datetime between "'.$i.' 00:00:00'.'" AND "'.date("Y-m-d", strtotime(date("Y-m-d", strtotime($i.$increment)).'-1 days')).' 23:59:59'.'")','','')->num_rows();
             $failing = $failing + $this->get_static_complete_assignments_data(array("LOWER(pf_status)"=>'fail'), 'assign_id desc','assign_id',DEFAULT_OUTLET,'assign_id','1','0','(approval_datetime between "'.$i.' 00:00:00'.'" AND "'.date("Y-m-d", strtotime(date("Y-m-d", strtotime($i.$increment)).'-1 days')).' 23:59:59'.'")','','')->num_rows();
             $tacking[] = date($date_formate, strtotime($i));
@@ -260,96 +363,57 @@ class Dashboard extends MX_Controller{
         $data['plants']=$plants;
         return $data;
     }
-        function get_dashboard_data(){
-        $var_time_period = $this->input->post('var_time_period');
-    	$start_data = $end_date = date('Y-m-d');
-    	switch ($var_time_period) {
-        	case "7":
-            	$start_data = date("Y-m-d", strtotime(date("Y-m-d") . "-6 days"));
-            	break;
-        	case "1":
-            	$start_data = date("Y-m-01");
-            	break;
-        	case "3":
-            	$start_data = date("Y-m-d", strtotime(date("Y-m-01")."-2 months"));
-            	break;
-        	case "6":
-            	$start_data = date("Y-m-d", strtotime(date("Y-m-01")."-5 months"));
-            	break;
-        	case "12":
-            	$start_data = date("Y-m-d", strtotime(date("Y-01-01")));
-            	break;
-        	default:
-            	$start_data = date('Y-01-01', strtotime('-1 years'));
-    	}
-    	$start_data = $start_data." 00:00:00";
-    	$end_date = $end_date." 23:59:59";
-    	$where['approval_datetime >=']= $start_data;
-    	$where['approval_datetime <=']= $end_date;
+    function get_dashboard_data(){
+      
+        $where['approval_datetime >=']=date('Y-m-d 00:00:00',strtotime($this->input->post("start_date")));
+        $where['approval_datetime <=']=date('Y-m-d 23:59:59',strtotime($this->input->post("end_date")));;
         $result=$this->get_data_for_completed_assignments_from_db($where,'','')->result_array();
-        foreach($result as $key => $value)
+    	foreach($result as $key => $value)
         {
         	$result[$key]['is_static']="0";
         }
         $static_result=$this->get_static_data_for_completed_assignments($where,'','')->result_array();
-		foreach($static_result as $keys => $value)
+   		foreach($static_result as $keys => $value)
         {
         	$static_result[$keys]['is_static']="1";
         }
         $final_array = array_merge($result,$static_result);
         
         $final_array = array_map("unserialize", array_unique(array_map("serialize", $final_array)));
-        
+        if(!empty($final_array))
+            $final_array = $this->array_sort($final_array, 'approval_datetime', SORT_DESC);
         $data['final_array']=$final_array;
         echo  $this->load->view('report_checks',$data,TRUE);
     }
-    function get_table_data()
-    {
-        $var_time_period = $this->input->post('var_time_period');
-        $row = $this->input->post('row');
-    	$start_data = $end_date = date('Y-m-d');
-    	switch ($var_time_period) {
-        	case "7":
-            	$start_data = date("Y-m-d", strtotime(date("Y-m-d") . "-6 days"));
-            	break;
-        	case "1":
-            	$start_data = date("Y-m-01");
-            	break;
-        	case "3":
-            	$start_data = date("Y-m-d", strtotime(date("Y-m-01")."-2 months"));
-            	break;
-        	case "6":
-            	$start_data = date("Y-m-d", strtotime(date("Y-m-01")."-5 months"));
-            	break;
-        	case "12":
-            	$start_data = date("Y-m-d", strtotime(date("Y-01-01")));
-            	break;
-        	default:
-            	$start_data = date('Y-01-01', strtotime('-1 years'));
-    	}
-    	if($row['label']=="Receiving"){$row['label']="Receiving Inpection Log";}
-    	$start_data = $start_data." 00:00:00";
-    	$end_date = $end_date." 23:59:59";
-    	//$where['approval_sdatetime >=']= $start_data;
-    	//$where['approval_datetime <=']= $end_date;
-    	//$where['comments'] != "";
-    	$where=array("approval_datetime >=" => $start_data, "approval_datetime <=" => $end_date,"comments !="=>"");
-        $result=$this->get_data_for_completed_assignments_from_db($where,$row['label'],'')->result_array();
-        foreach($result as $key => $value)
-        {
-        	$result[$key]['is_static']="0";
+    function array_sort($array, $on, $order=SORT_DESC){
+        $new_array = array();
+        $sortable_array = array();
+        if (count($array) > 0) {
+            foreach ($array as $k => $v):
+                if (is_array($v)) {
+                    foreach ($v as $k2 => $v2) {
+                        if ($k2 == $on) {
+                            $sortable_array[$k] = $v2;
+                        }
+                    }
+                } else {
+                    $sortable_array[$k] = $v;
+                }
+            endforeach;
+            switch ($order) {
+                case SORT_ASC:
+                    asort($sortable_array);
+                    break;
+                case SORT_DESC:
+                    arsort($sortable_array);
+                    break;
+            }
+
+            foreach ($sortable_array as $k => $v):
+                $new_array[$k] = $array[$k];
+            endforeach;
         }
-        $static_result=$this->get_static_data_for_completed_assignments($where,$row['label'],'')->result_array();
-		foreach($static_result as $keys => $value)
-        {
-        	$static_result[$keys]['is_static']="1";
-        }
-        $final_array = array_merge($result,$static_result);
-        
-        $final_array = array_map("unserialize", array_unique(array_map("serialize", $final_array)));
-        
-        $data['final_array']=$final_array;
-        echo  $this->load->view('reports',$data,TRUE);
+        return $new_array;
     }
     function get_sites_checkreport_plantwise($where,$table,$j_table1)
     {
@@ -373,29 +437,10 @@ class Dashboard extends MX_Controller{
         return $this->load->mdl_perfectmodel->get_static_data_for_completed_assignments($where,$sNeedle,$group_by);
     }
       function get_graphs_data(){
-       $var_time_period=$this->input->post("var_time_period");
-       $start_data = $end_date = date('Y-m-d');
-    	switch ($var_time_period) {
-        	case "7":
-            	$start_data = date("Y-m-d", strtotime(date("Y-m-d") . "-6 days"));
-            	break;
-        	case "1":
-            	$start_data = date("Y-m-01");
-            	break;
-        	case "3":
-            	$start_data = date("Y-m-d", strtotime(date("Y-m-01")."-2 months"));
-            	break;
-        	case "6":
-            	$start_data = date("Y-m-d", strtotime(date("Y-m-01")."-5 months"));
-            	break;
-        	case "12":
-            	$start_data = date("Y-m-d", strtotime(date("Y-01-01")));
-            	break;
-        	default:
-            	$start_data = date('Y-01-01', strtotime('-1 years'));
-    	}
-     	$startdate = $start_data;
-    	$enddate = $end_date." 23:59:59";
+        $startdate=date('Y-m-d 00:00:00',strtotime($this->input->post("start_date")));
+        $enddate=date('Y-m-d 23:59:59',strtotime($this->input->post("end_date")));
+        $var_time_period=$this->input->post("var_time_period");
+        $startdate= $this->converted_dates_using_switch($var_time_period,$enddate);
         $where['approval_datetime >=']=$startdate;
         $where['approval_datetime <=']=$enddate;
         $arr_month= $this->get_month_lists($startdate,$enddate);
@@ -418,6 +463,7 @@ class Dashboard extends MX_Controller{
         /////////// End PPC////
 
         ////////////////CCP ////
+        //
         $ppc_result=$this->get_charts_data_from_db($where,'ccp','Status')->result_array();
         $ppc_result=array_filter(array_map('array_filter', $ppc_result));
         $ppc_static_result=$this->get_static_charts_data_from_db($where,'ccp','Status')->result_array();
@@ -450,6 +496,7 @@ class Dashboard extends MX_Controller{
         $atp_swab_bar_final_array = array_merge($ppc_result,$ppc_static_result);
         $atp_swab_bar_final_array=$this->filter_multi_array($atp_swab_bar_final_array );
         $atp_swab_bar_report=$this->get_data_for_bars_charts($arr_month,$atp_swab_bar_final_array);
+      print_r($atp_swab_bar_report);exit;
         /////////// End ATP swab////
 
         ////////////////Receiving Log ////
@@ -506,32 +553,32 @@ class Dashboard extends MX_Controller{
     function converted_dates_using_switch($var_time_period,$enddate){
         switch ($var_time_period) {
             case "7":
-                $startdate = date('Y-m-01 00:00:00',strtotime('-2 Month',strtotime($enddate)));
+                $startdate =date("Y-m-d", strtotime(date("Y-m-d") . "-6 days"));
                 return $startdate;
                 break;
             case "1":
-                 $startdate = date('Y-m-01 00:00:00',strtotime('-2 Month',strtotime($enddate)));
+                 $startdate = date("Y-m-d", strtotime(date("Y-m-d")."-1 months"));
                 return $startdate;
                 break;
             case "3":
-                 $startdate = date('Y-m-01 00:00:00',strtotime('-2 Month',strtotime($enddate)));
+                 $startdate = date("Y-m-d", strtotime(date("Y-m-d")."-2 months"));
                 return $startdate;
                 break;
             case "6":
-                $startdate = date('Y-m-01 00:00:00',strtotime('-2 Month',strtotime($enddate)));
+                $startdate =date("Y-m-d", strtotime(date("Y-m-d")."-5 months"));
                 return $startdate;
                 break;
             case "12":
-                $startdate = date('Y-m-01 00:00:00',strtotime('-2 Month',strtotime($enddate)));
+                $startdate = date("Y-m-d", strtotime(date("Y-m-d")."-11 months"));
                 return $startdate;
                 break;
             case "24":
-                 $startdate = date('Y-m-01 00:00:00',strtotime('-2 Month',strtotime($enddate)));
+                 $startdate = date('Y-m-d', strtotime('-2 years'));
                 return $startdate;
                 break;
 
             default:
-                 $startdate = date('Y-m-01 00:00:00',strtotime('-2 Month',strtotime($enddate)));
+                 $startdate =date("Y-m-d", strtotime(date("Y-m-d")."-1 months"));
                 return $startdate;
         }
     }
@@ -793,8 +840,12 @@ class Dashboard extends MX_Controller{
         $query = $this->mdl_perfectmodel->get_static_complete_assignments_data_with_answer($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where,$and_where,$having);
         return $query;
     }
- 	function update_attribute_data($where,$attribute_data,$table){
+	function update_attribute_data($where,$attribute_data,$table){
         $this->load->model('mdl_perfectmodel');
        return $this->mdl_perfectmodel->update_attribute_data($where,$attribute_data,$table);
+    }
+    function get_scorecard_reporting(){
+        $this->load->model('mdl_perfectmodel');
+       return $this->mdl_perfectmodel->get_scorecard_reporting();
     }
 }

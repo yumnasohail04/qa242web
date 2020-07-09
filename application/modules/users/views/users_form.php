@@ -215,7 +215,7 @@
                           $attribute = array('class' => 'control-label col-md-4');
                           echo form_label('Primary Group <span style="color:red">*</span>', 'role_id', $attribute);?>
                           <div class="col-md-8">
-                            <?php echo form_dropdown('group', $options, $users['group'],  'class="form-control select2me required validatefield" id="role_id" tabindex ="8"'); ?>
+                            <?php echo form_dropdown('group', $options, $users['group'],  'class="form-control select2me required validatefield" id="prim_grp" tabindex ="8"'); ?>
                           </div>
                         </div>
                     </div>
@@ -228,13 +228,13 @@
                           $attribute = array('class' => 'control-label col-md-4');
                           echo form_label('Secondary Group ', 'role_id', $attribute);?>
                           <div class="col-md-8">
-                            <?php echo form_dropdown('second_group', $options, $users['second_group'],  'class="form-control select2me" id="role_id" tabindex ="8"'); ?>
+                            <?php echo form_dropdown('second_group', $options, $users['second_group'],  'class="form-control select2me" id="sec_grp" tabindex ="8"'); ?>
                         </div>
                       </div>
                     </div>
                      
-                    <div class="col-sm-6">
-                      <div class="form-group last">
+                    <div class="col-sm-5">
+                      <div class="form-group">
                       <label class="control-label col-md-4">Image</label>
                       <div class="col-md-8">
                       <div class="fileupload fileupload-new" data-provides="fileupload">
@@ -265,6 +265,45 @@
                       <i class="fa fa-undo"></i> Change
                       </span>
                       <input type="file" name="user_image" id="user_image" class="default" />
+                      </span>
+                      <a href="#" class="btn red fileupload-exists" data-dismiss="fileupload"><i class="fa fa-trash-o"></i> Remove</a>
+                      </div>
+                      </div>
+                      </div>
+                      </div>
+                    </div> 
+                    <div class="col-sm-5" id="sign_show">
+                      <div class="form-group last">
+                      <label class="control-label col-md-4">Signature</label>
+                      <div class="col-md-8">
+                      <div class="fileupload fileupload-new" data-provides="fileupload">
+                      <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
+                      <?php
+                      if(!isset($users['sign_image']))
+                          $users['sign_image'] = "";
+                      $filename =  FCPATH.'/'.ACTUAL_SIGNATURE_IMAGE_PATH.$users['sign_image'];
+                      if (isset($users['sign_image']) && !empty($users['sign_image']) && file_exists($filename)) {
+                      ?>
+                      <img class="uploaded-image" src = "<?php echo BASE_URL.ACTUAL_SIGNATURE_IMAGE_PATH.$users['sign_image'] ?>" />
+                      <?php
+                      } else {
+                      ?>
+                      <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt=""/>
+                      <?php
+                      }
+                      ?>
+                      </div>
+                      <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;">
+                      </div>
+                      <div>
+                      <span class="btn default btn-file">
+                      <span class="fileupload-new">
+                      <i class="fa fa-paper-clip"></i> Select Image
+                      </span>
+                      <span class="fileupload-exists">
+                      <i class="fa fa-undo"></i> Change
+                      </span>
+                      <input type="file" name="sign_image" id="sign_image" class="default" />
                       </span>
                       <a href="#" class="btn red fileupload-exists" data-dismiss="fileupload"><i class="fa fa-trash-o"></i> Remove</a>
                       </div>
@@ -306,8 +345,9 @@
 </div>
 
 <script type="text/javascript">
- 
-
+        $(document).ready(function(){
+          check_group_role();
+        });
         var datasubmit=null;   
         $(document).off("click", ".buttonsubmit").on("click", ".buttonsubmit", function(event){
           event.preventDefault();
@@ -358,5 +398,29 @@
           return isValid;
 
         }
- 
+        $(document).on("change", "#prim_grp", function(event){
+            check_group_role();
+        })
+        $(document).on("change", "#sec_grp", function(event){
+            check_group_role();
+        })
+        function check_group_role()
+        {
+          var sec_grp=$("#sec_grp").val();
+          var prim_grp=$("#prim_grp").val();
+          $.ajax({
+              type:"post",
+              data: {'prim_grp': prim_grp,'sec_grp': sec_grp},
+              url: "<?php echo ADMIN_BASE_URL?>users/check_if_editor",
+              success:function(result){
+                if(result == 1){
+                  document.getElementById("sign_show").style.display = "block";
+                }
+                else {
+                  document.getElementById("sign_show").style.display = "none";
+                }
+              }
+            });
+        }
+        
        </script>

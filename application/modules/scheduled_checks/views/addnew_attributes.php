@@ -318,7 +318,216 @@ display: block;
                                      
                                     </tbody>
                                   </table>
-                                  
+                                       <h4>Date attributes:</h4>
+ <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
+                                    <thead>
+                                      <tr>
+                                        <th  style="color: black !important">Attribute Name</th>
+                                        
+                                        <th style="color: black !important"></th>
+                                       <?php if($datacheck==false){?>
+                                        <th style="color: black !important"></th><?}?> 
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                         <?php if(isset($master_attributes) && !empty($master_attributes)){
+                                        foreach($master_attributes as $valuerrr){
+                                            
+                                        if($valuerrr['attribute_type']=='Date' ){?>
+                                      <tr>
+                                        <td style="width:35%;!important"> <div class="form-group">
+
+            <?php
+             $products=array();
+             $products[$valuerrr['id']]=$valuerrr['attribute_name'];
+               if(!isset($news['group'])) $news['group'] = ""; ?>
+            <?php $options =$products ;?>
+          
+            <div class="col-md-12" >
+               <?php echo form_dropdown('attribute_name[]', $options, $news['group'],  'class="form-control select2me required validatefield" id="product_id" tabindex ="8"'); ?>
+            </div>
+         </div></td>
+                 <td style="display:none;"><div class="form-group">
+               <?php
+                
+               
+                  $data = array(
+                      'name' => 'attribute_type[]',
+                      'id' => 'attribute_type',
+                      'class' => 'form-control',
+                      'value' => $valuerrr['attribute_type'],
+                      'type' => 'text',
+                       'readonly'=>true,
+                      'data-parsley-type'=>"integer",
+                      'data-parsley-maxlength'=>TEXT_BOX_RANGE
+                  );
+                 
+                  ?>
+              
+               <div class="col-md-8" style="width:100%;">
+                  <?php echo form_input($data); ?>
+               </div>
+            </div></td>
+                <td><h5>User will be asked to provide Date</h5></td>
+                 <input type="hidden"  name="possible_answers[]" value="<?=strtolower( str_replace(',', '/',$valuerrr['possible_answers'])) ?>">
+             <input type="hidden" name="min_value[]" value="" />
+              <input type="hidden" name="max_value[]" value="" />
+               <input type="hidden" name="target_val[]" value="" />                 
+                                    
+              <?php if($datacheck==false){?>
+            <td> <div class="form-group">
+            <div class="col-md-8" style="width:100%;">
+                  
+                    <i  style="color:#ffc735;" class="fa fa-plus  pull-right addto_attribute"  data-org_id="0" data-outlet_id="0" style="margin-left: 20px;" title=" Add this attribute to check"></i>              </div>
+                   
+                   
+            </div></td> <?}?>
+                             
+                                      </tr>
+                                      <?}}}?>
+                                     
+                                    </tbody>
+                                  </table>
+                                                       <h4>Date Time attributes:</h4>
+ <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
+                                    <thead>
+                                      <tr>
+                                        <th  style="color: black !important">Attribute Name</th>
+                                        
+                                        <th style="color: black !important"></th>
+                                       <?php if($datacheck==false){?>
+                                        <th style="color: black !important"></th><?}?> 
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                         <?php if(isset($master_attributes) && !empty($master_attributes)){
+                                        foreach($master_attributes as $valuerrr){
+                                            
+                                        if($valuerrr['attribute_type']=='DateTime' ){?>
+                                      <tr>
+                                        <td style="width:35%;!important"> <div class="form-group">
+
+            <?php
+             $products=array();
+             $products[$valuerrr['id']]=$valuerrr['attribute_name'];
+               if(!isset($news['group'])) $news['group'] = ""; ?>
+            <?php $options =$products ;?>
+          
+            <div class="col-md-12" >
+               <?php echo form_dropdown('attribute_name[]', $options, $news['group'],  'class="form-control select2me required validatefield" id="product_id" tabindex ="8"'); ?>
+            </div>
+         </div></td>
+                 <td style="display:none;"><div class="form-group">
+               <?php
+                
+               
+                  $data = array(
+                      'name' => 'attribute_type[]',
+                      'id' => 'attribute_type',
+                      'class' => 'form-control',
+                      'value' => $valuerrr['attribute_type'],
+                      'type' => 'text',
+                       'readonly'=>true,
+                      'data-parsley-type'=>"integer",
+                      'data-parsley-maxlength'=>TEXT_BOX_RANGE
+                  );
+                 
+                  ?>
+              
+               <div class="col-md-8" style="width:100%;">
+                  <?php echo form_input($data); ?>
+               </div>
+            </div></td>
+                <td><h5>User will be asked to provide Date Time</h5></td>
+                 <input type="hidden"  name="possible_answers[]" value="<?=strtolower( str_replace(',', '/',$valuerrr['possible_answers'])) ?>">
+             <input type="hidden" name="min_value[]" value="" />
+              <input type="hidden" name="max_value[]" value="" />
+               <input type="hidden" name="target_val[]" value="" />                 
+                                    
+              <?php if($datacheck==false){?>
+            <td> <div class="form-group">
+            <div class="col-md-8" style="width:100%;">
+                  
+                    <i  style="color:#ffc735;" class="fa fa-plus  pull-right addto_attribute"  data-org_id="0" data-outlet_id="0" style="margin-left: 20px;" title=" Add this attribute to check"></i>              </div>
+                   
+                   
+            </div></td> <?}?>
+                             
+                                      </tr>
+                                      <?}}}?>
+                                     
+                                    </tbody>
+                                  </table>      
+                                       <h4>Time attributes:</h4>
+ <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
+                                    <thead>
+                                      <tr>
+                                        <th  style="color: black !important">Attribute Name</th>
+                                        
+                                        <th style="color: black !important"></th>
+                                       <?php if($datacheck==false){?>
+                                        <th style="color: black !important"></th><?}?> 
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                         <?php if(isset($master_attributes) && !empty($master_attributes)){
+                                        foreach($master_attributes as $valuerrr){
+                                            
+                                        if($valuerrr['attribute_type']=='Time' ){?>
+                                      <tr>
+                                        <td style="width:35%;!important"> <div class="form-group">
+
+            <?php
+             $products=array();
+             $products[$valuerrr['id']]=$valuerrr['attribute_name'];
+               if(!isset($news['group'])) $news['group'] = ""; ?>
+            <?php $options =$products ;?>
+          
+            <div class="col-md-12" >
+               <?php echo form_dropdown('attribute_name[]', $options, $news['group'],  'class="form-control select2me required validatefield" id="product_id" tabindex ="8"'); ?>
+            </div>
+         </div></td>
+                 <td style="display:none;"><div class="form-group">
+               <?php
+                
+               
+                  $data = array(
+                      'name' => 'attribute_type[]',
+                      'id' => 'attribute_type',
+                      'class' => 'form-control',
+                      'value' => $valuerrr['attribute_type'],
+                      'type' => 'text',
+                       'readonly'=>true,
+                      'data-parsley-type'=>"integer",
+                      'data-parsley-maxlength'=>TEXT_BOX_RANGE
+                  );
+                 
+                  ?>
+              
+               <div class="col-md-8" style="width:100%;">
+                  <?php echo form_input($data); ?>
+               </div>
+            </div></td>
+                <td><h5>User will be asked to provide Time</h5></td>
+                 <input type="hidden"  name="possible_answers[]" value="<?=strtolower( str_replace(',', '/',$valuerrr['possible_answers'])) ?>">
+             <input type="hidden" name="min_value[]" value="" />
+              <input type="hidden" name="max_value[]" value="" />
+               <input type="hidden" name="target_val[]" value="" />                 
+                                    
+              <?php if($datacheck==false){?>
+            <td> <div class="form-group">
+            <div class="col-md-8" style="width:100%;">
+                  
+                    <i  style="color:#ffc735;" class="fa fa-plus  pull-right addto_attribute"  data-org_id="0" data-outlet_id="0" style="margin-left: 20px;" title=" Add this attribute to check"></i>              </div>
+                   
+                   
+            </div></td> <?}?>
+                             
+                                      </tr>
+                                      <?}}}?>
+                                     
+                                    </tbody>
+                                  </table>
                     </div>
 
   </div>

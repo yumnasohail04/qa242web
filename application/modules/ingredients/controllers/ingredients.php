@@ -6,8 +6,8 @@ class Ingredients extends MX_Controller
 
 function __construct() {
 parent::__construct();
-Modules::run('site_security/is_login');
-Modules::run('site_security/has_permission');
+//Modules::run('site_security/is_login');
+//Modules::run('site_security/has_permission');
 date_default_timezone_set("Asia/karachi");
 }
 
@@ -188,35 +188,35 @@ date_default_timezone_set("Asia/karachi");
 	function submit() {
         $update_id = $this->uri->segment(4);
         $data = $this->_get_data_from_post();
-        $doc=array();
-        $type_id=$this->input->post('type');
-        foreach($type_id as $key => $value)
-        {
-            $result = $this->_get_data_from_db_table(array("type_id"=>$value,"assign_to"=>"ingredient","status"=>"1"),'document',"","","doc_name,id","")->result_array();
-            if(!empty($result))
-            {
-                foreach($result as $key => $value)
-                {
-                    $doc[]=$value['id'];
-                }
-            }
-        }
+        // $doc=array();
+        // $type_id=$this->input->post('type');
+        // foreach($type_id as $key => $value)
+        // {
+        //     $result = $this->_get_data_from_db_table(array("type_id"=>$value,"assign_to"=>"ingredient","status"=>"1"),'document',"","","doc_name,id","")->result_array();
+        //     if(!empty($result))
+        //     {
+        //         foreach($result as $key => $value)
+        //         {
+        //             $doc[]=$value['id'];
+        //         }
+        //     }
+        // }
         if (is_numeric($update_id) && $update_id != 0) {
             $where['id'] = $update_id;
             $this->_update($where, $data);
             $this->_get_supplier_data_from_post($update_id);
-            if(!empty($doc)){
-            foreach($doc as $key => $value){
-            if(isset($_FILES["news_main_page_file_$key"]['size']) )
-                if($_FILES["news_main_page_file_$key"]['size'] > 0) {
-                    $itemInfo =$this->_get_data_from_db_table(array("ingredient_id"=>$update_id,"document_id"=>$value),DEFAULT_OUTLET.'_ingredients_document',"","","*","")->row();
-                    if(isset($itemInfo->document) && !empty($itemInfo->document)) 
-                        $this->delete_images_by_name(INGREDIENT_DOCUMENTS_PATH,$itemInfo->document);
-                        $this->delete_from_table(array("document_id"=>$value,"ingredient_id"=>$update_id),DEFAULT_OUTLET.'_ingredients_document');
-                    $this->upload_dynamic_image(INGREDIENT_DOCUMENTS_PATH,$update_id,"news_main_page_file_$key",'document','id',DEFAULT_OUTLET.'_ingredients_document',$value);
-                    }
-                }
-            }
+            // if(!empty($doc)){
+            // foreach($doc as $key => $value){
+            // if(isset($_FILES["news_main_page_file_$key"]['size']) )
+            //     if($_FILES["news_main_page_file_$key"]['size'] > 0) {
+            //         $itemInfo =$this->_get_data_from_db_table(array("ingredient_id"=>$update_id,"document_id"=>$value),DEFAULT_OUTLET.'_ingredients_document',"","","*","")->row();
+            //         if(isset($itemInfo->document) && !empty($itemInfo->document)) 
+            //             $this->delete_images_by_name(INGREDIENT_DOCUMENTS_PATH,$itemInfo->document);
+            //             $this->delete_from_table(array("document_id"=>$value,"ingredient_id"=>$update_id),DEFAULT_OUTLET.'_ingredients_document');
+            //         $this->upload_dynamic_image(INGREDIENT_DOCUMENTS_PATH,$update_id,"news_main_page_file_$key",'document','id',DEFAULT_OUTLET.'_ingredients_document',$value);
+            //         }
+            //     }
+            // }
             $this->delete_from_table(array("ingredient_id"=>$update_id),DEFAULT_OUTLET.'_assigned_ingredient_types');
             $selected_type= $this->input->post('type');
             if(!empty($selected_type)){
@@ -243,18 +243,18 @@ date_default_timezone_set("Asia/karachi");
                 }
             }
            if(!empty($doc)){
-                foreach($doc as $key => $value){
-                    if(isset($_FILES["news_main_page_file_$key"]['size']) )
-                        if($_FILES["news_main_page_file_$key"]['size'] > 0)
-                        $this->upload_dynamic_image(INGREDIENT_DOCUMENTS_PATH,$id,"news_main_page_file_$key",'document','id',DEFAULT_OUTLET.'_ingredients_document',$value);
-                }
+                // foreach($doc as $key => $value){
+                //     if(isset($_FILES["news_main_page_file_$key"]['size']) )
+                //         if($_FILES["news_main_page_file_$key"]['size'] > 0)
+                //         $this->upload_dynamic_image(INGREDIENT_DOCUMENTS_PATH,$id,"news_main_page_file_$key",'document','id',DEFAULT_OUTLET.'_ingredients_document',$value);
+                // }
             }
             $this->session->set_flashdata('message', 'Ingredients '.' '.DATA_SAVED);
 	        $this->session->set_flashdata('status', 'success');
         }
         redirect(ADMIN_BASE_URL . 'ingredients');
     }
-     function upload_dynamic_image($actual,$nId,$input_name,$image_field,$image_id_fild,$table,$doc_id) {
+     function upload_dynamic_image($actual,$nId,$input_name,$image_field,$image_id_fild,$table,$doc_id,$supp_id) {
         $upload_image_file = $_FILES[$input_name]['name'];
         $upload_image_file = str_replace(' ', '_', $upload_image_file);
         $file_name = 'Ingredient_doc' . $nId.'_'.$doc_id. '_' . $upload_image_file;
@@ -271,7 +271,7 @@ date_default_timezone_set("Asia/karachi");
         }
         $upload_data = $this->upload->data();
         unset($data);unset($where);
-        $data = array($image_field => $file_name,"ingredient_id"=>$nId,"document_id"=>$doc_id);
+        $data = array($image_field => $file_name,"ingredient_id"=>$nId,"document_id"=>$doc_id,"supplier_id"=>$supp_id);
         $this->insert_or_update_user_review($data,$table);
     }
        function delete_images_by_name($actual_path,$name) {
@@ -312,7 +312,9 @@ date_default_timezone_set("Asia/karachi");
         $data['post'] = $this->_get_data_from_db($update_id);
         $data['ingredient_type'] = $this->_get_data_from_db_table_type(array("ingredient_id"=>$update_id))->result_array();
         $data['supplier'] = $this->_get_data_from_db_table_supplier(array("ingredient_id"=>$update_id))->result_array();
-        $data['doc'] = $this->_get_data_from_db_table_document(array("ingredient_id"=>$update_id))->result_array();
+        foreach($data['supplier'] as $key =>$value){
+            $data['supplier'][$key]['sub'] = $this->_get_data_from_db_table_document(array("ingredient_id"=>$update_id,"supplier_id"=>$value['supplier_id']))->result_array();
+        }
         $this->load->view('detail', $data);
     }
 

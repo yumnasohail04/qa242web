@@ -121,12 +121,12 @@
                       <div class="col-sm-5">
                         <div class="form-group">
                           <?php if(!isset($groups)) $groups = array();
-                            if(!isset($value['assigned_to'])) $value['assigned_to'] = ""; ?>
+                            if(!isset($news['assigned_to'])) $news['assigned_to'] = ""; ?>
                             <?php $options = $groups ;
                             $attribute = array('class' => 'control-label col-md-4');
                             echo form_label('Assigned to <span style="color:red">*</span>', 'role_id', $attribute);?>
                           <div class="col-md-8">
-                            <?php echo form_dropdown('assigned_to', $options, $value['assigned_to'],  'class="form-control select2me required validatefield" id="role_id" tabindex ="8"'); ?>
+                            <?php echo form_dropdown('assigned_to', $options, $news['assigned_to'],  'class="form-control select2me required validatefield" id="role_id" tabindex ="8"'); ?>
                           </div>
                         </div>
                       </div>

@@ -83,13 +83,13 @@ class Mdl_scheduled_checks extends CI_Model {
         $insert_id = $this->db->insert_id();
         return $insert_id;
     }
-      function get_attriutes_list($product_id){
+    function get_attriutes_list($product_id){
        $table = DEFAULT_OUTLET."_checks_answers checks_answers";
         $product_table= DEFAULT_OUTLET."_checks_questions checks_questions";
         $this->db->from(DEFAULT_OUTLET."_checks_questions checks_questions");
         $this->db->select('checks_questions.question_id,checks_questions.page_rank,check_catagories_attributes.id,check_catagories_attributes.attribute_name as attribute_name,check_catagories_attributes.attribute_name,check_catagories_attributes.possible_answers , check_catagories_attributes.attribute_type as attribute_type,checks_answers.min,checks_answers.max,checks_answers.target');
-        $this->db->join( $table, 'checks_questions.question_id = checks_answers.question_id' , 'left');
-        $this->db->join('check_catagories_attributes', 'check_catagories_attributes.attribute_name = checks_questions.question' , 'left');
+        $this->db->join($table, 'checks_questions.question_id = checks_answers.question_id' , 'left');
+        $this->db->join('check_catagories_attributes', 'check_catagories_attributes.id = checks_questions.attribute_id' , 'left');
         $this->db->join(DEFAULT_OUTLET."_product_checks product_checks", 'check_catagories_attributes.check_cat_id = product_checks.check_subcat_id' , 'left');
         $this->db->order_by('checks_questions.question_id asc');
         ///if(!empty($where))

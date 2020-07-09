@@ -54,7 +54,11 @@
    <script src="<?php echo STATIC_ADMIN_JS?>demo-forms.js"></script>
 
   <!-- chosen multi select -->
-   
+  <script src="<?php echo STATIC_ADMIN_JS?>jquery.dataTables.min.js"></script>   
+    <script src="<?php echo STATIC_ADMIN_JS?>dataTables.colVis.js"></script>    
+    <script src="<?php echo STATIC_ADMIN_JS?>dataTables.bootstrap.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>dataTables.bootstrapPagination.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>demo-datatable.js"></script>   
 
   <script src="<?php echo STATIC_ADMIN_JS?>bootstrap-select.js"></script>
 
@@ -102,7 +106,27 @@
     </div>
   </div>
 </body>
-
+<div id="myModalLarge" tabindex="-1" role="dialog" aria-labelledby="myModalLabelLarge" aria-hidden="true" class="modal fade">
+      <div class="modal-dialog modal-lg" >
+         <div class="modal-content">
+            <div class="modal-header">
+               <button type="button" data-dismiss="modal" aria-label="Close" class="close">
+                  <span aria-hidden="true">&times;</span>
+               </button>
+              <h4 id="myModalLabel" class="modal-title">
+              <?php $module = $this->uri->segment(2); 
+               if ($module=='outlet') {
+                 $modal_title=str_replace($module,"Mosque",$module); echo ucfirst($modal_title); }
+                 else{
+               $modal_title = preg_replace('/[^a-zA-Z0-9]+/', ' ', $module); echo ucfirst($modal_title); }?>&nbsp;Details</h4>
+            </div>
+            <div class="modal-body">...</div>
+            <div class="modal-footer">
+              
+            </div>
+         </div>
+      </div>
+   </div>
 <script type="text/javascript">
        tinymce.init({
           theme : 'advanced',

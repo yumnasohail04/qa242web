@@ -16,6 +16,41 @@ date_default_timezone_set("Asia/karachi");
      
         $this->manage();
     }
+
+    function place_attribute_id()
+    {
+
+        $quest = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_product_checks','id','1','0')->result_array();
+        foreach($quest as $key => $value)  
+        {
+            $check_attr=$this->get_attriutes_list($value['id'])->result_array();
+
+            foreach($check_attr as $ca => $cat_atr)
+            {
+                $id=$this->insert_or_update(array("question_id"=>$cat_atr['question_id']),array("attribute_id"=>$cat_atr['id']),DEFAULT_OUTLET."_checks_questions");
+            }
+        }
+    }
+    function get_all_attributes()
+    {
+        $check_id=$this->input->post('check_id');
+        $cat_id=$this->input->post('cat_id');
+        
+        if(empty($check_id))
+        {
+            $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('check_cat_id'=>$cat_id,'delete_status'=>0), 'id asc','check_catagories_attributes','id as attribute_id, attribute_name as question','1','0')->result_array();
+            foreach($master_catagories as $key => $value)
+            {
+                $master_catagories[$key]['question_id']=$value['attribute_id']."_new";
+                $master_catagories[$key]['parent_id']="0";
+            }
+        }else{
+            $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('checkid'=>$check_id), 'question_id asc',DEFAULT_OUTLET.'_checks_questions','question_id,question,attribute_id,parent_id','1','0')->result_array();
+        }
+        $data=json_encode($master_catagories);
+        echo $data;
+        exit;
+    }
     function manage() {
         $data['news'] = $this->_get('id desc',array('checktype ='=>"scheduled_checks"));
         $data['groups'] = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
@@ -23,7 +58,7 @@ date_default_timezone_set("Asia/karachi");
         $this->load->module('template');
         $this->template->admin($data);
     }
-        function create() {
+    function create() {
         $update_id = $this->uri->segment(4);
          $data['datacheck']=false;
         $master_attributes=array();
@@ -49,8 +84,21 @@ date_default_timezone_set("Asia/karachi");
               }
                $where_attr['id']=$productid;
                 $master_attributes=$this->get_attriutes_list($update_id)->result_array();
-            
-                
+                foreach($master_attributes as $key => $ma)
+                {
+                    if($ma['possible_answers']=="other"){
+                        $sub_attributes=Modules::run('supplier/_get_data_from_db_table',array("opt_question_id" =>$ma['id'],"opt_delete"=>"0"),"attribute_other_options","id asc","","opt_option,opt_acceptance,id","")->result_array();
+                        $attr="";
+                        foreach($sub_attributes as $keys => $value)
+                        {
+                            $attr=$attr.$value['opt_option'];
+                            $attr=$attr."/";
+                        }
+                        $attr = rtrim($attr, "/");
+                        $master_attributes[$key]['possible_answers']=$attr;
+                    }
+                }
+               // print_r($master_attributes);exit;
             }
             /*else{
                 $where_attr['id']=$productid;
@@ -224,241 +272,247 @@ date_default_timezone_set("Asia/karachi");
      }
   }
   function _get_general_checks_attribute_data_from_post($checkid){
-        $attribute_list= $this->input->post('attribute_name');
-        $min_value=$this->input->post('min_value');
-        $max_value=$this->input->post('max_value');
-        $target_value=$this->input->post('target_val');
-        $attribute_type=$this->input->post('attribute_type');
-        $possible_value=$this->input->post('possible_value');
-        $possible_answer=$this->input->post('possible_answers');
-        $page_rank=$this->input->post('page_rank');
+    $attribute_list= $this->input->post('attribute_name');
+    $min_value=$this->input->post('min_value');
+    $max_value=$this->input->post('max_value');
+    $target_value=$this->input->post('target_val');
+    $attribute_type=$this->input->post('attribute_type');
+    $possible_value=$this->input->post('possible_value');
+    $possible_answer=$this->input->post('possible_answers');
+    $page_rank=$this->input->post('page_rank');
+    
+    $total=count($attribute_list);
+    for ($i=0; $i< $total;  $i++) { 
+        $where_attr['id']=$attribute_list[$i];
+        $arr_attr_data= $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('check_catagories_attributes.id'=>$attribute_list[$i]), 'id desc','check_catagories_attributes','id,attribute_name,selection_type','1','0')->result_array();
+        $data['question_selection']=$arr_attr_data[0]['selection_type'];  
+        $attribute_name=$arr_attr_data[0]['attribute_name'];
+        $data['checkid']=$checkid;
+        $data['type']=$attribute_type[$i];
+        $data['question']=$attribute_name;
+        $data['attribute_id']=$attribute_list[$i];
+        $data['page_rank']=$page_rank[$i];
         
-     
-       
-        $total=count($attribute_list);
-        for ($i=0; $i< $total;  $i++) { 
-            $where_attr['id']=$attribute_list[$i];
-            $arr_attr_data= $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('check_catagories_attributes.id'=>$attribute_list[$i]), 'id desc','check_catagories_attributes','id,attribute_name','1','0')->result_array();
-            $attribute_name=$arr_attr_data[0]['attribute_name'];
-            $data['checkid']=$checkid;
-            $data['type']=$attribute_type[$i];
-            $data['question']=$attribute_name;
-            $data['page_rank']=$page_rank[$i];
-            
-            //$insert_id=$this->insert_check_questions_db($data);
-            $a=0;
-            $insert_or_update=$this->insert_or_update(array("checkid"=>$checkid,"question"=>$attribute_name),$data,DEFAULT_OUTLET."_checks_questions");
-            
-            $ans_data['question_id']=$insert_or_update;
-            if($attribute_type[$i]=="Choice" ){
-                if($possible_answer[$i]=="yes/no"){
-                    $insert_answer_data=array();
-                    $insert_answer_data[0]['possible_answer']='yes';
-                    $insert_answer_data[0]['min']=0;
-                    $insert_answer_data[0]['max']= 0;
-                    $insert_answer_data[0]['is_acceptable']=1;
-                    $insert_answer_data[0]['checkid']=$checkid;
-                    $insert_answer_data[0]['question_id']=$insert_or_update;
+        //$insert_id=$this->insert_check_questions_db($data);
+        $a=0;
+        $insert_or_update=$this->insert_or_update(array("checkid"=>$checkid,"attribute_id"=>$data['attribute_id']),$data,DEFAULT_OUTLET."_checks_questions");
+        $slash=substr_count($possible_answer[$i], '/');
+        $ans_data['question_id']=$insert_or_update;
+        if($attribute_type[$i]=="Choice" ){
+            if($possible_answer[$i]=="yes/no"){
+                $insert_answer_data=array();
+                $insert_answer_data[0]['possible_answer']='yes';
+                $insert_answer_data[0]['min']=0;
+                $insert_answer_data[0]['max']= 0;
+                $insert_answer_data[0]['is_acceptable']=1;
+                $insert_answer_data[0]['checkid']=$checkid;
+                $insert_answer_data[0]['question_id']=$insert_or_update;
 
-                    $insert_answer_data[1]['possible_answer']='no';
-                    $insert_answer_data[1]['min']=0;
-                    $insert_answer_data[1]['max']= 0;
-                    $insert_answer_data[1]['is_acceptable']=0;
-                    $insert_answer_data[1]['checkid']=$checkid;
-                    $insert_answer_data[1]['question_id']=$insert_or_update;
-                }elseif($possible_answer[$i]=="acceptable/unacceptable" ||  $possible_answer[$i]=="acceptable/not acceptable"){
-                    $insert_answer_data=array();
-                    $insert_answer_data[0]['possible_answer']='acceptable';
-                    $insert_answer_data[0]['min']=0;
-                    $insert_answer_data[0]['max']= 0;
-                    $insert_answer_data[0]['is_acceptable']=1;
-                    $insert_answer_data[0]['checkid']=$checkid;
-                    $insert_answer_data[0]['question_id']=$insert_or_update;
+                $insert_answer_data[1]['possible_answer']='no';
+                $insert_answer_data[1]['min']=0;
+                $insert_answer_data[1]['max']= 0;
+                $insert_answer_data[1]['is_acceptable']=0;
+                $insert_answer_data[1]['checkid']=$checkid;
+                $insert_answer_data[1]['question_id']=$insert_or_update;
+            }elseif($possible_answer[$i]=="acceptable/unacceptable" ||  $possible_answer[$i]=="acceptable/not acceptable"){
+                $insert_answer_data=array();
+                $insert_answer_data[0]['possible_answer']='acceptable';
+                $insert_answer_data[0]['min']=0;
+                $insert_answer_data[0]['max']= 0;
+                $insert_answer_data[0]['is_acceptable']=1;
+                $insert_answer_data[0]['checkid']=$checkid;
+                $insert_answer_data[0]['question_id']=$insert_or_update;
 
-                    $insert_answer_data[1]['possible_answer']='unacceptable';
-                    $insert_answer_data[1]['min']=0;
-                    $insert_answer_data[1]['max']= 0;
-                    $insert_answer_data[1]['is_acceptable']=0;
-                    $insert_answer_data[1]['checkid']=$checkid;
-                    $insert_answer_data[1]['question_id']=$insert_or_update;
-                }
-                elseif($possible_answer[$i]=="completed/not completed"){
-                    $insert_answer_data=array();
-                    $insert_answer_data[0]['possible_answer']='completed';
-                    $insert_answer_data[0]['min']=0;
-                    $insert_answer_data[0]['max']= 0;
-                    $insert_answer_data[0]['is_acceptable']=1;
-                    $insert_answer_data[0]['checkid']=$checkid;
-                    $insert_answer_data[0]['question_id']=$insert_or_update;
+                $insert_answer_data[1]['possible_answer']='unacceptable';
+                $insert_answer_data[1]['min']=0;
+                $insert_answer_data[1]['max']= 0;
+                $insert_answer_data[1]['is_acceptable']=0;
+                $insert_answer_data[1]['checkid']=$checkid;
+                $insert_answer_data[1]['question_id']=$insert_or_update;
+            }
+            elseif($possible_answer[$i]=="completed/not completed"){
+                $insert_answer_data=array();
+                $insert_answer_data[0]['possible_answer']='completed';
+                $insert_answer_data[0]['min']=0;
+                $insert_answer_data[0]['max']= 0;
+                $insert_answer_data[0]['is_acceptable']=1;
+                $insert_answer_data[0]['checkid']=$checkid;
+                $insert_answer_data[0]['question_id']=$insert_or_update;
 
-                    $insert_answer_data[1]['possible_answer']='not completed';
-                    $insert_answer_data[1]['min']=0;
-                    $insert_answer_data[1]['max']= 0;
-                    $insert_answer_data[1]['is_acceptable']=0;
-                    $insert_answer_data[1]['checkid']=$checkid;
-                    $insert_answer_data[1]['question_id']=$insert_or_update;
+                $insert_answer_data[1]['possible_answer']='not completed';
+                $insert_answer_data[1]['min']=0;
+                $insert_answer_data[1]['max']= 0;
+                $insert_answer_data[1]['is_acceptable']=0;
+                $insert_answer_data[1]['checkid']=$checkid;
+                $insert_answer_data[1]['question_id']=$insert_or_update;
 
 
- 
 
 
-                }
-                elseif($possible_answer[$i]=="cleaned/uncleaned"){
-                    $insert_answer_data=array();
-                    $insert_answer_data[0]['possible_answer']='cleaned';
-                    $insert_answer_data[0]['min']=0;
-                    $insert_answer_data[0]['max']= 0;
-                    $insert_answer_data[0]['is_acceptable']=1;
-                    $insert_answer_data[0]['checkid']=$checkid;
-                     $insert_answer_data[0]['question_id']=$insert_or_update;
 
-                    $insert_answer_data[1]['possible_answer']='uncleaned';
-                    $insert_answer_data[1]['min']=0;
-                    $insert_answer_data[1]['max']= 0;
-                    $insert_answer_data[1]['is_acceptable']=0;
-                    $insert_answer_data[1]['checkid']=$checkid;
-                    $insert_answer_data[1]['question_id']=$insert_or_update;
-                }
-                elseif($possible_answer[$i]=="cleaned/completed"){
-                    $insert_answer_data=array();
-                    $insert_answer_data[0]['possible_answer']='cleaned';
-                    $insert_answer_data[0]['min']=0;
-                    $insert_answer_data[0]['max']= 0;
-                    $insert_answer_data[0]['is_acceptable']=1;
-                    $insert_answer_data[0]['checkid']=$checkid;
-                    $insert_answer_data[0]['question_id']=$insert_or_update;
+            }
+            elseif($possible_answer[$i]=="cleaned/uncleaned"){
+                $insert_answer_data=array();
+                $insert_answer_data[0]['possible_answer']='cleaned';
+                $insert_answer_data[0]['min']=0;
+                $insert_answer_data[0]['max']= 0;
+                $insert_answer_data[0]['is_acceptable']=1;
+                $insert_answer_data[0]['checkid']=$checkid;
+                 $insert_answer_data[0]['question_id']=$insert_or_update;
 
-                    $insert_answer_data[1]['possible_answer']='completed';
-                    $insert_answer_data[1]['min']=0;
-                    $insert_answer_data[1]['max']= 0;
-                    $insert_answer_data[1]['is_acceptable']=0;
-                    $insert_answer_data[1]['checkid']=$checkid;
-                    $insert_answer_data[1]['question_id']=$insert_or_update;
-                }
-                elseif($possible_answer[$i]=="'release/hold"){
-                    $insert_answer_data=array();
-                    $insert_answer_data[0]['possible_answer']='release';
-                    $insert_answer_data[0]['min']=0;
-                    $insert_answer_data[0]['max']= 0;
-                    $insert_answer_data[0]['is_acceptable']=1;
-                    $insert_answer_data[0]['checkid']=$checkid;
-                    $insert_answer_data[0]['question_id']=$insert_or_update;
+                $insert_answer_data[1]['possible_answer']='uncleaned';
+                $insert_answer_data[1]['min']=0;
+                $insert_answer_data[1]['max']= 0;
+                $insert_answer_data[1]['is_acceptable']=0;
+                $insert_answer_data[1]['checkid']=$checkid;
+                $insert_answer_data[1]['question_id']=$insert_or_update;
+            }
+            elseif($possible_answer[$i]=="cleaned/completed"){
+                $insert_answer_data=array();
+                $insert_answer_data[0]['possible_answer']='cleaned';
+                $insert_answer_data[0]['min']=0;
+                $insert_answer_data[0]['max']= 0;
+                $insert_answer_data[0]['is_acceptable']=1;
+                $insert_answer_data[0]['checkid']=$checkid;
+                $insert_answer_data[0]['question_id']=$insert_or_update;
 
-                    $insert_answer_data[1]['possible_answer']='hold';
-                    $insert_answer_data[1]['min']=0;
-                    $insert_answer_data[1]['max']= 0;
-                    $insert_answer_data[1]['is_acceptable']=0;
-                    $insert_answer_data[1]['checkid']=$checkid;
-                    $insert_answer_data[1]['question_id']=$insert_or_update;
-                }
-                elseif($possible_answer[$i]=="pass/fail"){
-                    $insert_answer_data=array();
-                    $insert_answer_data[0]['possible_answer']='pass';
-                    $insert_answer_data[0]['min']=0;
-                    $insert_answer_data[0]['max']= 0;
-                    $insert_answer_data[0]['is_acceptable']=1;
-                    $insert_answer_data[0]['checkid']=$checkid;
-                    $insert_answer_data[0]['question_id']=$insert_or_update;
+                $insert_answer_data[1]['possible_answer']='completed';
+                $insert_answer_data[1]['min']=0;
+                $insert_answer_data[1]['max']= 0;
+                $insert_answer_data[1]['is_acceptable']=0;
+                $insert_answer_data[1]['checkid']=$checkid;
+                $insert_answer_data[1]['question_id']=$insert_or_update;
+            }
+            elseif($possible_answer[$i]=="'release/hold"){
+                $insert_answer_data=array();
+                $insert_answer_data[0]['possible_answer']='release';
+                $insert_answer_data[0]['min']=0;
+                $insert_answer_data[0]['max']= 0;
+                $insert_answer_data[0]['is_acceptable']=1;
+                $insert_answer_data[0]['checkid']=$checkid;
+                $insert_answer_data[0]['question_id']=$insert_or_update;
 
-                    $insert_answer_data[1]['possible_answer']='fail';
-                    $insert_answer_data[1]['min']=0;
-                    $insert_answer_data[1]['max']= 0;
-                    $insert_answer_data[1]['is_acceptable']=0;
-                    $insert_answer_data[1]['checkid']=$checkid;
-                    $insert_answer_data[1]['question_id']=$insert_or_update;
-                }
-                elseif($possible_answer[$i]=="positive/negative"){
-                    $insert_answer_data=array();
-                    $insert_answer_data[0]['possible_answer']='positive';
-                    $insert_answer_data[0]['min']=0;
-                    $insert_answer_data[0]['max']= 0;
-                    $insert_answer_data[0]['is_acceptable']=1;
-                    $insert_answer_data[0]['checkid']=$checkid;
-                    $insert_answer_data[0]['question_id']=$insert_or_update;
+                $insert_answer_data[1]['possible_answer']='hold';
+                $insert_answer_data[1]['min']=0;
+                $insert_answer_data[1]['max']= 0;
+                $insert_answer_data[1]['is_acceptable']=0;
+                $insert_answer_data[1]['checkid']=$checkid;
+                $insert_answer_data[1]['question_id']=$insert_or_update;
+            }
+            elseif($possible_answer[$i]=="pass/fail"){
+                $insert_answer_data=array();
+                $insert_answer_data[0]['possible_answer']='pass';
+                $insert_answer_data[0]['min']=0;
+                $insert_answer_data[0]['max']= 0;
+                $insert_answer_data[0]['is_acceptable']=1;
+                $insert_answer_data[0]['checkid']=$checkid;
+                $insert_answer_data[0]['question_id']=$insert_or_update;
 
-                    $insert_answer_data[1]['possible_answer']='negative';
-                    $insert_answer_data[1]['min']=0;
-                    $insert_answer_data[1]['max']= 0;
-                    $insert_answer_data[1]['is_acceptable']=0;
-                    $insert_answer_data[1]['checkid']=$checkid;
-                    $insert_answer_data[1]['question_id']=$insert_or_update;
-                }
-                elseif($possible_answer[$i]=="sealed/locked"){
-                    $insert_answer_data=array();
-                    $insert_answer_data[0]['possible_answer']='sealed';
-                    $insert_answer_data[0]['min']=0;
-                    $insert_answer_data[0]['max']= 0;
-                    $insert_answer_data[0]['is_acceptable']=1;
-                    $insert_answer_data[0]['checkid']=$checkid;
-                    $insert_answer_data[0]['question_id']=$insert_or_update;
+                $insert_answer_data[1]['possible_answer']='fail';
+                $insert_answer_data[1]['min']=0;
+                $insert_answer_data[1]['max']= 0;
+                $insert_answer_data[1]['is_acceptable']=0;
+                $insert_answer_data[1]['checkid']=$checkid;
+                $insert_answer_data[1]['question_id']=$insert_or_update;
+            }
+            elseif($possible_answer[$i]=="positive/negative"){
+                $insert_answer_data=array();
+                $insert_answer_data[0]['possible_answer']='positive';
+                $insert_answer_data[0]['min']=0;
+                $insert_answer_data[0]['max']= 0;
+                $insert_answer_data[0]['is_acceptable']=1;
+                $insert_answer_data[0]['checkid']=$checkid;
+                $insert_answer_data[0]['question_id']=$insert_or_update;
 
-                    $insert_answer_data[1]['possible_answer']='locked';
-                    $insert_answer_data[1]['min']=0;
-                    $insert_answer_data[1]['max']= 0;
-                    $insert_answer_data[1]['is_acceptable']=0;
-                    $insert_answer_data[1]['checkid']=$checkid;
-                    $insert_answer_data[1]['question_id']=$insert_or_update;
-                }else{
+                $insert_answer_data[1]['possible_answer']='negative';
+                $insert_answer_data[1]['min']=0;
+                $insert_answer_data[1]['max']= 0;
+                $insert_answer_data[1]['is_acceptable']=0;
+                $insert_answer_data[1]['checkid']=$checkid;
+                $insert_answer_data[1]['question_id']=$insert_or_update;
+            }
+            elseif($possible_answer[$i]=="sealed/locked"){
+                $insert_answer_data=array();
+                $insert_answer_data[0]['possible_answer']='sealed';
+                $insert_answer_data[0]['min']=0;
+                $insert_answer_data[0]['max']= 0;
+                $insert_answer_data[0]['is_acceptable']=1;
+                $insert_answer_data[0]['checkid']=$checkid;
+                $insert_answer_data[0]['question_id']=$insert_or_update;
 
-                    $insert_answer_data=array();
-                    $insert_answer_data[0]['possible_answer']='yes';
-                    $insert_answer_data[0]['min']=0;
-                    $insert_answer_data[0]['max']= 0;
-                    $insert_answer_data[0]['is_acceptable']=1;
-                    $insert_answer_data[0]['checkid']=$checkid;
-                    $insert_answer_data[0]['question_id']=$insert_or_update;
-
-
-                    
-                }
-                
-                //$this->insert_question_answer_data($ans_data);
-                if(!empty($insert_answer_data)){
-                    foreach ($insert_answer_data as $key => $valueddd) {
-                       // print_r($insert_answer_data);echo "<br><br>";exit();
-                      $this->insert_question_answer_data($valueddd);
-                    }
-                }
-               
-               
-            }elseif($attribute_type[$i]=="Fixed"){
-                $ans_data['possible_answer']=$possible_value[$i];
-                $ans_data['min']=0;
-                $ans_data['max']= 0;
-                $ans_data['is_acceptable']=1;
-                $ans_data['checkid']=$checkid;
-                $ans_data['question_id']=$insert_or_update;
-                //$this->insert_question_answer_data($ans_data);
-               
-               $this->insert_question_answer_data($ans_data);
+                $insert_answer_data[1]['possible_answer']='locked';
+                $insert_answer_data[1]['min']=0;
+                $insert_answer_data[1]['max']= 0;
+                $insert_answer_data[1]['is_acceptable']=0;
+                $insert_answer_data[1]['checkid']=$checkid;
+                $insert_answer_data[1]['question_id']=$insert_or_update;
             }
             else{
-
-                $ans_data=array();
-                $ans_data['possible_answer']='';
-                $ans_data['min']= $min_value[$i];
-                $ans_data['max']= $max_value[$i];
-                $ans_data['target']= $target_value[$i];
-                $ans_data['is_acceptable']=0;
-                $ans_data['checkid']=$checkid;
-                $ans_data['question_id']=$insert_or_update;
-                
-                $a=$a+1;
-                //////////update data table in check catagories attribute////////
-                $update_data['possible_value']='';
-                $update_data['min']=$min_value[$i];
-                $update_data['max']= $max_value[$i];
-                $update_data['target']=$target_value[$i];
-                ///////////// update data table in check catagories attribute///////
-                
-                $this->insert_question_answer_data($ans_data);
-                
-               // $insert_or_updatess=$this->insert_or_update(array("checkid"=>$checkid,"question_id"=>$ans_data['question_id']),$ans_data,DEFAULT_OUTLET."_checks_answers");
+                $insert_answer_data=array();
+                $sub_attributes=Modules::run('supplier/_get_data_from_db_table',array("opt_question_id" =>$attribute_list[$i],"opt_delete"=>"0"),"attribute_other_options","id asc","","opt_option,opt_acceptance,id","")->result_array();
+                foreach($sub_attributes as $keys => $value)
+                {
+                    $insert_answer_data[$keys]['possible_answer']=$value['opt_option'];
+                    $insert_answer_data[$keys]['min']=0;
+                    $insert_answer_data[$keys]['max']= 0;
+                    if($value['opt_acceptance']=="acceptable")
+                    {$insert_answer_data[$keys]['is_acceptable']=1;}
+                    else
+                    {$insert_answer_data[$keys]['is_acceptable']=0;}
+                    $insert_answer_data[$keys]['checkid']=$checkid;
+                    $insert_answer_data[$keys]['question_id']=$insert_or_update;
+                }      
             }
             
-            //$this->update_general_check_attribute_data($where,$update_data);
-        } 
-    }
+            
+            //$this->insert_question_answer_data($ans_data);
+            if(!empty($insert_answer_data)){
+                foreach ($insert_answer_data as $key => $valueddd) {
+                   // print_r($insert_answer_data);echo "<br><br>";exit();
+                  $this->insert_question_answer_data($valueddd);
+                }
+            }
+           
+           
+        }elseif($attribute_type[$i]=="Fixed"){
+            $ans_data['possible_answer']=$possible_value[$i];
+            $ans_data['min']=0;
+            $ans_data['max']= 0;
+            $ans_data['is_acceptable']=1;
+            $ans_data['checkid']=$checkid;
+            $ans_data['question_id']=$insert_or_update;
+            
+            //$this->insert_question_answer_data($ans_data);
+           
+           $this->insert_question_answer_data($ans_data);
+        }
+        else{
+
+            $ans_data=array();
+            $ans_data['possible_answer']='';
+            $ans_data['min']= $min_value[$i];
+            $ans_data['max']= $max_value[$i];
+            $ans_data['target']= $target_value[$i];
+            $ans_data['is_acceptable']=0;
+            $ans_data['checkid']=$checkid;
+            $ans_data['question_id']=$insert_or_update;
+            
+            $a=$a+1;
+            //////////update data table in check catagories attribute////////
+            $update_data['possible_value']='';
+            $update_data['min']=$min_value[$i];
+            $update_data['max']= $max_value[$i];
+            $update_data['target']=$target_value[$i];
+            ///////////// update data table in check catagories attribute///////
+            
+            $this->insert_question_answer_data($ans_data);
+            
+           // $insert_or_updatess=$this->insert_or_update(array("checkid"=>$checkid,"question_id"=>$ans_data['question_id']),$ans_data,DEFAULT_OUTLET."_checks_answers");
+        }
+        
+        //$this->update_general_check_attribute_data($where,$update_data);
+    } 
+}
     ////////// code for adding new attribute//////////
     function new_updated_get_general_checks_attribute_data_from_post($checkid){
         $attribute_list= $this->input->post('new_attribute_name');
@@ -469,21 +523,23 @@ date_default_timezone_set("Asia/karachi");
         $possible_value=$this->input->post('new_possible_value');
         $possible_answer=$this->input->post('new_possible_answers');
         
-        
        
         $total=count($attribute_list);
         for ($i=0; $i< $total;  $i++) { 
             $where_attr['id']=$attribute_list[$i];
-            $arr_attr_data= $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('check_catagories_attributes.id'=>$attribute_list[$i]), 'id desc','check_catagories_attributes','id,attribute_name','1','0')->result_array();
-            $attribute_name=$arr_attr_data[0]['attribute_name'];
+            $arr_attr_data= $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('check_catagories_attributes.id'=>$attribute_list[$i]), 'id desc','check_catagories_attributes','id,attribute_name,selection_type','1','0')->result_array();
+            $data['question_selection']=$arr_attr_data[0]['selection_type'];  
+        	$attribute_name=$arr_attr_data[0]['attribute_name'];
             $data['checkid']=$checkid;
             $data['type']=$attribute_type[$i];
             $data['question']=$attribute_name;
-            
+            $data['attribute_id']=$attribute_list[$i];
             //$insert_id=$this->insert_check_questions_db($data);
             $a=0;
-            $insert_or_update=$this->insert_or_update(array("checkid"=>$checkid,"question"=>$attribute_name),$data,DEFAULT_OUTLET."_checks_questions");
             
+            $insert_or_update=$this->insert_or_update(array("checkid"=>$checkid,"attribute_id"=>$data['attribute_id']),$data,DEFAULT_OUTLET."_checks_questions");
+            
+            $slash=substr_count($possible_answer[$i], '/');
             $ans_data['question_id']=$insert_or_update;
             if($attribute_type[$i]=="Choice" ){
                 if($possible_answer[$i]=="yes/no"){
@@ -532,11 +588,6 @@ date_default_timezone_set("Asia/karachi");
                     $insert_answer_data[1]['is_acceptable']=0;
                     $insert_answer_data[1]['checkid']=$checkid;
                     $insert_answer_data[1]['question_id']=$insert_or_update;
-
-
- 
-
-
                 }
                 elseif($possible_answer[$i]=="cleaned/uncleaned"){
                     $insert_answer_data=array();
@@ -633,18 +684,22 @@ date_default_timezone_set("Asia/karachi");
                     $insert_answer_data[1]['is_acceptable']=0;
                     $insert_answer_data[1]['checkid']=$checkid;
                     $insert_answer_data[1]['question_id']=$insert_or_update;
-                }else{
-
+                }
+                else{
                     $insert_answer_data=array();
-                    $insert_answer_data[0]['possible_answer']='yes';
-                    $insert_answer_data[0]['min']=0;
-                    $insert_answer_data[0]['max']= 0;
-                    $insert_answer_data[0]['is_acceptable']=1;
-                    $insert_answer_data[0]['checkid']=$checkid;
-                    $insert_answer_data[0]['question_id']=$insert_or_update;
-
-
-                    
+                    $sub_attributes=Modules::run('supplier/_get_data_from_db_table',array("opt_question_id" =>$attribute_list[$i],"opt_delete"=>"0"),"attribute_other_options","id asc","","opt_option,opt_acceptance,id","")->result_array();
+                    foreach($sub_attributes as $keys => $value)
+                    {
+                        $insert_answer_data[$keys]['possible_answer']=$value['opt_option'];
+                        $insert_answer_data[$keys]['min']=0;
+                        $insert_answer_data[$keys]['max']= 0;
+                        if($value['opt_acceptance']=="acceptable")
+                        {$insert_answer_data[$keys]['is_acceptable']=1;}
+                        else
+                        {$insert_answer_data[$keys]['is_acceptable']=0;}
+                        $insert_answer_data[$keys]['checkid']=$checkid;
+                        $insert_answer_data[$keys]['question_id']=$insert_or_update;
+                    }      
                 }
                 
                 //$this->insert_question_answer_data($ans_data);
@@ -664,8 +719,7 @@ date_default_timezone_set("Asia/karachi");
                 $ans_data['checkid']=$checkid;
                 $ans_data['question_id']=$insert_or_update;
                 //$this->insert_question_answer_data($ans_data);
-               
-               $this->insert_question_answer_data($ans_data);
+                $this->insert_question_answer_data($ans_data);
             }
             else{
 
@@ -695,6 +749,7 @@ date_default_timezone_set("Asia/karachi");
         } 
     }
     
+    
      ////////// code for adding new attribute//////////
 
 
@@ -721,6 +776,7 @@ date_default_timezone_set("Asia/karachi");
         }
     }
     function submit() {
+        $dependent_array=json_decode($this->input->post('dependent_array'));
         $program_working_id = $update_id = $this->uri->segment(4);
         $data = $this->_get_data_from_post();
         $update_data['frequency']=$data['frequency'];
@@ -738,18 +794,19 @@ date_default_timezone_set("Asia/karachi");
                 endforeach;
             }
             $resonce = Modules::run('api/_get_specific_table_with_pagination',$arr_where, 'assign_id desc',DEFAULT_OUTLET.'_assignments','*','1','0')->result_array();
-            if(empty($resonce)){
-                $this->delete_checks_question_from_db($arr_where);
-                $this->delete_checks_answers_from_db($arr_where);
-                $check_cat= Modules::run('api/_get_specific_table_with_pagination',array('catagories.id'=> $data['check_cat_id']), 'id desc','catagories','id,cat_name','1','1')->row_array();
-                $this->_get_general_checks_attribute_data_from_post($update_id);
-                $this->_update($where, $data); 
-            }
-            else {
+            //if(empty($resonce)){
+                // $this->delete_checks_question_from_db($arr_where);
+                // $this->delete_checks_answers_from_db($arr_where);
+                // $check_cat= Modules::run('api/_get_specific_table_with_pagination',array('catagories.id'=> $data['check_cat_id']), 'id desc','catagories','id,cat_name','1','1')->row_array();
+                
+                // $this->_get_general_checks_attribute_data_from_post($update_id);
+                // $this->_update($where, $data); 
+            //}
+            //else {
                 unset($data['check_cat_id']);
                 unset($data['check_subcat_id']);
                 $this->_update($where, $data);
-            }
+            //}
             /////////// code for adding new attribute 
             $new_attribute_data=$this->input->post('new_attribute_name');
             if(!empty($new_attribute_data)){
@@ -784,6 +841,23 @@ date_default_timezone_set("Asia/karachi");
                 }
                 else
                     echo "";
+            }
+            if(isset($dependent_array) && !empty($dependent_array))
+            {
+                foreach($dependent_array as $dpa)
+                {
+                    $str=substr($dpa->question_id, -3);
+                    $str_attr=substr($dpa->question_id, 0, -4);
+                    if($str=="new")
+                    {
+                        $res = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('attribute_id'=>$dpa->attr_id,'checkid'=>$update_id),'question_id desc','question_id',DEFAULT_OUTLET.'_checks_questions','question_id','1','0','','','')->row();
+                        $atr_val = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('attribute_id'=>$str_attr,'checkid'=>$update_id),'question_id desc','question_id',DEFAULT_OUTLET.'_checks_questions','question_id','1','0','','','')->row();
+                        Modules::run('api/update_specific_table',array("question_id"=>$atr_val->question_id,'checkid'=>$update_id),array("parent_id"=>$res->question_id),DEFAULT_OUTLET.'_checks_questions');
+                    }else{
+                        $res = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('attribute_id'=>$dpa->attr_id,'checkid'=>$update_id),'question_id desc','question_id',DEFAULT_OUTLET.'_checks_questions','question_id','1','0','','','')->row();
+                        Modules::run('api/update_specific_table',array("question_id"=>$dpa->question_id,'checkid'=>$update_id),array("parent_id"=>$res->question_id),DEFAULT_OUTLET.'_checks_questions');
+                    }
+                }
             }
             $this->session->set_flashdata('message', 'product'.' '.DATA_UPDATED);
             $this->session->set_flashdata('status', 'success');
@@ -833,6 +907,24 @@ date_default_timezone_set("Asia/karachi");
             }
             elseif($checktype=="scheduled_checks") {
                 $this->_get_general_checks_attribute_data_from_post($id);
+            }
+           
+            if(isset($dependent_array) && !empty($dependent_array))
+            {
+                foreach($dependent_array as $dpa)
+                {
+                    $str=substr($dpa->question_id, -3);
+                    $str_attr=substr($dpa->question_id, 0, -4);
+                    if($str=="new")
+                    {
+                        $res = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('attribute_id'=>$dpa->attr_id,'checkid'=>$id),'question_id desc','question_id',DEFAULT_OUTLET.'_checks_questions','question_id','1','0','','','')->row();
+                        $atr_val = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('attribute_id'=>$str_attr,'checkid'=>$id),'question_id desc','question_id',DEFAULT_OUTLET.'_checks_questions','question_id','1','0','','','')->row();
+                        Modules::run('api/update_specific_table',array("question_id"=>$atr_val->question_id,'checkid'=>$id),array("parent_id"=>$res->question_id),DEFAULT_OUTLET.'_checks_questions');
+                    }else{
+                        $res = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('attribute_id'=>$dpa->attr_id,'checkid'=>$id),'question_id desc','question_id',DEFAULT_OUTLET.'_checks_questions','question_id','1','0','','','')->row();
+                        Modules::run('api/update_specific_table',array("question_id"=>$dpa->question_id,'checkid'=>$id),array("parent_id"=>$res->question_id),DEFAULT_OUTLET.'_checks_questions');
+                    }
+                }
             }
             $this->session->set_flashdata('message', 'product'.' '.DATA_SAVED);
             $this->session->set_flashdata('status', 'success');
@@ -1118,10 +1210,10 @@ date_default_timezone_set("Asia/karachi");
     function get_general_checks_attributes(){
         $cat_id=$this->input->post('cat_id');
         $update_id=$this->input->post('update_id');
-
         $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('check_cat_id'=>$cat_id,'delete_status'=>0), 'id asc','check_catagories_attributes','*','1','0')->result_array();
         $data['master_attributes']=$master_catagories;
-           for ($i = 1; $i <= 500; $i++) { 	$resultRank[$i] = $i; 	}
+           for ($i = 1; $i <= 500; $i++) 
+           { 	$resultRank[$i] = $i; 	}
         $data['rank'] = $resultRank;
         $data['update_id']=0;
         echo $this->load->view('check_attributes',$data,TRUE);
@@ -1176,10 +1268,23 @@ date_default_timezone_set("Asia/karachi");
         }
         //////////////add new attributes///////////////
       function  get_new_attributs_list_from_db(){
-             $cat_id=$this->input->post('subid');
+        $cat_id=$this->input->post('subid');
         $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('check_cat_id'=>$cat_id), 'id asc','check_catagories_attributes','*','1','0')->result_array();
+        foreach($master_catagories as $key => $ma)
+        {
+            if($ma['possible_answers']=="other"){
+                $sub_attributes=Modules::run('supplier/_get_data_from_db_table',array("opt_question_id" =>$ma['id'],"opt_delete"=>"0"),"attribute_other_options","id asc","","opt_option,opt_acceptance,id","")->result_array();
+                $attr="";
+                foreach($sub_attributes as $keys => $value)
+                {
+                    $attr=$attr.$value['opt_option'];
+                    $attr=$attr."/";
+                }
+                $attr = rtrim($attr, "/");
+                $master_catagories[$key]['possible_answers']=$attr;
+            }
+        }
         $data['master_attributes']=$master_catagories;
-        
         echo $this->load->view('addnew_attributes',$data,TRUE);
         }
         function  update_specific_attribute(){

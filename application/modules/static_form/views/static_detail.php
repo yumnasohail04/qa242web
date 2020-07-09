@@ -131,6 +131,18 @@
                         } ?>
                     </td>
                 </tr>
+                <tr class="bg-col">
+                    <th>
+                        Signature:
+                    </th>
+                    <td>
+                        <?php
+                        $signature=Modules::run('api/_get_specific_table_with_pagination',array("id"=>$assign_detail[0]['review_user']),'id desc','users','sign_image','1','1')->result_array();
+                          if(isset($signature[0]['sign_image']) && !empty($signature[0]['sign_image'])) {?>
+                          <img style="height: 36px;max-width: 300px;" src="<?php echo BASE_URL.ACTUAL_SIGNATURE_IMAGE_PATH.$signature[0]['sign_image']?>">
+                        <?php } ?>
+                    </td>
+                </tr>
                 <?php if(isset($assign_detail[0]['review_comments']) && !empty($assign_detail[0]['review_comments'])) {?>
                 <tr class="bg-col">
                     <th>
@@ -170,6 +182,18 @@
                         echo date('m-d-Y H:i:s',strtotime($assign_detail[0]['approval_datetime'])); 
                       } ?>
                   </td>
+                </tr>
+                <tr class="bg-col">
+                    <th>
+                        Signature:
+                    </th>
+                    <td>
+                        <?php
+                        $signature=Modules::run('api/_get_specific_table_with_pagination',array("id"=>$assign_detail[0]['approval_user']),'id desc','users','sign_image','1','1')->result_array();
+                          if(isset($signature[0]['sign_image']) && !empty($signature[0]['sign_image'])) {?>
+                          <img style="height: 36px;max-width: 300px;" src="<?php echo BASE_URL.ACTUAL_SIGNATURE_IMAGE_PATH.$signature[0]['sign_image']?>">
+                        <?php } ?>
+                    </td>
                 </tr>
                 <?php if(isset($assign_detail[0]['approval_comments']) && !empty($assign_detail[0]['approval_comments'])) { ?>
                 <tr class="bg-col">

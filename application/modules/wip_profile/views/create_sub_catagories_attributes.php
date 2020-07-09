@@ -96,20 +96,37 @@
                                                 <div class="form-group">
                                                  <?php $attribute = array('class' => 'control-label col-md-4');
                                                     ?>
+                                                    <?php echo form_label('Check type<span class="red" style="color:red;">*</span>', 'txtCatName', $attribute); ?>
+                                                    <div class="col-md-8">
+                                                       <select name="wip_type" class="form-control " required="required">
+                                                         <option value="">--Select--</option>
+                                                         <option value="Ingredient Process Control (Filling check)" <?php if($catagories['wip_type']=="Ingredient Process Control (Filling check)") echo 'selected="selected"';?>>Ingredient Process Control (Filling check)</option>
+                                                         <option value="Ingredient Process Control (Dough check)" <?php if($catagories['wip_type']=="Ingredient Process Control (Dough check)") echo 'selected="selected"';?>>Ingredient Process Control (Dough check)</option>
+                                                         <option value="Bowl Filling (Filling check)" <?php if($catagories['wip_type']=="Bowl Filling (Filling check)") echo 'selected="selected"';?>>Bowl Filling (Filling check)</option>
+                                                         <option value="Bowl Filling (Dough check)" <?php if($catagories['wip_type']=="Bowl Filling (Dough check)") echo 'selected="selected"';?>>Bowl Filling (Dough check)</option>
+                                                       </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <br><br>
+                                            <br>
+                                            <div class="col-md-5 ">
+                                                <div class="form-group">
+                                                 <?php $attribute = array('class' => 'control-label col-md-4');
+                                                    ?>
                                                     <?php echo form_label('Attibute`type<span class="red" style="color:red;">*</span>', 'txtCatName', $attribute); ?>
                                                     <div class="col-md-8">
                                                        <select name="attribute_type" class="form-control answer_type" required="required">
                                                          <option value="">--Select--</option>
                                                          <option value="Range" <?php if($catagories['attribute_type']=="Range") echo 'selected="selected"';?>>Range</option>
                                                          <option value="Choice" <?php if($catagories['attribute_type']=="Choice") echo 'selected="selected"';?>>Choice</option>
-                                        <option value="Fixed" <?php if($catagories['attribute_type']=="Fixed") echo 'selected="selected"';?>>Text</option>
+                                                         <option value="Fixed" <?php if($catagories['attribute_type']=="Fixed") echo 'selected="selected"';?>>Text</option>
                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
                                           
-                                            <br><br>
-                                            <br>
                                     </div>
                                     <div class="possible_select" <?php if($update_id==0 ) echo 'style="display:none;"'?>>
                                      <div class="row add_answers " >

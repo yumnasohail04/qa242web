@@ -5,9 +5,9 @@
     <button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Add New</button>
     </a>
     
-    <a href= "<?php echo ADMIN_BASE_URL . 'bowl_fill/'?>"/>
+    <!-- <a href= "<?php echo ADMIN_BASE_URL . 'bowl_fill/'?>"/>
     <button type="button" class="btn btn-primary right"><i class="fa fa-arrow-right"></i>&nbsp;&nbsp;&nbsp;Bowl Filling Attibutes</button>
-    </a>
+    </a> -->
     
  
     
@@ -27,6 +27,7 @@
                         <th  style="display:none;width:2%">S.No</th>
                         <th width="400px">Attribute`s Name</th>
                         <th width="400px">Choice Type</th>
+                        <th width="400px">Check Type</th>
 
 
                         
@@ -50,6 +51,7 @@
                                           <td class="table-checkbox" style="display:none;"><?php echo $i; ?></td>
                                             <td><?php echo $row->attribute_name; ?></td>
                                             <td><?php echo $row->possible_answers; ?></td>
+                                            <td><?php echo $row->wip_type; ?></td>
                                             
                                            
                                            
@@ -74,6 +76,7 @@
                         <tr class="bg-col">
                         <th  style="display:none;width:2%">S.No</th>
                         <th width="400px">Attribute`s Name</th>
+                        <th width="400px">Check Type</th>
                         <th width="400px"></th>
 
                         
@@ -96,6 +99,7 @@
                                           <td class="table-checkbox" style="display:none;"><?php echo $i; ?></td>
                                             <td><?php echo $row->attribute_name; ?></td>
                                             <td>User will provide a text input</td>
+                                            <td><?php echo $row->wip_type; ?></td>
                                            
                                            
                                             <td class="table_action">
@@ -119,6 +123,7 @@
                         <tr class="bg-col">
                         <th  style="display:none;width:2%">S.No</th>
                         <th width="400px">Attribute`s Name</th>
+                        <th width="400px">Check Type</th>
                         <th width="400px">Min</th>
                         <th width="400px">Max</th>
                         <th width="400px">Target</th>
@@ -143,6 +148,7 @@
                                         <tr class="odd gradeX" >
                                           <td class="table-checkbox" style="display:none;"><?php echo $i; ?></td>
                                             <td><?php echo $row->attribute_name; ?></td>
+                                            <td><?php echo $row->wip_type; ?></td>
                                             <td><?php if($row->attribute_type=="Range")  echo $row->min; ?></td>
                                             <td><?php if($row->attribute_type=="Range")  echo $row->max; ?></td>
                                             <td><?php if($row->attribute_type=="Range") echo $row->target; ?></td>

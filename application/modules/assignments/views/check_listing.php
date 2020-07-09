@@ -3,7 +3,7 @@
 <div class="old_search" style="display: none;"></div>
 <div class="content-wrapper">
     <input type="hidden" id="assign_type" value="<?=$this->uri->segment(3);?>" />
-    <h3><?php if($assign_status == 'active_checks') echo "Active"; elseif($assign_status == 'overdue_checks') echo "Overdue";elseif($assign_status == 'today_checks') echo "Overdue"; else echo ""; ?> Assignments  <?php if($assign_status == 'overdue_checks') { ?><a href="assignments/delete_current_date_checks"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Delete Overdue Checks </button></a><?php } ?></h3>
+    <h3><?php if($assign_status == 'active_checks') echo "Active"; elseif($assign_status == 'overdue_checks') echo "Overdue";elseif($assign_status == 'today_checks') echo "Overdue"; else echo ""; ?> Assignments  <?php if($assign_status == 'overdue_checks') { ?><a href="<?php echo BASE_URL.'assignments/delete_current_date_checks'?>"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Delete Overdue Checks </button></a><?php } ?></h3>
     
     <div class="container-fluid">
         <!-- START DATATABLE 1 -->
@@ -70,6 +70,9 @@
                                     <th class="text-center"style="width:200px;" >
                                             Lines<i class="fa fa-sort" style="font-size:13px;">
                                     </th>
+                                    <th class="text-center"style="width:200px;" >
+                                            Plant<i class="fa fa-sort" style="font-size:13px;">
+                                    </th>
                                     <?php if($this->uri->segment(3) == 'today_checks'){ ?>
                                         <th class="text-center"style="width:200px;" >
                                             Status<i class="fa fa-sort" style="font-size:13px;">
@@ -132,6 +135,15 @@
                                                             }
                                                         endforeach;
                                                     }
+                                                    
+                                                } ?>
+                                            </td>
+                                        <td class="text-center">
+                                                <?php if(isset($new->plant_no) && !empty($new->plant_no)) {
+                                                            $plant_name = Modules::run('api/_get_specific_table_with_pagination',array('plant_id'=>$new->plant_no), 'plant_id desc',DEFAULT_OUTLET.'_plants','plant_name','1','1')->row_array();
+                                                            if(!empty($plant_name['plant_name'])) {
+                                                                echo $plant_name['plant_name'];
+                                                            }
                                                     
                                                 } ?>
                                             </td>

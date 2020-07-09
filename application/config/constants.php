@@ -39,15 +39,15 @@ $_SERVER['HTTP_HOST'] = preg_replace('/www./', '', $_SERVER['HTTP_HOST'], 1);
 $folder =  substr($_SERVER['HTTP_HOST'], 0, (strpos($_SERVER['HTTP_HOST'], '.')));
 
 if (empty($folder) )
-	$folder = 'heyfood';
+	$folder = 'qa242web';
 
 if (strpos($_SERVER['HTTP_HOST'], '.') > 0 && $_SERVER['HTTP_HOST'] != '192.168.2.50')
 {
 	$localname='';
 }
 else
-	$localname='/';
-$prefix = 'https';
+	$localname='qa242web/';
+$prefix = 'http';
 define('BASE_URL', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname);
 define('BASE_URL_FRONT', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname);
 define('IMAGE_BASE_URL', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname.'uploads/');
@@ -72,8 +72,8 @@ define('TEMPLATES_BASE_URL', FCPATH.'application/modules/');
 
 
 define('STATIC_FRONT_CSS_QUICKFOOD', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$folder.'/static/front/quickfood/css/');
-	define('STATIC_FRONT_JS_QUICKFOOD', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$folder.'/static/front/quickfood/js/');
-	define('STATIC_FRONT_IMAGE_QUICKFOOD', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$folder.'/static/front/quickfood/images/');
+define('STATIC_FRONT_JS_QUICKFOOD', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$folder.'/static/front/quickfood/js/');
+define('STATIC_FRONT_IMAGE_QUICKFOOD', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$folder.'/static/front/quickfood/images/');
 
 
 
@@ -81,6 +81,8 @@ define('STATIC_FRONT_CSS_QUICKFOOD', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$fo
 define('FIRE_BASE_API_KEY', "AAAAZPpUz6U:APA91bHhJVWRU7T1UvKXeiJgC7fQJLqgMVZ1q7gJkVfecrdKSaxCcNdcCK8AzihdBvnq3SQFCZuwH5B1qBEUMTFP3Au1vqwFzutGBB_Ehdks6OcWs61vjmvHEJJkahNXXViAeOaYnb95");
 
 define('INSIGHTS_STATIC_IMAGE', 'Patteren Food.jpg');
+define('SUPPLIER_DOCUMENTS_PATH', 'uploads/supplier_documents/');
+define('INGREDIENT_DOCUMENTS_PATH', 'uploads/ingredient_documents/');
 //define('STATIC_FRONT_IMAGE', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname.'static/front/theme1/images/');
 
 
@@ -89,8 +91,7 @@ define('STATIC_ANALYTIC_CSS', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname
 define('STATIC_ANALYTIC_IMAGE', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname.'static/admin/analytic/images/');
 define('STATIC_ANALYTIC_JS', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname.'static/admin/analytic/js/');
 
-define('SUPPLIER_DOCUMENTS_PATH', 'uploads/supplier_documents/');
-define('INGREDIENT_DOCUMENTS_PATH', 'uploads/ingredient_documents/');
+
 
 
 define('ACTUAL_ASSIGNMENT_ANSWER_IMAGE_PATH', 'uploads/assignment_files/actual_images/');
@@ -103,6 +104,14 @@ define('LARGE_OUTLET_USER_IMAGE_PATH',  'uploads/outlet-user/large-images/');
 define('MEDIUM_OUTLET_USER_IMAGE_PATH', 'uploads/outlet-user/medium-images/');
 define('SMALL_OUTLET_USER_IMAGE_PATH', 'uploads/outlet-user/small-images/');
 
+define('ACTUAL_SIGNATURE_IMAGE_PATH', 'uploads/signature/actual-images/');
+define('LARGE_SIGNATURE_IMAGE_PATH',  'uploads/signature/large-images/');
+define('MEDIUM_SIGNATURE_IMAGE_PATH', 'uploads/signature/medium-images/');
+define('SMALL_SIGNATURE_IMAGE_PATH', 'uploads/signature/small-images/');
+
+define('LETTER_OF_CONFORMANCE_PATH', 'uploads/letter/');
+
+define('CARRIER_DOCUMENTS_PATH', 'uploads/carrier/');
 
 define('TEXT_BOX_RANGE', 100);
 

@@ -15,7 +15,90 @@
     color: #3a3f51;
     width: 147% !important;
   }
+h3
+{
+    background-color: #d9e9ff;
+    color: #6ba4ed;
+    padding: 14px;
+    margin-bottom: 25px!important;
+    border-bottom-right-radius: 32px;
+    border-top-right-radius: 26px;
+    font-size: 14px;
+}
+.row
+{
+    margin-bottom: 13px!important; 
+}
+.red
+{
+	color:#e03737;
+}
+.greens
+{
+	color:green;
+}
 </style>
+<style>
+body {font-family: Arial;}
+
+/* Style the tab */
+.tab {
+  background-color: #272c32;
+    border-radius: 6px;
+    padding: 10px;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    overflow-y: hidden;
+    display: flex;
+}
+/* .active {
+    color: #c2c1ce !important;
+} */
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 14px;
+  font-weight: bold;
+  border-bottom: 5px solid #272c32;
+  color: #c2c1ce;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: rgba(93, 156, 236, 0.2);
+    border-bottom: 5px solid #636363;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #272c32;
+  border-bottom: 3px solid #c2c1ce;
+  color: #c2c1ce!important;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  border-top: none;
+}
+
+/* Style the close button */
+.topright {
+  float: right;
+  cursor: pointer;
+  font-size: 28px;
+}
+
+.topright:hover {color: red;}
+</style>
+
 <?php
 function timezone_menu2($default = 'UTC', $class = "form-control select2me timezones", $name = 'timezones')
     {
@@ -87,7 +170,7 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
 
                 <div class="content-wrapper">
                     <h3>
-                        Global  Configuration .
+                        Global  Configuration
                     </h3>
 
                     <!-- END PAGE TITLE & BREADCRUMB-->
@@ -105,476 +188,524 @@ function timezone_menu2($default = 'UTC', $class = "form-control select2me timez
                                 <div class="portlet box green ">
                                     <div class="portlet-title ">
                                         <br /><br />
-
                                         <div class="portlet-body form container" style="margin:0 auto;" id="gen_setting">
-                                            <?php
-                                            $attributes = array('autocomplete' => 'off', 'id' => 'form_sample_1', 'class' => 'form-horizontal no-mrg');
-                                            if (!empty($general_settings))
-                                                $update_id = $general_settings['id'];
-                                            if (empty($update_id) || $update_id == 0) {
-                                                $update_id = 0;
-                                                $hidden = array('hdnId' => $update_id); ////edit case
-                                            } else {
-                                                $hidden = array('hdnId' => $update_id); ////edit case
-                                            }
-                                            echo form_open_multipart(ADMIN_BASE_URL . 'general_setting/submit/' . $update_id, $attributes, $hidden);
-                                            ?>
-                                            <!-- BEGIN FORM-->
-                                        <div class="form-body container" style="margin: 0 auto;">
-                                                  <h3 class="container" style="margin: 0 auto;">Who Should Recieve Overdue Notifications</h3>
-                                          <div class="col-sm-12">
-                                             <div class="form-group">
-                                                <label class="col-sm-2 control-label">Select Groups </label>
-                                                <div class="col-sm-4">
-                                                   <select  multiple class="form-control restaurant_type chosen-select " name="groups[]" required="required">
-                                                       <option >Select</option>
-                                                      <?php
-                                                       
-                                                         if(!isset($groups) || empty($groups))
-                                                             $groups = array();
-                                                           
-                                                           foreach ($groups as $value): ?>
-                                                      <option value="<?=$value['id']?>" 
-                                                      <?php foreach($news as $new){ if($value['id']== $new['group_id']) echo 'selected="selected"';}?>><?= $value['group_title']?></option>
-                                                      <?php endforeach ?>
-                                                   </select>
-                                                </div>
-                                             </div>
-                                             
-                                          </div>
-                                       <div class="col-sm-7">
-                                        </div>
-                                          <div class="col-sm-12">
-                                             <div class="form-group">
-                                                <label class="col-sm-2 control-label">Ios app  Link</label>
-                                                <div class="col-sm-4">
-                                                   <input type="text" name="ios_link" class="form-control" value="<?=$ios_link?>" />
-                                                </div>
-                                             </div>
-                                             
-                                          </div>
-                                          <div class="col-sm-12">
-                                             <div class="form-group">
-                                                <label class="col-sm-2 control-label">Android app link </label>
-                                                <div class="col-sm-4">
-                                                   <input type="text" name="android_link" class="form-control"  value="<?=$android_link?>"/>
-                                                </div>
-                                             </div>
-                                             
-                                          </div>
-                                          <div class="col-sm-12">
-                                             <div class="form-group">
-                                                <label class="col-sm-2 control-label">Firebase Documents Name </label>
-                                                <div class="col-sm-4">
-                                                   <input type="text" name="fb_document_name" class="form-control"  value="<?=$fb_document_name?>"/>
-                                                </div>
-                                             </div>
-                                          </div>
-                                                <div class="form-actions fluid">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="col-md-offset-3 col-md-9"  style="margin-bottom:15px;" >
-                                                                <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i>&nbsp;Save</button>
+                                            <div class="tab">
+                                              <button class="tablinks" onclick="openCity(event, 'settings')" id="defaultOpen">Settings</button>
+                                              <button class="tablinks" onclick="openCity(event, 'Scorecard')">Scorecard Approval team</button>
+                                              <button class="tablinks" onclick="openCity(event, 'business_detail')">Business operation</button>
+                                              <button class="tablinks" onclick="openCity(event, 'shift_detail')">Shift Detail</button>
+                                              <button class="tablinks" onclick="openCity(event, 'shift_timing')">Shift Timing</button>
+                                              <button class="tablinks" onclick="openCity(event, 'plant_detail')">Plant Detail </button>
+                                              <button class="tablinks" onclick="openCity(event, 'line_detail')">Line Detail </button>
+                                              <button class="tablinks" onclick="openCity(event, 'product_schedule')">Product Schedule </button>
+                                            </div>
+                                            <div id="settings" class="tabcontent">
+                                              <?php
+                                              $attributes = array('autocomplete' => 'off', 'id' => 'form_sample_1', 'class' => 'form-horizontal no-mrg');
+                                              if (!empty($general_settings))
+                                                  $update_id = $general_settings['id'];
+                                              if (empty($update_id) || $update_id == 0) {
+                                                  $update_id = 0;
+                                                  $hidden = array('hdnId' => $update_id); ////edit case
+                                              } else {
+                                                  $hidden = array('hdnId' => $update_id); ////edit case
+                                              }
+                                              echo form_open_multipart(ADMIN_BASE_URL . 'general_setting/submit/' . $update_id, $attributes, $hidden);
+                                              ?>
+                                              <div class="row container" style="margin-top:1%">
+                                                    <div class="col-lg-5 col-md-12 col-sm-12">
+                                                    <h3 class="" style="margin: 0 auto;">Who Should Receive Overdue Notifications</h3>
+                                                    </div>
+                                                  <div class="col-sm-12">
+                                                    <div class="form-body col-sm-12 " style="margin: 0 auto;">
+                                                    
+                                                        <div class="form-group">
+                                                            <label class="col-sm-4 control-label">Select Groups </label>
+                                                            <div class="col-sm-6">
+                                                              <select  multiple class="form-control restaurant_type chosen-select " name="groups[]" required="required">
+                                                                  <option >Select</option>
+                                                                  <?php
+                                                                  
+                                                                    if(!isset($groups) || empty($groups))
+                                                                        $groups = array();
+                                                                      
+                                                                      foreach ($groups as $value): ?>
+                                                                  <option value="<?=$value['id']?>" 
+                                                                  <?php foreach($news as $new){ if($value['id']== $new['group_id']) echo 'selected="selected"';}?>><?= $value['group_title']?></option>
+                                                                  <?php endforeach ?>
+                                                              </select>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                      </div>
+                                                  <div class="col-sm-7">
+                                                    </div>
+                                                      <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-4 control-label">Ios app  Link</label>
+                                                            <div class="col-sm-6">
+                                                              <input type="text" name="ios_link" class="form-control" value="<?=$ios_link?>" />
+                                                            </div>
+                                                        </div>
+                                                        
+                                                      </div>
+                                                      <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-4 control-label">Android app link </label>
+                                                            <div class="col-sm-6">
+                                                              <input type="text" name="android_link" class="form-control"  value="<?=$android_link?>"/>
+                                                            </div>
+                                                        </div>
+                                                      </div>
+                                                      <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-4 control-label">Firebase Documents Name </label>
+                                                            <div class="col-sm-6">
+                                                              <input type="text" name="fb_document_name" class="form-control"  value="<?=$fb_document_name?>"/>
+                                                            </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                            <div class="form-actions fluid">
+                                                                <div class="row">
+                                                                    <div class="col-md-3" style="">
+                                                                        <div class="form-group"  style="margin-top: 33px;float:right" >
+                                                                            <button  type="submit" class="btn btn-primary "><i class="fa fa-check"></i>&nbsp;Save</button>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                          
+                                                        </div>
+                                                        </div>
+                                                        <?php echo form_close(); ?>
+                                                            <!-- END FORM-->
+                                                    </div>
+                                            
+                                            </div>    
+                                            <div id="Scorecard" class="tabcontent">   
+                                                    <!-- BUsinesss opertion -->
+                                                <div class="container" style="margin-top:1%">
+                                                    <div class="col-lg-5 col-md-12 col-sm-12">
+                                                        <h3  class="" style="margin: 0 auto;">
+                                                        ScoreCard Approval Team
+                                                        </h3>
+                                                    </div>
+                                                        <form action="<?php echo BASE_URL.'global_configuration/save_group' ?>" method="POST">
+                                                        <div class="form-group col-sm-12 " style="margin-bottom: 10px;">
+                                                        <div class="">
+                                                              <div class="">
+                                                                <?php if(!isset($approve_groups)) $approve_groups = array();
+                                                                $app_gp = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id"=>DEFAULT_OUTLET), 'id desc','general_setting','scorecard_approv','1','0')->row_array();
+                                                                if(!isset($app_gp['scorecard_approv'])) $app_gp['scorecard_approv'] = ""; 
+                                                                $options = $approve_groups ;
+                                                                $attribute = array('class' => 'control-label col-md-2');
+                                                                echo form_label('Approval Team <span style="color:red">*</span>', 'group_id', $attribute);?>
+                                                                <div class="col-md-4">
+                                                                  <?php echo form_dropdown('group_id', $options, $app_gp['scorecard_approv'],  'class="form-control select2me required" id="group_id" tabindex ="8"'); ?>
+                                                                </div>
+                                                              </div>
+                                                          </div>
+                                                          <div class="col-md-6">
+                                                            <div class=""  style="margin-bottom:15px;" >
+                                                                <button  style="float:right" type="submit" class="btn btn-primary"><i class="fa fa-check"></i>&nbsp;Save</button>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
                                                         </div>
-                                                    </div>
-                                                </div>
-                                               
+                                                        </div>      
+                                                        </form>  
+                                                 </div>
                                             </div>
-                                             <?php echo form_close(); ?>
-                                                <!-- END FORM-->
-                                        </div>
-                                        <hr>
-                                        <!-- BUsinesss opertion -->
-                                       
-                                         <div class="form-body">
-                                             <h3  class="container" style="margin: 0 auto;">
-                                             Business operation
-                                            </h3>
-                                            <div class="container" style="margin-bottom: 10px;">
-                                              <div class="form-group">
-                                                  <?php
-                                                  $this->load->helper('date');
-                                                  $attribute = array('class' => 'control-label col-md-2');
-                                                  echo form_label('Time Zone', 'timezones', $attribute);
-                                                  ?>
-                                                  <div class="col-md-4" >
-                                                          <?php
-                                                          $general_data=Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("outlet_id"=>DEFAULT_OUTLET),'id desc','id','general_setting','timezones','1','1','','','')->result_array();
-                                                          $timezone='Asia/Karachi'; if(isset($general_data[0]['timezones']) && !empty($general_data[0]['timezones'])) $timezone=$general_data[0]['timezones']; $timezone=  Modules::run('api/string_length',$timezone,'8000','','');
-                                                          echo timezone_menu2($timezone);
-                                                          ?>
+                                                <div id="business_detail" class="tabcontent">
+                                                  <div class="form-body container" style="margin-top:1%">
+                                                    <div class="col-lg-5 col-md-12 col-sm-12">
+                                                      <h3  class=" " style="margin: 0 auto;">
+                                                      Business operation
+                                                      </h3>
                                                   </div>
+                                                      <div class=" col-sm-12" style="margin-bottom: 10px;">
+                                                        <div class="form-group">
+                                                            <?php
+                                                            $this->load->helper('date');
+                                                            $attribute = array('class' => 'control-label col-md-2');
+                                                            echo form_label('Time Zone', 'timezones', $attribute);
+                                                            ?>
+                                                            <div class="col-md-4" >
+                                                                    <?php
+                                                                    $general_data=Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("outlet_id"=>DEFAULT_OUTLET),'id desc','id','general_setting','timezones','1','1','','','')->result_array();
+                                                                    $timezone='Asia/Karachi'; if(isset($general_data[0]['timezones']) && !empty($general_data[0]['timezones'])) $timezone=$general_data[0]['timezones']; $timezone=  Modules::run('api/string_length',$timezone,'8000','','');
+                                                                    echo timezone_menu2($timezone);
+                                                                    ?>
+                                                            </div>
+                                                        </div>
+                                                      </div>
+                                                  <?php foreach ($days as $day => $time): 
+                                                  $time = $time[0]; ?>
+                                                  <div class="col-sm-12" style="margin-bottom: 10px;" id="<?= $day ?>" data-rowid="<?= $time['id'] ?>">
+                                                    <div class="col-sm-2"><strong><?=$day?></strong></div>
+                                                      <div class="col-sm-4">
+                                                          From&nbsp;&nbsp;
+                                                          <div class="input-group date">
+                                                            <input type="text" class="form-control" id="<?= $day ?>_from" value="<?= $time['opening'] ?>">
+                                                            <span class="input-group-addon">
+                                                              <span class="fa fa-clock-o"></span>
+                                                            </span>
+                                                          </div>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                          To &nbsp;&nbsp;
+                                                          <div class="input-group date">
+                                                            <input type="text" class="form-control" id="<?= $day ?>_to" value="<?= $time['closing'] ?>">
+                                                            <span class="input-group-addon">
+                                                              <span class="fa fa-clock-o"></span>
+                                                            </span>
+                                                          </div>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <div class="checkbox" style="float:right;">
+                                                              <label><input type="checkbox" name="is_closed" id="is_closed" <?= ($time['is_closed'] == 1) ? 'checked' : ''; ?>>&nbsp; &nbsp;Is Closed</label> &nbsp; &nbsp;
+                                                              <button type="button" name="button" class="btn btn-primary btn-sm time_update" data-id="<?= $day ?>">Update</button>
+
+                                                            </div>
+                                                        </div>
+                                                      </div>
+                                                    <?php endforeach; ?>
+                                                  </div>
+                                               </div>   
+                                          <!-- End Business Operation -->
+                                             <div id="shift_detail" class="tabcontent">
+                                                <div class="row container" style="margin:0 auto;">
+                                                  <div class="col-lg-5 col-md-12 col-sm-12">
+                                                    <h3>
+                                                      Shift Detail
+                                                    </h3>
+                                                  </div>
+                                                  <div class="col-md-12">
+                                                      <button type="button" class="btn btn-primary  btn-lg adding_shift" style="float:right;">Add shift</button>
+                                                  </div>
+                                                </div>
+                                                <div class="row container" style="margin:0 auto;">
+                                                  <div class="col-md-12">
+                                                    <table id="datatable11 " class="table table-striped table-hover table-body table-bordered">
+                                                      <thead class="bg-th">
+                                                        <tr class="bg-col">
+                                                          <th class="text-center" style="width:120px;">Shift Name</th>
+                                                          <th class="text-center" style="width:120px;">Action</th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                        <?php $i = 0;
+                                                        if (isset($shifts) && !empty($shifts)) {
+                                                          $counter = 1;
+                                                          foreach ($shifts as $key=>$lp):?>
+                                                            <tr  id="Row_<?=$counter?>" class="odd gradeX " >
+                                                              <td class="text-center"><?=ucfirst($lp['shift_name']);?></td>
+                                                              <td class="text-center">
+                                                                <?php
+                                                                echo anchor('"javascript:;"', '<i class="fa fa-edit"></i>', array('class' => 'edit_shift btn blue c-btn', 'rel' => $lp['shift_id'],'shift_name' => $lp['shift_name'], 'title' => 'Edit Shift'));
+                                                                echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_shift btn red-color c-btn', 'rel' => $lp['shift_id'], 'title' => 'Delete Plant'));
+                                                                ?>
+                                                              </td>
+                                                            </tr>
+                                                        <?php endforeach;
+                                                        } ?>
+                                                      </tbody>
+                                                    </table>
+                                                  </div>
+                                                </div>
+                                            </div>
+                                            <div  id="shift_timing" class="tabcontent">
+                                              <div class="row container" style="margin:0 auto;">
+                                                <div class="col-lg-5 col-md-12 col-sm-12">
+                                                  <h3 >
+                                                    Shift Timing
+                                                  </h3>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <button type="button" class="btn btn-primary  btn-lg adding_shift_timing" style="float:right;">Add shift timing</button>
+                                                </div>
+                                              </div>
+                                              <div  class="row container" style="margin:0 auto;">
+                                                <div class="col-md-12">
+                                                  <table id="datatable11" class="table table-striped table-hover table-body table-bordered">
+                                                    <thead class="bg-th">
+                                                      <tr class="bg-col">
+                                                        <th class="text-center" style="width:120px;">Shift</th>
+                                                        <th class="text-center" style="width:120px;">Day</th>
+                                                        <th class="text-center" style="width:120px;">Start Time</th>
+                                                        <th class="text-center" style="width:120px;">End Time</th>
+                                                        <th class="text-center" style="width:120px;">Action</th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                      <?php $i = 0;
+                                                      if (isset($shift_timing) && !empty($shift_timing)) {
+                                                        $counter = 1;
+                                                        foreach ($shift_timing as $key=>$st):?>
+                                                          <tr  id="Row_<?=$counter?>" class="odd gradeX " >
+                                                            <td class="text-center"><?=$st['shift_name'];?></td>
+                                                            <td class="text-center"><?=$st['st_day'];?></td>
+                                                            <td class="text-center"><?=$st['st_start'];?></td>
+                                                            <td class="text-center"><?=$st['st_end'];?></td>
+                                                            <td class="text-center">
+                                                              <?php
+                                                              if(isset($st['shift_status']) && !empty($st['shift_status'])) {
+                                                                echo anchor('"javascript:;"', '<i class="fa fa-edit"></i>', array('class' => 'edit_shift_timing btn blue c-btn', 'rel' => $st['st_id'],'shift_name' => $st['shift_name'],'st_shift' => $st['st_shift'],'st_day' => $st['st_day'],'st_start' => $st['st_start'],'st_end' => $st['st_end'], 'title' => 'Edit Plant'));
+                                                              }
+                                                              echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_shift_timing btn red-color c-btn', 'rel' => $st['st_id'], 'title' => 'Delete Plant'));
+                                                              ?>
+                                                            </td>
+                                                          </tr>
+                                                      <?php endforeach;
+                                                      } ?>
+                                                    </tbody>
+                                                  </table>
+                                                </div>
+                                              </div>
+                                              <hr>
+                                            </div>
+                                          <div id="plant_detail" class="tabcontent">
+                                            <div class="row container" style="margin:0 auto;">
+                                              <div class="col-lg-5 col-md-12 col-sm-12">
+                                                <h3 >
+                                                  Plants Detail
+                                                </h3>
+                                              </div>
+                                              <div class="col-md-12">
+                                                  <button type="button" class="btn btn-primary  btn-lg adding_plant" style="float:right;">Add Plant</button>
                                               </div>
                                             </div>
-                                        <?php foreach ($days as $day => $time): 
-                                        $time = $time[0]; ?>
-                                    <div class="container" style="margin-bottom: 10px;" id="<?= $day ?>" data-rowid="<?= $time['id'] ?>">
-                                     <div class="col-sm-2"><strong><?=$day?></strong></div>
-                                    <div class="col-sm-4">
-                              From&nbsp;&nbsp;
-                              <div class="input-group date">
-                                <input type="text" class="form-control" id="<?= $day ?>_from" value="<?= $time['opening'] ?>">
-                                <span class="input-group-addon">
-                                  <span class="fa fa-clock-o"></span>
-                                </span>
-                              </div>
-                            </div>
-                            <div class="col-sm-3">
-                              To &nbsp;&nbsp;
-                              <div class="input-group date">
-                                <input type="text" class="form-control" id="<?= $day ?>_to" value="<?= $time['closing'] ?>">
-                                <span class="input-group-addon">
-                                  <span class="fa fa-clock-o"></span>
-                                </span>
-                              </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="checkbox">
-                                  <label><input type="checkbox" name="is_closed" id="is_closed" <?= ($time['is_closed'] == 1) ? 'checked' : ''; ?>>&nbsp; &nbsp;Is Closed</label> &nbsp; &nbsp;
-                                  <button type="button" name="button" class="btn btn-primary btn-sm time_update" data-id="<?= $day ?>">Update</button>
-
-                                </div>
-                            </div>
-                          </div>
-                        <?php endforeach; ?>
-                      </div>
-                      <!-- End Business Operation -->
-                      <hr>
-                      <div class="row container" style="margin:0 auto;">
-                        <div class="col-md-6">
-                          <h3 style="margin-left: 66px;">
-                            Shift Detail
-                          </h3>
-                        </div>
-                        <div class="col-md-6">
-                          <h3 style="margin-right: 13px;">
-                            <button type="button" class="btn btn-primary  btn-lg adding_shift" style="float:right;">Add shift</button>
-                          </h3>
-                        </div>
-                      </div>
-                      <div class="row container" style="margin:0 auto;">
-                        <div class="col-md-12">
-                          <table id="datatable11 " class="table table-striped table-hover table-body table-bordered">
-                            <thead class="bg-th">
-                              <tr class="bg-col">
-                                <th class="text-center" style="width:120px;">Shift Name</th>
-                                <th class="text-center" style="width:120px;">Action</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <?php $i = 0;
-                              if (isset($shifts) && !empty($shifts)) {
-                                $counter = 1;
-                                foreach ($shifts as $key=>$lp):?>
-                                  <tr  id="Row_<?=$counter?>" class="odd gradeX " >
-                                    <td class="text-center"><?=ucfirst($lp['shift_name']);?></td>
-                                    <td class="text-center">
-                                      <?php
-                                      echo anchor('"javascript:;"', '<i class="fa fa-edit"></i>', array('class' => 'edit_shift btn blue c-btn', 'rel' => $lp['shift_id'],'shift_name' => $lp['shift_name'], 'title' => 'Edit Shift'));
-                                      echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_shift btn red-color c-btn', 'rel' => $lp['shift_id'], 'title' => 'Delete Plant'));
-                                      ?>
-                                    </td>
-                                  </tr>
-                              <?php endforeach;
-                              } ?>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                      <hr>
-                      <div class="row container" style="margin:0 auto;">
-                        <div class="col-md-6">
-                          <h3 style="margin-left: 66px;">
-                            Shift Timing
-                          </h3>
-                        </div>
-                        <div class="col-md-6">
-                          <h3 style="margin-right: 13px;">
-                            <button type="button" class="btn btn-primary  btn-lg adding_shift_timing" style="float:right;">Add shift timing</button>
-                          </h3>
-                        </div>
-                      </div>
-                      <div  class="row container" style="margin:0 auto;">
-                        <div class="col-md-12">
-                          <table id="datatable11" class="table table-striped table-hover table-body table-bordered">
-                            <thead class="bg-th">
-                              <tr class="bg-col">
-                                <th class="text-center" style="width:120px;">Shift</th>
-                                <th class="text-center" style="width:120px;">Day</th>
-                                <th class="text-center" style="width:120px;">Start Time</th>
-                                <th class="text-center" style="width:120px;">End Time</th>
-                                <th class="text-center" style="width:120px;">Action</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <?php $i = 0;
-                              if (isset($shift_timing) && !empty($shift_timing)) {
-                                $counter = 1;
-                                foreach ($shift_timing as $key=>$st):?>
-                                  <tr  id="Row_<?=$counter?>" class="odd gradeX " >
-                                    <td class="text-center"><?=$st['shift_name'];?></td>
-                                    <td class="text-center"><?=$st['st_day'];?></td>
-                                    <td class="text-center"><?=$st['st_start'];?></td>
-                                    <td class="text-center"><?=$st['st_end'];?></td>
-                                    <td class="text-center">
-                                      <?php
-                                      if(isset($st['shift_status']) && !empty($st['shift_status'])) {
-                                        echo anchor('"javascript:;"', '<i class="fa fa-edit"></i>', array('class' => 'edit_shift_timing btn blue c-btn', 'rel' => $st['st_id'],'shift_name' => $st['shift_name'],'st_shift' => $st['st_shift'],'st_day' => $st['st_day'],'st_start' => $st['st_start'],'st_end' => $st['st_end'], 'title' => 'Edit Plant'));
-                                      }
-                                      echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_shift_timing btn red-color c-btn', 'rel' => $st['st_id'], 'title' => 'Delete Plant'));
-                                      ?>
-                                    </td>
-                                  </tr>
-                              <?php endforeach;
-                              } ?>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                      <hr>
-                      <div class="row container" style="margin:0 auto;">
-                        <div class="col-md-6">
-                          <h3 style="margin-left: 66px;">
-                            Plants Detail
-                          </h3>
-                        </div>
-                        <div class="col-md-6">
-                          <h3 style="margin-right: 13px;">
-                            <button type="button" class="btn btn-primary  btn-lg adding_plant" style="float:right;">Add Plant</button>
-                          </h3>
-                        </div>
-                      </div>
-                      <div  class="row container" style="margin:0 auto;">
-                        <div class="col-md-12">
-                          <table id="datatable11" class="table table-striped table-hover table-body table-bordered">
-                            <thead class="bg-th">
-                              <tr class="bg-col">
-                                <th class="text-center" style="width:33% !important;">Plant Name</th>
-                                <th class="text-center" style="width:33% !important;">Lines</th>
-                                <th class="text-center" style="width:34% !important;">Action</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <?php $i = 0;
-                              if (isset($line_plants) && !empty($line_plants)) {
-                                $counter = 1;
-                                foreach ($line_plants as $key=>$lp):?>
-                                  <tr  id="Row_<?=$counter?>" class="odd gradeX " >
-                                    <td class="text-center"><?=$lp['plant_name'];?></td>
-                                    <td>
-                                      <?php 
-                                        $lsp=Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("lp_plant"=>$lp['plant_id']),'lp_id desc','lp_id',DEFAULT_OUTLET.'_line_plants','lp_id,lp_line,lp_plant','1','0','','','')->result_array();
-                                        $html = $previous_selected = "";
-                                        if(!isset($all_lines))
-                                          $all_lines = array();
-                                        foreach ($all_lines as $key => $value):
-                                          $lp_status = $value['line_status'];
-                                          if(isset($lsp)) 
-                                            $check = array_search($value['line_id'], array_column($lsp, 'lp_line'));
-                                          else
-                                            $check='===';
-                                          if (is_numeric($check))  {
-                                            if(!empty($previous_selected))
-                                              $previous_selected = $previous_selected.',';
-                                            $previous_selected = $previous_selected.$value['line_id'];
-                                              $html .= '<option lp_status="<?=$lp_status?>" value="'.$value['line_id'].'" selected= selected >'.$value['line_name'].'</option>';
-                                          }
-                                          else
-                                           $html .= '<option lp_status="<?=$lp_status?>" value="'.$value['line_id'].'">'.$value['line_name'].'</option>';
-                                        endforeach;
-                                      ?>
-                                      <select name="add_on[]"   multiple="multiple" class = "select-1 form-control Item validatefield add_on" previous_selected="<?=$previous_selected?>" plant_number="<?=$lp['plant_id']?>">
-                                        <?=$html?>
-                                      </select>
-                                    </td>
-                                    <td class="text-center">
-                                      <?php
-                                      echo anchor('"javascript:;"', '<i class="fa fa-edit"></i>', array('class' => 'edit_plant btn blue c-btn', 'rel' => $lp['plant_id'],'p_name' => $lp['plant_name'], 'title' => 'Edit Plant'));
-                                      echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_plant btn red-color c-btn', 'rel' => $lp['plant_id'], 'title' => 'Delete Plant'));
-                                      ?>
-                                    </td>
-                                  </tr>
-                              <?php endforeach;
-                              } ?>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                      <hr>
-                      <div class="row container" style="margin:0 auto;">
-                        <div class="col-md-6">
-                          <h3 style="margin-left: 66px;">
-                            Lines Detail
-                          </h3>
-                        </div>
-                        <div class="col-md-6">
-                          <h3 style="margin-right: 13px;">
-                            <button type="button" class="btn btn-primary  btn-lg adding_line" style="float:right;">Add new Line</button>
-                          </h3>
-                        </div>
-                      </div>
-                      <div  class="row container" style="margin:0 auto;">
-                        <div class="col-md-12">
-                          <table id="datatable11" class="table table-striped table-hover table-body table-bordered">
-                            <thead class="bg-th">
-                              <tr class="bg-col">
-                                <th class="text-center">Line Name</th>
-                                 <th class="text-center">Action</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <?php $i = 0;
-                              if (isset($lines) && !empty($lines)) {
-                                $counter = 1;
-                                foreach ($lines as $key=>$li):?>
-                                  <tr  id="Row_<?=$counter?>" class="odd gradeX " >
-                                    <td class="text-center"><?=$li['line_name'];?></td>
-                                    <td class="text-center">
-                                      <?php
-                                      echo anchor('"javascript:;"', '<i class="fa fa-edit"></i>', array('class' => 'edit_line btn blue c-btn', 'rel' => $li['line_id'],'line_name' => $li['line_name'], 'title' => 'Edit Line'));
-                                      echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_line btn red-color c-btn', 'rel' => $li['line_id'], 'title' => 'Delete Line'));
-                                      ?>
-                                    </td>
-                                  </tr>
-                              <?php endforeach;
-                              } ?>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                      <hr>
-                      <div class="row container" style="margin:0 auto;">
-                        <div class="row" style="width: 100%">
-                          <div class="col-md-6">
-                            <h3 style="margin-left: 66px;">
-                              Product Schedule
-                            </h3>
-                          </div>
-                          <div class="col-md-6">
-                            <h3 style="margin-left: 66px;">
-                              <button type="button" class="btn btn-primary  btn-lg upload_file" style="float:right;">File Upload</button>
-                            </h3>
-                            <h3 style="margin-left: 66px;">
-                              <button type="button" class="btn btn-primary  btn-lg product_schedules" style="float:right;">Add Product Schedule</button>
-                            </h3>
-                          </div>
-                        </div>
-                        <div class="row" style="width: 100%">
-                          <div class="col-md-2" style="float: right;">
-                              <div class="form-group" style="margin-top: 33px;">
-                                <button type="button" class="btn btn-primary form-control filter_search">Search</button>
-                              </div>
-                          </div>
-                          <div class="col-md-3" style="float: right;">
-                            <div class="form-group">
-                                <label>To:</label>
-                                <div class='input-group datetimepicker2'>
-                                    <input type='text' class="form-control" id="enddate" />
-                                    <span class="input-group-addon">
-                                        <span class="fa fa-calendar"></span>
-                                    </span>
-                                </div>
-                            </div>
-                          </div>
-                          <div class="col-md-3" style="float: right;">
-                            <div class="form-group">
-                              <label>From:</label>
-                              <div class='input-group datetimepicker2'>
-                                  <input type='text' class="form-control" id="startdate" />
-                                  <span class="input-group-addon">
-                                      <span class="fa fa-calendar"></span>
-                                  </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div  class="row container" style="margin:0 auto;">
-                        <div class="col-md-12">
-                          <table id="datatable11" class="table table-striped table-hover table-body table-bordered">
-                            <thead class="bg-th">
-                              <tr class="bg-col">
-                                <th class="text-center" style="width:120px;">Product Code</th>
-                                <th class="text-center" style="width:120px;">Product Name</th>
-                                <th class="text-center" style="width:120px;">Program Type</th>
-                                 <th class="text-center" style="width:120px;">Storage Type</th>
-                                <th class="text-center" style="width:120px;">Line</th>
-                                <th class="text-center" style="width:120px;">Action</th>
-                              </tr>
-                            </thead>
-                            <tbody id="ajax_content_wrapper">
-                              <?php $i = 0;
-                              if (isset($product_schedule) && !empty($product_schedule)) {
-                                $counter = 1;
-                                foreach ($product_schedule as $keyy=>$produc):?>
-                                  <tr id="Row_<?=$counter?>" class="backgroud-blue ">
-                                    <td class="border_color_blue"><?=$produc['day']?>(<?=$produc['date']?>)</td>
-                                    <td class="border_color_blue"></td>
-                                    <td class="border_color_blue"></td>
-                                    <td class="border_color_blue"></td>
-                                    <td class="border_color_blue"></td>
-                                    <td class="border_color_blue"></td>
-                                  </tr>
-                                <?php if(isset($produc['data']) && !empty($produc['data'])) {
-                                  foreach ($produc['data'] as $key => $pro): ?>
-                                  <tr  id="Row_<?=$counter?>" class="odd gradeX " >
-                                    <td class="text-center"><?=$pro['navision_no'];?></td>
-                                    <td class="text-center"><?=$pro['product_title'];?></td>
-                                    <td class="text-center">
-                                    	<?php $get_ppt = Modules::run('api/_get_specific_table_with_pagination',array('ppt_product_id'=>$pro['ps_product']), 'ppt_id desc',DEFAULT_OUTLET.'_product_program_type','ppt_program_id','1','0')->result_array();
-                                    		$counter = 1;
-                                    		if(!empty($get_ppt)) {
-                                            	foreach ($get_ppt as $key => $gppt):
-                                                	if(!empty($gppt['ppt_program_id'])) {
-                                                    	$key = array_search($gppt['ppt_program_id'], array_column($program_type, 'program_id'));
-                                                    	if (is_numeric($key)) {
-                                                        	if($counter >1)
-                                                            	echo ",";
-                                                        	echo $program_type[$key]['program_name'];
-                                                        	$counter++;
-                                                    	}
-                                                	}
-                                            	endforeach;
-                                    		}
-                                		?>
-                                  	</td>
-                                    <td class="text-center"><?=$pro['storage_type'];?></td>
-                                    <td class="text-center"><?php if(!empty($pro['ps_line'])) { 
-                                      $line_name = Modules::run('api/_get_specific_table_with_pagination',array('line_id'=>$pro['ps_line']), 'line_id asc',DEFAULT_OUTLET.'_lines','line_name','1','1')->result_array(); if(isset($line_name[0]['line_name']) && !empty($line_name[0]['line_name'])) echo $line_name[0]['line_name']; }?></td>
-                                    <td class="text-center">
-                                      <?php
-                                      echo anchor('"javascript:;"', '<i class="fa fa-edit"></i>', array('class' => 'action_edit btn blue c-btn', 'rel' => $pro['ps_id'],'start_date' => $pro['ps_date'],'product' => $pro['ps_product'],'line' => $pro['ps_line'], 'title' => 'Edit Product'));
-                                      echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn  c-btn', 'rel' => $pro['ps_id'], 'title' => 'Delete Product'));
-                                      ?>
-                                    </td>
-                                  </tr>
-                                <?php
-                                $counter++;
-                                  endforeach;
-                                  }
-                                else {
-                                  $counter++; ?>
-                                  <tr  id="Row_<?=$counter?>" class="odd gradeX " >
-                                    <td class="text-center" style="border:none !important;text-align: right"></td>
-                                    <td class="text-center red-color" style="border:none !important;text-align: right;font-weight:bold;">No schedules for the day</td>
-                                    <td class="text-center" style="border:none !important;"></td>
-                                    <td class="text-center" style="border:none !important;"></td>
-                                    <td class="text-center" style="border:none !important;"></td>
-                                    <td class="text-center" style="border:none !important;"></td>
-                                  </tr>
-                                <?php }
-                              endforeach;
-                              } ?>
-                            </tbody>
-                          </table>
-                          <br><br>
-                          <div class="mg-t-20-f floatright" style="clear: both" id="light-pagination"></div>
-                        </div>
-                      </div>
-                      
+                                            <div  class="row container" style="margin:0 auto;">
+                                              <div class="col-md-12">
+                                                <table id="datatable11" class="table table-striped table-hover table-body table-bordered">
+                                                  <thead class="bg-th">
+                                                    <tr class="bg-col">
+                                                      <th class="text-center" style="width:33% !important;">Plant Name</th>
+                                                      <th class="text-center" style="width:33% !important;">Lines</th>
+                                                      <th class="text-center" style="width:34% !important;">Action</th>
+                                                    </tr>
+                                                  </thead>
+                                                  <tbody>
+                                                    <?php $i = 0;
+                                                    if (isset($line_plants) && !empty($line_plants)) {
+                                                      $counter = 1;
+                                                      foreach ($line_plants as $key=>$lp):
+                                                      if($lp['plant_status']=="1")
+                                                              $color_class="greens";
+                                                      else
+                                                        $color_class="red"; ?>
+                                                        <tr  id="Row_<?=$counter?>" class="odd gradeX " >
+                                                          <td class="text-center <?php echo $color_class ?>"><?=$lp['plant_name'];?></td>
+                                                          <td>
+                                                            <?php 
+                                                              $lsp=Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("lp_plant"=>$lp['plant_id']),'lp_id desc','lp_id',DEFAULT_OUTLET.'_line_plants','lp_id,lp_line,lp_plant','1','0','','','')->result_array();
+                                                              $html = $previous_selected = "";
+                                                              if(!isset($all_lines))
+                                                                $all_lines = array();
+                                                              foreach ($all_lines as $key => $value):
+                                                                $lp_status = $value['line_status'];
+                                                                if(isset($lsp)) 
+                                                                  $check = array_search($value['line_id'], array_column($lsp, 'lp_line'));
+                                                                else
+                                                                  $check='===';
+                                                                if (is_numeric($check))  {
+                                                                  if(!empty($previous_selected))
+                                                                    $previous_selected = $previous_selected.',';
+                                                                  $previous_selected = $previous_selected.$value['line_id'];
+                                                                    $html .= '<option lp_status="<?=$lp_status?>" value="'.$value['line_id'].'" selected= selected >'.$value['line_name'].'</option>';
+                                                                }
+                                                                else
+                                                                $html .= '<option lp_status="<?=$lp_status?>" value="'.$value['line_id'].'">'.$value['line_name'].'</option>';
+                                                              endforeach;
+                                                            ?>
+                                                            <select name="add_on[]"   multiple="multiple" class = "select-1 form-control Item validatefield add_on" previous_selected="<?=$previous_selected?>" plant_number="<?=$lp['plant_id']?>">
+                                                              <?=$html?>
+                                                            </select>
+                                                          </td>
+                                                          <td class="text-center">
+                                                            <?php
+                                                              echo anchor('"javascript:;"', '<i class="fa fa-edit"></i>', array('class' => 'edit_plant btn blue c-btn', 'rel' => $lp['plant_id'],'p_name' => $lp['plant_name'], 'title' => 'Edit Plant'));
+                                                              //echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_plant btn red-color c-btn', 'rel' => $lp['plant_id'], 'title' => 'Delete Plant'));
+                                                              $status_class="fa-arrow-up";
+                                                              if($lp['plant_status']=="0")
+                                                              $status_class="fa-arrow-down";
+                                                              echo anchor('"javascript:;"', '<i class="fa '.$status_class.' "></i>', array('class' => 'plant_status btn red-color c-btn', 'rel' => $lp['plant_id'], 'rel_status' => $lp['plant_status'], 'title' => 'Active'));
+                                                              ?>
+                                                          </td>
+                                                        </tr>
+                                                    <?php endforeach;
+                                                    } ?>
+                                                  </tbody>
+                                                </table>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div id="line_detail" class="tabcontent">
+                                            <div class="row container" style="margin:0 auto;">
+                                              <div class="col-lg-5 col-md-12 col-sm-12">
+                                                <h3>
+                                                  Lines Detail
+                                                </h3>
+                                              </div>
+                                              <div class="col-md-12">
+                                                  <button type="button" class="btn btn-primary  btn-lg adding_line" style="float:right;">Add new Line</button>
+                                              </div>
+                                            </div>
+                                            <div  class="row container" style="margin:0 auto;">
+                                              <div class="col-md-12">
+                                                <table id="datatable11" class="table table-striped table-hover table-body table-bordered">
+                                                  <thead class="bg-th">
+                                                    <tr class="bg-col">
+                                                      <th class="text-center">Line Name</th>
+                                                      <th class="text-center">Action</th>
+                                                    </tr>
+                                                  </thead>
+                                                  <tbody>
+                                                    <?php $i = 0;
+                                                    if (isset($lines) && !empty($lines)) {
+                                                      $counter = 1;
+                                                      foreach ($lines as $key=>$li):?>
+                                                        <tr  id="Row_<?=$counter?>" class="odd gradeX " >
+                                                          <td class="text-center"><?=$li['line_name'];?></td>
+                                                          <td class="text-center">
+                                                            <?php
+                                                            echo anchor('"javascript:;"', '<i class="fa fa-edit"></i>', array('class' => 'edit_line btn blue c-btn', 'rel' => $li['line_id'],'line_name' => $li['line_name'], 'title' => 'Edit Line'));
+                                                            echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_line btn red-color c-btn', 'rel' => $li['line_id'], 'title' => 'Delete Line'));
+                                                            ?>
+                                                          </td>
+                                                        </tr>
+                                                    <?php endforeach;
+                                                    } ?>
+                                                  </tbody>
+                                                </table>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div id="product_schedule" class="tabcontent">
+                                            <div class="row container" style="margin:0 auto;">
+                                                <div class="col-lg-5 col-md-12 col-sm-12">
+                                                  <h3 >
+                                                    Product Schedule
+                                                  </h3>
+                                                </div>
+                                                <div class="col-md-12">
+                                                <div class="row" style="width: 100%">
+                                                  <div class="col-md-3" >
+                                                  <div class="form-group">
+                                                    <label>From:</label>
+                                                    <div class='input-group datetimepicker2'>
+                                                        <input type='text' class="form-control" id="startdate" />
+                                                        <span class="input-group-addon">
+                                                            <span class="fa fa-calendar"></span>
+                                                        </span>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                  <div class="col-md-3" >
+                                                  <div class="form-group">
+                                                      <label>To:</label>
+                                                      <div class='input-group datetimepicker2'>
+                                                          <input type='text' class="form-control" id="enddate" />
+                                                          <span class="input-group-addon">
+                                                              <span class="fa fa-calendar"></span>
+                                                          </span>
+                                                      </div>
+                                                  </div>
+                                                </div>
+                                                  <div class="col-md-2" >
+                                                    <div class="form-group" style="margin-top: 33px;">
+                                                      <button type="button" class="btn btn-primary form-control filter_search">Search</button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                  <div class="form-group" style="margin-top: 33px;">
+                                                    <button type="button" class="btn btn-primary form-control btn-lg upload_file" style="float:right;">File Upload</button>
+                                                </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                  <div class="form-group" style="margin-top: 33px;">
+                                                    <button type="button" class="btn btn-primary  form-control btn-lg product_schedules" style="float:right;">Add Product Schedule</button>
+                                                  </div>
+                                                </div>
+                                                </div>
+                                            </div>
+                                            <div  class="row " style="margin:0 auto;">
+                                              <div class="col-md-12">
+                                                <table id="datatable11" class="table table-striped table-hover table-body table-bordered">
+                                                  <thead class="bg-th">
+                                                    <tr class="bg-col">
+                                                      <th class="text-center">Product Code</th>
+                                                      <th class="text-center">Product Name</th>
+                                                      <th class="text-center">Program Type</th>
+                                                      <th class="text-center">Storage Type</th>
+                                                      <th class="text-center">Plant</th>
+                                                      <th class="text-center">Line</th>
+                                                      <th class="text-center">Action</th>
+                                                    </tr>
+                                                  </thead>
+                                                  <tbody id="ajax_content_wrapper">
+                                                    <?php $i = 0;
+                                                    if (isset($product_schedule) && !empty($product_schedule)) {
+                                                      $counter = 1;
+                                                      foreach ($product_schedule as $keyy=>$produc):?>
+                                                        <tr id="Row_<?=$counter?>" class="backgroud-blue ">
+                                                          <td  colspan="7" class="border_color_blue"><?=$produc['day']?>(<?=$produc['date']?>)</td>
+                                                        </tr>
+                                                      <?php if(isset($produc['data']) && !empty($produc['data'])) {
+                                                        foreach ($produc['data'] as $key => $pro): ?>
+                                                        <tr  id="Row_<?=$counter?>" class="odd gradeX " >
+                                                          <td class="text-center"><?=$pro['navision_no'];?></td>
+                                                          <td class="text-center"><?=$pro['product_title'];?></td>
+                                                          <td class="text-center">
+                                                            <?php $get_ppt = Modules::run('api/_get_specific_table_with_pagination',array('ppt_product_id'=>$pro['ps_product']), 'ppt_id desc',DEFAULT_OUTLET.'_product_program_type','ppt_program_id','1','0')->result_array();
+                                                              $counter = 1;
+                                                              if(!empty($get_ppt)) {
+                                                                    foreach ($get_ppt as $key => $gppt):
+                                                                        if(!empty($gppt['ppt_program_id'])) {
+                                                                            $key = array_search($gppt['ppt_program_id'], array_column($program_type, 'program_id'));
+                                                                            if (is_numeric($key)) {
+                                                                                if($counter >1)
+                                                                                    echo ",";
+                                                                                echo $program_type[$key]['program_name'];
+                                                                                $counter++;
+                                                                            }
+                                                                        }
+                                                                    endforeach;
+                                                              }
+                                                          ?>
+                                                          </td>
+                                                          <td class="text-center"><?=$pro['storage_type'];?></td>
+                                                          <td class="text-center"><?=$pro['plant_name'];?></td>
+                                                          <td class="text-center"><?php if(!empty($pro['ps_line'])) { 
+                                                            $line_name = Modules::run('api/_get_specific_table_with_pagination',array('line_id'=>$pro['ps_line']), 'line_id asc',DEFAULT_OUTLET.'_lines','line_name','1','1')->result_array(); if(isset($line_name[0]['line_name']) && !empty($line_name[0]['line_name'])) echo $line_name[0]['line_name']; }?></td>
+                                                          <td class="text-center">
+                                                            <?php
+                                                            echo anchor('"javascript:;"', '<i class="fa fa-edit"></i>', array('class' => 'action_edit btn blue c-btn', 'rel' => $pro['ps_id'],'start_date' => $pro['ps_date'],'product' => $pro['ps_product'],'plant_id' => $pro['plant_id'],'line' => $pro['ps_line'], 'title' => 'Edit Product'));
+                                                            echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn  c-btn', 'rel' => $pro['ps_id'], 'title' => 'Delete Product'));
+                                                            ?>
+                                                          </td>
+                                                        </tr>
+                                                      <?php
+                                                      $counter++;
+                                                        endforeach;
+                                                        }
+                                                      else {
+                                                        $counter++; ?>
+                                                        <tr  id="Row_<?=$counter?>" class="odd gradeX " >
+                                                          <td  colspan="7" class="text-center red-color" style="border:none !important;text-align: center;font-weight:bold;width: 100%">No schedules for the day</td>
+                                                        </tr>
+                                                      <?php }
+                                                    endforeach;
+                                                    } ?>
+                                                  </tbody>
+                                                </table>
+                                                <br><br>
+                                                <div class="mg-t-20-f floatright" style="clear: both" id="light-pagination"></div>
+                                            </div>
+                                          </div>
                       <!-- Line Shift Details -->
                       <!-- Line Shift Details -->
                                     </div>
@@ -766,17 +897,21 @@ $(document).off('click', '.action_edit').on('click', '.action_edit', function(e)
   var start_date = $(this).attr('start_date');
   var end_date = $(this).attr('end_date');
   var product = $(this).attr('product');
+  var plant_id = $(this).attr('plant_id');
   var line = $(this).attr('line');
   e.preventDefault();
     $.ajax({
       type: 'POST',
       url: "<?php ADMIN_BASE_URL?>global_configuration/get_product_schedules",
-      data: {'id': id,'start_date':start_date,'product':product,'line':line},
+      data: {'id': id,'start_date':start_date,'product':product,'plant':plant_id,'line':line},
       async: false,
       success: function(test_body) {
         $('#product_schedules').modal('show');
         $("#product_schedules .modal-body").html(test_body);
         $("#product_schedules .modal-footer").html('<button type="submit" class="btn-primary btn pull-right submit_from" style="clear: both; margin-top: 10px;">Submit</button>');
+
+        $('.selectpicker').selectpicker('refresh');
+        $( ".selectpicker" ).addClass('selectbox-class');
       }
     });
 });
@@ -1118,4 +1253,49 @@ $('.line_product').on('change', function() {
   <?php if(isset($page_number) && is_numeric($page_number) && isset($total_pages) && is_numeric($total_pages)) { if($total_pages>1) {?>
         pagination_call('<?=$total_pages;?>','<?=$page_number;?>');
     <?php }}?>
+
+    $(document).off("click",".plant_status").on("click",".plant_status", function(event) {
+            event.preventDefault();
+            var id = $(this).attr('rel');
+            var status = $(this).attr('rel_status');
+             $.ajax({
+                type: 'POST',
+                url: "<?= ADMIN_BASE_URL ?>global_configuration/change_status",
+                data: {'id': id, 'status': status},
+                async: false,
+                success: function(result) {
+                    toastr.success('Status Changed Successfully');
+                }
+            });
+            if (status == 0) {
+                $(this).find("i").removeClass('fa-arrow-down');
+                $(this).find("i").addClass('fa-arrow-up');
+                $(this).attr('plant_status', '0');
+            	$(this).attr('title', 'Inactive');
+            } else {
+                $(this).find("i").removeClass('fa-arrow-up');
+                $(this).find("i").addClass('fa-arrow-down');
+                $(this).attr('plant_status', '1');
+            	$(this).attr('title', 'Active');
+            }
+        });
+</script>
+
+<script>
+function openCity(evt, cityName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
 </script>

@@ -140,6 +140,30 @@
                               </div>
                             </div>
                          </div>
+                         <div class="col-sm-5 " id="supplier_type" style="<?php if($news['assign_to']=="supplier" || !empty($news['assign_to']) || isset($news['assign_to'])){ ?> display:block;<?php  }else{?> display:none;<?php } ?>">
+                            <div class="form-group">
+                              <?php if(!isset($supplier_type)) $supplier_type = array();
+                              if(!isset($news['supplier_type'])) $news['supplier_type'] = ""; ?>
+                              <?php $options =array("0"=>"select")+$supplier_type ;
+                              $attribute = array('class' => 'control-label col-md-4');
+                              echo form_label('Supplier Type <span style="color:red">*</span>', 'supplier_type', $attribute);?>
+                              <div class="col-md-8">
+                                <?php echo form_dropdown('supplier type', $options, $news['supplier_type'],  'class="form-control select2me validatefield" id="role_id" tabindex ="8"'); ?>
+                              </div>
+                            </div>
+                         </div>
+                         <div class="col-sm-5 " id="doc_type" style="<?php if($news['assign_to']!="supplier" || empty($news['assign_to']) || isset($news['assign_to'])){ ?> display:none;<?php  }else{?> display:block;<?php } ?>">
+                            <div class="form-group">
+                              <?php if(!isset($doc_type)) $doc_type = array();
+                              if(!isset($news['doc_type'])) $news['doc_type'] = ""; ?>
+                              <?php $options =$doc_type ;
+                              $attribute = array('class' => 'control-label col-md-4');
+                              echo form_label('Document Type <span style="color:red">*</span>', 'doc_type', $attribute);?>
+                              <div class="col-md-8">
+                                <?php echo form_dropdown('doc_type', $options, $news['doc_type'],  'class="form-control select2me validatefield" id="role_id" tabindex ="8"'); ?>
+                              </div>
+                            </div>
+                         </div>
                     </fieldset>
                 </div>
                 <div class="form-actions fluid no-mrg">
@@ -179,19 +203,39 @@
             var replaced_val = img.replace("C:\\fakepath\\", '');
             $('#hdn_image').val(replaced_val);
         });
+        var value=$('#selectboxing').val();
+        if(value=="supplier")
+      {
+          document.getElementById( 'supplier_type' ).style.display = 'block';
+          document.getElementById( 'type_check' ).style.display = 'none';
+          document.getElementById( 'doc_type' ).style.display = 'none';
+          
+      }
+      else
+      {
+          document.getElementById( 'supplier_type' ).style.display = 'none';
+          document.getElementById( 'type_check' ).style.display = 'block';
+          document.getElementById( 'doc_type' ).style.display = 'block';
+      }
+
     });
 
-
+    
     $(document).off("change", "#selectboxing").on("change", "#selectboxing",function(event){
       var value=$('#selectboxing').val();
       if(value=="supplier")
       {
+          document.getElementById( 'supplier_type' ).style.display = 'block';
           document.getElementById( 'type_check' ).style.display = 'none';
+          document.getElementById( 'doc_type' ).style.display = 'none';
       }
       else
       {
+          document.getElementById( 'supplier_type' ).style.display = 'none';
           document.getElementById( 'type_check' ).style.display = 'block';
+          document.getElementById( 'doc_type' ).style.display = 'block';
       }
     });
+
 
 </script>

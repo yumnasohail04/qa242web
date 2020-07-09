@@ -61,12 +61,12 @@
         <section>
             <div class="content-wrapper">
                  <div>
-                <a class="btn_time_period btn-default" data-value="7">&nbsp;&nbsp;Week&nbsp;&nbsp;</a>
-                <a class="btn_time_period btn-info" data-value="1">&nbsp;&nbsp;1 Month&nbsp;&nbsp;</a>
-                <a class="btn_time_period btn-default" data-value="3">&nbsp;&nbsp;3 Months&nbsp;&nbsp;</a>
-                <a class="btn_time_period btn-default" data-value="6">&nbsp;&nbsp;6 Months&nbsp;&nbsp;</a>
-                <a class="btn_time_period btn-default" data-value="12">&nbsp;&nbsp;1 Year&nbsp;&nbsp;</a>
-                <a class="btn_time_period btn-default" data-value="24">&nbsp;&nbsp;2 Year&nbsp;&nbsp;</a>
+                <a class="btn_time_period btn-default" data-type="week" data-value="7">&nbsp;&nbsp;Week&nbsp;&nbsp;</a>
+                <a class="btn_time_period btn-info" data-type="month" data-value="1">&nbsp;&nbsp;1 Month&nbsp;&nbsp;</a>
+                <a class="btn_time_period btn-default" data-type="threemonth" data-value="3">&nbsp;&nbsp;3 Months&nbsp;&nbsp;</a>
+                <a class="btn_time_period btn-default" data-type="sixmonth" data-value="6">&nbsp;&nbsp;6 Months&nbsp;&nbsp;</a>
+                <a class="btn_time_period btn-default" data-type="oneyear" data-value="12">&nbsp;&nbsp;1 Year&nbsp;&nbsp;</a>
+                <a class="btn_time_period btn-default" data-type="two" data-value="24">&nbsp;&nbsp;2 Year&nbsp;&nbsp;</a>
             </div>
                  <div class="card-body pb-0">
                     <div class="card text-white white_bg">
@@ -108,7 +108,8 @@
                         </div>
                         <div class="row">
                             <div class=" col-sm-12 col-lg-8">
-                                <div id="chart"></div>
+                                <div id="chart">
+                            </div>
                             </div>
                             <div class=" col-sm-12 col-lg-4">
                                 <div id="morrisLine1" class="morris-wrapper-demo" style="height:330px;" ></div>
@@ -159,6 +160,12 @@
             data:{'start_date':date_from_str,'end_date':date_to_str,'var_time_period':var_time_period},
             success: function (data) {
               $('#div_tblreport').html(data);
+				 $('table').dataTable({
+       				 'bFilter': false,
+        			 'bInfo': false,
+       				 'bLengthChange': false,
+       				 'bPaginate': false
+    			});
             }
          });
          get_graphs_data(date_from_str,date_to_str,var_time_period)
@@ -182,25 +189,27 @@
 
 <script type="text/javascript">
     function get_graphs_data(date_from_str,date_to_str,var_time_period){
-        $('#morrisDonut1').html('')
-        $('#morrisDonut2').html('')
-        $('#morrisDonut3').html('')
-        $('#morrisDonut4').html('')
-        $('#morrisBar1').html('')
-        $('#morrisBar2').html('')
-        $('#morrisBar3').html('')
-        $('#morrisBar4').html('')
-        $('#chart').html('')
-         $.ajax({
+        $.ajax({
             type: "POST",
-            url: "<?=ADMIN_BASE_URL.'dashboard/get_graphs_data'?>",
+            url: "<?=ADMIN_BASE_URL.'dashboard/testing'?>",
             
-            data:{'start_date':date_from_str,'end_date':date_to_str,'var_time_period':var_time_period},
-            success: function (response) {
-             var obj = JSON.parse(response);
-            triiger_pie_charts(obj.ppc_pie_report,obj.ccp_pie_report,obj.atp_swab_pie_report,obj.receivinglog_pie_report)
-            trigger_bar_grphs(obj.ppc_bar_report,obj.ccp_bar_report,obj.atp_swab_bar_report,obj.receivinglog_bar_report)
-            show_trendline_graph_data(obj.trendline_graph_data)
+            data:{'start_date':date_from_str,'end_date':date_to_str,'var_time_period':$('.content-wrapper').find('.btn-info').attr('data-type')},
+            success: function (response) {            
+              $('#morrisDonut1').html('');
+              $('#morrisDonut2').html('');
+              $('#morrisDonut3').html('');
+              $('#morrisDonut4').html('');
+              $('#morrisBar1').html('');
+              $('#morrisBar2').html('');
+              $('#morrisBar3').html('');
+              $('#morrisBar4').html('');
+              $('#morrisLine1').html('');
+              $('#chart').html('');
+              var obj = JSON.parse(response);
+              triiger_pie_charts(obj.ppc_pie_report,obj.ccp_pie_report,obj.atp_swab_pie_report,obj.receivinglog_pie_report);
+              trigger_bar_grphs(obj.ppc_bar_report,obj.ccp_bar_report,obj.atp_swab_bar_report,obj.receivinglog_bar_report);
+              show_trendline_graph_data(obj.trendline_graph_data);
+              morrisline1_data(obj.final,obj.plants_name,obj.plant_indexes);
             }
          });
     }
@@ -209,7 +218,7 @@
   new Morris.Donut({
     element: 'morrisDonut2',
     data: ppc_pie_report,
-    colors: ['#4CB581','#757373'],
+    colors: ['#4CB581','#717373'],
     resize: true
   }).on('click', function (i, row) {  
         if(i==1)
@@ -237,7 +246,7 @@
   new Morris.Donut({
     element: 'morrisDonut1',
     data: ccp_pie_report,
-    colors: ['#D14F57','#757373'],
+    colors: ['#D14F57','#717373'],
     resize: true
   }).on('click', function (i, row) {  
         if(i==1)
@@ -266,7 +275,7 @@
     new Morris.Donut({
     element: 'morrisDonut3',
     data:atp_swab_pie_report,
-    colors: ['#5D89A8','#757373'],
+    colors: ['#5D89A8','#717373'],
     resize: true
   }).on('click', function (i, row) {  
         if(i==1)
@@ -295,7 +304,7 @@
     new Morris.Donut({
     element: 'morrisDonut4',
     data: receivinglog_pie_report,
-    colors: ['#EF9738', '#757373'],
+    colors: ['#EF9738', '#717373'],
     resize: true
   }).on('click', function (i, row) {  
         if(i==1)
@@ -320,7 +329,40 @@
             });
         }
     });
-    }
+  $("[id^='morrisDonut1'] svg").on('mouseover', function() {
+    var md1_previous = $("[id^='morrisDonut1'] text:last-child").find('tspan').text();
+    var md1_new = md1_previous.replace('%', '');
+    $( "[id^='morrisDonut1'] text:last-child" ).find('tspan').text(md1_new+"%");
+  });
+  $("[id^='morrisDonut2'] svg").on('mouseover', function() {
+    var md2_previous = $("[id^='morrisDonut2'] text:last-child").find('tspan').text();
+    var md2_new = md2_previous.replace('%', '');
+    $( "[id^='morrisDonut2'] text:last-child" ).find('tspan').text(md2_new+"%");
+  });
+  $("[id^='morrisDonut3'] svg").on('mouseover', function() {
+    var md3_previous = $("[id^='morrisDonut3'] text:last-child").find('tspan').text();
+    var md3_new = md3_previous.replace('%', '');
+    $( "[id^='morrisDonut3'] text:last-child" ).find('tspan').text(md3_new+"%");
+  });
+  $("[id^='morrisDonut4'] svg").on('mouseover', function() {
+    var md4_previous = $("[id^='morrisDonut4'] text:last-child").find('tspan').text();
+    var md4_new = md4_previous.replace('%', '');
+    $( "[id^='morrisDonut4'] text:last-child" ).find('tspan').text(md4_new+"%");
+  });
+  var d1_previous = $("[id^='morrisDonut1'] text:last-child").find('tspan').text();
+  var d1_new = d1_previous.replace('%', '');
+  $( "[id^='morrisDonut1'] text:last-child" ).find('tspan').text(d1_new+"%");
+  var d2_previous = $("[id^='morrisDonut2'] text:last-child").find('tspan').text();
+  var d2_new = d2_previous.replace('%', '');
+  $( "[id^='morrisDonut2'] text:last-child" ).find('tspan').text(d2_new+"%");
+  var d3_previous = $("[id^='morrisDonut3'] text:last-child").find('tspan').text();
+  var d3_new = d3_previous.replace('%', '');
+  $( "[id^='morrisDonut3'] text:last-child" ).find('tspan').text(d3_new+"%");
+  var d4_previous = $("[id^='morrisDonut4'] text:last-child").find('tspan').text();
+  var d4_new = d4_previous.replace('%', '');
+  $( "[id^='morrisDonut4'] text:last-child" ).find('tspan').text(d4_new+"%");
+
+  }
     function trigger_bar_grphs(ppc_pie_report,ccp_pie_report,atp_swab_pie_report,receivinglog_pie_report){
          new Morris.Bar({
     element: 'morrisBar2',
@@ -328,7 +370,7 @@
     xkey: 'y',
     ykeys: ['a', 'b'],
     labels: ['Passed', 'Failed'],
-    barColors: ['#4CB581', '#757373'],
+    barColors: ['#4CB581', '#717373'],
     stacked: true,
     gridTextSize: 11,
     hideHover: 'auto',
@@ -344,7 +386,7 @@
     xkey: 'y',
     ykeys: ['a', 'b'],
     labels: ['Passed', 'Failed'],
-    barColors: ['#D14F57', '#757373'],
+    barColors: ['#D14F57', '#717373'],
     stacked: true,
     gridTextSize: 11,
     hideHover: 'auto',
@@ -361,7 +403,7 @@
     xkey: 'y',
     ykeys: ['a', 'b'],
     labels: ['Passed', 'Failed'],
-    barColors: ['#5D89A8', '#757373'],
+    barColors: ['#5D89A8', '#717373'],
     stacked: true,
     gridTextSize: 11,
     hideHover: 'auto',
@@ -376,7 +418,7 @@
     xkey: 'y',
     ykeys: ['a', 'b'],
     labels: ['Passed', 'Failed'],
-    barColors: ['#EF9738', '#757373'],
+    barColors: ['#EF9738', '#717373'],
     stacked: true,
     gridTextSize: 11,
     hideHover: 'auto',
@@ -388,12 +430,13 @@
     }
 </script>
 <script type="text/javascript">
+  function morrisline1_data(final,plant_name,plant_index) {
     new Morris.Line({
     element: 'morrisLine1',
-    data: <?php if(!empty(json_decode($sites_report['final']))) echo $sites_report['final'];else echo $morrisData;?>,
+    data: final,
     xkey: 'y',
-    ykeys: ['a', 'b'],
-    labels: ['YC', 'BE'],
+    ykeys: plant_index,
+    labels: plant_name,
     lineColors: ['#560bd0', '#007bff'],
     lineWidth: 1,
     ymax: 'auto 100',
@@ -401,6 +444,7 @@
     hideHover: 'auto',
     resize: true
   });
+  }
 </script>
 <script type="text/javascript">
   function show_trendline_graph_data(trendline_graph_data){
@@ -426,14 +470,9 @@
         type: 'column',
         data: trendline_graph_data.failed_array
       }, {
-        name: 'Current Month',
+        name: 'Trending Line',
         type: 'line',
-        data: trendline_graph_data.current_month
-      }
-      , {
-        name: 'Prev Month',
-        type: 'line',
-        data: trendline_graph_data.current_month
+        data: trendline_graph_data.passed_array
       }],
       stroke: {
         width: [1, 1, 4]
@@ -515,28 +554,6 @@
             }
           }
         },
-         {
-          seriesName: 'Prev month',
-          opposite: true,
-          axisTicks: {
-            show: true,
-          },
-          axisBorder: {
-            show: true,
-            color: '#FEB019'
-          },
-          labels: {
-            style: {
-              color: '#FEB019',
-            },
-          },
-          title: {
-            text: "Last month",
-            style: {
-              color: '#FEB019',
-            }
-          }
-        },
       ],
       tooltip: {
         fixed: {
@@ -561,26 +578,8 @@
     chart.render();
   }
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <script>
-    $(document).on("click", ".view_details", function (event) {
+      $(document).on("click", ".view_details", function (event) {
         event.preventDefault();
         var id = $(this).attr('rel');
     	var static = $(this).attr('static');

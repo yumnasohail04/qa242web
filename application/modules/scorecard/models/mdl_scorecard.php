@@ -24,12 +24,17 @@ class Mdl_scorecard extends CI_Model {
         $query = $this->db->get($table);
         return $query;
     }
+    function _delete_scorecard($where, $table)
+    {
+        $this->db->where($where);
+        $this->db->delete($table);
+    }
     function get_scorecard_list($where)
     {
         $table = DEFAULT_OUTLET."_scorecard_team_assign";
         $table1 = DEFAULT_OUTLET."_scorecard_assignment";
         $table2 = DEFAULT_OUTLET."_groups";
-        $this->db->select("supplier.name,$table1.create_date,$table.id,$table2.group_title");
+        $this->db->select("supplier.name,supplier.id as supplier_id,$table1.create_date,$table.id,$table2.group_title,$table.sc_id");
         $this->db->from($table);
         $this->db->order_by("$table.id desc");
         $this->db->join("$table1","$table.sc_id=$table1.id","LEFT");
@@ -43,7 +48,7 @@ class Mdl_scorecard extends CI_Model {
     {
         $table = DEFAULT_OUTLET."_scorecard_team_assign";
         $table1 = DEFAULT_OUTLET."_groups";
-        $this->db->select("$table.percentage,$table.reviewed_date,$table1.group_title,users.first_name,users.last_name");
+        $this->db->select("$table.percentage,$table.points,$table.reviewed_date,$table1.group_title,users.first_name,users.last_name,$table.fill_status");
         $this->db->from($table);
         $this->db->order_by("$table.id desc");
         $this->db->join("$table1","$table.team_id=$table1.id","LEFT");
@@ -55,7 +60,7 @@ class Mdl_scorecard extends CI_Model {
     function pending_scorecard_list($where)
     {
         $table = DEFAULT_OUTLET."_scorecard_assignment";
-        $this->db->select("supplier.name,$table.create_date,$table.id");
+        $this->db->select("supplier.name,$table.create_date,$table.id,supplier.id as supplier_id");
         $this->db->from($table);
         $this->db->order_by("$table.id desc");
         $this->db->join("supplier","$table.supplier_id=supplier.id","LEFT");
@@ -68,22 +73,33 @@ class Mdl_scorecard extends CI_Model {
         $table = DEFAULT_OUTLET."_scorecard_team_assign";
         $table1 = DEFAULT_OUTLET."_scorecard_assign_questions";
         $table2 = DEFAULT_OUTLET."_scorecard_form_question";
-        $this->db->select("$table1.question,$table2.sfq_description,$table2.sfq_id");
+        $this->db->select("$table1.question,$table1.sfq_description,$table1.question_id,$table1.ingredient_id,$table1.document_id,$table1.id");
         $this->db->from($table);
         $this->db->where("$table.id",$id);
         $this->db->join("$table1","$table.id=$table1.tassign_id","LEFT");
-        $this->db->join("$table2","$table1.question_id=$table2.sfq_id","LEFT");
-        $this->db->where("$table2.sfq_delete","0");
+        // $this->db->join("$table2","$table1.question_id=$table2.sfq_id","LEFT");
+        // $this->db->where("$table2.sfq_delete","0");
         $query = $this->db->get();
         return $query;
     }
     function get_completed_scorecard($where)
     {
         $table = DEFAULT_OUTLET."_scorecard_assignment";
-        $this->db->select("supplier.name,at_reviewed_date,total_percentage,$table.id");
+        $this->db->select("supplier.name,at_reviewed_date,total_percentage,$table.id,$table.supplier_id,$table.audit,,$table.comments");
         $this->db->from($table);
         $this->db->order_by("$table.id desc");
         $this->db->join("supplier","$table.supplier_id=supplier.id","LEFT");
+        $this->db->where($where);
+        $query = $this->db->get();
+        return $query;
+    }
+ function get_supplier_ingreients($where)
+    {
+        $table = DEFAULT_OUTLET."_ingredients_supplier";
+        $this->db->select("1_ingredients.item_no,1_ingredients.item_name,$table.role,$table.ingredient_id");
+        $this->db->from($table);
+        $this->db->order_by("$table.id desc");
+        $this->db->join("1_ingredients","$table.ingredient_id=1_ingredients.id","LEFT");
         $this->db->where($where);
         $query = $this->db->get();
         return $query;
@@ -102,7 +118,7 @@ class Mdl_scorecard extends CI_Model {
     {
         $table = DEFAULT_OUTLET."_scorecard_assignment";
         $table1 = DEFAULT_OUTLET."_groups";
-        $this->db->select("$table.at_percentage,$table.at_reviewed_date,$table1.group_title,users.first_name,users.last_name");
+        $this->db->select("$table.at_percentage,$table.at_reviewed_date,$table1.group_title,users.first_name,users.last_name,$table.status,$table.comments");
         $this->db->from($table);
         $this->db->order_by("$table.id desc");
         $this->db->join("$table1","$table.approval_team=$table1.id","LEFT");
@@ -121,7 +137,7 @@ class Mdl_scorecard extends CI_Model {
         $table = DEFAULT_OUTLET."_scorecard_team_assign";
         $table1 = DEFAULT_OUTLET."_scorecard_assignment";
         $table2 = "supplier";
-        $this->db->select("$table2.name");
+        $this->db->select("$table2.name,$table2.id as supplier_id");
         $this->db->from($table);
         $this->db->join("$table1","$table.sc_id=$table1.id","LEFT");
         $this->db->join("$table2","$table1.supplier_id=$table2.id","LEFT");
@@ -183,8 +199,43 @@ class Mdl_scorecard extends CI_Model {
         $this->db->select("$table1.sfa_answer,$table1.sfa_id,$table1.sfa_points");
         $this->db->from($table);
         $this->db->join("$table1","$table.answer_id=$table1.sfa_id","LEFT");
-        $this->db->where("$table.question_id",$question_id);
+        $this->db->where("$table.qauto_id",$question_id);
         $this->db->where("$table.sc_id",$sc_id);
+        $query = $this->db->get();
+        return $query;
+    }
+	function get_questions_answers_pending_($question_id,$sc_id){
+        $table = DEFAULT_OUTLET."_scorecard_assign_answers";
+        $table1 = DEFAULT_OUTLET."_ingredient_document_ans";
+        $this->db->select("$table1.sfa_answer,$table1.sfa_id,$table1.sfa_points");
+        $this->db->from($table);
+        $this->db->join("$table1","$table.answer_id=$table1.sfa_id","LEFT");
+        $this->db->where("$table.qauto_id",$question_id);
+        $this->db->where("$table.sc_id",$sc_id);
+        $query = $this->db->get();
+        return $query;
+    }
+	 function get_questions_answers_final($question_id,$sc_id,$where){
+        $table = DEFAULT_OUTLET."_scorecard_assign_answers";
+        $table1 = DEFAULT_OUTLET."_scorecard_form_answer";
+        $this->db->select("$table1.sfa_answer,$table1.sfa_id,$table1.sfa_points");
+        $this->db->from($table);
+        $this->db->join("$table1","$table.answer_id=$table1.sfa_id","LEFT");
+        $this->db->where("$table.qauto_id",$question_id);
+        $this->db->where("$table.sc_id",$sc_id);
+   		$this->db->where($where);
+        $query = $this->db->get();
+        return $query;
+    }
+	function get_questions_answers_final_($question_id,$sc_id,$where){
+        $table = DEFAULT_OUTLET."_scorecard_assign_answers";
+        $table1 = DEFAULT_OUTLET."_ingredient_document_ans";
+        $this->db->select("$table1.sfa_answer,$table1.sfa_id,$table1.sfa_points");
+        $this->db->from($table);
+        $this->db->join("$table1","$table.answer_id=$table1.sfa_id","LEFT");
+        $this->db->where("$table.qauto_id",$question_id);
+        $this->db->where("$table.sc_id",$sc_id);
+   		 $this->db->where($where);
         $query = $this->db->get();
         return $query;
     }
@@ -194,14 +245,14 @@ class Mdl_scorecard extends CI_Model {
         $table0 = DEFAULT_OUTLET."_scorecard_team_assign";
         $table1 = DEFAULT_OUTLET."_scorecard_assign_questions";
         $table2 = DEFAULT_OUTLET."_scorecard_form_question";
-        $this->db->select("$table1.question,$table2.sfq_description,$table2.sfq_id");
+        $this->db->select("$table1.question,$table1.sfq_description,$table1.question_id,$table1.ingredient_id,$table1.document_id,$table1.id");
         $this->db->from($table);
         $this->db->where("$table.id",$id);
         $this->db->order_by("$table1.tassign_id desc");
         $this->db->join("$table0","$table.id=$table0.sc_id","LEFT");
         $this->db->join("$table1","$table0.id=$table1.tassign_id","LEFT");
-        $this->db->join("$table2","$table1.question_id=$table2.sfq_id","LEFT");
-        $this->db->where("$table2.sfq_delete","0");
+        //$this->db->join("$table2","$table1.question_id=$table2.sfq_id","LEFT");
+        //$this->db->where("$table2.sfq_delete","0");
         $query = $this->db->get();
         return $query;
     }
@@ -209,7 +260,7 @@ class Mdl_scorecard extends CI_Model {
     {
         $table1 = DEFAULT_OUTLET."_scorecard_assignment";
         $table2 = "supplier";
-        $this->db->select("$table2.name");
+        $this->db->select("$table2.name,$table2.id as supplier_id");
         $this->db->from($table1);
         $this->db->join("$table2","$table1.supplier_id=$table2.id","LEFT");
         $this->db->where("$table1.id",$id);

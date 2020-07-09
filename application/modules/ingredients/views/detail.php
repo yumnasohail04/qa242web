@@ -93,18 +93,22 @@
                                 <table class="table table-bordered" style="color: black !important">
                                     <thead>
                                       <tr>
-                                        <th  style="color: #6C9CDE !important">Name</th>
+                                        <th  style="color: #6C9CDE !important">Supplier</th>
+                                        <th  style="color: #6C9CDE !important">Document Name</th>
                                         <th style="color: #6C9CDE !important">File</th>
                                       </tr>
                                     </thead>
                                     <tbody>
-                                         <?php if(isset($doc) && !empty($doc)){
-                                        foreach($doc as $values){?>
+                                         <?php if(isset($supplier) && !empty($supplier)){
+                                        foreach($supplier as  $value){?>
+                                        <?php   foreach($value['sub'] as  $values){ ?>
                                       <tr>
+                                        <td><?php echo $value['name']; ?></td>
                                         <td><?php echo $values['doc_name']; ?></td>
                                         <td> <a href="<?php echo BASE_URL.INGREDIENT_DOCUMENTS_PATH.$values['document']; ?>" download><?php echo $values['document']; ?></a></td>
                                       </tr>
-                                      <?}}?>
+                                      <?}}
+                                      }?>
                                      
                                     </tbody>
                                   </table>

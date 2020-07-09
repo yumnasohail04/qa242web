@@ -61,6 +61,15 @@
                             
                         } ?>
                     </tdd>
+                   <tdd class="text-center">
+                                                <?php if(isset($new->plant_no) && !empty($new->plant_no)) {
+                                                            $plant_name = Modules::run('api/_get_specific_table_with_pagination',array('plant_id'=>$new->plant_no), 'plant_id desc',DEFAULT_OUTLET.'_plants','plant_name','1','1')->row_array();
+                                                            if(!empty($plant_name['plant_name'])) {
+                                                                echo $plant_name['plant_name'];
+                                                            }
+
+                                                } ?>
+                                            </tdd>
                     <?php if($assign_status == 'today_checks') { ?>
                     <tdd class="text-center">
                         <?php echo $new->assign_status; ?>

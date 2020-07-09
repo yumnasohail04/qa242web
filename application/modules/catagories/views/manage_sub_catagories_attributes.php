@@ -182,6 +182,150 @@
                                 <?php } ?>
                             </tbody>
                     </table>
+                    <h4>Date Attributes</h4>
+                    <table id="datatable2" class="table table-striped table-hover ">
+                        <thead class="bg-th">
+                        <tr class="bg-col">
+                        <th  style="display:none;width:2%">S.No</th>
+                        <th width="400px">Attribute`s Name</th>
+                        <th width="400px"></th>
+
+                        
+
+                        <th class="" style="width:320px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actions</th>
+                        </tr>
+                        </thead>
+                         <tbody class="courser table-body">
+                                <?php
+                                $i=0;
+                                if (isset($query)) {
+                                    foreach ($query->result() as
+                                            $row) {
+                                        $i++;
+                                     if($row->attribute_type=="Date"){
+                                         $edit_url = ADMIN_BASE_URL . 'catagories/create_sub_catagories_attibutes/' . $row->check_cat_id . '/' . $row->id .'/'.str_replace('/', '-', $parent_name);
+                                        $delete_url = ADMIN_BASE_URL . 'catagories/delete_sub_catagories/' . $row->id . '/' ;
+                                        $set_publish_url = ADMIN_BASE_URL . 'catagories/active/' . $row->id;
+                                        $set_unpublish_url = ADMIN_BASE_URL . 'catagories/in_active/' . $row->id;
+                                        
+                                        ?>
+                                        <tr class="odd gradeX" >
+                                          <td class="table-checkbox" style="display:none;"><?php echo $i; ?></td>
+                                            <td><?php echo $row->attribute_name; ?></td>
+                                            <td>User will provide Date</td>
+                                           
+                                           
+                                            <td class="table_action">
+                                           
+
+                                                 <?php
+                                                
+                                                echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => ' btn blue c-btn','title' => 'Edit Sub Category'));
+                                                echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_records btn red c-btn', 'rel' => $row->id,'rel2' => $row->check_cat_id,'title' => 'Delete Attribute'));
+                                                ?>
+                                            </td>
+                                        </tr>
+                                    <?php }}
+                                    ?>    
+                                <?php } ?>
+                            </tbody>
+                    </table>
+                    <h4>DateTime Attributes</h4>
+                    <table id="datatable2" class="table table-striped table-hover ">
+                        <thead class="bg-th">
+                        <tr class="bg-col">
+                        <th  style="display:none;width:2%">S.No</th>
+                        <th width="400px">Attribute`s Name</th>
+                        <th width="400px"></th>
+
+                        
+
+                        <th class="" style="width:320px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actions</th>
+                        </tr>
+                        </thead>
+                         <tbody class="courser table-body">
+                                <?php
+                                $i=0;
+                                if (isset($query)) {
+                                    foreach ($query->result() as
+                                            $row) {
+                                        $i++;
+                                     if($row->attribute_type=="DateTime"){
+                                         $edit_url = ADMIN_BASE_URL . 'catagories/create_sub_catagories_attibutes/' . $row->check_cat_id . '/' . $row->id .'/'.str_replace('/', '-', $parent_name);
+                                        $delete_url = ADMIN_BASE_URL . 'catagories/delete_sub_catagories/' . $row->id . '/' ;
+                                        $set_publish_url = ADMIN_BASE_URL . 'catagories/active/' . $row->id;
+                                        $set_unpublish_url = ADMIN_BASE_URL . 'catagories/in_active/' . $row->id;
+                                        
+                                        ?>
+                                        <tr class="odd gradeX" >
+                                          <td class="table-checkbox" style="display:none;"><?php echo $i; ?></td>
+                                            <td><?php echo $row->attribute_name; ?></td>
+                                            <td>User will provide Date and Time</td>
+                                           
+                                           
+                                            <td class="table_action">
+                                           
+
+                                                 <?php
+                                                
+                                                echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => ' btn blue c-btn','title' => 'Edit Sub Category'));
+                                                echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_records btn red c-btn', 'rel' => $row->id,'rel2' => $row->check_cat_id,'title' => 'Delete Attribute'));
+                                                ?>
+                                            </td>
+                                        </tr>
+                                    <?php }}
+                                    ?>    
+                                <?php } ?>
+                            </tbody>
+                    </table>
+                    <h4>Time Attributes</h4>
+                    <table id="datatable2" class="table table-striped table-hover ">
+                        <thead class="bg-th">
+                        <tr class="bg-col">
+                        <th  style="display:none;width:2%">S.No</th>
+                        <th width="400px">Attribute`s Name</th>
+                        <th width="400px"></th>
+
+                        
+
+                        <th class="" style="width:320px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actions</th>
+                        </tr>
+                        </thead>
+                         <tbody class="courser table-body">
+                                <?php
+                                $i=0;
+                                if (isset($query)) {
+                                    foreach ($query->result() as
+                                            $row) {
+                                        $i++;
+                                     if($row->attribute_type=="Time"){
+                                         $edit_url = ADMIN_BASE_URL . 'catagories/create_sub_catagories_attibutes/' . $row->check_cat_id . '/' . $row->id .'/'.str_replace('/', '-', $parent_name);
+                                        $delete_url = ADMIN_BASE_URL . 'catagories/delete_sub_catagories/' . $row->id . '/' ;
+                                        $set_publish_url = ADMIN_BASE_URL . 'catagories/active/' . $row->id;
+                                        $set_unpublish_url = ADMIN_BASE_URL . 'catagories/in_active/' . $row->id;
+                                        
+                                        ?>
+                                        <tr class="odd gradeX" >
+                                          <td class="table-checkbox" style="display:none;"><?php echo $i; ?></td>
+                                            <td><?php echo $row->attribute_name; ?></td>
+                                            <td>User will provide Time</td>
+                                           
+                                           
+                                            <td class="table_action">
+                                           
+
+                                                 <?php
+                                                
+                                                echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => ' btn blue c-btn','title' => 'Edit Sub Category'));
+                                                echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_records btn red c-btn', 'rel' => $row->id,'rel2' => $row->check_cat_id,'title' => 'Delete Attribute'));
+                                                ?>
+                                            </td>
+                                        </tr>
+                                    <?php }}
+                                    ?>    
+                                <?php } ?>
+                            </tbody>
+                    </table>
                     </div>
                 </div>
             </div>

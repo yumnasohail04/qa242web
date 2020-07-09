@@ -55,8 +55,8 @@ $db['default']['password'] = 'fdTceh0~@&g@';
 $db['default']['database'] = 'hwryk_new_dinehome';*/
 
 $db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'hwryk_qa';
-$db['default']['password'] = '4K&kkvh4&%F$';
+$db['default']['username'] = 'root';
+$db['default']['password'] = '';
 $db['default']['database'] = 'hwryk_qa';
 
 $db['default']['dbdriver'] = 'mysqli';

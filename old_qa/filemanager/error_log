@@ -1,8 +1,0 @@
-[08-Nov-2018 15:25:42 Europe/Rome] PHP Warning:  scandir(../uploads/media/api.heyfood.pk/): failed to open dir: No such file or directory in /home/hwtechno/public_html/api_heyfood/filemanager/dialog.php on line 461
-[08-Nov-2018 15:25:42 Europe/Rome] PHP Warning:  scandir(): (errno 2): No such file or directory in /home/hwtechno/public_html/api_heyfood/filemanager/dialog.php on line 461
-[08-Nov-2018 15:25:42 Europe/Rome] PHP Warning:  Invalid argument supplied for foreach() in /home/hwtechno/public_html/api_heyfood/filemanager/dialog.php on line 470
-[08-Nov-2018 15:25:42 Europe/Rome] PHP Notice:  Undefined variable: files_prevent_duplicate in /home/hwtechno/public_html/api_heyfood/filemanager/dialog.php on line 949
-[08-Nov-2018 15:25:42 Europe/Rome] PHP Warning:  Invalid argument supplied for foreach() in /home/hwtechno/public_html/api_heyfood/filemanager/dialog.php on line 949
-[08-Nov-2018 15:26:20 Europe/Rome] PHP Warning:  move_uploaded_file(../uploads/media/api.heyfood.pk/1541687154237150928846995245691.jpg): failed to open stream: No such file or directory in /home/hwtechno/public_html/api_heyfood/filemanager/upload.php on line 86
-[08-Nov-2018 15:26:20 Europe/Rome] PHP Warning:  move_uploaded_file(): Unable to move '/tmp/phpkyPM64' to '../uploads/media/api.heyfood.pk/1541687154237150928846995245691.jpg' in /home/hwtechno/public_html/api_heyfood/filemanager/upload.php on line 86
-[08-Nov-2018 15:26:20 Europe/Rome] PHP Warning:  chmod(): No such file or directory in /home/hwtechno/public_html/api_heyfood/filemanager/upload.php on line 87

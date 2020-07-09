@@ -10,6 +10,9 @@ parent::__construct();
 Modules::run('site_security/is_login');
 Modules::run('site_security/has_permission');
 date_default_timezone_set("Asia/karachi");
+$timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id asc','general_setting','timezones','1','1')->result_array();
+if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
+    date_default_timezone_set($timezone[0]['timezones']);
 }
 
     function index() {
@@ -27,19 +30,52 @@ date_default_timezone_set("Asia/karachi");
     function create() {
         $update_id = $this->uri->segment(4);
         $data['doc'] = $this->_get_data_from_db_table(array("assign_to"=>"supplier","status"=>"1"),"document","","","id,doc_name","")->result_array();
+    	if(!empty($data['doc'])){
+            foreach($data['doc'] as $key => $value)
+            {
+                $data['doc'][$key]['document']="";
+                $uploaded = Modules::run('ingredients/_get_data_from_db_table',array("s_doc_id"=>$value['id'],"supplier_id"=>$update_id),"supplier_documents","","","id,doc_name,document,expiry_date","")->row_array();
+                if(isset($uploaded['document']))
+                $data['doc'][$key]['document']= $uploaded['document'];
+                $data['doc'][$key]['expiry_date']= "";
+                if(isset($uploaded['expiry_date']))
+                $data['doc'][$key]['expiry_date']= date("m/d/Y", strtotime($uploaded['expiry_date']));
+
+            } 
+        }
         if (is_numeric($update_id) && $update_id != 0) {
             $data['news'] = $this->_get_data_from_db($update_id);
             $data['uploaded_doc']=$this->_get_data_from_db_table(array("supplier_id"=>$update_id),"supplier_documents","","","id,doc_name,document,expiry_date","")->result_array();
         } else {
             $data['news'] = $this->_get_data_from_post();
         }
+        $data['supplier_types'] = Modules::run('ingredients/_get_data_from_db_table',array("status"=>"1"),'supplier_type',"","","id,name","")->result_array();
         $data['update_id'] = $update_id;
         $data['view_file'] = 'newsform';
         $this->load->module('template');
         $this->template->admin_form($data);
     }
  
-   
+    function get_supplier_documents()
+    {
+        $supplier_type=$this->input->post('supplier_type');
+        $update_id=$this->input->post('update_id');
+        $data['doc'] = Modules::run('front/_get_specific_table_with_pagination_and_where',array("assign_to"=>"supplier","status"=>"1","supplier_type"=>"0"), "level asc","document","id,doc_name,level,supplier_type","","",array("supplier_type"=>$supplier_type),"","")->result_array();
+    	if(!empty($data['doc'])){
+            foreach($data['doc'] as $key => $value)
+            {
+                $data['doc'][$key]['document']="";
+                $uploaded = Modules::run('ingredients/_get_data_from_db_table',array("s_doc_id"=>$value['id'],"supplier_id"=>$update_id),"supplier_documents","","","id,doc_name,document,expiry_date","")->row_array();
+                if(isset($uploaded['document']))
+                $data['doc'][$key]['document']= $uploaded['document'];
+                $data['doc'][$key]['expiry_date']= "";
+                if(isset($uploaded['expiry_date']))
+                $data['doc'][$key]['expiry_date']= date("m/d/Y", strtotime($uploaded['expiry_date']));
+
+            } 
+        }
+        $this->load->view('documents_view',$data);
+    }
      function _get_data_from_db($update_id) {
         $where['id'] = $update_id;
         $query = $this->_get_by_arr_id($where);
@@ -52,6 +88,8 @@ date_default_timezone_set("Asia/karachi");
             $data['country'] = $row->country;
             $data['status'] = $row->status;
             $data['supplier_no'] = $row->supplier_no;
+            $data['address'] = $row->address;
+            $data['supplier_type'] = $row->supplier_type;
         }
         return $data;
     }
@@ -65,6 +103,8 @@ date_default_timezone_set("Asia/karachi");
         $data['state'] = $this->input->post('state');
         $data['country'] = $this->input->post('country');
         $data['supplier_no'] = $this->input->post('supplier_no');
+        $data['address'] = $this->input->post('address');
+        $data['supplier_type'] = $this->input->post('supplier_type');
         return $data;
     }
 	function submit() {
@@ -76,15 +116,19 @@ date_default_timezone_set("Asia/karachi");
             $this->_update($where, $data);
                 if(!empty($doc)){
                     foreach($doc as $key => $value){
+                     $exp_date=$this->input->post("expiry_date_$key");
                     if(isset($_FILES["news_main_page_file_$key"]['size']) )
                         if($_FILES["news_main_page_file_$key"]['size'] > 0) {
                             $itemInfo = $this->_get_by_arr_id($where)->row();
                             if(isset($itemInfo->document) && !empty($itemInfo->document)) 
                                 $this->delete_images_by_name(SUPPLIER_DOCUMENTS_PATH,$itemInfo->document);
                                 $this->delete_from_table(array("s_doc_id"=>$value['id'],"supplier_id"=>$update_id),"supplier_documents");
-                                $exp_date=$this->input->post("expiry_date_$key");
                             $this->upload_dynamic_image(SUPPLIER_DOCUMENTS_PATH,$update_id,"news_main_page_file_$key",'document','id','supplier_documents',$value['id'],$value['doc_name'],$exp_date);
                         }
+                        if(!empty($exp_date)){
+                            $exp_date=date("Y-m-d", strtotime($exp_date));
+                            Modules::run('api/insert_or_update',array("supplier_id"=>$update_id,"s_doc_id"=>$value['id']),array("expiry_date"=>$exp_date),'supplier_documents');
+                    }
                 }
             }
             $this->session->set_flashdata('message', 'Supplier Data Saved');
@@ -94,9 +138,9 @@ date_default_timezone_set("Asia/karachi");
             $id = $this->_insert($data);
             if(!empty($doc)){
                 foreach($doc as $key => $value){
+                    $exp_date=$this->input->post("expiry_date_$key");
                     if(isset($_FILES["news_main_page_file_$key"]['size']) )
                         if($_FILES["news_main_page_file_$key"]['size'] > 0)
-                        $exp_date=$this->input->post("expiry_date_$key");
                         $this->upload_dynamic_image(SUPPLIER_DOCUMENTS_PATH,$id,"news_main_page_file_$key",'document','id','supplier_documents',$value['id'],$value['doc_name'],$exp_date);
                 }
             }
@@ -111,7 +155,7 @@ date_default_timezone_set("Asia/karachi");
         $this->load->library('email');
         $port = 465;
         $user = "info@qa.hwryk.com";
-        $pass = "-,YKKY8JM*j{";
+        $pass = "OV%YsZY[hfDI";
         $host = 'ssl://qa.hwryk.com';  
         $mailtitle="EQ Smart";
         $config = Array(
@@ -135,7 +179,7 @@ date_default_timezone_set("Asia/karachi");
         $this->email->from($user, $mailtitle);
         $this->email->to($query['email']);
         $this->email->subject($mailtitle . ' - Supplier Profile Completion');
-        $this->email->message('<p>Dear ' . $query['name'].',<br><br>You have been Registered at EQ smart as a Supplier. Please Open this Link "'.BASE_URL.'login/'.$query['id'].'" and Submit the Required Documents.Your Credentials for one time login to the website are Username: "'.$data['username'].'" and Password: "'.$password.'"</p> <br>With Best Regards,<br>' . $mailtitle . 'Team');
+        $this->email->message('<p>Dear ' . $query['name'].',<br><br>You have been Registered at EQ smart as a Supplier. Please Open this Link "'.BASE_URL.'login/'.$query['id'].'" and Submit the Required Documents.Your Credentials for login to the website are Username: "'.$data['username'].'" and Password: "'.$password.'"</p> <br>With Best Regards,<br>' . $mailtitle . 'Team');
         $this->email->send();
     }
     function generateRandomString($length) {
@@ -151,9 +195,9 @@ date_default_timezone_set("Asia/karachi");
         
         $upload_image_file = $_FILES[$input_name]['name'];
         $upload_image_file = str_replace(' ', '_', $upload_image_file);
-        $file_name = $doc_name.'_' . $nId . '_' . $upload_image_file;
+        $file_name = $nId . '_' . $upload_image_file;
         $config['upload_path'] = $actual;
-        $config['allowed_types'] = 'pdf|xlsx|docx|PDF|XLSX|DOCX';
+        $config['allowed_types'] = 'pdf|xlsx|docx|PDF|XLSX|DOCX|txt|TXT';
         $config['max_size'] = '20000';
         $config['max_width'] = '2000000000';
         $config['max_height'] = '2000000000';
@@ -266,7 +310,8 @@ date_default_timezone_set("Asia/karachi");
         $update_id = $this->input->post('id');
         $data['post'] = $this->_get_data_from_db($update_id);
         $data['doc'] = $this->_get_data_from_db_table(array("supplier_id"=>$update_id),"supplier_documents","","","doc_name,document,expiry_date","")->result_array();
-        $data['update_id'] = $update_id;
+        $data['ingredients'] = $this->ingredient_list_supplier($update_id)->result_array();
+    	$data['update_id'] = $update_id;
         $this->load->view('detail', $data);
     }
 
@@ -317,6 +362,11 @@ date_default_timezone_set("Asia/karachi");
     {
         $this->load->model('mdl_supplier');
         $this->mdl_supplier->delete_from_table($where,$table);
+    }
+	function ingredient_list_supplier($id)
+    {
+    	$this->load->model('mdl_supplier');
+       return $this->mdl_supplier->ingredient_list_supplier($id);
     }
     function check_if_exists($where)
     {

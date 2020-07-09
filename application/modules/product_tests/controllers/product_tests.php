@@ -20,7 +20,7 @@ Modules::run('site_security/has_permission');
         $this->manage();
     }
     function manage() {
-        $data['news'] = $this->_get('id desc',array('product attribute','wip_profile','bowl_filling'));
+        $data['news'] = $this->_get('id desc',array('product attribute','unit weight(tray+pasta)','wip_profile','bowl_filling'));
         $data['groups'] = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
         $data['view_file'] = 'news';
         $this->load->module('template');
@@ -98,6 +98,7 @@ Modules::run('site_security/has_permission');
         foreach ($query->result() as $row) {
             $data['checkname'] = $row->checkname;
             $data['checktype'] = $row->checktype;
+            $data['checksubtype'] = $row->checksubtype;
             $data['check_desc'] = $row->check_desc;
             $data['productid'] = $row->productid;
             $data['status'] = $row->status;
@@ -128,6 +129,7 @@ Modules::run('site_security/has_permission');
     function _get_data_from_post() {
         $data['checkname'] = $this->input->post('checkname');
         $data['checktype'] = $this->input->post('checktype');
+        $data['checksubtype'] = $this->input->post('checksubtype');
         $data['check_desc'] = $this->input->post('check_desc');
         $data['productid'] = $this->input->post('productid');
         $data['product_shape'] = $this->input->post('shape');
@@ -427,7 +429,7 @@ Modules::run('site_security/has_permission');
     }
     function insert_checkteam_data($data){
           $this->load->model('mdl_product_tests');
-        return $this->mdl_product_tests->insert_checkteam_data($data);
+        return $this->mdl_product_tests->insert_checkteam_data($data); 
     }
     function get_checkteam_list($arr_col){
         $this->load->model('mdl_product_tests');

@@ -23,7 +23,7 @@ ini_set('display_errors', true);
  */
 
 // ************** FOR LOCAL SERVER
-  define('ENVIRONMENT', 'production');
+  define('ENVIRONMENT', 'development');
 
 // ************** FOR LIVE SERVER
  ///define('ENVIRONMENT', 'production');

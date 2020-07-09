@@ -128,7 +128,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                         <th  style="color: #6c9cde !important;">Attributes</th>
                                         <th style="color: #6c9cde !important;">Provided Values</th>
                                         <th style="color: #6c9cde !important;">Corrective Action</th>
-                                        <?php if($function!="completed_checks" && $review_approval == true && (($reviewable == false && $is_reasigned == true)OR ($reviewable == true && $is_reasigned == false))) { ?>
+                                        <?php if($function!="completed_checks" && $function!="pending_approval" && $review_approval == true && (($reviewable == false && $is_reasigned == true)OR ($reviewable == true && $is_reasigned == false))) { ?>
                                           <th  style="color: #6c9cde !important;">Recheck</th>
                                         <?php } ?>
                                       </tr>
@@ -144,12 +144,13 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                           <?php 
                                           if($qa['answer_type'] == 'Range')
                                             echo $qa['range'];
-                                          elseif(strtolower($qa['answer_type']) == 'choice' || strtolower($qa['answer_type']) == 'fixed' || strtolower($qa['answer_type']) == 'dropdown')
+                                          elseif(strtolower($qa['answer_type']) == 'choice'|| strtolower($qa['answer_type']) == 'dropdown' || strtolower($qa['answer_type']) == 'date'|| strtolower($qa['answer_type']) == 'datetime' || strtolower($qa['answer_type']) == 'time' || strtolower($qa['answer_type']) == 'fixed' || strtolower($qa['answer_type']) == 'percentage' || strtolower($qa['answer_type']) == 'weight')
                                             echo $qa['given_answer'];
                                           elseif(isset($qa['answer_id']) && !empty($qa['answer_id'])) {
                                             $question_anwer = Modules::run('api/_get_specific_table_with_pagination',array("question_id"=>$qa['question_id'],"answer_id"=>$qa['answer_id']),'answer_id desc',DEFAULT_OUTLET.'_checks_answers','possible_answer','1','1')->result_array();
                                             $name=''; if(isset($question_anwer[0]['possible_answer']) && !empty($question_anwer[0]['possible_answer'])) $name=$question_anwer[0]['possible_answer']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name;
-                                          }else echo "";?></td>
+                                          }
+                                          else echo "";?></td>
                                       <td>
                                       <?php 
                                       if(isset($qa['comments'] ) && !empty($qa['comments']))  
@@ -159,7 +160,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                       </td>
                                       		
                                           <?php $checked=""; 
-                                            if($function!="completed_checks" && $review_approval == true && (($reviewable == false && $is_reasigned == true)OR ($reviewable == true && $is_reasigned == false))) {
+                                            if($function!="completed_checks" && $function!="pending_approval" && $review_approval == true && (($reviewable == false && $is_reasigned == true)OR ($reviewable == true && $is_reasigned == false))) {
                                             if(isset($again_question) && !empty($again_question)) {
                                               $key = array_search($qa['question_id'], array_column($again_question, 'rq_question_id'));
                                               if(is_numeric($key))
@@ -240,6 +241,18 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                                   } ?>
                                               </td>
                                           </tr>
+                                          <tr class="bg-col">
+                                              <th>
+                                                 Signature:
+                                              </th>
+                                              <td>
+                                                  <?php
+                                                  $signature=Modules::run('api/_get_specific_table_with_pagination',array("id"=>$assign_detail[0]['review_user']),'id desc','users','sign_image','1','1')->result_array();
+                                                   if(isset($signature[0]['sign_image']) && !empty($signature[0]['sign_image'])) {?>
+                                                    <img style="height: 36px;max-width: 300px;" src="<?php echo BASE_URL.ACTUAL_SIGNATURE_IMAGE_PATH.$signature[0]['sign_image']?>">
+                                                  <?php } ?>
+                                              </td>
+                                          </tr>
                                           <?php if(isset($assign_detail[0]['review_comments']) && !empty($assign_detail[0]['review_comments'])) {?>
                                           <tr class="bg-col">
                                               <th>
@@ -251,6 +264,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                                   } ?>
                                               </td>
                                           </tr>
+                                          
                                          <?php } ?>
                                   </tbody>
                                 </table>
@@ -281,15 +295,27 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                                   } ?>
                                               </td>
                                           </tr>
+                                          <tr class="bg-col">
+                                              <th>
+                                                 Signature:
+                                              </th>
+                                              <td>
+                                                  <?php
+                                                  $signature=Modules::run('api/_get_specific_table_with_pagination',array("id"=>$assign_detail[0]['approval_user']),'id desc','users','sign_image','1','1')->result_array();
+                                                   if(isset($signature[0]['sign_image']) && !empty($signature[0]['sign_image'])) {?>
+                                                    <img style="height: 36px;max-width: 300px;" src="<?php echo BASE_URL.ACTUAL_SIGNATURE_IMAGE_PATH.$signature[0]['sign_image']?>">
+                                                  <?php } ?>
+                                              </td>
+                                          </tr>
                                          
                                   </tbody>
                                 </table>
                                  <?php } ?>
                                 <?php }
-                                if($function == "pending_review" && isset($datacomment) && $datacomment=="ok"  && $reviewable==TRUE){?>
+                                if($function == "pending_review" && isset($datacomment) && $datacomment=="ok"  /*&& $reviewable==TRUE*/){?>
                                 <form id="pending_review" action="<?= ADMIN_BASE_URL?>assignments/change_approval_status_for_assignment" method="post">
                                     <div class="">
-                                    <textarea class="form-control" placeholder="Comment here" name="review_comments"></textarea>
+                                    <textarea class="form-control" placeholder="Comment here" name="review_comments" id="reassign_comment"></textarea>
                                     <input type="hidden" name="assign_id" value="<?=$assignment_detailid?>">
                                     <input type="hidden" name="both_permission" value="<?=$both_permission?>">
                                     </div>
@@ -347,6 +373,14 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                 $('#pending_approval').submit();
             }
     });
+   function submitCheck_with_reassign() {
+            var functions='<?=$function;?>';
+             if(functions=="pending_review"){
+                $('#pending_review').submit();
+            }else if(functions=="pending_approval"){
+                $('#pending_approval').submit();
+            }
+    }
     <?php if($is_reasigned == false) { ?>
     $(document).ready(function(){
         $('input[name="question_id[]"]').click(function(){
@@ -384,9 +418,24 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                 $('.reassign_checks').html('');
                 /*alert("Checkbox is unchecked."+totalCheckboxes+"======="+numberNotChecked);*/
             }
+            if(totalCheckboxes==numberNotChecked)
+            {
+              $('.reassign_checks').html('');
+            }
         });
     });
     <?php } else {?>
+      $('input[name="question_id[]"]').click(function(){
+            reassign_changing();
+            var numberOfChecked = $('input[name="question_id[]"]:checked').length;
+            var totalCheckboxes = $('input[name="question_id[]"]').length;
+            var numberNotChecked = totalCheckboxes - numberOfChecked;
+            alert(numberNotChecked);
+             if($(this).prop("checked") == false){
+              if(numberNotChecked == 4)
+                $('.reassign_checks').html('');
+            }
+        });
     $('.check_type').attr("disabled", true); 
     $('.responsible_team').attr("disabled", true); 
     $('.responsible_user').attr("disabled", true); 
@@ -475,24 +524,29 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
       var his  = $(this);
       var checkedIds = $(".chk:checked").map(function() {
         if(this.value !='')
-          $('<input name="groups[]" type="checkbox" value="'+this.value+'" checked />').appendTo('#reassign_submit');
+          $('<input style="display:none;" name="groups[]" type="checkbox" value="'+this.value+'" checked />').appendTo('#reassign_submit');
         return this.value;
       }).toArray();
       if(checkedIds !='') {
         $('.message').text('');
         if($('.check_type').val() !="") {
-          $('<input type="text" name="responsible_type" value="'+$('.check_type').val()+'" />').appendTo('#reassign_submit');
+          $('<input type="hidden" name="responsible_type" value="'+$('.check_type').val()+'" />').appendTo('#reassign_submit');
           if($('.responsible_team').val() !='') {
-            $('<input type="text" name="responsible_team" value="'+$('.responsible_team').val()+'" />').appendTo('#reassign_submit');
-            $('<input type="text" name="assign_id" value="<?=$original_assign_id?>" />').appendTo('#reassign_submit');
-            $('<input type="text" name="check_id" value="<?=$checkid?>" />').appendTo('#reassign_submit');
+           if($('#reassign_comment').val() !='') {
+            $('<input type="hidden" name="responsible_team" value="'+$('.responsible_team').val()+'" />').appendTo('#reassign_submit');
+            $('<input type="hidden" name="assign_id" value="<?=$original_assign_id?>" />').appendTo('#reassign_submit');
+            $('<input type="hidden" name="check_id" value="<?=$checkid?>" />').appendTo('#reassign_submit');
             if($('.check_type').val() == 'user'){
-              $('<input type="text" name="responsible_user" value="'+$('.responsible_user').val()+'" />').appendTo('#reassign_submit');
+              $('<input type="hidden" name="responsible_user" value="'+$('.responsible_user').val()+'" />').appendTo('#reassign_submit');
               $('#reassign_submit').submit();
+              submitCheck_with_reassign();
             }
             else{
               $('#reassign_submit').submit();
+              submitCheck_with_reassign();
             }
+           }else
+              $('.message').text('Please Add Comments about Reassigning Check');
           }
           else
             $('.message').text('Please select responsible Team');

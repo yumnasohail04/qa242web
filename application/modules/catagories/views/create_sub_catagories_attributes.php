@@ -154,7 +154,7 @@
                                                           <option value="">--Select--</option>
                                                          <option value="Range" <?php if($catagories['attribute_type']=="Range") echo 'selected="selected"';?>>Range</option>
                                                          <option value="Choice" <?php if($catagories['attribute_type']=="Choice") echo 'selected="selected"';?>>Choice</option>
-                                                        <option value="Text" <?php if($catagories['attribute_type']=="Text") echo 'selected="selected"';?>>Text</option>
+                                                         <option value="Fixed" <?php if($catagories['attribute_type']=="Fixed") echo 'selected="selected"';?>>Text</option>
                                                         <option value="DateTime" <?php if($catagories['attribute_type']=="DateTime") echo 'selected="selected"';?>>DateTime</option>
                                                         <option value="Date" <?php if($catagories['attribute_type']=="Date") echo 'selected="selected"';?>>Date</option>
                                                         <option value="Time" <?php if($catagories['attribute_type']=="Time") echo 'selected="selected"';?>>Time</option>
@@ -193,7 +193,7 @@
                                             </div>
                                           </div>
                                         </div>
-                                        <?php  }elseif(ucfirst($catagories['attribute_type'])=="Text" || ucfirst($catagories['attribute_type'])=="DateTime" || ucfirst($catagories['attribute_type'])=="Date" || ucfirst($catagories['attribute_type'])=="Time"){?>
+                                        <?php  }elseif(ucfirst($catagories['attribute_type'])=="Fixed" || ucfirst($catagories['attribute_type'])=="DateTime" || ucfirst($catagories['attribute_type'])=="Date" || ucfirst($catagories['attribute_type'])=="Time"){?>
                                           <p style=""font-size:16px;color: #7296CA;>User will be asked to provide an input on mobile app.</p>
                                           <?}elseif($catagories['attribute_type']=="Range"){?>
                                           <div class="col-md-12" style="margin-bottom:20px;"> <div class="form-group"> <label for="txtCatName" class="control-label col-md-2">Min Value<span class="red" style="color:red;">*</span></label> <div class="col-md-5"> <input type="text" name="min_value" value="<?=$catagories['min']?>" id="possible_answer" class="form-control validate[required] text-input " required="required"> </div></div></div><div class="col-md-12" style="margin-bottom:20px;"> <div class="form-group"> <label for="txtCatName" class="control-label col-md-2">Max Value<span class="red" style="color:red;">*</span></label> <div class="col-md-5"> <input type="text" name="max_value" value="<?=$catagories['max']?>" id="possible_answer" class="form-control validate[required] text-input " required="required"> </div></div></div><div class="col-md-12" style="margin-bottom:20px;"> <div class="form-group"> <label for="txtCatName" class="control-label col-md-2">Target Value<span class="red" style="color:red;">*</span></label> <div class="col-md-5"> <input type="text" name="target_value" value="<?=$catagories['target']?>" id="possible_answer" class="form-control validate[required] text-input " required="required"> </div></div></div>
@@ -392,7 +392,7 @@ $('#txtCatName').keyup(function() {
                 if(x < max_fields){
                     x++;
 
-                    $(wrapper).append('<div ><div class="col-md-12 "><div class="form-group"> <label for="txtCatName" class="control-label col-md-4">Attibute`type<span class="red" style="color:red;">*</span></label><div class="col-md-8"> <select name="attribute_type" class="form-control answer_type" required="required"><option value="">--Select--</option><option value="Range">Range</option><option value="Choice">Choice</option><option value="Text" selected="selected">Text</option><option value="DateTime" selected="selected">DateTime</option><option value="Date" selected="selected">Date</option><option value="Time" selected="selected">Time</option></select></div></div></div> <div class="col-md-12"  style="margin-bottom:20px;"> <div class="form-group"> <label for="txtCatName" class="control-label col-md-2">Attribute Value <span class="red" style="color:red;">*</span></label> <div class="col-md-5"> <input type="text" name="possible_answer[]" value="" id="possible_answer" class="form-control validate[required] text-input " required="required"> </div></div></div><div class="col-md-5"></div></div>');
+                    $(wrapper).append('<div ><div class="col-md-12 "><div class="form-group"> <label for="txtCatName" class="control-label col-md-4">Attibute`type<span class="red" style="color:red;">*</span></label><div class="col-md-8"> <select name="attribute_type" class="form-control answer_type" required="required"><option value="">--Select--</option><option value="Range">Range</option><option value="Choice">Choice</option><option value="Fixed" selected="selected">Text</option><option value="DateTime" selected="selected">DateTime</option><option value="Date" selected="selected">Date</option><option value="Time" selected="selected">Time</option></select></div></div></div> <div class="col-md-12"  style="margin-bottom:20px;"> <div class="form-group"> <label for="txtCatName" class="control-label col-md-2">Attribute Value <span class="red" style="color:red;">*</span></label> <div class="col-md-5"> <input type="text" name="possible_answer[]" value="" id="possible_answer" class="form-control validate[required] text-input " required="required"> </div></div></div><div class="col-md-5"></div></div>');
                 }
             }
             
@@ -451,7 +451,7 @@ $('#txtCatName').keyup(function() {
            $('.add_ans_btn').attr('style','display:block');
            
         }
-        else if($('.answer_type').val() == 'Text' || $('.answer_type').val() == 'DateTime' || $('.answer_type').val() == 'Date' || $('.answer_type').val() == 'Time'){
+        else if($('.answer_type').val() == 'Fixed' || $('.answer_type').val() == 'DateTime' || $('.answer_type').val() == 'Date' || $('.answer_type').val() == 'Time'){
            $('.possible_select').attr('style','display:block');
            $('.add_answers').html(htty);
            $('.remove_img_div').remove();

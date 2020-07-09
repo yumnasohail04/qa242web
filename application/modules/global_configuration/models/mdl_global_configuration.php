@@ -23,6 +23,11 @@ class Mdl_global_configuration extends CI_Model {
         return $query;
     }
 
+	 function _update_id($id, $data) {
+        $table = DEFAULT_OUTLET."_plants";
+        $this->db->where('plant_id',$id);
+        $this->db->update($table, $data);
+    }
 
     function _insert($data) {
         $table = $this->get_table();
@@ -42,6 +47,29 @@ class Mdl_global_configuration extends CI_Model {
         $this->db->select($select);
         $this->db->from($outlet_id.'_product_schedules as product_schedules');
         $this->db->join($outlet_id.'_product as product','product_schedules.ps_product=product.id','left');
+        $this->db->join($outlet_id.'_plants as plants','product_schedules.ps_plant = plants.plant_id','left');
+        if(!empty($group_by))
+            $this->db->group_by($group_by);
+        if(!empty($cols))
+            $this->db->where($cols);
+        if(!empty($or_where))
+            $this->db->where($or_where);
+        if(!empty($and_where))
+            $this->db->where($and_where);
+        if(!empty($having))
+            $this->db->having($having);
+        if($limit != 0)
+            $this->db->limit($limit, $offset);
+        $this->db->order_by($order_by);
+        $query=$this->db->get();
+        return $query;
+    }
+	function get_lines_by_plant($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where,$and_where,$having) {
+        $offset=($page_number-1)*$limit;
+        $this->db->select($select);
+        $this->db->from($outlet_id.'_line_plants as line_plants');
+        $this->db->join($outlet_id.'_plants as plant','line_plants.lp_plant = plant.plant_id','left');
+        $this->db->join($outlet_id.'_lines as liness','line_plants.lp_line = liness.line_id','left');
         if(!empty($group_by))
             $this->db->group_by($group_by);
         if(!empty($cols))

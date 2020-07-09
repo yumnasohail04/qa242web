@@ -1,4 +1,6 @@
-<input type="hidden" value="tblReportData">
+<div class="panel panel-default">
+<div class="panel-body">
+<input type="hidden" value="datatable1">
 <select id="ddl_tbl_show_row_count" onchange="func_set_tbl_rows(this.value)">
     <option value="5">5</option>
     <option value="10">10</option>
@@ -9,23 +11,21 @@
 </select>
 
 <div class="table-responsive">
-    <table class="table" id="tblReportData">
-        <thead style="background-color: #7BABED;">
-        <tr>
-            <th data-htmltoarray="true" data-arrayclassth="assign_id">Check</th>
-            <th data-htmltoarray="true" data-arrayclassth="assign_date">Date</th>
-            <th data-htmltoarray="true" data-arrayclassth="assign_time">Time</th>
-            <th style="display: none" data-htmltoarray="true" data-arrayclassth="assign_day">Day</th>
-            <th style="display: none" data-htmltoarray="true" data-arrayclassth="assign_month">Month</th>
-            <th style="display: none" data-htmltoarray="true" data-arrayclassth="assign_year">Year</th>
-            <th data-htmltoarray="true" data-arrayclassth="assign_shift">Shift</th>
-            <th data-htmltoarray="true" data-arrayclassth="assign_plant">Site</th>
-            <th data-htmltoarray="true" data-arrayclassth="assign_line">Line</th>
-            <th data-htmltoarray="true" data-arrayclassth="result_status">Status</th>
-            <th data-htmltoarray="true" data-arrayclassth="assign_product_title">Products</th>
-
-
-        </tr>
+    <table class="table table-striped table-hover table-body table-bordered" id="datatable1">
+        <thead style="background-color: #7BABED;" class="bg-th">
+          <tr class="bg-col">
+            <th data-htmltoarray="true" data-arrayclassth="assign_id">Check<i class="fa fa-sort" style="font-size:13px;"></th>
+            <th data-htmltoarray="true" data-arrayclassth="assign_date">Date<i class="fa fa-sort" style="font-size:13px;"></th>
+            <th data-htmltoarray="true" data-arrayclassth="assign_time">Time<i class="fa fa-sort" style="font-size:13px;"></th>
+            <th style="display: none" data-htmltoarray="true" data-arrayclassth="assign_day">Day<i class="fa fa-sort" style="font-size:13px;"></th>
+            <th style="display: none" data-htmltoarray="true" data-arrayclassth="assign_month">Month<i class="fa fa-sort" style="font-size:13px;"></th>
+            <th style="display: none" data-htmltoarray="true" data-arrayclassth="assign_year">Year<i class="fa fa-sort" style="font-size:13px;"></th>
+            <th data-htmltoarray="true" data-arrayclassth="assign_shift">Shift<i class="fa fa-sort" style="font-size:13px;"></th>
+            <th data-htmltoarray="true" data-arrayclassth="assign_plant">Site<i class="fa fa-sort" style="font-size:13px;"></th>
+            <th data-htmltoarray="true" data-arrayclassth="assign_line">Line<i class="fa fa-sort" style="font-size:13px;"></th>
+            <th data-htmltoarray="true" data-arrayclassth="result_status">Status<i class="fa fa-sort" style="font-size:13px;"></th>
+            <th data-htmltoarray="true" data-arrayclassth="assign_product_title">Products<i class="fa fa-sort" style="font-size:13px;"></th>
+          </tr>
         </thead>
         <tbody>
             <?php  $count_row = 0; if(!empty($final_array)){
@@ -49,15 +49,17 @@
             <td data-htmltoarray="true" data-arrayclasstd="assign_line"><?=$row['line_no']?></td>
             <td data-htmltoarray="true" data-arrayclasstd="result_status"><?= $row['Status'] ?></td>
             <td data-htmltoarray="true" data-arrayclasstd="assign_product_title"><?php if(isset($row['product_title']) && !empty($row['product_title'])) echo $row['product_title']; ?></td>
-            <td data-htmltoarray="true" data-arrayclasstd="assign_program_types"> </td>
         </tr>
         <?}}else {?>  <tr>
+           <td></td>
             <td></td>
             <td></td>
-            <td></td>
+        	<td style="display: none"></td>
+        	<td style="display: none"></td>
             <td>
                 <h4>No Record Found</h4>
             </td>
+        	<td style="display: none"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -67,9 +69,10 @@
         </tbody>
     </table>
 </div>
-
+</div>
+<div>
 <script>
-    tbl_id_name = "tblReportData";
+    tbl_id_name = "datatable1";
     function download_csv(csv, filename) {
         let csvFile;
         let downloadLink;
@@ -119,7 +122,7 @@
     }
 
     function func_set_tbl_rows(p_count){
-        $("#tblReportData tr").each(function (i){
+        $("#datatable1 tr").each(function (i){
            $(this).css("display",((i<=p_count || p_count==-1)?"":"none"))
         });
     }

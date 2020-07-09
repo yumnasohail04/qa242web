@@ -11,6 +11,7 @@
                         <thead class="bg-th">
                         <tr class="bg-col">
                         <th>Supplier<i class="fa fa-sort" style="font-size:13px;"></i></th>
+                        <th>Score<i class="fa fa-sort" style="font-size:13px;"></i></th>
                         <th>Created Date <i class="fa fa-sort" style="font-size:13px;"></i></th>
                         <th>Last Reviewed <i class="fa fa-sort" style="font-size:13px;"></i></th>
                         <th class="" style="width:300px;text-align: center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actions</th>
@@ -26,14 +27,16 @@
                                         $edit_url = ADMIN_BASE_URL . 'scorecard/fill_pending_scorecard/' . $new['id'] ;
                                         ?>
                                     <tr id="Row_<?=$new['id']?>" class="odd gradeX " >
-                                        <td><?php echo wordwrap($new['name'] , 50 , "<br>\n")  ?></td>
-                                        <td><?php echo wordwrap($new['create_date'] , 50 , "<br>\n")  ?></td>
+                                        <td class="view_supplier" style="cursor:pointer" rel="<?php echo $new['supplier_id']; ?>"><?php echo wordwrap($new['name'] , 50 , "<br>\n")  ?></td>
+                                    	<td><?php echo wordwrap(number_format((float)$new['avg'], 0, '.', '').'%' , 50 , "<br>\n")  ?></td>
+                                    	<td><?php echo wordwrap($new['create_date'] , 50 , "<br>\n")  ?></td>
                                         <td><?php echo wordwrap($new['last_review_date'] , 50 , "<br>\n")  ?></td>
                                         <td class="table_action" style="text-align: center;">
                                         <!--<a class="btn yellow c-btn view_details" rel="<?=$new['id']?>"><i class="fa fa-list"  title="See Detail"></i></a>-->
                                         
                                         <?php
                                         echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit scorecard'));
+                                        echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $new['id'], 'title' => 'Delete'));
 
                                         ?>
                                         </td>
@@ -77,12 +80,13 @@ $(document).ready(function(){
 
     /*///////////////////////// end for code detail //////////////////////////////*/
 
-          $(document).off('click', '.delete_record').on('click', '.delete_record', function(e){
+     
+    $(document).off('click', '.delete_record').on('click', '.delete_record', function(e){
                 var id = $(this).attr('rel');
                 e.preventDefault();
               swal({
-                title : "Are you sure to delete the selected scorecard?",
-                text : "You will not be able to recover this scorecard!",
+                title : "Are you sure to delete the ScoreCard?",
+                text : "All the pending ScoreCards of this supplier will be deleted!",
                 type : "warning",
                 showCancelButton : true,
                 confirmButtonColor : "#DD6B55",
@@ -93,14 +97,14 @@ $(document).ready(function(){
                     
                        $.ajax({
                             type: 'POST',
-                            url: "<?php echo ADMIN_BASE_URL?>scorecard/delete",
+                            url: "<?=ADMIN_BASE_URL?>scorecard/delete_scorecard",
                             data: {'id': id},
                             async: false,
                             success: function() {
-                                location.reload();
+                            location.reload();
                             }
                         });
-                swal("Deleted!", "scorecard has been deleted.", "success");
+                swal("Deleted!", "ScoreCard has been deleted.", "success");
               });
 
             });
@@ -149,5 +153,24 @@ $(document).ready(function(){
     /*///////////////////////////////// END STATUS  ///////////////////////////////////*/
 
 });
+  $(document).on("click", ".view_supplier", function(event){
+            event.preventDefault();
+            var id = $(this).attr('rel');
+            //alert(id); return false;
+              $.ajax({
+                        type: 'POST',
+                        url: "<?php echo ADMIN_BASE_URL?>supplier/detail",
+                        data: {'id': id},
+                        async: false,
+                        success: function(test_body) {
+                       var test_desc = test_body;
+                         $('#myModalLarge').modal('show')
+                         $("#myModalLarge .modal-body").html(test_desc);
+                          
+                         
+ 
+                     }
+                    });
+            });
 </script>
 

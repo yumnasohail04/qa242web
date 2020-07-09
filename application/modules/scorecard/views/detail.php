@@ -22,10 +22,6 @@
   margin: 0;
   padding: 0;
 }
-
-
-
-
 .new {
   padding: 50px;
 }
@@ -43,38 +39,39 @@
   cursor: pointer;
 }
 
+
 .form-group label {
-  position: relative;
-  cursor: pointer;
-      border-radius: 30px;
+    position: relative;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
 .form-group label:before {
-  content:'';
-  -webkit-appearance: none;
-  background-color: transparent;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
-  padding: 10px;
-  display: inline-block;
-  position: relative;
-  vertical-align: middle;
-  cursor: pointer;
-  margin-right: 5px;
-  width: 50px;
-  height: 50px; 
-  border-radius: 30px;
+    content: '';
+    -webkit-appearance: none;
+    background-color: transparent;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
+    padding: 10px;
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-right: 5px;
+    width: 40px;
+    height: 40px;
+    /* border-radius: 30px; */
 }
 
 .form-group input:checked + label:after {
     content: '';
     display: block;
     position: absolute;
-    top: 14px;
-    left: 23px;
-    width: 12px;
-    height: 24px;
-    border: 23px solid #ffffff;
-    border-width: 0 4px 4px 0;
+    top: 9px;
+    left: 19px;
+    width: 10px;
+    height: 19px;
+    border: 0px solid #ffffff;
+    border-width: 0px 2px 2px 0;
     transform: rotate(45deg);
 }
 </style>
@@ -118,9 +115,25 @@
                                               <th style="color: #6c9cde!important;">
                                                   Points:
                                               </th>
-                                              <td><?php echo number_format((float)$post['total_percentage'], 2, '.', '').'%'; ?>
+                                              <td><?php echo number_format((float)$post['total_percentage'], 0, '.', '').'%'; ?>
                                               </td>
                                           </tr>
+                                          <tr class="bg-col">
+                                              <th style="color: #6c9cde!important;">
+                                                  Status:
+                                              </th>
+                                              <td> <?php if($post['audit']=="1"){  echo "Facility Visit Needed"; }else if($post['audit']=="0"){ echo "Not Approved for 3 Years"; } else { echo "Approved";} ?>
+                                              </td>
+                                          </tr>
+                                          <?php if($post['audit']=="1"){ ?>
+                                          <tr class="bg-col">
+                                              <th style="color: #6c9cde!important;">
+                                                  Comments:
+                                              </th>
+                                              <td> <?php echo $post['comments']; ?>
+                                              </td>
+                                          </tr>
+                                          <?php  } ?>
                                       </tbody>
                                     </table>
                                 </div>
@@ -132,33 +145,63 @@
                                               <th >Question</th>
                                               <th >Description</th>
                                               <th >Review Team</th>
-                                              <th >Approval Team</th>
                                             </tr>
                                         </thead>
                                         <tbody class="table-body">
-                                            <?php foreach($post['questions'] as $keys => $ques){ ?>
-                                          <tr class="bg-col">
-                                              <td><?php echo $ques['question']; ?></td>
+                                            <?php             
+                								$type="";
+                                                $ingredient="";
+                                               foreach($post['questions'] as $keys => $ques){
+                                               $file="";
+                								if($ques['type']!=$type)
+                									{ 
+                										$type=$ques['type']; ?>
+                                        			<tr class="bg-col">
+                                                    	<td></td>
+                 										<td><legend><?php echo $ques['type']." Section"?></legend></td>
+                                                    	<td></td>
+                                        			</tr>
+                									<?php }
+                                               if($ques['ingredient']!=$ingredient)
+                									{ 
+                										$ingredient=$ques['ingredient']; ?>
+                                        			<tr class="bg-col">
+                                                    	<td><legend style="border:none;"><?php echo $ques['ingredient']?></legend></td>
+                 										<td></td>
+                                                    	<td></td>
+                                        			</tr>
+                									<?php } ?>
+                                              <tr class="bg-col">
+                                          		<?php
+                                                    if($ques['type']=="Document")
+                                                        if(!empty($ques['doc']) && isset($ques['doc']))
+                                                            if(file_exists(SUPPLIER_DOCUMENTS_PATH.$ques['doc']))
+                                                                $file=BASE_URL.SUPPLIER_DOCUMENTS_PATH.$ques['doc'];
+                                               if($file!=""){?>
+                                                    <td title="Download"><a  href="<?php echo $file ?>" download ><?php echo $ques['question']; ?></a></td>
+                                          	  <?php } else{ ?>
+                                                   <td title="No document Uploaded"><?php echo $ques['question']; ?></td>
+                                              <?php } ?>
                                               <td><?php echo $ques['sfq_description']; ?></td>
-                                              <?php foreach($ques['filled_answers'] as $answer => $ans){
-                                                 if($ans['sfa_answer']=="Red")
+                                              <?php 
+                                                 if($ques['answers_review']['sfa_answer']=="Red")
                                                     $color="#e84e4e";
-                                                    if($ans['sfa_answer']=="Green")
+                                                    if($ques['answers_review']['sfa_answer']=="Green")
                                                     $color="#69b969";
-                                                    if($ans['sfa_answer']=="Yellow")
+                                                    if($ques['answers_review']['sfa_answer']=="Yellow")
                                                     $color="#ecec4c";
                                                     ?>
                                                     <td class="form-group">
                                                         <input  type="checkbox" id="html"  class="check_color" >
                                                         <label for="html"  style="background-color:<?php echo $color; ?>"></label>
                                                     </td>
-                                            <?php } ?>
                                           </tr>
-                                          <?php } ?>
+                                        <?php } ?>
                                       </tbody>
                                     </table>
                                 </div>
-                        <?php } ?>
+                        <?php } 
+                        ?>
                         <!-- END FORM-->
                         <div class="row ">
                             <legend></legend>
@@ -169,7 +212,8 @@
                                               <th >Team</th>
                                               <th >User</th>
                                               <th >Reviewed Date</th>
-                                              <th >Given Points</th>
+                                              <th >Score</th>
+                                              <th>Percent compliance</th>
                                             </tr>
                                         </thead>
                                         <tbody class="table-body">
@@ -178,15 +222,8 @@
                                               <td><?php echo $value['group_title']; ?></td>
                                               <td><?php echo $value['first_name'].' '.$value['last_name']; ?></td>
                                               <td><?php echo $value['reviewed_date']; ?></td>
-                                              <td><?php echo number_format((float)$value['percentage'], 2, '.', '').'%'; ?></td>
-                                          </tr>
-                                          <?php } ?>
-                                          <?php foreach($approv_team as $key => $value){ ?>
-                                          <tr class="bg-col">
-                                              <td><?php echo $value['group_title']; ?></td>
-                                              <td><?php echo $value['first_name'].' '.$value['last_name']; ?></td>
-                                              <td><?php echo $value['at_reviewed_date']; ?></td>
-                                              <td><?php echo number_format((float)$value['at_percentage'], 2, '.', '').'%'; ?></td>
+                                              <td><?php echo round(number_format($value['percentage'], 1, '.', ''),2).'/'.round(number_format($value['points'], 1, '.', ''),2); ?></td>
+                                              <td><?php   $score=($value['percentage']/$value['points'])*100; echo round(number_format($score, 1, '.', ''),2).'%'; ?></td>
                                           </tr>
                                           <?php } ?>
                                       </tbody>

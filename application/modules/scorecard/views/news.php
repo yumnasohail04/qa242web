@@ -26,7 +26,7 @@
                                         $edit_url = ADMIN_BASE_URL . 'scorecard/fill_card/' . $new->id ;
                                         ?>
                                     <tr id="Row_<?=$new->id?>" class="odd gradeX " >
-                                        <td><?php echo wordwrap($new->name , 50 , "<br>\n")  ?></td>
+                                        <td class="view_supplier" style="cursor:pointer" rel="<?php echo $new->supplier_id; ?>"><?php echo wordwrap($new->name , 50 , "<br>\n")  ?></td>
                                         <td><?php echo wordwrap($new->group_title , 50 , "<br>\n")  ?></td>
                                         <td><?php echo wordwrap($new->create_date , 50 , "<br>\n")  ?></td>
                                         <td class="table_action" style="text-align: center;">
@@ -34,7 +34,7 @@
                                         
                                         <?php
                                         echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit scorecard'));
-
+                                        echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $new->sc_id, 'title' => 'Delete'));
                                         ?>
                                         </td>
                                     </tr>
@@ -75,14 +75,13 @@ $(document).ready(function(){
                     });
             });
 
-    /*///////////////////////// end for code detail //////////////////////////////*/
 
-          $(document).off('click', '.delete_record').on('click', '.delete_record', function(e){
+            $(document).off('click', '.delete_record').on('click', '.delete_record', function(e){
                 var id = $(this).attr('rel');
                 e.preventDefault();
               swal({
-                title : "Are you sure to delete the selected scorecard?",
-                text : "You will not be able to recover this scorecard!",
+                title : "Are you sure to delete the ScoreCard?",
+                text : "All the pending ScoreCards of this supplier will be deleted!",
                 type : "warning",
                 showCancelButton : true,
                 confirmButtonColor : "#DD6B55",
@@ -93,18 +92,19 @@ $(document).ready(function(){
                     
                        $.ajax({
                             type: 'POST',
-                            url: "<?php echo ADMIN_BASE_URL?>scorecard/delete",
+                            url: "<?=ADMIN_BASE_URL?>scorecard/delete_scorecard",
                             data: {'id': id},
                             async: false,
                             success: function() {
-                                location.reload();
+                            location.reload();
                             }
                         });
-                swal("Deleted!", "scorecard has been deleted.", "success");
+                swal("Deleted!", "ScoreCard has been deleted.", "success");
               });
 
             });
 
+         
        
     /*///////////////////////////////// START STATUS  ///////////////////////////////////*/
         
@@ -149,5 +149,24 @@ $(document).ready(function(){
     /*///////////////////////////////// END STATUS  ///////////////////////////////////*/
 
 });
+  $(document).on("click", ".view_supplier", function(event){
+            event.preventDefault();
+            var id = $(this).attr('rel');
+            //alert(id); return false;
+              $.ajax({
+                        type: 'POST',
+                        url: "<?php echo ADMIN_BASE_URL?>supplier/detail",
+                        data: {'id': id},
+                        async: false,
+                        success: function(test_body) {
+                       var test_desc = test_body;
+                         $('#myModalLarge').modal('show')
+                         $("#myModalLarge .modal-body").html(test_desc);
+                          
+                         
+ 
+                     }
+                    });
+            });
 </script>
 

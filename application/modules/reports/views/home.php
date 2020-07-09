@@ -1,4 +1,3 @@
-
 <style type="text/css">
     .description{
         margin-top: 50px;
@@ -28,7 +27,7 @@
     }
     .font-head
     {
-        font-size: 20px;
+        font-size: 16px;
         text-align: center;
     }
     .cards
@@ -37,7 +36,7 @@
     }
     .fa_icons , .mb
     {
-        font-size: 60px;
+        font-size: 45px;
         width: 100%;
         padding-top: 15px;
     }
@@ -89,6 +88,13 @@
         overflow:scroll;
         height:530px;
     }
+	#search_form {
+    	width: 90%;
+    	margin: 0 auto;
+	}
+	.dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+    	background-color: white !important;
+	}
 
 </style>
 
@@ -118,93 +124,40 @@
             <div class="content-wrapper">
                 <form id="search_form" action="javascript:void(0)" method="post">
                     <div class="row">
-                        <div class="form-group">
-
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <div class="col-sm-12" style="padding: 0px !important;">
                                         <div id="div_program_types"></div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <div class="col-sm-12" style="padding: 0px !important;">
                                         <div id="div_product_checks"></div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="col-md-2">
+                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <div class="col-sm-12" style="padding: 0px !important;">
+                                    <div class="col-md-12" style="padding: 0px !important;">
                                         <div id="div_questions"></div>
-                                        <a class="fa fa-save " id="btnSaveDefaultReport" style="float: right" data-toggle="tooltip" title="Save Report Default View"></a>
+                                        <a class="fa fa-save " id="btnSaveDefaultReport" style="float: right;margin-top:-29px;margin-right: 20px;font-size: 22px;" data-toggle="tooltip" title="Save Report Default View"></a>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <label>From:</label>
-                                        </div>
-                                        <div class="col-sm-9" style="padding: 0px !important;">
-                                            <div class='input-group datetimepicker2' >
-                                                <input type='text' class="form-control validatefield" id="startdate" name="startdate" />
-                                                <span class="input-group-addon">
-                                                    <span class="fa fa-calendar"></span>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <label>To:</label>
-                                        </div>
-                                        <div class="col-md-9" style="padding: 0px !important;">
-                                            <div class='input-group datetimepicker2'>
-                                                <input type='text' class="form-control validatefield" id="enddate" name="enddate" />
-                                                <span class="input-group-addon">
-                                                    <span class="fa fa-calendar"></span>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row" >
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <div class="col-sm-12" style="padding: 0px !important;">
-                                    <div id="div_plants"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <div class="col-sm-12" style="padding: 0px !important;">
-                                    <div id="div_lines"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
+                       
+                </div>
+                <br>
+                <div class="row" >
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <div class="col-sm-12" style="padding: 0px !important;">
                                     <div id="div_products"></div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <div class="col-sm-12" style="padding: 0px !important;">
                                     <select class="form-control" id="status" name="status">
@@ -215,16 +168,51 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                 <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="col-sm-12" style="padding: 0px !important;">
+                                    <div id="div_plants"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="col-sm-12" style="padding: 0px !important;">
+                                    <div id="div_lines"></div>
+                                </div>
+                            </div>
+                        </div>
+                          
+                        </div>
                     <br>
-                    <div class="row">
-                    <div class="col-md-2">
+                <div class="row">
+                  <div class="col-md-3">
+                                <div class="form-group">
+                                            <div class='input-group datetimepicker2' >
+                                                <input type='text' class="form-control validatefield" id="startdate" name="startdate" placeholder="From" />
+                                                <span class="input-group-addon">
+                                                    <span class="fa fa-calendar"></span>
+                                                </span>
+                                            </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                            <div class='input-group datetimepicker2'>
+                                                <input type='text' class="form-control validatefield" id="enddate" name="enddate" placeholder="To"/>
+                                                <span class="input-group-addon">
+                                                    <span class="fa fa-calendar"></span>
+                                                </span>
+                                            </div>
+                                </div>
+                            </div>
+                <div class="col-md-3">
                         <div class="form-group" style="margin-top: 7px;">
                             <button type="button" id="btnSearch" class="btn btn-primary form-control filter_search">Search</button>
                         </div>
                     </div>
-                    </div>
-                    <br>
+                </div>
+                <br>
                 </form>
 
                 <div class="row">
@@ -323,12 +311,6 @@
                 ,   p_data :
                     {
                         product_checks:0,
-                        // plants:$('#plants').val(),
-                        // lines:$('#lines').val(),
-                        // productid:$('#productid').val(),
-                        // status:$('#status').val(),
-                        // start_date:$('#startdate').val(),
-                        // end_date:$('#enddate').val(),
                         program_types:0
                     }
                 ,
@@ -336,7 +318,6 @@
                     $("#questions").multiselect({
                         includeSelectAllOption: true
                     });
-                    //$(".checkbox").css("color","black");
                 }
             }
             , { action_name : 'widgets/load_products' ,   div_id : 'div_products' ,   ddl_id_name : 'productid'
@@ -356,7 +337,8 @@
                             ,   p_data :
                                 {
                                     product_checks:$('#product_checks').val(),
-                                    program_types:$('#program_types').val()
+                                    program_types:$('#program_types').val(),
+                                    product_type:$('#product_checks').find("option:selected").attr('attributes')
                                 }
                         ,
                             load_events : function () {
@@ -368,22 +350,20 @@
                         }]);
                     });
                 }}
-            /**/
         ]);
         $('#btnSaveDefaultReport').click(function(){
             //alert("btnSaveDefaultReport");
             gen_save([{
-                            action_name : 'reports/save_report_default_questions'
-                        ,   p_data :
-                            {
-                                product_checks:$('#product_checks').val(),
-                                program_types:$('#program_types').val(),
-                                questions:$('#questions').val()
-                            }
+                action_name : 'reports/save_report_default_questions',
+                p_data :{
+                    product_checks:$('#product_checks').val(),
+                    program_types:$('#program_types').val(),
+                    questions:$('#questions').val(),
+                    product_type:$('#product_checks').find("option:selected").attr('attributes')
+                }
             }]);
         });
         $('#btnSearch').click(function(){
-
             load_dt([{
                 action_name : 'widgets/load_report_by_check'
                 ,   div_id : 'div_tblreport'
@@ -398,11 +378,12 @@
                         end_date:$('#enddate').val(),
                         program_types:$('#program_types').val(),
                         questions:$('#questions').val(),
-                        view_request:"report_home"
+                        view_request:"report_home",
+                        attribute_type:$('#product_checks').find("option:selected").attr('attributes')
                     }
                 ,   load_events : function () {
                     load_model_detail_events(
-                                        "<?= ADMIN_BASE_URL?>assignments/pending_review_detail"
+                                        "<?= ADMIN_BASE_URL?>"
                                        ,{'id': 0,'function':'<?=$this->uri->segment(3);?>'}
                                     )
                     arrr_html_table_to_array_objects('#tblReportData');
@@ -418,7 +399,7 @@
                     let non_compliants_percentage = (arr_non_compliants.length/arr_compliants.length) * 100;
                     load_chart_for_compliants('#div_chart_compliants',100-non_compliants_percentage,true,'col-sm-4');
                     load_chart_for_compliants('#div_chart_compliants',non_compliants_percentage,false,'col-sm-4');
-                    load_chart_for_corrections('#div_chart_corrections', arr_non_compliants);
+                    /*load_chart_for_corrections('#div_chart_corrections', arr_non_compliants);*/
                     arrr_load_chart_mixed_multi_y_axis();
                     load_chart_mixed_multy_y_axis_apex(
                         {   div_id : "div_chart_mixed_multi_axis_day_status_percentage"
@@ -441,24 +422,10 @@
                             , max_scale : Math.max.apply(null,arr_graph_line_is_compliant) >= Math.max.apply(null,arr_graph_line_is_not_compliant)?
                                 Math.max.apply(null,arr_graph_line_is_compliant): Math.max.apply(null,arr_graph_line_is_not_compliant)
                         });
-                    //load_chart_mixed_multy_y_axis_apex_static("div_chart_day_status_percentage")
-                    //chart_maker_line(arrr_load_chart_line(), 'chart-line-by-check','wrapper-chart-line','Herb Cheese Pouch Leak Test');
                 }
             }]);
 
         });
-
-       /* $('.filter_search').on('click', function() {
-            if(validateForm()) {
-                if(!$('.checking_previous').text()) {
-                    $('#search_form').attr('action', "dashboard/reporting").submit();
-                    $('.checking_previous').html('');
-                    location.reloadt();
-                }
-                else
-                    showToastr("Please complete the previous update first", false);
-            }
-        });*/
     });
     function validateForm() {
         var isValid = true;
