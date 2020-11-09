@@ -128,7 +128,7 @@ function generate_serial($length){
         $rand_num='';
         mt_srand((double)microtime()*1000000);
         while (strlen($rand_num)<$len+1)
-        $rand_num.=$base{mt_rand(0,$max)};
+        $rand_num.=$base(mt_rand(0,$max));
         
         $this->db->select("e_num");
         $this->db->from('employee');

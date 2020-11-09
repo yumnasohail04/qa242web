@@ -19,10 +19,13 @@ date_default_timezone_set("Asia/karachi");
     function manage() {
         $data['news'] = $this->_get('id desc')->result_array();
         foreach($data['news'] as $key => $value){
-            $result = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id" =>$value['type_id']),'id desc','id','ingredient_types','name','1','0','','','')->row_array();
-            $data['news'][$key]['type_name']="None";
-            if(isset($result['name']) && !empty($result['name']))
-                $data['news'][$key]['type_name']=$result['name'];
+            if($value['assign_to']=="supplier")
+            {
+                $data['news'][$key]['type'] = Modules::run('document_file/get_doc_assigned_types',array('doc_supplier_types.doc_id'=>$value['id']),"doc_supplier_types","doc_supplier_types.id desc","supplier_type","supplier_type","id","supplier_type.name")->result_array();
+            }else
+            {
+                $data['news'][$key]['type'] = Modules::run('document_file/get_doc_assigned_types',array('doc_ingredient_types.doc_id'=>$value['id']),"doc_ingredient_types","doc_ingredient_types.id desc","ingredient_types","ing_type","id","ingredient_types.name")->result_array();
+            }
         } 
         $data['view_file'] = 'news';
         $this->load->module('template');
@@ -32,26 +35,31 @@ date_default_timezone_set("Asia/karachi");
         $update_id = $this->uri->segment(4);
         if (is_numeric($update_id) && $update_id != 0) {
             $data['news'] = $this->_get_data_from_db($update_id);
-            
+            $selected_type = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("doc_id" =>$update_id),'id desc','id','doc_supplier_types','id,supplier_type','1','0','','','')->result_array();
+            if(!empty($selected_type)) {
+                $temp= array();
+                foreach ($selected_type as $key => $gp):
+                    $temp[$gp['id']] = $gp['supplier_type'];
+                endforeach;
+                $selected_type = $temp;
+            }
+            $data['selected_type']=$selected_type;
+            $data['selected_ing_type']=array();
+            $selected_ing_type = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("doc_id" =>$update_id),'id desc','id','doc_ingredient_types','id,ing_type','1','0','','','')->result_array();
+            if(!empty($selected_ing_type)) {
+                $temp= array();
+                foreach ($selected_ing_type as $key => $gp):
+                    $temp[$gp['id']] = $gp['ing_type'];
+                endforeach;
+                $selected_ing_type = $temp;
+            }
+            $data['selected_ing_type']=$selected_ing_type;
         } else {
             $data['news'] = $this->_get_data_from_post();
         }
         $type = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("status" =>'1'),'id desc','id','ingredient_types','id,name','1','0','','','')->result_array();
-          if(!empty($type)) {
-                $temp= array();
-                foreach ($type as $key => $gp):
-                    $temp[$gp['id']] = $gp['name'];
-                endforeach;
-                $type = $temp;
-            }
+        $data['type'] = $type;    
         $supplier_type = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("status" =>'1'),'id desc','id','supplier_type','id,name','1','0','','','')->result_array();
-        if(!empty($supplier_type)) {
-            $temp= array();
-            foreach ($supplier_type as $key => $gp):
-                $temp[$gp['id']] = $gp['name'];
-            endforeach;
-            $supplier_type = $temp;
-        }
         $data['supplier_type'] = $supplier_type;
         $data['level']=array("Mandatory"=>"Mandatory","Not Mandatory"=>"Not Mandatory");
         $data['assign']=array("supplier"=>"Supplier","ingredient"=>"Ingredient");
@@ -60,7 +68,7 @@ date_default_timezone_set("Asia/karachi");
         $data['update_id'] = $update_id;
         $data['view_file'] = 'newsform';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
  
     function _get_data_from_db($update_id) {
@@ -86,29 +94,48 @@ date_default_timezone_set("Asia/karachi");
     }
     function _get_data_from_post() {
         $data['doc_name'] = $this->input->post('doc_name');
-        $data['type_id'] = $this->input->post('type_id');
         $data['level'] = $this->input->post('level');
         $data['assign_to'] = $this->input->post('assign_to');
-        $data['supplier_type'] = $this->input->post('supplier_type');
         $data['doc_type'] = $this->input->post('doc_type');
         if($data['assign_to']=="supplier")
         {
-            $data['type_id'] = " ";
+            $data['type_id'] = "0";
         }
         return $data;
     }
+
 	function submit() {
         $update_id = $this->uri->segment(4);
         $data = $this->_get_data_from_post();
         if (is_numeric($update_id) && $update_id != 0) {
             $where['id'] = $update_id;
             $this->_update($where, $data);
+            Modules::run('api/delete_from_specific_table',array("doc_id"=>$update_id),'doc_supplier_types');
+            $where_arr['doc_id'] = $update_id;
+            $supplier_type = $this->input->post('supplier_type');
+            if(!empty($supplier_type)) {
+                foreach ($supplier_type as $key => $it):
+                    Modules::run('api/insert_or_update',array("doc_id"=>$update_id,"supplier_type"=>$it),array("doc_id"=>$update_id,"supplier_type"=>$it),'doc_supplier_types');
+                endforeach;
+            }
+            $type_id = $this->input->post('type_id');
+            if(!empty($type_id)) {
+                foreach ($type_id as $key => $it):
+                    Modules::run('api/insert_or_update',array("doc_id"=>$update_id,"ing_type"=>$it),array("doc_id"=>$update_id,"ing_type"=>$it),'doc_ingredient_types');
+                endforeach;
+            }
             $this->session->set_flashdata('message', 'document Data Saved');
 	        $this->session->set_flashdata('status', 'success');
         }
         if (is_numeric($update_id) && $update_id == 0) {
             $id = $this->_insert($data);
-            $this->session->set_flashdata('message', 'document'.' '.DATA_SAVED);
+            $supplier_type = $this->input->post('supplier_type');
+            if(!empty($supplier_type)) {
+                foreach ($supplier_type as $key => $it):
+                    Modules::run('api/insert_or_update',array("doc_id"=>$id,"supplier_type"=>$it),array("doc_id"=>$id,"supplier_type"=>$it),'doc_supplier_types');
+                endforeach;
+            }
+            $this->session->set_flashdata('message', 'document'.' Saved');
 	        $this->session->set_flashdata('status', 'success');
         }
         redirect(ADMIN_BASE_URL . 'document');
@@ -170,6 +197,24 @@ date_default_timezone_set("Asia/karachi");
     function _delete($arr_col) {       
         $this->load->model('mdl_document');
         $this->mdl_document->_delete($arr_col);
+    }
+
+    function check_atrribute_exists($arr_col,$table){
+        $this->load->model('mdl_document');
+        return $this->mdl_document->check_atrribute_exists($arr_col,$table);
+    }
+    function insert_attribute_data($data,$table){
+        $this->load->model('mdl_document');
+       return $this->mdl_document->insert_attribute_data($data,$table);
+    }
+    function update_attribute_data($where,$attribute_data,$table){
+        $this->load->model('mdl_document');
+       return $this->mdl_document->update_attribute_data($where,$attribute_data,$table);
+    }
+    function delete_from_table($where,$table)
+    {
+        $this->load->model('mdl_document');
+        $this->mdl_document->delete_from_table($where,$table);
     }
      
 }

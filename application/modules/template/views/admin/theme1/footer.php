@@ -1,71 +1,61 @@
-    <!-- Page footer *** -->
-    
-    <footer>
-      <p class="copy-right">All Rights Reserved by LANTIX<span class="theme-color"></span></p>
+<footer class="page-footer">
+        <div class="footer-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        <p class=" text-muted">EQ SMART 2019</p>
+                    </div>
+                    <div class="col-sm-6 d-none d-sm-block">
+                        <ul class="breadcrumb pt-0 pr-0 float-right">
+                            <li class="breadcrumb-item ">
+                                <a href="#" class="btn-link">Privacy Policy</a>
+                            </li>
+                            <li class="breadcrumb-item ">
+                                <a href="#" class="btn-link">Terms and Conditions</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </footer>
-    </div><!-- wrapper div ends here -->
     
-    <!-- MODERNIZR-->
-    <script src="<?php echo STATIC_ADMIN_JS?>modernizr.js"></script>
-
-    <!-- ===================== Toastr ========================= -->
+    <script src="<?php echo STATIC_ADMIN_JS?>vendor/bootstrap.bundle.min.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>vendor/Chart.bundle.min.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>vendor/chartjs-plugin-datalabels.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>vendor/perfect-scrollbar.min.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>vendor/mousetrap.min.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>vendor/datatables.min.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>sweetalert.min.js"></script>
     <script src="<?php echo STATIC_ADMIN_JS?>toastr.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>vendor/moment.min.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>vendor/bootstrap-datepicker.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 
-      <!-- MOMENT JS-->
-   <script src="<?php echo STATIC_ADMIN_JS?>moment/min/moment-with-locales.min.js"></script>
-   
+    <script src="<?php echo STATIC_ADMIN_JS?>scripts.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>dore.script.js"></script>
     
-    <!-- BOOTSTRAP-->
-    <script src="<?php echo STATIC_ADMIN_JS?>bootstrap.js"></script>
-    
-    <!-- STORAGE API-->
+    <!-- <script src="<?php echo STATIC_ADMIN_JS?>modernizr.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>moment/min/moment-with-locales.min.js"></script>
     <script src="<?php echo STATIC_ADMIN_JS?>jquery.storageapi.js"></script>
-    
-    <!-- JQUERY EASING-->
     <script src="<?php echo STATIC_ADMIN_JS?>jquery.easing.js"></script>
-    
-    <!-- ANIMO-->
     <script src="<?php echo STATIC_ADMIN_JS?>animo.js"></script>
-    
-    <!-- SLIMSCROLL-->
     <script src="<?php echo STATIC_ADMIN_JS?>jquery.slimscroll.min.js"></script>
-    
-    <!-- SCREENFULL-->
     <script src="<?php echo STATIC_ADMIN_JS?>screenfull.js"></script>
-    
-    <!-- LOCALIZE-->
     <script src="<?php echo STATIC_ADMIN_JS?>jquery.localize.js"></script>
-
-   <!-- CALANDER-->
-   <script src="<?php echo STATIC_ADMIN_JS?>bootstrap-datetimepicker.min.js"></script>
-
-    <!-- RTL demo-->
+    <script src="<?php echo STATIC_ADMIN_JS?>bootstrap-datetimepicker.min.js"></script>
     <script src="<?php echo STATIC_ADMIN_JS?>demo-flot.js"></script>
     <script src="<?php echo STATIC_ADMIN_JS?>demo-rtl.js"></script>
     <script src="<?php echo STATIC_ADMIN_JS?>notify.js"></script>
-	<script src="<?php echo STATIC_ADMIN_JS?>notify.min.js"></script>
-
-    <!-- SWEET ALERT-->
+	  <script src="<?php echo STATIC_ADMIN_JS?>notify.min.js"></script>
     <script src="<?php echo STATIC_ADMIN_JS?>sweetalert.min.js"></script>
-
-    <!-- PARSLEY FORM VALIDATION-->
     <script src="<?php echo STATIC_ADMIN_JS?>parsley.min.js"></script>
-   
-    <!-- DATATABLES-->
     <script src="<?php echo STATIC_ADMIN_JS?>jquery.dataTables.min.js"></script>   
     <script src="<?php echo STATIC_ADMIN_JS?>dataTables.colVis.js"></script>    
     <script src="<?php echo STATIC_ADMIN_JS?>dataTables.bootstrap.js"></script>
     <script src="<?php echo STATIC_ADMIN_JS?>dataTables.bootstrapPagination.js"></script>
     <script src="<?php echo STATIC_ADMIN_JS?>demo-datatable.js"></script>   
-    <!-- FULLCALENDAR-->
     <script src="<?php echo STATIC_ADMIN_JS?>fullcalendar.min.js"></script>
-   
-    <!-- =============== APP SCRIPTS ===============-->
-    <!--<script src="<?php echo STATIC_ADMIN_JS?>app.js"></script>-->
-   
-   <!---  ************* addition by wasim dated 29-02-2016 for dashboard calendar   **************** -->
-   <!-- =============== PAGE VENDOR SCRIPTS ===============-->
-   <!-- JQUERY UI-->
    <script src="<?php echo STATIC_ADMIN_JS?>core.js"></script> 
    <script src="<?php echo STATIC_ADMIN_JS?>widget.js"></script>
    <script src="<?php echo STATIC_ADMIN_JS?>mouse.js"></script>
@@ -73,11 +63,7 @@
    <script src="<?php echo STATIC_ADMIN_JS?>droppable.js"></script>
    <script src="<?php echo STATIC_ADMIN_JS?>sortable.js"></script>  
    <script src="<?php echo STATIC_ADMIN_JS?>jquery.ui.touch-punch.min.js"></script>  
-   <!-- FULLCALENDAR-->
-   <!--<script src="<?php echo STATIC_ADMIN_JS?>fullcalendar.min.js"></script>-->
    <script src="<?php echo STATIC_ADMIN_JS?>gcal.js"></script>
-
-      <!-- FLOT CHART-->
    <script src="<?php echo STATIC_ADMIN_JS?>Flot/jquery.flot.js"></script>
    <script src="<?php echo STATIC_ADMIN_JS?>flot.tooltip/js/jquery.flot.tooltip.min.js"></script>
    <script src="<?php echo STATIC_ADMIN_JS?>Flot/jquery.flot.resize.js"></script>
@@ -85,26 +71,27 @@
    <script src="<?php echo STATIC_ADMIN_JS?>Flot/jquery.flot.time.js"></script>
    <script src="<?php echo STATIC_ADMIN_JS?>Flot/jquery.flot.categories.js"></script>
    <script src="<?php echo STATIC_ADMIN_JS?>flot-spline/js/jquery.flot.spline.min.js"></script> 
-
-   <script src="https://unpkg.com/feather-icons"></script>
+   <script src="https://unpkg.com/feather-icons"></script> -->
  
-   <script>
-      feather.replace()
-    </script>
+
    <!--- ==============  end added section dated 29-02-2016  ====================================== -->
+
+
+
 
 	<div id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" class="modal fade">
       <div class="modal-dialog">
          <div class="modal-content">
             <div class="modal-header">
-               <button type="button" data-dismiss="modal" aria-label="Close" class="close">
-                  <span aria-hidden="true">&times;</span>
-               </button>
                <h4 id="myModalLabel" class="modal-title"><?php $module = $this->uri->segment(2); 
                if ($module=='catagories') {
                  $modal_title='categories'; echo ucfirst($modal_title); }
                  else{
                $modal_title = preg_replace('/[^a-zA-Z0-9]+/', ' ', $module); echo ucfirst($modal_title); }?>&nbsp;Details</h4>
+               
+               <button type="button" data-dismiss="modal" aria-label="Close" class="close">
+                  <span aria-hidden="true">&times;</span>
+               </button>
             </div>
             <div class="modal-body" style="margin-top:0px;"></div>
             <div class="modal-footer">
@@ -118,14 +105,16 @@
       <div class="modal-dialog">
          <div class="modal-content">
             <div class="modal-header">
-               <button type="button" data-dismiss="modal" aria-label="Close" class="close">
-                  <span aria-hidden="true">&times;</span>
-               </button>
+               
                <h4 id="myModalLabel" class="modal-title"><?php $module = $this->uri->segment(2); 
                if ($module=='catagories') {
                  $modal_title='categories'; echo ucfirst($modal_title); }
                  else{
                $modal_title = preg_replace('/[^a-zA-Z0-9]+/', ' ', $module); echo ucfirst($modal_title); }?>&nbsp;Details</h4>
+            
+         <button type="button" data-dismiss="modal" aria-label="Close" class="close">
+                  <span aria-hidden="true">&times;</span>
+               </button>
             </div>
             <div class="modal-body" style="margin-top:0px;"></div>
             <div class="modal-footer">
@@ -140,14 +129,15 @@
       <div class="modal-dialog modal-lg">
          <div class="modal-content">
             <div class="modal-header">
-               <button type="button" data-dismiss="modal" aria-label="Close" class="close">
-                  <span aria-hidden="true">&times;</span>
-               </button>
               <h4 id="myModalLabel" class="modal-title"><?php $module = $this->uri->segment(2); 
                if ($module=='outlet') {
                  $modal_title=str_replace($module,"Mosque",$module); echo ucfirst($modal_title); }
                  else{
                $modal_title = preg_replace('/[^a-zA-Z0-9]+/', ' ', $module); echo ucfirst($modal_title); }?>&nbsp;Details</h4>
+               
+               <button type="button" data-dismiss="modal" aria-label="Close" class="close">
+                  <span aria-hidden="true">&times;</span>
+               </button>
             </div>
             <div class="modal-body">...</div>
             <div class="modal-footer">
@@ -172,16 +162,40 @@
          </div>
       </div>
    </div>
-
+   <div id="myModalmail" tabindex="-1" role="dialog" aria-labelledby="myModalmail" aria-hidden="true" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        <div class="modal-header">
+            
+            <h4 id="myModalLabel" class="modal-title">Select Email Type </h4>
+        <button type="button" data-dismiss="modal" aria-label="Close" class="close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+             <div class="container" style="width:60%!important;padding: 6% 0px 6% 0px;">
+             <label style="margin-bottom: 17px!important;">What Sort of Mail you want to send?</label>
+                <select class="form-control" id="mail_type" data-rel="">
+                    <option value="reminder">Reminder Mail for documents</option>
+                    <option value="credentials">New Credentials Mail</option>
+                </select>
+                <span></span> <button style="margin-top: 3%;"  class="btn btn-outline-primary " id="mail_form"><i class="fa fa-check"></i>&nbsp;Save</button>
+             </div>                               
+        </div>
+        <div class="modal-footer">   
+        </div>
+        </div>
+    </div>
+</div>
    <!-- -==================== PAssword Model =================== -->
    <div id="password_Modal" tabindex="-1" role="dialog" aria-labelledby="Label" aria-hidden="true" class="modal fade">
       <div class="modal-dialog">
          <div class="modal-content">
             <div class="modal-header">
+            <h4 id="password_Modal_label" class="modal-title">Change Password</h4>
                <button type="button" data-dismiss="modal" aria-label="Close" class="close">
                   <span aria-hidden="true">&times;</span>
                </button>
-               <h4 id="password_Modal_label" class="modal-title">Change Password</h4>
             
             </div>
             <div class="modal-body"></div>
@@ -195,10 +209,11 @@
           <div class="modal-dialog">
               <div class="modal-content">
                   <div class="modal-header">
+                    
+                  <h4 id="password_Modal_label" class="modal-title">Product Schedules</h4>
                       <button type="button" data-dismiss="modal" aria-label="Close" class="close">
                           <span aria-hidden="true">&times;</span>
                       </button>
-                      <h4 id="password_Modal_label" class="modal-title">Product Schedules</h4>
                   </div>
                   <div class="modal-body"></div>
                   <div class="modal-footer">
@@ -210,10 +225,11 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
+              
+            <h4 id="password_Modal_label" class="modal-title">Adding Plant</h4>
                 <button type="button" data-dismiss="modal" aria-label="Close" class="close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 id="password_Modal_label" class="modal-title">Adding Plant</h4>
             </div>
             <div class="modal-body"></div>
             <div class="modal-footer">
@@ -225,10 +241,11 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
+              
+            <h4 id="password_Modal_label" class="modal-title">Adding Shift</h4>
                 <button type="button" data-dismiss="modal" aria-label="Close" class="close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 id="password_Modal_label" class="modal-title">Adding Shift</h4>
             </div>
             <div class="modal-body"></div>
             <div class="modal-footer">
@@ -240,10 +257,11 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
+              
+            <h4 id="password_Modal_label" class="modal-title">Adding Shift</h4>
                 <button type="button" data-dismiss="modal" aria-label="Close" class="close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 id="password_Modal_label" class="modal-title">Adding Shift</h4>
             </div>
             <div class="modal-body"></div>
             <div class="modal-footer">
@@ -255,10 +273,11 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
+              
+            <h4 id="password_Modal_label" class="modal-title">Adding Lines</h4>
                 <button type="button" data-dismiss="modal" aria-label="Close" class="close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 id="password_Modal_label" class="modal-title">Adding Lines</h4>
             </div>
             <div class="modal-body"></div>
             <div class="modal-footer">
@@ -270,10 +289,11 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
+                  
+                <h4 id="password_Modal_label" class="modal-title">Product Schedules</h4>
                     <button type="button" data-dismiss="modal" aria-label="Close" class="close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 id="password_Modal_label" class="modal-title">Product Schedules</h4>
                 </div>
                 <div class="modal-body">
                   
@@ -328,11 +348,32 @@
            </div>
         </div>
     </div>
+    <div class="modal fade" id="myModallarge1" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">ScoreCard Detail</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>This is a large modal.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 <?php 
 $arrDate = $this->config->item('Date_Format_Type_JS');
 $arrTime = $this->config->item('time_Format_Type_JS');
  ?>
+
+    <script>
+        $('.dropify').dropify();
+    </script>
+ 
 <?php if(!isset($chat_only)) { ?>
   <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-firestore.js"></script>
@@ -343,6 +384,55 @@ $arrTime = $this->config->item('time_Format_Type_JS');
   </script>
 <?php } ?>
 <script type="text/javascript">
+
+// $('#datetimepicker1').datetimepicker({
+//       icons: {
+//           time: 'fa fa-clock-o',
+//           date: 'fa fa-calendar',
+//           up: 'fa fa-chevron-up',
+//           down: 'fa fa-chevron-down',
+//           previous: 'fa fa-chevron-left',
+//           next: 'fa fa-chevron-right',
+//           today: 'fa fa-crosshairs',
+//           clear: 'fa fa-trash'
+//         },
+//         //viewMode: 'years',
+//         format: 'DD/MM/YYYY'
+//     });
+
+//      $('.datetimepicker2').datetimepicker({
+//       icons: {
+//           time: 'fa fa-clock-o',
+//           date: 'fa fa-calendar',
+//           up: 'fa fa-chevron-up',
+//           down: 'fa fa-chevron-down',
+//           previous: 'fa fa-chevron-left',
+//           next: 'fa fa-chevron-right',
+//           today: 'fa fa-crosshairs',
+//           clear: 'fa fa-trash'
+//         },
+//         //viewMode: 'years',
+//         format:'MM/DD/YYYY'
+//     });
+
+//      $('.datetimepicker3').datetimepicker({
+//       icons: {
+//           time: 'fa fa-clock-o',
+//           date: 'fa fa-calendar',
+//           up: 'fa fa-chevron-up',
+//           down: 'fa fa-chevron-down',
+//           previous: 'fa fa-chevron-left',
+//           next: 'fa fa-chevron-right',
+//           today: 'fa fa-crosshairs',
+//           clear: 'fa fa-trash'
+//         },
+//        format: 'DD/MM/YYYY'
+//     });
+
+    //    // only time
+    // $('.datetimepicker4').datetimepicker({
+    //     format: 'HH:mm',
+    // });
 $(document).on("click", ".view_chat", function(event){
     event.preventDefault();
     $.ajax({
@@ -377,52 +467,6 @@ $(document).ready(function() {
 		});
 	});
 	
-/*	
-	uri = '<?php echo STATIC_ADMIN_CSS?>theme-<?=DEFAULT_THEME?>.css';
-	var linkId = 'autoloaded-stylesheet';
-	$('head').append($('<link/>').attr({
-		'id':   linkId,
-		'rel':  'stylesheet',
-		'href': uri
-	}));*/
-	////////////////////////////////////////////////////////////////
-
-   //     $('.datetimepicker2').datetimepicker({
-   //    icons: {
-   //        time: 'fa fa-clock-o',
-   //        date: 'fa fa-calendar',
-   //        up: 'fa fa-chevron-up',
-   //        down: 'fa fa-chevron-down',
-   //        previous: 'fa fa-chevron-left',
-   //        next: 'fa fa-chevron-right',
-   //        today: 'fa fa-crosshairs',
-   //        clear: 'fa fa-trash'
-   //      },
-   //      //viewMode: 'years',
-   //      format: ''
-   //  });
-
-
-   //    $('.datetimepicker5').datetimepicker({
-   //        viewMode: 'months',
-   //        format: 'MM/YYYY'
-   //    });
-   
-
-     $('.datetimepicker2').datetimepicker({
-      icons: {
-          time: 'fa fa-clock-o',
-          date: 'fa fa-calendar',
-          up: 'fa fa-chevron-up',
-          down: 'fa fa-chevron-down',
-          previous: 'fa fa-chevron-left',
-          next: 'fa fa-chevron-right',
-          today: 'fa fa-crosshairs',
-          clear: 'fa fa-trash'
-        },
-        //viewMode: 'years',
-        format:'MM/DD/YYYY'
-    });
 
 
 	
@@ -477,12 +521,12 @@ $(document).ready(function() {
 
     });
   });
-      function date() {
-        $('.date').datetimepicker({
-            format: 'HH:mm'
-        });
-      }
-      date();
+      // function date() {
+      //   $('.date').datetimepicker({
+      //       format: 'HH:mm'
+      //   });
+      // }
+      // date();
 	<?php if(!isset($chat_only)) {
       if(!isset($total_counter) || empty($total_counter))
         $total_counter = 0;
@@ -493,7 +537,7 @@ $(document).ready(function() {
         <?php $counter = 0; foreach($tracker_list as $key=>$tl):
           if($counter != 0)
             echo ",";
-          echo "{'tracking':'".$tl["trackig_id"]."','lastcheater':".$tl["last_chat"]."}";
+          echo "{'tracking':'".$tl["trackig_id"]."','lastcheater':'".$tl["last_chat"]."'}";
           $counter++;
         endforeach;
         ?>
@@ -544,4 +588,3 @@ $(document).ready(function() {
     <?php }?>
       
 </script>
-   <script src="<?php echo STATIC_ADMIN_JS?>app.js"></script>

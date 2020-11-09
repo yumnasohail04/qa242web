@@ -1,24 +1,23 @@
-<!-- Page content-->
-<div class="content-wrapper">
-    <h3>Herb Attributes
-    <a href="<?=ADMIN_BASE_URL?>herbspice_checks/"><button type="button" class="btn btn-primary "><i class="fa fa-arrow-left"></i>&nbsp;&nbsp;&nbsp;Back to checks</button></a>
-    <a href="<?php echo ADMIN_BASE_URL . 'herb_attributes/create/'.$ccheckid.'/'?>">
-    <button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Add New</button>
-    </a>
-    
-  
- 
-    
-   </h3>
 
+                    
+                    
+    <main>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Herb Attributes</h1>
+                    <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="<?php echo ADMIN_BASE_URL . 'herb_attributes/create/'.$ccheckid.'/'?>">&nbsp;Add New&nbsp;</a>
+                    <div class="separator mb-5"></div>
+                </div>
+            </div>
 
-    <div class="container-fluid">
-        <!-- START DATATABLE 1 -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                    <h2>Choice Attributes</h2>
+            <div class="row mb-4">
+                <div class="col-12 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                        
+                        
+                        <h2>Choice Attributes</h2>
                     <table id="datatable1" class="table table-striped table-hover ">
                         <thead class="bg-th">
                         <tr class="bg-col">
@@ -56,8 +55,8 @@
 
                                                  <?php
                                                 
-                                                echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => ' btn blue c-btn','title' => 'Edit Sub Category'));
-                                                echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_records btn red c-btn', 'rel' => $row->wip_id,'title' => 'Delete Attribute'));
+                                                echo anchor($edit_url, '<i class="iconsminds-file-edit"></i>', array('class' => ' btn blue c-btn','title' => 'Edit Sub Category'));
+                                                echo anchor('"javascript:;"', '<i class="simple-icon-close"></i>', array('class' => 'delete_records btn red c-btn', 'rel' => $row->wip_id,'title' => 'Delete Attribute'));
                                                 ?>
                                             </td>
                                         </tr>
@@ -101,8 +100,8 @@
 
                                                  <?php
                                                 
-                                                echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => ' btn blue c-btn','title' => 'Edit Sub Category'));
-                                                echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_records btn red c-btn', 'rel' => $row->wip_id,'title' => 'Delete Attribute'));
+                                                echo anchor($edit_url, '<i class="iconsminds-file-edit"></i>', array('class' => ' btn blue c-btn','title' => 'Edit Sub Category'));
+                                                echo anchor('"javascript:;"', '<i class="simple-icon-close"></i>', array('class' => 'delete_records btn red c-btn', 'rel' => $row->wip_id,'title' => 'Delete Attribute'));
                                                 ?>
                                             </td>
                                         </tr>
@@ -150,8 +149,8 @@
 
                                                  <?php
                                                 
-                                                echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => ' btn blue c-btn','title' => 'Edit Sub Category'));
-                                                echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_records btn red c-btn', 'rel' => $row->wip_id,'title' => 'Delete Attribute'));
+                                                echo anchor($edit_url, '<i class="iconsminds-file-edit"></i>', array('class' => ' btn blue c-btn','title' => 'Edit Sub Category'));
+                                                echo anchor('"javascript:;"', '<i class="simple-icon-close"></i>', array('class' => 'delete_records btn red c-btn', 'rel' => $row->wip_id,'title' => 'Delete Attribute'));
                                                 ?>
                                             </td>
                                         </tr>
@@ -167,7 +166,7 @@
     <!-- END DATATABLE 1 -->
     
     </div>
-</div>    
+</main>  
 <script type="application/javascript">
 
 $(document).ready(function(){

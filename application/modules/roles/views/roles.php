@@ -1,28 +1,25 @@
-<!-- Page content-->
-<?php // print_r($roles); exit; ?>
-<div class="content-wrapper">
-    <h3> Roles<a href="roles/create"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Add New</button></a></h3>
-    <div class="container-fluid">
-        <!-- START DATATABLE 1 -->
 
-
-
-        <div class="row">
-							
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-
-                    <!-- <div width="50px">
-                    	<?php // echo form_dropdown('search_station', $stations,'', 'class="form-control select2me" data-placeholder="Select Station" id="search_station"'); ?>
-                    </div> -->
                     
-                    <table id="sample_1" class="table  table-bordered">
+   <main>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Roles</h1>
+                    <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="roles/create">&nbsp;Add New&nbsp;</a>
+                    <div class="separator mb-5"></div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-12 mb-4">
+                    <div class="card">
+                        <div class="card-body">        
+                    <table id="sample_1" class="data-table data-table-feature">
                         <thead class="bg-th">
                         <tr class="bg-col">
-                        <th width='2%'>S.No <i class="fa fa-sort" style="font-size:13px;"></th>
-                        <th>Title <i class="fa fa-sort" style="font-size:13px;"></th>
-                        <th class="" style="width:200px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actions</th>
+                        	<th width='2%'>S.No </th>
+                        	<th>Title </th>
+                        	<th class="" style="width:200px">Actions</th>
                         </tr>
                         </thead>
 
@@ -43,10 +40,10 @@
 							<?php
                             $permission_url = ADMIN_BASE_URL . 'permission/manage/'.$row['id'].'/'.$row['outlet_id'].'/'.$row['role'];
 
-							echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit Roles'));
+							echo anchor($edit_url, '<i class="iconsminds-file-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit Roles'));
 							
-echo anchor($permission_url, '<i class="fa fa-eye"></i>', array('class' => 'btn blue c-btn','title' => 'Permissions'));
-echo anchor('javascript:;', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn red c-btn', 
+							echo anchor($permission_url, '<i class="simple-icon-eye"></i>', array('class' => 'btn blue c-btn','title' => 'Permissions'));
+							echo anchor('javascript:;', '<i class="simple-icon-close"></i>', array('class' => 'delete_record btn red c-btn', 
                             'rel' => $row['id'], 'title' => 'Delete Role'));
 
                             ?>
@@ -55,28 +52,20 @@ echo anchor('javascript:;', '<i class="fa fa-times"></i>', array('class' => 'del
 							<?php 
                         } }
                         ?>
-                        </tbody>
-                    </table>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    <!-- END DATATABLE 1 -->
-    
-    </div>
-</div>    
+    </main> 
 
 
 <script>
 $(document).ready(function() {
 
-    $('#sample_1').dataTable(
-                {
-                    "aLengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]],
-                    "iDisplayLength": 10
-                    
-                }
-        );
+   
 
     $("#roles_listing").load( "<?= ADMIN_BASE_URL ?>roles/get_roles",{'station':<?=DEFAULT_OUTLET?>});
     $(document).off('change',"#search_station").on('change',"#search_station",function(){

@@ -39,32 +39,28 @@
 */
 /////////////// ADMIN PAGES ////////////////
 $route['admin/login/submit_login'] = "login/submit_login";
-	$route['admin'] = "login";
-	$route['admin/logout'] = "login/logout";
-	$route['admin/(:any)'] = "$1/$1";
-	$strHost = $_SERVER['SERVER_NAME'];
-	$strHost = preg_replace('/www./', '', $strHost, 1);
-	$route['default_controller'] = 'login';
-	$route['404_override'] = '';
-	$route['([a-zA-Z-]+)'] = "front/pages/$1";
-	$route['error'] = "front/error";
 
 	
+	$route['admin'] = "login";
+	$strHost = $_SERVER['SERVER_NAME'];
+	$strHost = preg_replace('/www./', '', $strHost, 1);
+
+	//$strHost == 'mixmat.no' ||
+
+	 	$route['admin'] = "login";
+		$route['admin/logout'] = "login/logout";
+		$route['admin/(.+)'] = "$1/$1";
 		////////////user profile routes by umar fAROOQ FOR WEB//////////
-	    $front_folder = 'front/';
+		$front_folder = 'front/';
 	    $route['index']=$front_folder.'index';
-	    $route['login/(:any)']=$front_folder.'login';
+	    $route['login/(.+)']=$front_folder.'login';
 		$route['thanks']=$front_folder.'thanks';
-		$route['logout/(:any)']=$front_folder.'logout';
-	    $route['default_controller'] = 'login';
-		$route['404_override'] = '';
-
-
-		$front_folder = 'carrier_front/';
-		$route['carrier/index']=$front_folder.'index';
-	    $route['carrier/login/(:any)']=$front_folder.'login';
-		$route['carrier/thanks']=$front_folder.'thanks';
-		$route['carrier/logout/(:any)']=$front_folder.'logout';
+		$route['logout/(.+)']=$front_folder.'logout';
+		$front_carrier = 'carrier_front/';
+		$route['carrier/index']=$front_carrier.'index';
+	    $route['carrier/login/(.+)']=$front_carrier.'login';
+		$route['carrier/thanks']=$front_carrier.'thanks';
+		$route['carrier/logout/(.+)']=$front_carrier.'logout';
 
 
 		///////////////////////////umar apis start/////////////////////////
@@ -177,11 +173,9 @@ $route['admin/login/submit_login'] = "login/submit_login";
 		$route['get-fixed-forms-detail'] = $admin_api_folder."get_fixed_forms_detail";
 		$route['fixed-form-response'] = $admin_api_folder."static_form_response";
 		$route['static-media-file'] = $admin_api_folder."submit_static_media_file";
-		$route['upload-static-media-files'] = $admin_api_folder."upload_answer_static_media_files";
 		$route['submit-draft'] = $admin_api_folder."submit_draft";
 		$route['draft-checks'] = $admin_api_folder."draft_checks";
 		$route['draft-checks-detail'] = $admin_api_folder."draft_checks_detail";
-		
 		$route['basic-outlet-detail'] = $admin_api_folder."basic_outlet_detail";
 		$route['outlet-order-list'] = $admin_api_folder."outlet_order_list";
 		$route['outlet-order-detail'] = $admin_api_folder."outlet_order_detail";
@@ -217,7 +211,6 @@ $route['admin/login/submit_login'] = "login/submit_login";
 		//////////////////new Routes by asad for new heyfood.pk///////////
 		$route['get-offers-list'] = $api_folder."get_offers_list";
 		$route['get-offers-detail'] = $api_folder."get_offers_detail";
-		
 		$route['get-announcements-list'] = $api_folder."get_announcements_list";
 		$route['get-restaurant-rating'] = $api_folder."restaurant_rating";
 		$route['get-restaurant-reviews'] = $api_folder."get_restaurant_reviews_list";
@@ -231,4 +224,6 @@ $route['admin/login/submit_login'] = "login/submit_login";
 		$route['get-outlet-info']=$api_folder."get_oultet_info";
 	
 
-$route['404_override'] = '';
+		$route['default_controller'] = 'login';
+		$route['([a-zA-Z-]+)'] = "front/pages/$1";
+		$route['404_override'] = '';

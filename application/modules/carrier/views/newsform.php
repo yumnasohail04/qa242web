@@ -22,7 +22,12 @@
 }
 .pdf-img
 {
-    width: 50%;
+    width: 50px;
+}
+.show
+{
+  box-shadow: 0 0 32px rgba(0,0,0,0.11);
+  border-color:red;
 }
 .gif {
     background: url(https://clipartix.com/wp-content/uploads/2018/09/green-clipart-2018-24.png);
@@ -35,58 +40,70 @@
 .active {
     color: #3c3c3c !important;
 }
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltiptext {
+  visibility: visible;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+.tooltiptext-hide
+{
+  visibility: hidden;
+}
+.tooltiptext-show
+{
+  visibility: visible;
+}
+.inputfile + label {
+    font-size: initial;
+    font-weight: 100;
+	padding:0px;
+}
+ .inputfile-4 + label figure {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #d3394c;
+    display: block;
+    padding: 10px;
+    margin: 0 auto 10px;
+}
 </style>
 
-<div class="page-content-wrapper">
-  <div class="page-content"> 
-    <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
-    <div id="contractors_measurements_modal" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-            <h4 class="modal-title">Modal title</h4>
-          </div>
-          <div class="modal-body"> Widget settings form goes here </div>
-          <div class="modal-footer">
-            <button type="button" class="btn green" id="confirm"><i class="fa fa-check"></i>&nbsp;Save changes</button>
-            <button type="button" class="btn default" data-dismiss="modal"><i class="fa fa-undo"></i>&nbsp;Close</button>
-          </div>
-        </div>
-        <!-- /.modal-content --> 
-      </div>
-      <!-- /.modal-dialog --> 
-    </div>
-    <!-- /.modal --> 
-    <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM--> 
-    <!-- BEGIN PAGE HEADER-->
-    <div class="content-wrapper">
-        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
-      <h3>
-        <?php 
-        if (empty($update_id)) 
-                    $strTitle = 'Add Carrier';
-                else 
-                    $strTitle = 'Edit Carrier';
-                    echo $strTitle;
-                    ?>
-                    <a href="<?php echo ADMIN_BASE_URL . 'carrier'; ?>"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-chevron-left"></i>&nbsp;&nbsp;&nbsp;Back</button></a>
-       </h3>             
-            
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="tabbable tabbable-custom boxless">
-          <div class="tab-content">
-          <div class="panel panel-default" style="border-radius:10px;">
-         
-            <div class="tab-pane  active" id="tab_2" >
-              <div class="portlet box green ">
-                <div class="portlet-title ">
-                 
-                </div>
-                
-                <div class="portlet-body form " style="padding-top:15px;"> 
+
+                <main>
+                    <div class="container-fluid">
+                        <div class="row">
+                        <div class="col-12">
+                            <h1> <?php 
+                            if (empty($update_id)) 
+                                        $strTitle = 'Add Carrier';
+                                    else 
+                                        $strTitle = 'Edit Carrier';
+                                        echo $strTitle;
+                                        ?></h1>
+                            <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="<?php echo ADMIN_BASE_URL . 'carrier'; ?>">&nbsp;&nbsp;&nbsp;Back</a> 
+                            <div class="separator mb-5"></div>
+                        </div>
+                        </div>
+                    <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="mb-4">
+                        
+                        </h5>
                   
                   <!-- BEGIN FORM-->
                         <?php
@@ -101,18 +118,18 @@
                         else
                             echo form_open_multipart(ADMIN_BASE_URL . 'carrier/submit/' . $update_id, $attributes);
                         ?>
-                  <div class="form-body section-box">
+                    <div class="form-body section-box">
                     
                     <!-- <h3 class="form-section">Post Information</h3>-->
                    
                     <div class="row">
-                         <div class="col-sm-5">
-                            <div class="form-group">
+                         <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'name',
                                     'id' => 'first_name',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $news['name'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -120,20 +137,20 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Name <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Name<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
                         
-                        <div class="col-sm-5">
-                            <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'contact',
                                     'id' => 'contact',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $news['contact'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -141,19 +158,19 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Contact <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Contact<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                        <div class="col-sm-5">
-                            <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'email',
                                     'id' => 'email',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $news['email'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -161,19 +178,19 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Email<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Email<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                        <div class="col-sm-5">
-                            <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'phone',
                                     'id' => 'phone',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $news['phone'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -181,19 +198,19 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Phone Number<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Phone Number<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                        <div class="col-sm-5">
-                            <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'address',
                                     'id' => 'address',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $news['address'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -201,19 +218,19 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Address<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Address<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                         <div class="col-sm-5">
-                            <div class="form-group">
+                         <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'city',
                                     'id' => 'city',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $news['city'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -221,19 +238,19 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('City <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">City<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                        <div class="col-sm-5">
-                            <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'state',
                                     'id' => 'state',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $news['state'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -241,19 +258,19 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('State <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">State<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                        <div class="col-sm-5">
-                            <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'zipcode',
                                     'id' => 'zipcode',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $news['zipcode'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -261,25 +278,25 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Zipcode <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Zipcode<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>  
-                        <div class="col-sm-5">
-                            <div class="form-group">
-                            <label class="control-label col-md-4">Type<span class="required" style="color:#ff60a3">*</span></label>
-                                <div class="col-md-8">
-                                    <select class="form-control"  name="type" id="carrier_type">
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
+                            <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Type<span style="color:red">*</span></button>
+                                </div>
+                                    <select class="form-control validatefield"  name="type" id="carrier_type">
                                     <?php foreach($carrier_type as $key => $value){ ?>
                                         <option  value=<?php echo $value['id'] ?> <?php  if($value['id']==$news['type']) echo "selected"; ?>><?php echo $value['type'] ?></option>
                                     <?php } ?>
                                     </select>
-                                </div>
                             </div>
                         </div> 
-                        <div class="col-sm-12">
+                        <div class="col-sm-12" style="overflow: auto;">
                             <table class="table table-user-information table_doc table-striped append_doc">
                             <thead>
                                 <tr>
@@ -289,7 +306,6 @@
                                 <th scope="col">Upload</th>
                                 <th scope="col">Uploaded Document</th>
                                 <th scope="col">Comment Box</th>
-                                <th scope="col">Reference Link</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -333,17 +349,7 @@
                                                     <td></td>
                                                 <?php }
                                                 ?>
-                                            <?php 
-                                                if(!empty($values['sub_question'])){
-                                                    if($values['sub_question']->reference_link=="1"){?>
-                                                        <td style="width: 15%;"><input type="text" name="reference_link_<?php echo $keys; ?>" class="form-control" placeholder="Reference Link..." value="<?php if(isset($values['sub_ans']->reference_link) && !empty($values['sub_ans']->reference_link)) echo $values['sub_ans']->reference_link;?>"></td>
-                                                <?php } else{ ?>
-                                                    <td></td>
-                                                <?php }
-                                                }else{ ?>
-                                                    <td></td>
-                                                <?php }
-                                                ?>
+                                           
                                         </tr>
                                         
                                     <?php
@@ -353,13 +359,13 @@
                         </div>
                     </div>
                        
-                <div class="form-actions fluid no-mrg" style="margin-top: 3%;">
+     <div class="form-actions fluid no-mrg" style="margin-top: 3%;">
                   <div class="row">
                     <div class="col-md-6">
                       <div class="col-md-offset-2 col-md-9" style="padding-bottom:15px;">
-                       <span style="margin-left:40px"></span> <button  class="btn btn-primary " id="submited_form"><i class="fa fa-check"></i>&nbsp;Save</button>
+                       <span style="margin-left:40px"></span> <button  class="btn btn-outline-primary " id="submited_form"><i class="fa fa-check"></i>&nbsp;Save</button>
                         <a href="<?php echo ADMIN_BASE_URL . 'carrier'; ?>">
-                        <button type="button" class="btn green btn-default" style="margin-left:20px;"><i class="fa fa-undo"></i>&nbsp;Cancel</button>
+                        <button type="button" class="btn green btn-outline-primary" style="margin-left:20px;"><i class="fa fa-undo"></i>&nbsp;Cancel</button>
                         </a> </div>
                     </div>
                     <div class="col-md-6"> </div>
@@ -367,20 +373,10 @@
                 </div>
                 
                 <?php echo form_close(); ?> 
-                <!-- END FORM--> 
-                
-               </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-</div>
-
+        </main>
 
 <script>
 
@@ -503,7 +499,84 @@ $(document).off('click', '.#submited_form').on('click', '#submited_form', functi
                 <?php } ?>
                 if(valid="1")
                 {
-                    $( ".form-horizontal" ).submit();
+                	if(validateForm()) {
+                    	$( ".form-horizontal" ).submit();
+                    }
                 }
             });
+
+$(document).off('click', '.del_doc').on('click', '.del_doc', function(e){
+  e.preventDefault();
+  var id = $(this).attr('del_id');
+  swal({
+    title : "Are you sure to delete the selected Document?",
+    text : "You will not be able to recover this Document!",
+    type : "warning",
+    showCancelButton : true,
+    confirmButtonColor : "#DD6B55",
+    confirmButtonText : "Yes, delete it!",
+    closeOnConfirm : false
+  },
+  function () {
+      
+          $.ajax({
+              type: 'POST',
+              url: "<?php echo ADMIN_BASE_URL?>carrier_front/delete_doc",
+              data: {'id': id},
+              async: false,
+              success: function() {
+                  location.reload();
+              }
+          });
+  swal("Deleted!", "supplier has been deleted.", "success");
+});
+
+});
+
+  $(document).off("click", "#check_answer").on("click", "#check_answer",function(event){
+    var val=$(this).val();
+    if(val=="0"){
+      if($(this).parent().parent().find('td').find('.comment_opt').val()=="")
+        {
+          $(this).parent().parent().find('td').find('.comment_opt').addClass("show");
+        }
+        $(this).parent().parent().find('td').find('.tooltiptext').delay(1000).fadeIn(300); 
+        $(this).parent().parent().find('td').find('.tooltiptext').addClass("tooltiptext-hide");
+        $(this).parent().parent().find('td').find('.tooltiptext').removeClass("tooltiptext-visible");
+    }else{
+      $(this).parent().parent().find('td').find('.comment_opt').removeClass("show");
+      if($(this).parent().parent().find('td').find('.box').find('.tooltip').val()=="")
+      {
+        if($(this).parent().parent().find("td").find("img").attr('rel-exist')!="1")
+        {
+          $(this).parent().parent().find('td').find('.tooltiptext').addClass("tooltiptext-visible");
+          $(this).parent().parent().find('td').find('.tooltiptext').removeClass("tooltiptext-hide");
+          $(this).parent().parent().find('td').find('.tooltiptext').delay(1000).fadeOut(300); 
+        }
+      }
+    } 
+      
+  });
+      
+       $(document).on("change", ".comment_opt",function(event){
+    if($(this).val()!="")
+    {
+      $(this).removeClass("show");
+    }
+});
+      
+      
+      function validateForm() {
+          var isValid = true;
+          $('.validatefield').each(function() {
+            if ( $(this).val() === '') {
+               $(this).css("border", "1px solid red");
+              isValid = false;
+            }
+            else 
+                $(this).css("border", "1px solid #28a745");
+          });
+          return isValid;
+
+        }
 </script>

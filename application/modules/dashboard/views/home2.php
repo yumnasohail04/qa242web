@@ -50,13 +50,22 @@ cursor:pointer;}
         cursor: pointer;
     }
 </style>
-<div class="checking_previous"></div>
-<div class="page-content-wrapper">
-    <div class="page-content">
+<main>
+  <div class="container-fluid">
+      <div class="row">
+          <div class="col-12">
+              <h1>Dashboard</h1>
+              <div class="separator mb-5"></div>
+          </div>
+      </div>
+
+      <div class="row mb-4">
+          <div class="col-12 mb-4">
+              <div class="card">
+                  <div class="card-body">
         <section>
             <div class="content-wrapper" style="padding-bottom: 0px !important;">
                 <div class="content-heading" style="margin-bottom: 0px !important;">
-                    Dashboard
                     <small data-localize="dashboard.WELCOME"></small>
                 </div>
             </div>
@@ -65,7 +74,6 @@ cursor:pointer;}
             <div class="content-wrapper">
                  <div class="card-body pb-0">
                  		<p style="text-align: center;">Supplier Scorecard</p>
-                    <div class="card text-white white_bg" style="padding: 3% 0px 3% 0px;">
                         <div class="row ">
                             <div class="col-sm-12 col-lg-2">
                                  <div id="morrisDonut1" class="morris-donut-wrapper-demo" style="height:150px; "></div>
@@ -85,25 +93,35 @@ cursor:pointer;}
                             <div class="col-sm-12 col-lg-2">
                                 <div id="morrisDonut6" class="morris-donut-wrapper-demo" style="height:150px;"></div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            	<div class="row">
+                        </div>  
+                   </div>  
+              </div>
+        </section>
+        </div>
+              </div>
+          </div>
+      </div>
+        <div class="row mb-4">
+          <div class="col-12 mb-4">
+              <div class="card">
+                  <div class="card-body">
+                <div class="row">
                     <div class="col-sm-12">
                         <div id="div_tblreport"></div>
                     </div>
                 </div>
-            </div>   
-        </section>
-    </div>
-</div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</main>
 <script src="<?php echo STATIC_ADMIN_JS?>jquery.min.js"></script>
 <script src="<?php echo STATIC_ADMIN_JS?>ionicons.js"></script>
 <script src="<?php echo STATIC_ADMIN_JS?>raphael.min.js"></script>
 <script src="<?php echo STATIC_ADMIN_JS?>morris.min.js"></script>
 <script src="<?php echo STATIC_ADMIN_JS?>chart.morris.js?v=5"></script>
  <script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"></script>
-
 <script src="<?php echo STATIC_ADMIN_JS?>widgets.js"></script>
 <script src="<?php echo STATIC_ADMIN_JS?>controller.js"></script>
 

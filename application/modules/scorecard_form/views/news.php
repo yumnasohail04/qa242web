@@ -12,15 +12,21 @@ function seoUrl($string) {
     return $string;
 }
 ?>
-<div class="content-wrapper">
-    <h3>ScoreCard Form<a href="scorecard_form/create"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Add New</button></a></h3>
-    <div class="container-fluid">
-        <!-- START DATATABLE 1 -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                    <table id="datatable1" class="table table-body">
+<main>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1>ScoreCard Form</h1>
+            <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="scorecard_form/create">&nbsp;Add New&nbsp;</a>
+            <div class="separator mb-5"></div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <table id="datatable1" class="data-table data-table-feature">
                         <thead class="bg-th">
                             <th class="text-center" style="width:200px;">Questioner Team</th>
                             <th class="text-center" style="width:200px;">Description</th>
@@ -54,36 +60,33 @@ function seoUrl($string) {
                                        <?php
                                         $publish_class = ' table_action_publish';
                                         $publis_title = 'Set Un-Publish';
-                                        $icon = '<i class="fas fa-arrow-up"></i>';
+                                        $icon = '<i class="simple-icon-arrow-up-circle"></i>';
                                         $iconbgclass = ' btn greenbtn c-btn';
                                         if ($value['sf_status'] != 1) {
                                         $publish_class = ' table_action_unpublish';
                                         $publis_title = 'Set Publish';
-                                        $icon = '<i class="fas fa-arrow-down red"></i>';
+                                        $icon = '<i class="simple-icon-arrow-down-circle red"></i>';
                                         $iconbgclass = ' btn default c-btn';
                                         }
-                                        echo '<a class="btn yellow  c-btn view_attributes" rel="'.$value['sf_id'].'" naming="'.seoUrl($value['sf_name']).'"><i class="fa fa-sitemap"  title="Manage Attributes" ></i></a>';
+                                        echo '<a class="btn yellow  c-btn view_attributes" rel="'.$value['sf_id'].'" naming="'.seoUrl($value['sf_name']).'"><i class="iconsminds-three-arrow-fork"  title="Manage Attributes" ></i></a>';
                                         echo anchor("javascript:;",$icon, array('class' => 'action_publish' . $publish_class . $iconbgclass, 
                                         'title' => $publis_title,'rel' => $value['sf_id'],'id' => $value['sf_id'], 'status' => $value['sf_status']));
-                                        echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit Check'));
+                                        echo anchor($edit_url, '<i class="iconsminds-file-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit Check'));
 
-                                        echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $value['sf_id'], 'title' => 'Delete Check'));
+                                        echo anchor('"javascript:;"', '<i class="simple-icon-close"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $value['sf_id'], 'title' => 'Delete Check'));
                                         ?>
                                         </td>
                                     </tr>
                                     <?php } ?>    
                                 <?php } ?>
                             </tbody>
-                    </table>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-    <!-- END DATATABLE 1 -->
-    
     </div>
-</div>    
-
+</main>
 <script type="text/javascript">
 $(document).ready(function(){
 

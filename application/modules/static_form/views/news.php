@@ -12,15 +12,24 @@ function seoUrl($string) {
     return $string;
 }
 ?>
-<div class="content-wrapper">
-    <h3>Existing Forms<a href="static_form/create"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Add New</button></a></h3>
-    <div class="container-fluid">
-        <!-- START DATATABLE 1 -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                    <table id="datatable1" class="table table-body">
+
+
+
+<main>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1>Existing Forms</h1>
+            <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="static_form/create">&nbsp;Add New&nbsp;</a>
+            <div class="separator mb-5"></div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <table class="data-table data-table-feature">
                         <thead class="bg-th">
                             <th class="text-center" style="width:120px;">Start Date</th>
                             <th class="text-center" style="width:120px;">Start Time</th>
@@ -57,24 +66,24 @@ function seoUrl($string) {
                                             <?php echo $sf->sf_name; ?>
                                         </td>
                                         <td class="table_action">
-                                        <a class="btn yellow c-btn view_details" rel="<?=$sf->sf_id?>"><i class="fa fa-list"  title="See Detail"></i></a>
+                                        <a class="btn yellow c-btn view_details" rel="<?=$sf->sf_id?>"><i class="iconsminds-file"  title="See Detail"></i></a>
                                        <?php
                                         $publish_class = ' table_action_publish';
                                         $publis_title = 'Set Un-Publish';
-                                        $icon = '<i class="fas fa-arrow-up"></i>';
+                                        $icon = '<i class="simple-icon-arrow-up-circle"></i>';
                                         $iconbgclass = ' btn greenbtn c-btn';
                                         if ($sf->sf_status != 1) {
                                         $publish_class = ' table_action_unpublish';
                                         $publis_title = 'Set Publish';
-                                        $icon = '<i class="fas fa-arrow-down red"></i>';
+                                        $icon = '<i class="simple-icon-arrow-down-circle red"></i>';
                                         $iconbgclass = ' btn default c-btn';
                                         }
-                                        echo '<a class="btn yellow  c-btn view_attributes" rel="'.$sf->sf_id.'" naming="'.seoUrl($sf->sf_name).'"><i class="fa fa-sitemap"  title="Manage Attributes" ></i></a>';
+                                        echo '<a class="btn yellow  c-btn view_attributes" rel="'.$sf->sf_id.'" naming="'.seoUrl($sf->sf_name).'"><i class="iconsminds-three-arrow-fork"  title="Manage Attributes" ></i></a>';
                                         echo anchor("javascript:;",$icon, array('class' => 'action_publish' . $publish_class . $iconbgclass, 
                                         'title' => $publis_title,'rel' => $sf->sf_id,'id' => $sf->sf_id, 'status' => $sf->sf_status));
-                                        echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit Check'));
+                                        echo anchor($edit_url, '<i class="iconsminds-file-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit Check'));
 
-                                        echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $sf->sf_id, 'title' => 'Delete Check'));
+                                       // echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $sf->sf_id, 'title' => 'Delete Check'));
                                         ?>
                                         </td>
                                     </tr>
@@ -82,14 +91,12 @@ function seoUrl($string) {
                                 <?php } ?>
                             </tbody>
                     </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    <!-- END DATATABLE 1 -->
-    
-    </div>
-</div>    
+    </main>    
 
 <script type="text/javascript">
 $(document).ready(function(){

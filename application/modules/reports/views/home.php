@@ -27,7 +27,7 @@
     }
     .font-head
     {
-        font-size: 16px;
+        font-size: 20px;
         text-align: center;
     }
     .cards
@@ -36,7 +36,7 @@
     }
     .fa_icons , .mb
     {
-        font-size: 45px;
+        font-size: 60px;
         width: 100%;
         padding-top: 15px;
     }
@@ -44,10 +44,7 @@
     {
         color: #5d8abf;
     }
-    .sub_row
-    {
-        padding: 30px;
-    }
+   
     #myProgress {
         width: 100%;
         background-color: #ddd;
@@ -99,13 +96,26 @@
 </style>
 
 
-<div class="checking_previous"></div>
-<div class="page-content-wrapper">
-    <div class="page-content">
+    
+    <main>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Reports</h1>
+                    <div class="separator mb-5"></div>
+                </div>
+            </div>
+
+<!--             <div class="row mb-4">
+                <div class="col-12 mb-4">
+                    <div class="card">
+                        <div class="card-body"> -->
         <section>
 
-            <div class="content-wrapper" style="padding-bottom: 0px !important;">
-                <div class="content-heading" style="margin-bottom: 0px !important;">
+            <div class="row mb-4" style="padding-bottom: 0px !important;">
+            <div class="col-12 mb-4">
+                <div class="card" style="margin-bottom: 0px !important;">
+                 <div class="card-body">
                     <div style="float: left">
                         <a onclick="toggle_tab(true)" style="cursor: pointer"> Reports </a>
                             <small data-localize="reports.WELCOME"></small>
@@ -117,11 +127,16 @@
                     </div>
                 </div>
             </div>
+        </div>
+        </div>
         </section>
 
         <section id="tab_reports">
 
-            <div class="content-wrapper">
+            <div class="row mb-4">
+            <div class="col-12 mb-4">
+            <div class="card">
+              <div class="card-body">
                 <form id="search_form" action="javascript:void(0)" method="post">
                     <div class="row">
                             <div class="col-md-3">
@@ -188,7 +203,7 @@
                 <div class="row">
                   <div class="col-md-3">
                                 <div class="form-group">
-                                            <div class='input-group datetimepicker2' >
+                                            <div class='input-group date ' >
                                                 <input type='text' class="form-control validatefield" id="startdate" name="startdate" placeholder="From" />
                                                 <span class="input-group-addon">
                                                     <span class="fa fa-calendar"></span>
@@ -198,7 +213,7 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                            <div class='input-group datetimepicker2'>
+                                            <div class='input-group date '>
                                                 <input type='text' class="form-control validatefield" id="enddate" name="enddate" placeholder="To"/>
                                                 <span class="input-group-addon">
                                                     <span class="fa fa-calendar"></span>
@@ -214,39 +229,46 @@
                 </div>
                 <br>
                 </form>
-
-                <div class="row">
-                    <div class="col-md-12">
+              <div class="col-md-12">
                         <div id="div_tblreport"></div>
                     </div>
-                </div>
             </div>
-
+            </div>
+            </div>
+                
+        </div>
         </section>
 
         <section id="tab_charts">
-
+  <div class="row mb-4">
+                <div class="col-12 mb-4">
+                    <div class="card">
+                        <div class="card-body">
             <div class="content-wrapper">
-                <div id="div_chart_mixed_multi_axis_day_status_percentage"></div>
+                <div id="div_chart_mixed_multi_axis_day_status_percentage" class="col-sm-12 col-md-12"></div>
                 <!---------------------------------Totals(start)------------------------------ -->
-                <div class="div_chart" id="div_chart_totals"></div>
+            <div class="row">
+                <div class="div_chart col-sm-12 col-md-4" id="div_chart_totals"></div>
                 <!---------------------------------Totals(end)------------------------------ -->
 
                 <!---------------------------------Compliants(start)------------------------------ -->
-                <div class="div_chart" id="div_chart_compliants"></div>
+                <div class="div_chart col-sm-12 col-md-8 row" id="div_chart_compliants"></div>
                 <!---------------------------------Compliants(end)------------------------------ -->
 
                 <!---------------------------------Corrections(start)------------------------------ -->
-                <div class="div_chart" id="div_chart_corrections"></div>
+                <div class="div_chart col-sm-12 col-md-4" id="div_chart_corrections"></div>
                 <!---------------------------------Corrections(end)------------------------------ -->
 
                 <!---------------------------------Unsigned(start)------------------------------ -->
-                <div class="div_chart" id="div_chart_signed"></div>
+                <div class="div_chart col-sm-12 col-md-4" id="div_chart_signed"></div>
                 <!---------------------------------Unsigned(end)------------------------------ -->
-
-
             </div>
 
+            </div>
+</div>
+                    </div>
+                </div>
+  </div>
         </section>
     </div>
 </div>
@@ -395,10 +417,10 @@
                         ,get_array_by_associative_index_distinct("assign_checkname").length
                         ,get_array_by_associative_index_distinct("assign_id").length
                         ,get_array_by_associative_index_distinct("assign_user").length
-                        ,'col-sm-4');
+                        ,'col-sm-12');
                     let non_compliants_percentage = (arr_non_compliants.length/arr_compliants.length) * 100;
-                    load_chart_for_compliants('#div_chart_compliants',100-non_compliants_percentage,true,'col-sm-4');
-                    load_chart_for_compliants('#div_chart_compliants',non_compliants_percentage,false,'col-sm-4');
+                    load_chart_for_compliants('#div_chart_compliants',100-non_compliants_percentage,true,'col-sm-6');
+                    load_chart_for_compliants('#div_chart_compliants',non_compliants_percentage,false,'col-sm-6');
                     /*load_chart_for_corrections('#div_chart_corrections', arr_non_compliants);*/
                     arrr_load_chart_mixed_multi_y_axis();
                     load_chart_mixed_multy_y_axis_apex(

@@ -1,13 +1,19 @@
-<!-- Page content-->
-<div class="content-wrapper">
-    <h3>User Groups<a href="groups/create"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Add New</button></a></h3>
+
+
+<main>
     <div class="container-fluid">
-        <!-- START DATATABLE 1 -->
         <div class="row">
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                    <table id="datatable1" class="table table-body  table-bordered">
+            <div class="col-12">
+                <h1>User Groups</h1>
+                <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="groups/create">&nbsp;Add New&nbsp;</a>
+                <div class="separator mb-5"></div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="data-table data-table-feature">
                         <thead class="bg-th">
                         <tr class="bg-col">
                         <th>Group Title <i class="fa fa-sort" style="font-size:13px;"></i></th>
@@ -44,17 +50,17 @@
                                         <?php
                                         $publish_class = ' table_action_publish';
                                         $publis_title = 'Set Un-Publish';
-                                        $icon = '<i class="fas fa-arrow-up"></i>';
+                                        $icon = '<i class="simple-icon-arrow-up-circle"></i>';
                                         $iconbgclass = ' btn greenbtn c-btn';
                                         if ($new->status != 1) {
                                         $publish_class = ' table_action_unpublish';
                                         $publis_title = 'Set Publish';
-                                        $icon = '<i class="fas fa-arrow-down red"></i>';
+                                        $icon = '<i class="simple-icon-arrow-down-circle red"></i>';
                                         $iconbgclass = ' btn default c-btn';
                                         }
                                         echo anchor("javascript:;",$icon, array('class' => 'action_publish' . $publish_class . $iconbgclass, 
                                         'title' => $publis_title,'rel' => $new->id,'id' => $new->id, 'status' => $new->status));
-                                        echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit Group'));
+                                        echo anchor($edit_url, '<i class="iconsminds-file-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit Group'));
 
                                        
                                         ?>
@@ -65,12 +71,11 @@
                             </tbody>
                     </table>
                     </div>
+                    </div>
                 </div>
             </div>
         </div>
-    
-    </div>
-</div>    
+    </main>
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -149,8 +154,9 @@ $(document).ready(function(){
                         $('#'+id).addClass('default');
                         $('#'+id).removeClass('green');
                         $('#'+id).find('i.fa-long-arrow-up').removeClass('fa-long-arrow-up').addClass('fa-long-arrow-down');
+                        
                     }
-                   // $("#listing").load('<?php ADMIN_BASE_URL?>groups/manage');
+                location.reload();
                     toastr.success('Status Changed Successfully');
                 }
             });

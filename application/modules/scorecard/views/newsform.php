@@ -9,7 +9,7 @@
     .btn-group.open .dropdown-toggle {
         background-color: transparent;
     }
-    fieldset .form-group {
+    fieldset .input-group mb-3 {
     margin-bottom: 15px;
 }
 .section-box {
@@ -24,53 +24,22 @@
 }
 
 </style>
-<div class="page-content-wrapper">
-  <div class="page-content"> 
-    <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
-    <div id="contractors_measurements_modal" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-            <h4 class="modal-title">Modal title</h4>
-          </div>
-          <div class="modal-body"> Widget settings form goes here </div>
-          <div class="modal-footer">
-            <button type="button" class="btn green" id="confirm"><i class="fa fa-check"></i>&nbsp;Save changes</button>
-            <button type="button" class="btn default" data-dismiss="modal"><i class="fa fa-undo"></i>&nbsp;Close</button>
-          </div>
-        </div>
-        <!-- /.modal-content --> 
-      </div>
-      <!-- /.modal-dialog --> 
-    </div>
-    <!-- /.modal --> 
-    <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM--> 
-    <!-- BEGIN PAGE HEADER-->
-    <div class="content-wrapper">
-        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
-      <h3>
-        <?php 
-                    $strTitle = 'Fill ScoreCard';
-                    echo $strTitle;
-                    ?>
-                   
-       </h3>             
-            
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="tabbable tabbable-custom boxless">
-          <div class="tab-content">
-          <div class="panel panel-default" style="border-radius:10px;">
-         
-            <div class="tab-pane  active" id="tab_2" >
-              <div class="portlet box green ">
-                <div class="portlet-title ">
-                 
-                </div>
-                
-                <div class="portlet-body form " style="padding-top:15px;"> 
+              <main>
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-12">
+                      <h1>   </h1>
+                      <div class="separator mb-5"></div>
+                    </div>
+                  </div>
+                <div class="card mb-4">
+                  <div class="card-body">
+                    <h5 class="mb-4">
+                    <?php 
+                        $strTitle = 'Fill ScoreCard';
+                        echo $strTitle;
+                        ?> 
+                      </h5>
                   
                   <!-- BEGIN FORM-->
                         <?php
@@ -90,19 +59,19 @@
                     <!-- <h3 class="form-section">Post Information</h3>-->
                    
                 <div class="row new">
-                    <div class="col-sm-5">
-                        <div class="form-group">
+                    <div class="col-sm-6">
+                        <div class="input-group mb-3">
                           <?php if(!isset($supplier)) $supplier = array();
                            $options = $supplier ;
-                          $attribute = array('class' => 'control-label col-md-4');
-                          echo form_label('Supplier <span style="color:red">*</span>', 'supplier_id', $attribute);?>
-                          <div class="col-md-8">
-                            <?php echo form_dropdown('supplier_id', $options, '',  'class="form-control select2me required validatefield" id="supplier_id" tabindex ="8"'); ?>
+                          $attribute = array('class' => 'control-label col-md-4');?>
+                          <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary" type="button">Supplier<span style="color:red">*</span></button>
                           </div>
+                          <?php echo form_dropdown('supplier_id', $options, '',  'class="form-control select2me required validatefield" id="supplier_id" tabindex ="8"'); ?>
                         </div>
                      </div>
                      <!-- <div class="col-sm-5">
-                        <div class="form-group">
+                        <div class="input-group mb-3">
                           <?php if(!isset($groups)) $groups = array();
                            $options = $groups ;
                           $attribute = array('class' => 'control-label col-md-4');
@@ -117,31 +86,35 @@
                   <div class="row">
                     <div class="col-md-6">
                       <div class="col-md-offset-2 col-md-9" style="padding-bottom:15px;">
-                       <span style="margin-left:40px"></span> <button type="submit" class="btn btn-primary submited_form"><i class="fa fa-check"></i>&nbsp;Create</button>
+                       <span style="margin-left:40px"></span> <button type="submit" class="btn btn-outline-primary submited_form"><i class="fa fa-check"></i>&nbsp;Create</button>
                         <a href="<?php echo ADMIN_BASE_URL . 'scorecard'; ?>">
-                        <button type="button" class="btn green btn-default" style="margin-left:20px;"><i class="fa fa-undo"></i>&nbsp;Cancel</button>
+                        <button type="button" class="btn green btn-outline-default" style="margin-left:20px;"><i class="fa fa-undo"></i>&nbsp;Cancel</button>
                         </a> </div>
                     </div>
                     <div class="col-md-6"> </div>
                   </div>
                 </div>
                 
-                <?php echo form_close(); ?> 
-                <!-- END FORM--> 
-                
-               </div>
               </div>
+                <?php echo form_close(); ?> 
             </div>
           </div>
         </div>
-        <div class="">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
-                    <h3>Recently Created ScoreCards</h3>
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                            <table id="datatable1" class="table table-body  table-bordered">
+
+
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-12">
+                      <h1> </h1>
+                      <div class="separator mb-5"></div>
+                    </div>
+                  </div>
+                <div class="card mb-4">
+                  <div class="card-body">
+                    <h5 class="mb-4">
+                    Recently Created ScoreCards
+                      </h5>
+                            <table id="datatable1" class="data-table data-table-feature">
                                 <thead class="bg-th">
                                 <tr class="bg-col" align="center" class="text-center">
                                 <th class="text-center" style="display:none;"><b>S.no </b><i class="fa fa-sort" style="font-size:13px;"></i></th>
@@ -164,19 +137,19 @@
                                                 <td><?php echo $new['create_date'] ?></td>
                                                 
                                                 <td class="table_action" style="text-align: center;">
-                                                <a class="btn yellow c-btn view_details" rel="<?=$new['id']?>"><i class="fa fa-list"  title="See Detail"></i></a> 
+                                                <a class="btn yellow c-btn view_details" rel="<?=$new['id']?>"><i class="iconsminds-file"  title="See Detail"></i></a> 
                                                 <?php
                                                 $publish_class = ' table_action_publish';
                                                 $publis_title = 'Set Un-Publish';
-                                                $icon = '<i class="fas fa-arrow-up"></i>';
+                                                $icon = '<i class="simple-icon-arrow-up-circle"></i>';
                                                 $iconbgclass = ' btn greenbtn c-btn';
                                                 if ($new['status'] != 1) {
                                                 $publish_class = ' table_action_unpublish';
                                                 $publis_title = 'Set Publish';
-                                                $icon = '<i class="fas fa-arrow-down red"></i>';
+                                                $icon = '<i class="simple-icon-arrow-down-circle"></i>';
                                                 $iconbgclass = ' btn default c-btn';
                                                 }
-                                                echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $new['id'], 'title' => 'Delete product_checks'));
+                                                echo anchor('"javascript:;"', '<i class="simple-icon-close"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $new['id'], 'title' => 'Delete product_checks'));
                                                 ?>
                                                 </td>
                                             </tr>
@@ -184,19 +157,10 @@
                                         <?php } ?>
                                     </tbody>
                               </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              </div>
             </div>
-        </div>    
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-</div>
-
+          </div>
+        </main>
 
 <script>
 

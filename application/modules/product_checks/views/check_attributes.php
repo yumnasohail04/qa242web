@@ -1,13 +1,18 @@
 <style>
   .my-custom-scrollbar {
     position: relative;
-    height: 600px;
     overflow: auto;
   }
   .table-wrapper-scroll-y {
     display: block;
   }
+table
+{
+    margin: 20px 0px 0px 0px;
+
+}
 </style>
+<input type="hidden" value="<?php  echo $this->uri->segment('4'); ?>" id="check_id">
 <?php $datacheck=false; function searchForId($id, $array) {
 foreach ($array as $key => $val) {
 if ($val['attribute_type'] === $id) {
@@ -18,20 +23,21 @@ return null;
 }?>
 <div class="attribute">
   <div class=" table-wrapper-scroll-y my-custom-scrollbar ">
-    <h4>Choice  attributes:
-    </h4>
-    <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
+   
+    <table class="table table-bordered mb-0" >
       <thead>
         <tr>
-          <th  style="color: black !important">Attribute Name
+          <th>Choice  attributes
           </th>
-          <th  style="color: black !important">Choice Type
+          <th>Choice Type
           </th>
-          <th style="color: black !important">Order
+          <th>Dependency
           </th>
-          <!--<th style="color: black !important">Possible Value</th>-->
+          <th style="width:15%">Order
+          </th>
+          <!--<th  >Possible Value</th>-->
           <?php  if($datacheck==false){?>
-          <th style="color: black !important">
+          <th style="width:5%">
           </th>
           <?}?> 
         </tr>
@@ -41,7 +47,7 @@ return null;
 foreach($master_attributes as $valuess){
 if($valuess['attribute_type']=='Choice' ){?>
         <tr>
-          <td style="width:35%;!important"> 
+          <td> 
             <div class="form-group">
               <?php
 $products=array();
@@ -75,6 +81,15 @@ $data = array(
           <td>
             <?=strtolower( str_replace(',', '/',$valuess['possible_answers'])) ?>
           </td>
+          <td style="padding-top: 0px; width: 20%;">
+            <select class="form-control dependent_attributes " id="dependent_attributes" attr_id="<?php if(isset($valuess['question_id'])) echo $valuess['question_id'];else echo '0';?>" >
+            <?php   $res = Modules::run('api/_get_specific_table_with_pagination',array('question_id'=>$valuess['question_id']), 'question_id desc',DEFAULT_OUTLET.'_checks_questions','parent_id','1','0')->row();
+                    if(!empty($res) && $res->parent_id!="0"){
+                    $res_val = Modules::run('api/_get_specific_table_with_pagination',array('question_id'=>$res->parent_id), 'question_id desc',DEFAULT_OUTLET.'_checks_questions','question','1','0')->row(); ?>
+            <option default><?php echo $res_val->question ?></option>
+                    <?php  } ?>
+            </select>
+          </td>
           <input type="hidden" name="possible_answers[]" value="<?=strtolower( str_replace(',', '/',$valuess['possible_answers'])) ?>">
           <input type="hidden" name="min_value[]" value="" />
           <input type="hidden" name="max_value[]" value="" />
@@ -87,14 +102,14 @@ if(!isset($valuess['question_id']))
 $valuess['question_id']='0';
 ?>
               <div class="col-md-12" id="cities_cont">
-                <?php echo form_dropdown('page_rank[]', $options, $valuess['page_rank'], 'class = "form-control chosen-select" id = "rank" attr_id="'.$valuess['question_id'].'"'); ?>
+                <?php echo form_dropdown('page_rank[]', $options, $valuess['page_rank'], 'class = "form-control " id = "rank" attr_id="'.$valuess['question_id'].'"'); ?>
               </div>
             </div>
           </td>                    
           <td> 
             <div class="form-group">
               <div class="col-md-8" style="width:100%;">
-                <i  style="color:#ffc735;" class="fa fa-times  pull-right remove_attribute"   attr_id="<?php if(isset($valuess['question_id']) && $valuess['question_id'] >0) echo $valuess['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check">
+                <i  style="color:#ffc735;" class="simple-icon-close pull-right remove_attribute"   attr_id="<?php if(isset($valuess['question_id']) && $valuess['question_id'] >0) echo $valuess['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check">
                 </i>              
               </div>
             </div>
@@ -103,19 +118,21 @@ $valuess['question_id']='0';
         <?}}}?>
       </tbody>
     </table>
-    <h4>Fixed attributes:
     </h4>
-    <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
+    <table class="table table-bordered mb-0" >
       <thead>
         <tr>
-          <th  style="color: black !important">Attribute Name
+          <th>Fixed attributes
           </th>
-          <th style="color: black !important">
+          <th>
           </th>
-          <th style="color: black !important">Order
+          <th>
+            Dependency
+          </th>
+          <th style="width:15%" >Order
           </th>
           <?php if($datacheck==false){?>
-          <th style="color: black !important">
+          <th  style="width:5%">
           </th>
           <?}?> 
         </tr>
@@ -125,7 +142,7 @@ $valuess['question_id']='0';
 foreach($master_attributes as $valuerrr){
 if($valuerrr['attribute_type']=='Fixed' ){?>
         <tr>
-          <td style="width:35%;!important"> 
+          <td> 
             <div class="form-group">
               <?php
 $products=array();
@@ -160,6 +177,15 @@ $data = array(
             <h5>User will be asked to provide a text input
             </h5>
           </td>
+          <td style="padding-top: 0px; width: 20%;">
+            <select class="form-control dependent_attributes " id="dependent_attributes" attr_id="<?php if(isset($valuerrr['question_id']) ) echo $valuerrr['question_id'];else echo '0';?>" >
+            <?php   $res = Modules::run('api/_get_specific_table_with_pagination',array('question_id'=>$valuerrr['question_id']), 'question_id desc',DEFAULT_OUTLET.'_checks_questions','parent_id','1','0')->row();
+                    if(!empty($res) && $res->parent_id!="0"){
+                      $res_val = Modules::run('api/_get_specific_table_with_pagination',array('question_id'=>$res->parent_id), 'question_id desc',DEFAULT_OUTLET.'_checks_questions','question','1','0')->row(); ?>
+                      <option default><?php echo $res_val->question ?></option>
+            <?php  } ?>
+            </select>
+          </td>
           <input type="hidden" name="possible_answers[]" value="<?=strtolower( str_replace(',', '/',$valuerrr['possible_answers'])) ?>">
           <input type="hidden" name="min_value[]" value="" />
           <input type="hidden" name="max_value[]" value="" />
@@ -172,14 +198,14 @@ if(!isset($valuerrr['question_id']))
 $valuerrr['question_id']='0';
 ?>
               <div class="col-md-12" id="cities_cont">
-                <?php echo form_dropdown('page_rank[]', $options,$valuerrr['page_rank'], 'class = "form-control chosen-select" id = "rank" attr_id="'.$valuerrr['question_id'].'"'); ?>
+                <?php echo form_dropdown('page_rank[]', $options,$valuerrr['page_rank'], 'class = "form-control " id = "rank" attr_id="'.$valuerrr['question_id'].'"'); ?>
               </div>
             </div>
           </td>                          
           <td> 
             <div class="form-group">
               <div class="col-md-8" style="width:100%;">
-                <i  style="color:#ffc735;" class="fa fa-times  pull-right remove_attribute"   attr_id="<?php if(isset($valuerrr['question_id']) && $valuerrr['question_id'] >0) echo $valuerrr['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check">
+                <i  style="color:#ffc735;" class="simple-icon-close pull-right remove_attribute"   attr_id="<?php if(isset($valuerrr['question_id']) && $valuerrr['question_id'] >0) echo $valuerrr['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check">
                 </i>              
               </div>
             </div>
@@ -188,19 +214,19 @@ $valuerrr['question_id']='0';
         <?}}}?>
       </tbody>
     </table>
-    <h4>Date attributes:
-    </h4>
-    <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
+    <table class="table table-bordered mb-0" >
       <thead>
         <tr>
-          <th  style="color: black !important">Attribute Name
+          <th>Date attributes
           </th>
-          <th style="color: black !important">
+          <th>
           </th>
-          <th style="color: black !important">Order
+          <th>Dependency
+          </th>
+          <th style="width:15%">Order
           </th>
           <?php if($datacheck==false){?>
-          <th style="color: black !important">
+          <th style="width:5%" >
           </th>
           <?}?> 
         </tr>
@@ -210,7 +236,7 @@ $valuerrr['question_id']='0';
 foreach($master_attributes as $valuerrr){
 if($valuerrr['attribute_type']=='Date' ){?>
         <tr>
-          <td style="width:35%;!important"> 
+          <td> 
             <div class="form-group">
               <?php
 $products=array();
@@ -245,6 +271,15 @@ $data = array(
             <h5>User will be asked to provide Date
             </h5>
           </td>
+          <td style="padding-top: 0px;width: 20%;">
+                  <select  parent_id="<?php echo $res->parent_id ?>"  class="form-control dependent_attributes " id="dependent_attributes" attr_id="<?php if(isset($valuerrr['question_id']) ) echo $valuerrr['question_id'];else echo '0';?>" >
+                  <?php   $res = Modules::run('api/_get_specific_table_with_pagination',array('question_id'=>$valuerrr['question_id']), 'question_id desc',DEFAULT_OUTLET.'_checks_questions','parent_id','1','0')->row();
+                          if(!empty($res) && $res->parent_id!="0"){
+                            $res_val = Modules::run('api/_get_specific_table_with_pagination',array('question_id'=>$res->parent_id), 'question_id desc',DEFAULT_OUTLET.'_checks_questions','question','1','0')->row(); ?>
+                            <option default><?php echo $res_val->question ?></option>
+                  <?php  } ?>
+                  </select>
+                </td>
           <input type="hidden" name="possible_answers[]" value="<?=strtolower( str_replace(',', '/',$valuerrr['possible_answers'])) ?>">
           <input type="hidden" name="min_value[]" value="" />
           <input type="hidden" name="max_value[]" value="" />
@@ -257,14 +292,14 @@ if(!isset($valuerrr['question_id']))
 $valuerrr['question_id']='0';
 ?>
               <div class="col-md-12" id="cities_cont">
-                <?php echo form_dropdown('page_rank[]', $options,$valuerrr['page_rank'], 'class = "form-control chosen-select" id = "rank" attr_id="'.$valuerrr['question_id'].'"'); ?>
+                <?php echo form_dropdown('page_rank[]', $options,$valuerrr['page_rank'], 'class = "form-control " id = "rank" attr_id="'.$valuerrr['question_id'].'"'); ?>
               </div>
             </div>
           </td>                          
           <td> 
             <div class="form-group">
               <div class="col-md-8" style="width:100%;">
-                <i  style="color:#ffc735;" class="fa fa-times  pull-right remove_attribute"   attr_id="<?php if(isset($valuerrr['question_id']) && $valuerrr['question_id'] >0) echo $valuerrr['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check">
+                <i  style="color:#ffc735;" class="simple-icon-close  pull-right remove_attribute"   attr_id="<?php if(isset($valuerrr['question_id']) && $valuerrr['question_id'] >0) echo $valuerrr['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check">
                 </i>              
               </div>
             </div>
@@ -273,19 +308,19 @@ $valuerrr['question_id']='0';
         <?}}}?>
       </tbody>
     </table>
-    <h4>DateTime attributes:
-    </h4>
-    <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
+    <table class="table table-bordered mb-0" >
       <thead>
         <tr>
-          <th  style="color: black !important">Attribute Name
+          <th>DateTime attributes
           </th>
-          <th style="color: black !important">
+          <th>
           </th>
-          <th style="color: black !important">Order
+          <th>Dependency
+          </th>
+          <th style="width:15%">Order
           </th>
           <?php if($datacheck==false){?>
-          <th style="color: black !important">
+          <th style="width:5%">
           </th>
           <?}?> 
         </tr>
@@ -295,7 +330,7 @@ $valuerrr['question_id']='0';
 foreach($master_attributes as $valuerrr){
 if($valuerrr['attribute_type']=='DateTime' ){?>
         <tr>
-          <td style="width:35%;!important"> 
+          <td> 
             <div class="form-group">
               <?php
 $products=array();
@@ -330,6 +365,15 @@ $data = array(
             <h5>User will be asked to provide DateTime
             </h5>
           </td>
+          <td style="padding-top: 0px;width: 20%;">
+            <select  parent_id="<?php echo $res->parent_id ?>"   class="form-control dependent_attributes " id="dependent_attributes" attr_id="<?php if(isset($valuerrr['question_id']) ) echo $valuerrr['question_id'];else echo '0';?>" >
+            <?php   $res = Modules::run('api/_get_specific_table_with_pagination',array('question_id'=>$valuerrr['question_id']), 'question_id desc',DEFAULT_OUTLET.'_checks_questions','parent_id','1','0')->row();
+                    if(!empty($res) &&  $res->parent_id!="0"){
+                      $res_val = Modules::run('api/_get_specific_table_with_pagination',array('question_id'=>$res->parent_id), 'question_id desc',DEFAULT_OUTLET.'_checks_questions','question','1','0')->row(); ?>
+                      <option default><?php echo $res_val->question ?></option>
+            <?php  } ?>
+            </select>
+          </td>
           <input type="hidden" name="possible_answers[]" value="<?=strtolower( str_replace(',', '/',$valuerrr['possible_answers'])) ?>">
           <input type="hidden" name="min_value[]" value="" />
           <input type="hidden" name="max_value[]" value="" />
@@ -342,14 +386,14 @@ if(!isset($valuerrr['question_id']))
 $valuerrr['question_id']='0';
 ?>
               <div class="col-md-12" id="cities_cont">
-                <?php echo form_dropdown('page_rank[]', $options,$valuerrr['page_rank'], 'class = "form-control chosen-select" id = "rank" attr_id="'.$valuerrr['question_id'].'"'); ?>
+                <?php echo form_dropdown('page_rank[]', $options,$valuerrr['page_rank'], 'class = "form-control" id = "rank" attr_id="'.$valuerrr['question_id'].'"'); ?>
               </div>
             </div>
           </td>                          
           <td> 
             <div class="form-group">
               <div class="col-md-8" style="width:100%;">
-                <i  style="color:#ffc735;" class="fa fa-times  pull-right remove_attribute"   attr_id="<?php if(isset($valuerrr['question_id']) && $valuerrr['question_id'] >0) echo $valuerrr['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check">
+                <i  style="color:#ffc735;" class="simple-icon-close  pull-right remove_attribute"   attr_id="<?php if(isset($valuerrr['question_id']) && $valuerrr['question_id'] >0) echo $valuerrr['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check">
                 </i>              
               </div>
             </div>
@@ -358,19 +402,19 @@ $valuerrr['question_id']='0';
         <?}}}?>
       </tbody>
     </table>
-    <h4>Time attributes:
-    </h4>
-    <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
+    <table class="table table-bordered mb-0" >
       <thead>
         <tr>
-          <th  style="color: black !important">Attribute Name
+          <th>Time attributes
           </th>
-          <th style="color: black !important">
+          <th>
           </th>
-          <th style="color: black !important">Order
+          <th>Dependency
+          </th>
+          <th style="width:15%">Order
           </th>
           <?php if($datacheck==false){?>
-          <th style="color: black !important">
+          <th style="width:5%" >
           </th>
           <?}?> 
         </tr>
@@ -380,7 +424,7 @@ $valuerrr['question_id']='0';
 foreach($master_attributes as $valuerrr){
 if($valuerrr['attribute_type']=='Time' ){?>
         <tr>
-          <td style="width:35%;!important"> 
+          <td> 
             <div class="form-group">
               <?php
 $products=array();
@@ -415,6 +459,15 @@ $data = array(
             <h5>User will be asked to provide Time
             </h5>
           </td>
+          <td style="padding-top: 0px;width: 20%;">
+            <select  parent_id="<?php echo $res->parent_id ?>"  class="form-control dependent_attributes " id="dependent_attributes" attr_id="<?php if(isset($valuerrr['question_id']) ) echo $valuerrr['question_id'];else echo '0';?>" >
+            <?php   $res = Modules::run('api/_get_specific_table_with_pagination',array('question_id'=>$valuerrr['question_id']), 'question_id desc',DEFAULT_OUTLET.'_checks_questions','parent_id','1','0')->row();
+                    if(!empty($res) &&  $res->parent_id!="0"){
+                      $res_val = Modules::run('api/_get_specific_table_with_pagination',array('question_id'=>$res->parent_id), 'question_id desc',DEFAULT_OUTLET.'_checks_questions','question','1','0')->row(); ?>
+                      <option default><?php echo $res_val->question ?></option>
+            <?php  } ?>
+            </select>
+          </td>
           <input type="hidden" name="possible_answers[]" value="<?=strtolower( str_replace(',', '/',$valuerrr['possible_answers'])) ?>">
           <input type="hidden" name="min_value[]" value="" />
           <input type="hidden" name="max_value[]" value="" />
@@ -427,14 +480,14 @@ if(!isset($valuerrr['question_id']))
 $valuerrr['question_id']='0';
 ?>
               <div class="col-md-12" id="cities_cont">
-                <?php echo form_dropdown('page_rank[]', $options,$valuerrr['page_rank'], 'class = "form-control chosen-select" id = "rank" attr_id="'.$valuerrr['question_id'].'"'); ?>
+                <?php echo form_dropdown('page_rank[]', $options,$valuerrr['page_rank'], 'class = "form-control " id = "rank" attr_id="'.$valuerrr['question_id'].'"'); ?>
               </div>
             </div>
           </td>                          
           <td> 
             <div class="form-group">
               <div class="col-md-8" style="width:100%;">
-                <i  style="color:#ffc735;" class="fa fa-times  pull-right remove_attribute"   attr_id="<?php if(isset($valuerrr['question_id']) && $valuerrr['question_id'] >0) echo $valuerrr['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check">
+                <i  style="color:#ffc735;" class="simple-icon-close  pull-right remove_attribute"   attr_id="<?php if(isset($valuerrr['question_id']) && $valuerrr['question_id'] >0) echo $valuerrr['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check">
                 </i>              
               </div>
             </div>
@@ -443,26 +496,26 @@ $valuerrr['question_id']='0';
         <?}}}?>
       </tbody>
     </table>
-    <h4>Range attributes:
-    </h4>
-    <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
+    <table class="table table-bordered mb-0" >
       <thead>
         <tr>
-          <th  style="color: black !important">Attribute Name
+          <th>Range attributes
           </th>
-          <th style="color: black !important;width:15%;">Min
+          <th>Dependency
           </th>
-          <th style="color: black !important;width:15%;">Target
+          <th style="width:15%;">Min
+          </th>
+          <th style="width:15%;">Target
           </th>
           <th style="display:none;width:15%;">
           </th>
-          <th style="color: black !important;width:15%;">Max
+          <th style="width:15%;">Max
           </th>
-          <th style="color: black !important;width:15%;">Rank
+          <th style="width:15%;">Order
           </th>
-          <!--<th style="color: black !important">Possible Value</th>-->
+          <!--<th  >Possible Value</th>-->
           <?php if($datacheck==false){?>
-          <th style="color: black !important">
+          <th style="width:5%">
           </th>
           <?}?> 
         </tr>
@@ -484,6 +537,15 @@ if(!isset($news['group'])) $news['group'] = ""; ?>
               </div>
             </div>
           </td>
+          <td style="padding-top: 0px; width: 20%;">
+                  <select  class="form-control dependent_attributes " id="dependent_attributes" attr_id="<?php if(isset($valuettt['question_id']) ) echo $valuettt['question_id'];else echo '0';?>" >
+                  <?php   $res = Modules::run('api/_get_specific_table_with_pagination',array('question_id'=>$valuettt['question_id']), 'question_id desc',DEFAULT_OUTLET.'_checks_questions','parent_id','1','0')->row();
+                          if(!empty($res) && $res->parent_id!="0"){
+                            $res_val = Modules::run('api/_get_specific_table_with_pagination',array('question_id'=>$res->parent_id), 'question_id desc',DEFAULT_OUTLET.'_checks_questions','question','1','0')->row(); ?>
+                            <option default><?php echo $res_val->question ?></option>
+                  <?php  } ?>
+                  </select>
+                </td>
           <td style="display:none;">
             <div class="form-group">
               <?php
@@ -598,14 +660,14 @@ if(!isset($valuettt['question_id']))
 $valuettt['question_id']='0';
 ?>
     <div class="col-md-12" id="cities_cont">
-      <?php echo form_dropdown('page_rank[]', $options, $valuettt['page_rank'], 'class = "form-control chosen-select" id = "rank" attr_id="'.$valuettt['question_id'].'" '); ?>
+      <?php echo form_dropdown('page_rank[]', $options, $valuettt['page_rank'], 'class = "form-control" id = "rank" attr_id="'.$valuettt['question_id'].'" '); ?>
     </div>
   </div>
 </td>     
 <td> 
   <div class="form-group">
     <div class="col-md-8" style="width:100%;">
-      <i  style="color:#ffc735;" class="fa fa-times  pull-right remove_attribute"  attr_id="<?php if(isset($valuettt['question_id']) && $valuettt['question_id'] >0) echo $valuettt['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check">
+      <i  style="color:#ffc735;" class="simple-icon-close  pull-right remove_attribute"  attr_id="<?php if(isset($valuettt['question_id']) && $valuettt['question_id'] >0) echo $valuettt['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check">
       </i>              
     </div>
   </div>
@@ -618,8 +680,6 @@ $valuettt['question_id']='0';
 <br>
 <br>
 <div class="col-sm-12">
-</div>
-</div>
 </div>
 </div>
 <script>
@@ -642,4 +702,105 @@ $valuettt['question_id']='0';
     }
   }
                         );
+
+var selection_arr=[];
+var attr_array=[];
+$(document).ready(function(){
+  localStorage.clear();
+  var check_id=$('#check_id').val();
+  var subcat_id=$('#subcategory_id').val();
+  $.ajax({
+        type: 'POST',
+        url: "<?=ADMIN_BASE_URL?>product_checks/get_all_attributes",
+        data: {'check_id': check_id,'cat_id':subcat_id},
+        async: false,
+        success: function(result) {
+          attr_array=result;
+        }
+    });
+});
+
+function selection_code(){
+  $('.dependent_attributes')
+      .select2({
+          minimumResultsForSearch: Infinity, 
+          templateResult: formatState,
+          templateSelection: formatState
+    })
+  .on('select2:opening', function() {
+    $('.dependent_attributes').html('');
+    attr_arr=JSON.parse(attr_array);
+    var attr_id=$(this).parent().parent().find('#product_id').val();
+    var parent_id=$(this).attr('parent_id');
+    if(!parent_id)
+    {
+      var parent_id="0";
+    }
+    var selection_arr=JSON.parse(localStorage.getItem('selection_arr'))
+    var opt = document.createElement('option');
+    opt.value = '';
+    opt.innerHTML = "";
+    this.appendChild(opt);
+    var opt = document.createElement('option');
+    opt.value = '0';
+    opt.innerHTML = "Select";
+    this.appendChild(opt);
+    if(selection_arr!=null){
+      attr_arr.map((Item,index) => {
+        if(Item.attribute_id!=attr_id){
+              //index = selection_arr.findIndex(x => x.attr_id==Item.attribute_id);
+              //if(index==-1){
+                var opt = document.createElement('option');
+                if(parent_id==Item.question_id)
+                  opt.selected = "selected";
+                opt.value = Item.attribute_id;
+                opt.innerHTML = Item.question;
+                this.appendChild(opt);
+              //}
+        }
+      })  
+    }else{
+      attr_arr.map((Item,index) => {
+        if(Item.attribute_id!=attr_id){
+              var opt = document.createElement('option');
+              if(parent_id==Item.question_id)
+                opt.selected = "selected";
+              opt.value = Item.attribute_id;
+              opt.innerHTML = Item.question;
+              this.appendChild(opt);
+        }
+      }) 
+    }
+  }).on('select2:select', function (event) {
+    var selection = $(event.target).find(':selected').val();
+    var question_id=$(event.target).attr('attr_id');
+    $('option:selected', this).attr("selected", "selected");
+    var selection_arr=JSON.parse(localStorage.getItem('selection_arr'));
+    if(selection_arr!=null){
+      index = selection_arr.findIndex(x => x.question_id==question_id);
+      if(index != -1 ){
+        selection_arr.splice(index,1);
+      }
+    }else{
+      selection_arr=[];
+    }
+    if(selection!="0"){
+      if(question_id=="0")
+        question_id=selection+'_new';
+      var arr={'attr_id':selection,'question_id':question_id};
+      selection_arr.push(arr);
+    }
+      localStorage.setItem("selection_arr",JSON.stringify(selection_arr))
+    
+  });
+}
+selection_code();
+
+function formatState (state) {
+   if (!state.id) { return state.text; }
+   var el = $(state.element);
+   var available = el.data('available');
+   var $state = $('<span'+(!available ? ' class="not-available"' : '')+'>'+state.element.text.toLowerCase()+'<span></span></span>');
+   return $state;
+};
 </script>

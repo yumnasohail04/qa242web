@@ -1,14 +1,20 @@
-<!-- Page content-->
-<div class="content-wrapper">
- 
-    <h3>Herb Spice <a href="<?=ADMIN_BASE_URL?>herbspice_checks/"><button type="button" class="btn btn-primary "><i class="fa fa-arrow-left"></i>&nbsp;&nbsp;&nbsp;Back to checks</button></a><a href="<?=ADMIN_BASE_URL?>herb_spice/create/<?=$checkid;?>/"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Add New</button></a></h3>
-    <div class="container-fluid">
-        <!-- START DATATABLE 1 -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                    <table id="datatable1" class="table table-striped table-hover table-body">
+   
+                        <main>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Herb Spice</h1>
+                <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="<?php echo ADMIN_BASE_URL.'herb_spice/create';  ?>">&nbsp;Back&nbsp;</a>
+                    <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="<?php echo ADMIN_BASE_URL.'herb_spice/create';  ?>">&nbsp;Add New&nbsp;</a>
+                    <div class="separator mb-5"></div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-12 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                    <table table id="datatable1" class="data-table data-table-feature">
                         <thead class="bg-th">
                         <tr class="bg-col">
                         <th class="sr">S.No</th>
@@ -48,9 +54,9 @@
                                         }
                                       
 
-                                        echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit Item'));
+                                        echo anchor($edit_url, '<i class="iconsminds-file-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit Item'));
 
-                                        echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $new->id, 'title' => 'Delete Item'));
+                                        echo anchor('"javascript:;"', '<i class="simple-icon-close"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $new->id, 'title' => 'Delete Item'));
                                         ?>
                                         </td>
                                     </tr>
@@ -65,7 +71,7 @@
     <!-- END DATATABLE 1 -->
     
     </div>
-</div>    
+</main> 
 
 <script type="text/javascript">
 $(document).ready(function(){

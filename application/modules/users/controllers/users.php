@@ -19,7 +19,13 @@ parent::__construct();
             if (defined('DEFAULT_CHILD_OUTLET'))   $nOutlet_id = DEFAULT_CHILD_OUTLET;
             else  $nOutlet_id = DEFAULT_OUTLET;
     		$where_user['outlet_id'] = $nOutlet_id;
-    		$data['users_rec'] = $this->_get_where_cols($where_user, 'id desc')->result_array();
+    		$users_rec = $this->_get_where_cols($where_user, 'id desc')->result_array();
+        	foreach($users_rec as $key => $value)
+            {
+            	$result = Modules::run('api/_get_specific_table_with_pagination',array("id"=>$value['group']), 'group_title asc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->row_array();
+            	$users_rec[$key]['group']=$result['group_title'];
+            }
+        	$data['users_rec']=$users_rec;
     		$data['view_file'] = 'users_listing';
             $this->load->module('template');
             $this->template->admin($data);
@@ -110,12 +116,11 @@ parent::__construct();
     		$data['roles_title'] = $roles;
             $data['view_file'] = 'users_form';
             $this->load->module('template');
-            $this->template->admin_form($data);
+            $this->template->admin($data);
         }
         function submit() {
             $update_id = $this->uri->segment(4);
             $data = $this->_get_data_from_post();
-            
             if ($update_id && $update_id != 0) {
                     $where['id'] = $update_id;
                     $itemInfo = $this->_getItemById($update_id);
@@ -293,6 +298,8 @@ function _get_data_from_post() {
 		$data['email'] = $this->input->post('email');
         $data['first_name'] = $this->input->post('first_name');
         $data['last_name'] = $this->input->post('last_name');
+        $data['second_group'] = "0";
+        if(!empty($this->input->post('second_group')))
         $data['second_group'] = $this->input->post('second_group');
         $data['group'] = $this->input->post('group');
 		$password = $this->input->post('password');

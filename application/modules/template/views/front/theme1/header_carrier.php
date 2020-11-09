@@ -44,6 +44,7 @@
     <link rel="stylesheet" href="<?php echo STATIC_FRONT_CSS?>main.css" type="text/css">
     <link rel="stylesheet" href="<?php echo STATIC_FRONT_CSS?>lmpixels-demo-panel.css" type="text/css">
     <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>toastr.css" type="text/css">
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>sweetalert.css">
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -59,6 +60,7 @@
     <script src="<?php echo STATIC_FRONT_JS?>jquery-2.1.3.min.js"></script>
     <script src="<?php echo STATIC_FRONT_JS?>bootstrap.min.js"></script>
     <script src="<?php echo STATIC_ADMIN_JS?>moment/min/moment-with-locales.min.js"></script>
+	<script src="https://momentjs.com/downloads/moment.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
     <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
     <script src="<?php echo STATIC_FRONT_JS?>modernizr.custom.js"></script>
@@ -104,7 +106,7 @@
               <a class="pt-trigger" href="#letter" data-animation="59" data-goto="3">Letter of conformance </a>
             </li>
             <li>
-              <a class="pt-trigger" href="#carrier_documents" data-animation="59" data-goto="4">Basic Documents </a>
+              <a class="pt-trigger" href="#carrier_documents" data-animation="59" data-goto="4">Mandatory Documents </a>
             </li>
             <li>
               <a class="pt-trigger" href="#security" data-animation="59" data-goto="5">Security</a>

@@ -7,16 +7,32 @@
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                    <table id="datatable1" class="table table-body">
-                        <thead class="bg-th">
-                        <tr class="bg-col">
-                        <th>Supplier<i class="fa fa-sort" style="font-size:13px;"></i></th>
-                        <th>Completed on <i class="fa fa-sort" style="font-size:13px;"></i></th>
-                        <th>Total Points <i class="fa fa-sort" style="font-size:13px;"></i></th>
-                        <th class="" style="width:300px;text-align: center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
+
+
+
+
+<main>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1>Completed ScoreCards List</h1>
+                <div class="separator mb-5"></div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <table id="datatable1" class="table table-body">
+                            <thead class="bg-th">
+                            <tr class="bg-col">
+                            <th>Supplier<i class="fa fa-sort" style="font-size:13px;"></i></th>
+                            <th>Completed on <i class="fa fa-sort" style="font-size:13px;"></i></th>
+                            <th>Total Points <i class="fa fa-sort" style="font-size:13px;"></i></th>
+                            <th class="" style="width:300px;text-align: center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
                                 <?php
                                 $i = 0;
                                 if (isset($card_list)) {
@@ -29,22 +45,21 @@
                                         <td><?php echo wordwrap($new['at_reviewed_date'] , 50 , "<br>\n")  ?></td>
                                         <td><?php echo wordwrap(number_format((float)$new['total_percentage'], 0, '.', '').'%' , 50 , "<br>\n")  ?></td>
                                         <td class="table_action" style="text-align: center;">
-                                        <a class="btn yellow c-btn view_details" rel="<?=$new['id']?>"><i class="fa fa-list"  title="See Detail"></i></a>
-                                       <?php  echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $new['id'], 'title' => 'Delete')); ?>
+                                        <a class="btn yellow c-btn view_details" rel="<?=$new['id']?>"><i class="iconsminds-file"  title="See Detail"></i></a>
+                                       <?php  echo anchor('"javascript:;"', '<i class="simple-icon-close"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $new['id'], 'title' => 'Delete')); ?>
 
                                         </td>
                                     </tr>
                                     <?php } ?>    
                                 <?php } ?>
                             </tbody>
-                    </table>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-    
     </div>
-</div>    
+</main> 
 
 <script type="text/javascript">
 $(document).ready(function(){

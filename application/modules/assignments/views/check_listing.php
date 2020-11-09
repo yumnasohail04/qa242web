@@ -1,37 +1,42 @@
 <link href="<?php echo STATIC_ADMIN_CSS;?>simplePagination.css" rel="stylesheet">
 <!-- Page content-->
 <div class="old_search" style="display: none;"></div>
-<div class="content-wrapper">
-    <input type="hidden" id="assign_type" value="<?=$this->uri->segment(3);?>" />
-    <h3><?php if($assign_status == 'active_checks') echo "Active"; elseif($assign_status == 'overdue_checks') echo "Overdue";elseif($assign_status == 'today_checks') echo "Overdue"; else echo ""; ?> Assignments  <?php if($assign_status == 'overdue_checks') { ?><a href="<?php echo BASE_URL.'assignments/delete_current_date_checks'?>"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Delete Overdue Checks </button></a><?php } ?></h3>
-    
-    <div class="container-fluid">
-        <!-- START DATATABLE 1 -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-body">
+    <main>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                <input type="hidden" id="assign_type" value="<?=$this->uri->segment(3);?>" />
+                <h3><?php if($assign_status == 'active_checks') echo "Active"; elseif($assign_status == 'overdue_checks') echo "Overdue";elseif($assign_status == 'today_checks') echo "Overdue"; else echo ""; ?> Assignments  <?php if($assign_status == 'overdue_checks') { ?>
+                    <a href="<?php echo BASE_URL.'assignments/delete_current_date_checks'?>" class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right">&nbsp;&nbsp;&nbsp;Delete Overdue Checks </a><?php } ?></h3>
+                    <div class="separator mb-5"></div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-12 mb-4">
+                    <div class="card">
+                        <div class="card-body">
                         <div class="row">
                             <div class="col-md-3">
-                                <div class="form-group">
+                                <div class="form-group  mb-1">
                                     <label>From:</label>
-                                    <div class='input-group datetimepicker2'>
-                                        <input type='text' class="form-control" id="startdate" />
-                                        <span class="input-group-addon">
-                                            <span class="fa fa-calendar"></span>
-                                        </span>
+                                    <div class='input-group date'>
+                                        <input type='text' class="form-control " id="startdate" />
+                                        <span class="input-group-text input-group-append input-group-addon">
+                                                <i class="simple-icon-calendar"></i>
+                                            </span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="form-group">
+                                <div class="form-group  mb-1">
                                     <label>To:</label>
-                                    <div class='input-group datetimepicker2'>
-                                        <input type='text' class="form-control" id="enddate" />
-                                        <span class="input-group-addon">
-                                            <span class="fa fa-calendar"></span>
-                                        </span>
-                                    </div>
+                                    <div class="input-group date">
+                                            <input type="text" class="form-control" id="enddate">
+                                            <span class="input-group-text input-group-append input-group-addon">
+                                                <i class="simple-icon-calendar"></i>
+                                            </span>
+                                        </div>
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -39,7 +44,7 @@
                                     <button type="button" class="btn btn-primary form-control filter_search" style="    max-width:85px;">Search</button>
                                  </div>
                             </div>
-                            <div class="col-md-5"  style="float:right; margin-bottom: 1%;">
+                            <!-- <div class="col-md-5"  style="float:right; margin-bottom: 1%;">
                                 <div  class="row" style="padding-top:25px;">
                                     <div class="col-md-6" style="text-align: right;">
                                         <label>
@@ -50,32 +55,32 @@
                                         <input id="search" type="search" class="form-control input-sm current_search" placeholder="" aria-controls="datatable1">
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
-                        <table class="table table-striped table-hover table-body table-bordered">
+                        <table class="data-table data-table-feature">
                             <thead class="bg-th">
                                 <tr class="bg-col">
                                     <th class="text-center"  style="width:120px;">
-                                        Start Time <i class="fa fa-sort" style="font-size:13px;">
+                                        Start Time <i class="fa fa-sort" style="font-size:13px;"></i>
                                     </th>
                                     <th class="text-center"  style="width:120px;">
-                                        End Time <i class="fa fa-sort" style="font-size:13px;">
+                                        End Time <i class="fa fa-sort" style="font-size:13px;"></i>
                                     </th>
                                     <th class="text-center" style="width:200px;">
-                                        Check Name <i class="fa fa-sort" style="font-size:13px;">
+                                        Check Name <i class="fa fa-sort" style="font-size:13px;"></i>
                                     </th>
                                     <th class="text-center" style="width:200px;">
-                                        Responsible Team <i class="fa fa-sort" style="font-size:13px;">
+                                        Responsible Team <i class="fa fa-sort" style="font-size:13px;"></i>
                                     </th>
                                     <th class="text-center"style="width:200px;" >
-                                            Lines<i class="fa fa-sort" style="font-size:13px;">
+                                            Lines<i class="fa fa-sort" style="font-size:13px;"></i>
                                     </th>
                                     <th class="text-center"style="width:200px;" >
-                                            Plant<i class="fa fa-sort" style="font-size:13px;">
+                                            Plant<i class="fa fa-sort" style="font-size:13px;"></i>
                                     </th>
                                     <?php if($this->uri->segment(3) == 'today_checks'){ ?>
                                         <th class="text-center"style="width:200px;" >
-                                            Status<i class="fa fa-sort" style="font-size:13px;">
+                                            Status<i class="fa fa-sort" style="font-size:13px;"></i>
                                         </th>
                                         
                                     <?php }?>
@@ -164,25 +169,26 @@
                                 } ?>
                             </tbody>
                         </table>
-                        <br><br>
                         <div class="mg-t-20-f floatright" style="clear: both" id="light-pagination"></div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    <!-- END DATATABLE 1 -->
-    
-    </div>
-</div>
+    </main>>
 <script type="text/javascript">
 
     var search = document.getElementById("search");
-    search.addEventListener("keyup", function() {
-    	$('.old_search').text(search.value);
-    	ajax_call('1','','');
-    });
+	if(search){
+    	search.addEventListener("keyup", function() {
+         $('.old_search').text(search.value);
+         ajax_call('1','','');
+    	});
+
+		}
 
     detail();
+
+
     function detail() {
         $(document).on("click", ".view_details", function(event){
             event.preventDefault();

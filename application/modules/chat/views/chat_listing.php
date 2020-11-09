@@ -1,5 +1,3 @@
-
-    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>chat_css.css"    id="maincss">
     <style type="text/css">
     .counter {
         background-color: #bdc3c7;
@@ -14,9 +12,29 @@
         font-weight: bold;
         margin-top: 4px;
     }
-    </style>
+    .modal-body
+    {
+        height: 100vh;
+    }
+.floats-left{
+margin-left: 2%;
+background-color: #eff3f5;
+float:left!important;
+}
+    .floats-right
+    {
+        background-color: #fdf7ef;
+    	float:right!important;
+    }
+    .scroll-content
+    {
+    min-width: 520px;
+    height: 100vh;
+    overflow: auto;
+    padding: 10% 0px 10% 0px;}
+</style>
   
-    <div id="frame">
+<!--     <div id="frame">
         <div id="sidepanel">
             <div id="profile">
                 <div class="wrap">
@@ -79,7 +97,127 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
+            <div class="row app-row">
+                <div class="col-12 chat-app">
+
+                    <div class="separator mb-5"></div>
+ 				<div class="contact-profile" style="display:none;">
+                <img class="contact-profile-image"  src=""/>
+                <p class="contact-profile-name"></p>
+
+            </div>
+          
+                    <div class="scroll message_list messages">
+                        <div class="scroll-content heightt" style="min-width: 520px;">
+                      
+
+                    </div>
+                </div>
+                  <div class="message-input"  style="display: none;">
+                <div class="wrap">
+                <input type="text" placeholder="Write your message..." />
+                <button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                </div>
+            		</div>
+             
+        </div>
+            </div>
+
+        <div class="app-menu" style="top:0;">
+            <ul class="nav nav-tabs card-header-tabs ml-0 mr-0 mb-1" role="tablist">
+                <li class="nav-item w-50 text-center ">
+                    <a class="nav-link active" id="second-tab" data-toggle="tab" href="#secondFull" role="tab"
+                        aria-selected="false">Contacts</a>
+                </li>
+            <li class="nav-item w-50 text-center ">
+                    <a class="nav-link" id="first-tab" data-toggle="tab" href="#firstFull" role="tab"
+                        aria-selected="false">Profile</a>
+                </li>
+            </ul>
+
+            <div class="p-4 h-100" style="overflow: auto;height: inherit;">
+                <div class="tab-content h-100">
+
+                    <div class="tab-pane fade show active h-100" id="secondFull" role="tabpanel" aria-labelledby="second-tab">
+                        <div class="scroll">
+ 							<?php if(isset($left_panel) && !empty($left_panel)) {
+                  			foreach ($left_panel as $key => $lp): ?>
+                            <div class="d-flex flex-row mb-3 border-bottom pb-3 contact chat_detail" style="cursor: pointer;" list="chating" chating="<?=$lp['id']?>" tracking="<?=$lp['trackig_id']?>"  next_chat="<?=$lp['next_chat']?>" chatimage ="<?=$lp['image']?>" cheater ="<?=$lp['name']?>" cheatertype="<?=$lp['type']?>" lastcheater="<?=$lp['last_chat'];?>" counter="<?=$lp['counter']?>">
+                            	<div class="position-absolute pt-1 pr-2 r-0"  style="height: 12px; width: 12px;border-radius: 50%; <?php  if(isset($lp['is_online']) && !empty($lp['is_online'])) { if($lp['is_online'] == true) { ?> background-color: #508e60; <?php } } ?> ">
+                                    <span class="text-extra-small text-muted" ></span>
+                                </div>    
+                           		<a class="d-flex" >
+                                <?php if(!empty($lp['counter'])) { ?>
+                                <div class="counter"><?=$lp['counter']?></div>
+                            <?php } ?>
+                                    <img alt="Profile Picture" src="<?=$lp['image']?>"
+                                        class="img-thumbnail border-0 rounded-circle mr-3 list-thumbnail align-self-center xsmall">
+                                </a>
+                                <div class="d-flex flex-grow-1 min-width-zero">
+                                    <div
+                                        class="m-2 pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
+                                        <div class="min-width-zero">
+                                            <a>
+                                                <p class=" truncate"><?=$lp['name']?></p>
+                                            
+                            					<p  class="preview" style="font-size: 10px;line-height: 10px;"><?    if(strlen($lp['last_message'])>50){ echo $string = substr($lp['last_message'],0,50).'...';}else{ echo $lp['last_message'];} ?></p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                		<?php
+                  endforeach;
+                      } ?>
+                        
+                        
+                        </div>
+
+                    </div>
+                 <div class="tab-pane fade  h-100" id="firstFull" role="tabpanel" aria-labelledby="first-tab">
+                        <div class="scroll">
+
+                            <div class="d-flex flex-row mb-3 border-bottom pb-3">
+                                <a class="d-flex" href="#">
+                                    <img alt="Profile Picture" src="<?=$user_image?>"
+                                        class="img-thumbnail border-0 rounded-circle mr-3 list-thumbnail align-self-center xsmall">
+                                </a>
+                                <div class="d-flex flex-grow-1 min-width-zero">
+                                    <div
+                                        class="m-2 pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
+                                        <div class="min-width-zero">
+                                            <a href="#">
+                                                <p class=" truncate"><?=$user_name?></p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <a class="app-menu-button d-inline-block d-xl-none" href="#">
+                <i class="simple-icon-options"></i>
+            </a>
+        <div class="chat-input-container d-flex justify-content-between align-items-center" style="display:none;">
+            <input class="form-control flex-grow-1 chat_box" type="text" placeholder="Say something..." style="display:none;">
+            <div>
+                <button type="submit" class="btn btn-primary icon-button large chat_send" style="display:none;">
+                    <i class="simple-icon-arrow-right"></i>
+                </button>
+
+            </div>
+        </div>
+        </div>
+
+        
+
+
+
   <script src='//production-assets.codepen.io/assets/common/stopExecutionOnTimeout-b2a7b3fe212eaa732349046d8416e00a9dec26eb7fd347590fbced3ab38af52e.js'></script>
   <script>
     $("#profile-img").click(function() {
@@ -116,7 +254,7 @@
     storeRequest = null;
     function newMessage() {
         /*createdAt: firebase.firestore.Timestamp.fromDate(new Date(data.createdAt)),*/
-        message = $(".message-input input").val();
+    	var message = $(".chat_box").val();
         if($.trim(message) == '') {
             return false;
         }
@@ -144,14 +282,14 @@
             }
         });
         /*$('<li class="replies"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));*/
-        $('.message-input input').val(null);
+        $('.chat_box').val(null);
         $('.contact.active .preview').html('<span>You: </span>' + message);
     };
 
 
     // Your web app's Firebase configuration
     
-    $('.submit').click(function() {
+    $('.chat_send').click(function() {
       newMessage();
     });
 
@@ -170,9 +308,10 @@
     // getRealtimeUpdates('G_3');
     function clicking(){
     $(document).off('click', '.chat_detail').on('click', '.chat_detail', function(e){
-        $('.messages ul').empty();
-        $("#contacts>ul>li.active").removeClass("active");
-        $(".message-input").css("display", "inline");
+        $('.message_list .scroll-content').empty();
+        $(".message_list .scroll-content .card.active").removeClass("active");
+        $(".chat_box").css("display", "block");
+     	$(".chat_send").css("display", "block");
         $this = $(this);
         $this.addClass("active");
         var cheater = $this.attr('cheater');
@@ -182,8 +321,10 @@
         var chating = $this.attr('chating');
         var cheatertype = $this.attr('cheatertype');
         var lastcheater = $this.attr('lastcheater');
-        if(next_chat != '1') 
-            $(".message-input").css("display", "none");
+        if(next_chat != '1'){ 
+             $(".chat_box").css("display", "none");
+     		 $(".chat_send").css("display", "none");
+        }
         $(".contact-profile-image").attr("src",chatimage);
         $(".contact-profile-image").attr("chating",chating);
         $(".contact-profile-image").attr("cheatertype",cheatertype);
@@ -200,8 +341,9 @@
             data: {'page_number':'1','chating':chating,'limit':'<?=$limit?>','cheatertype':cheatertype,'lastcheater':parseInt(lastcheater) + 1000000},
             success: function(result) {
                 var datamain = $(result).find('datamain').html();
-                $(".messages ul").append(datamain);
-                $(".messages").scrollTop($('.heightt').height());
+                $(".scroll .scroll-content").append(datamain);
+                // $(".messages").scrollTop($('.heightt').height());
+            $('.heightt').scrollTop($('.heightt')[0].scrollHeight);
                 clicking();
             }
         });
@@ -209,22 +351,23 @@
     });
     }
     clicking();
-    function getRealtimeUpdates(tracking){
+    function getRealtimeUpdates(tracking){   
         var user = '<?=$this->session->userdata['user_data']['user_id']?>';
-        var chat_id = parseInt( $("#contacts>ul>li[tracking="+tracking+"]").attr('lastcheater'));
-        var chatRef = firebase.firestore().collection('/<?=DEFAULT_FCM_PROJECT?>/<?=DEFAULT_DOCUMENT_NAME?>/'+tracking).where("chat_id",">",chat_id).limit(5);
+        var chat_id = parseInt( $(".scroll>.contact[tracking="+tracking+"]").attr('lastcheater'));    
+        var chatRef = firebase.firestore().collection('/<?=DEFAULT_FCM_PROJECT?>/<?=DEFAULT_DOCUMENT_NAME?>/'+tracking).where("chat_id",">",chat_id).limit(5);  
         chatRef.onSnapshot(function(querySnapshot){
-            querySnapshot.forEach(function(doc) {
+            querySnapshot.forEach(function(doc) { 
                 if($(".contact-profile-image").attr("tracking") == tracking) {
-                    if(doc.data().chat_id > $("#contacts>ul>li[tracking="+tracking+"]").attr('lastcheater')){
+                    if(doc.data().chat_id > $(".scroll>.contact[tracking="+tracking+"]").attr('lastcheater')){
                         $(".contact-profile-image").attr("lastcheater",doc.data().chat_id);
-                        $("#contacts>ul>li[tracking="+tracking+"]").attr("lastcheater",doc.data().chat_id);
-                        var classes = "replies";
+                        $(".scroll>.contact[tracking="+tracking+"]").attr("lastcheater",doc.data().chat_id);
+                        var classes = "floats-right";
                         if(user != doc.data().user_id)
-                            classes = "sent";
-                        $('<li class="'+classes+'"><img src="'+doc.data().user_pic+'" alt="" /><p>' + doc.data().text + '</p></li>').appendTo($('.messages ul'));
+                            classes = "floats-left";
+                        $('<div class="card d-inline-block mb-3 '+classes+' mr-2"> <div class="card-body"> <div class="d-flex flex-row pb-2"> <a class="d-flex" > <img alt="Profile Picture" src="'+doc.data().user_pic+'" class="img-thumbnail border-0 rounded-circle mr-3 list-thumbnail align-self-center xsmall"> </a> <div class="d-flex flex-grow-1 min-width-zero"> <div class="m-2 pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero"> </div></div></div><div class="chat-text-left"> <p class="text-semi-muted"> ' + doc.data().text + ' </p></div></div></div><div class="clearfix"></div>').appendTo($('.scroll .scroll-content'));
                         $('.contact.active .preview').html('<span>You: </span>' + doc.data().text);
-                        $(".messages").scrollTop($('.heightt').height());
+                      //   $(".messages").scrollTop($('.heightt').height());
+                    $('.heightt').scrollTop($('.heightt')[0].scrollHeight);
                         if(user != doc.data().user_id) {
                             $.ajax({
                                 type: "POST",  
@@ -236,17 +379,17 @@
                         }
                     }
                 } else {
-                    if(doc.data().chat_id > $("#contacts>ul>li[tracking="+tracking+"]").attr('lastcheater')){
-                        selector = $("#contacts>ul>li[tracking="+tracking+"]");
+                    if(doc.data().chat_id > $(".scroll>.contact[tracking="+tracking+"]").attr('lastcheater')){
+                        selector = $(".scroll>.contact[tracking="+tracking+"]");
                         counter = parseInt(selector.attr('counter'))+1;
                         selector.attr('counter',counter);
-                        if(!$("#contacts>ul>li[tracking="+tracking+"]").find(".counter").length){
-                            $("#contacts>ul>li[tracking="+tracking+"]").find('.wrap').prepend('<div class="counter"></div>')
+                        if(!$(".scroll>.contact[tracking="+tracking+"]").find(".counter").length){
+                            $(".scroll>.contact[tracking="+tracking+"]").find('.wrap').prepend('<div class="counter"></div>')
                         }
-                        $("#contacts>ul>li[tracking="+tracking+"]").parent().prepend($("#contacts>ul>li[tracking="+tracking+"]"))
-                        $("#contacts>ul>li[tracking="+tracking+"]").attr("lastcheater",doc.data().chat_id);
-                        $("#contacts>ul>li[tracking="+tracking+"]").find('.counter').html(counter);
-                        $("#contacts>ul>li[tracking="+tracking+"]").find('.preview').html(doc.data().text);
+                        $(".scroll>.contact[tracking="+tracking+"]").parent().prepend($(".scroll>.contact[tracking="+tracking+"]"))
+                        $(".scroll>.contact[tracking="+tracking+"]").attr("lastcheater",doc.data().chat_id);
+                        $(".scroll>.contact[tracking="+tracking+"]").find('.counter').html(counter);
+                        $(".scroll>.contact[tracking="+tracking+"]").find('.preview').html(doc.data().text);
 
                     }
                 }
@@ -254,8 +397,8 @@
             });
         });
     }
-    $('.messages').scroll(function() {
-        if($('.messages').scrollTop() == 0) {
+    $('.message_list').scroll(function() {
+        if($('.heightt').scrollTop() == 0) {
             var chating = $(".contact-profile-image").attr("chating");
             var cheatertype = $(".contact-profile-image").attr("cheatertype");
             var page_number = $(".contact-profile-image").attr("page_number");
@@ -271,7 +414,7 @@
                 },
                 success: function(result) {
                     var datamain = $(result).find('datamain').html();
-                    $(".messages ul").prepend(datamain);
+                    $(".message_list .scroll-content").prepend(datamain);
                     $(".contact-profile-image").attr("page_number",$(result).find('page_number').text());
                 }
             });

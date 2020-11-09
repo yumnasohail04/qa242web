@@ -7,14 +7,46 @@
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
-include_once APPPATH . '/modules/outlet/controllers/outlet.php';
+include_once APPPATH . 'modules/outlet/controllers/Outlet.php';
 
 class Api extends MX_Controller {
 
     protected $data = '';
 
     function __construct() {
+        date_default_timezone_set('Asia/Karachi');
+        $this->lang->load('english', 'english');
         parent::__construct();
+    $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id desc','general_setting','timezones','1','1')->result_array();
+        if(isset($timezones[0]['timezones']) && !empty($timezones[0]['timezones']))
+        date_default_timezone_set($timezones[0]['timezones']);
+    }
+
+
+function table_list()
+    {
+        $tables=$this->db->list_tables();
+        foreach($tables as $key=>$value)
+        {
+            $columns=$this->db->list_fields($value);
+            foreach($columns as $k =>$val)
+            {
+                $primary = $this->db->query("SHOW KEYS FROM $value WHERE Key_name = 'PRIMARY'")->result_array();
+                $primary[0]['Column_name'] = (isset($primary[0]['Column_name']) && !empty($primary[0]['Column_name']) ? $primary[0]['Column_name'] : ''); 
+                if($primary[0]['Column_name'] != $val)
+                {   
+                    if($val!="range" && $val !="right" && $val !="option" && $val !="group"){
+                    $type = $this->db->query("SHOW FIELDS FROM $value where Field ='$val'")->result_array();
+                    if($type[0]['Default']==""){
+                        $type = $type[0]['Type'];
+                        $this->db->query("ALTER TABLE $value MODIFY $val $type  NULL");
+                    }
+                    }
+                //  $this->db->set($val, null);
+                // $this->db->update($value);
+                }
+            }
+        }
     }
     function static_form_response()
     {
@@ -2053,7 +2085,7 @@ function get_restaurant_catagories(){
                     $arr_deals[$i]['image']=BASE_URL.ACTUAL_DEAL_IMAGE_PATH.$value['image'];
                     else
                     $arr_deals[$i]['image']=STATIC_FRONT_IMAGE."pattren.png";
-                    $arr_deals[$i]['description']=$this->string_length($value['description'],'50','','');
+                    //$arr_deals[$i]['description']=$this->string_length($value['description'],'50','','');
                     $i=$i+1;
                 }
             } 

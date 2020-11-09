@@ -578,6 +578,7 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                                 </li>
                                  <?php
                             }
+                            
                             $permission = false;
                             if ($user_data['role'] != 'Admin')
                                 $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'supplier_doc');

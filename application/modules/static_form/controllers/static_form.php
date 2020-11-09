@@ -40,7 +40,7 @@ class Static_form extends MX_Controller
         $data['update_id'] = $update_id;
         $data['view_file'] = 'newsform';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
 
     function submit() {
@@ -358,10 +358,6 @@ class Static_form extends MX_Controller
         $data['url'] = $_SERVER['HTTP_REFERER'];
         $data['update_id'] = $data['assignment_detailid'] = $update_id = $this->input->post('id');
         $data['function'] = $this->input->post('function');
-    	if(empty($data['function']) || !isset($data['function']))
-    	{
-        	$data['function']="static_forms_approved";
-    	}
         $data['questions'] = $this->get_static_question_detail(array("saa.assignment_id"=>$update_id), 'assign_ans_id desc','assign_ans_id','saa.question_id,saa.answer_id,saa.comments,saa.is_acceptable,saa.given_answer,saa.answer_type,static_form_question.sfq_question as question,user_id,line_no','1','0','','','')->result_array();
         $data['assign_detail']=$this->get_static_checks_detail($update_id)->result_array();
         $user_data = $this->session->userdata('user_data');

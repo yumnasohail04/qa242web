@@ -1,50 +1,58 @@
-<!-- Page content-->
-<div class="content-wrapper">
-    <input type="hidden" id="assign_type" value="<?=$this->uri->segment(3);?>" />
-    <h3><?php if($this->uri->segment(3) == 'active_checks') echo "Active"; elseif($this->uri->segment(3) == 'overdue_checks') echo "Overdue"; elseif($this->uri->segment(3) == 'pending_review') echo "Pending";  elseif($this->uri->segment(3) == 'pending_approval') echo "Pending Approval"; else echo ""; ?> Assignments</h3>
-    <div class="container-fluid">
-        <!-- START DATATABLE 1 -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                           <div class="row">
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                <label>From:</label>
-                                    <div class='input-group datetimepicker2'>
-                                        <input type='text' class="form-control" id="startdate" />
-                                        <span class="input-group-addon">
-                                            <span class="fa fa-calendar"></span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                 <label>To:</label>
-                                    <div class='input-group datetimepicker2'>
-                                    <input type='text' class="form-control" id="enddate" />
-                                    <span class="input-group-addon">
-                                        <span class="fa fa-calendar"></span>
+<style>
+.select2-container {
+    min-width: 100%;
+}
+</style>
+<main>
+<input type="hidden" id="assign_type" value="<?=$this->uri->segment(3);?>" />
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1><?php if($this->uri->segment(3) == 'active_checks') echo "Active Assignments"; elseif($this->uri->segment(3) == 'overdue_checks') echo "Overdue Assignments"; elseif($this->uri->segment(3) == 'pending_review') echo "Pending Review";  elseif($this->uri->segment(3) == 'pending_approval') echo "Pending Approval"; else echo ""; ?> </h1>
+            <div class="separator mb-5"></div>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group  mb-1">
+                            <label>From:</label>
+                                <div class='input-group date'>
+                                    <input type='text' class="form-control" id="startdate" />
+                                    <span class="input-group-text input-group-append input-group-addon">
+                                        <i class="simple-icon-calendar"></i>
                                     </span>
-                                 </div>
                                 </div>
-                            </div>
-                            <div class="col-md-1">
-                                <div class="form-group" style="margin-top: 33px;">
-                                    <button type="button" class="btn btn-primary form-control filter_search">Search</button>
-                                 </div>
                             </div>
                         </div>
-                      <table id="datatable1" class="table table-striped table-hover table-body table-bordered">
+                        <div class="col-md-3">
+                            <div class="form-group  mb-1">
+                                <label>To:</label>
+                                <div class='input-group date'>
+                                <input type='text' class="form-control" id="enddate" />
+                                <span class="input-group-text input-group-append input-group-addon">
+                                    <i class="simple-icon-calendar"></i>
+                                </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group" style="margin-top: 33px;">
+                                <button type="button" class="btn btn-outline-primary form-control filter_search">Search</button>
+                                </div>
+                        </div>
+                    </div>
+                    <table class="data-table data-table-feature">
                         <thead class="bg-th">
                         <tr class="bg-col">
-                        <th class="text-center" style="width:120px;">Check Date <i class="fa fa-sort" style="font-size:13px;"></th>
-                        <th class="text-center" style="width:120px;">Check Time <i class="fa fa-sort" style="font-size:13px;"></th>
-                        <th class="text-center" style="width:200px;">Check Name <i class="fa fa-sort" style="font-size:13px;"></th>
-                        <th class="text-center"style="width:200px;" >Responsible Team <i class="fa fa-sort" style="font-size:13px;"></th>
-                        <th class="text-center" style="width:500px;" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actions</th>
+                        <th class="text-center" style="width:120px;">Check Date <i class="fa fa-sort" style="font-size:13px;"></i></th>
+                        <th class="text-center" style="width:120px;">Check Time <i class="fa fa-sort" style="font-size:13px;"></i></th>
+                        <th class="text-center" style="width:200px;">Check Name <i class="fa fa-sort" style="font-size:13px;"></i></th>
+                        <th class="text-center" style="width:200px;">Responsible Team <i class="fa fa-sort" style="font-size:13px;"></i></th>
+                        <th class="text-center" style="width:500px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -76,7 +84,7 @@
                                                 endforeach;
                                             }?>
                                         </td>
-                                        <td class="table_action text-center">
+                                        <td class="table_action text-center " style="display: inline-flex;    width: 100%;">
                                              <?php if($this->uri->segment(3) == 'pending_review'){ 
                                                 $reassign_detail = Modules::run('api/_get_specific_table_with_pagination',array("reassign_id"=>$new->assign_id), 'assign_id desc',DEFAULT_OUTLET.'_assignments','assign_id','1','0')->result_array();
                                                 $reassing_id = "";
@@ -88,9 +96,9 @@
                                                 $outlet_status=array(""=>"Select Action","Approval"=>"Approve");
                                             else
                                                 $outlet_status=array(""=>"Select Action","Approval"=>"Approve","Check_again"=>'Check again');
-                                            echo form_dropdown('order_status', $outlet_status, $current_status, 'class="add_on form-control select_action order_status" style="width:190px;" order_id="'.$new->assign_id.'" check_id="'.$new->checkid.'" reassign_id="'.$reassing_id.'"');?>
+                                            echo form_dropdown('order_status', $outlet_status, $current_status, 'class="add_on form-control select_action order_status" style="" order_id="'.$new->assign_id.'" check_id="'.$new->checkid.'" reassign_id="'.$reassing_id.'"');?>
                                             <?}?>
-                                        <a class="btn yellow c-btn view_details" rel="<?=$new->assign_id?>"><i class="fa fa-list"  title="See Detail"></i></a>
+                                        <a class="btn yellow c-btn view_details" rel="<?=$new->assign_id?>"><i class="iconsminds-file"  title="See Detail"></i></a>
                                       
                                         </td>
                                     </tr>
@@ -98,15 +106,12 @@
                                 <?php } ?>
                             </tbody>
                     </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    <!-- END DATATABLE 1 -->
-    
-    </div>
-</div>    
-
+    </main>
 <script type="text/javascript">
 $(document).ready(function(){
 
@@ -125,7 +130,7 @@ $(document).ready(function(){
                         var test_desc = test_body;
                         //var test_body = '<ul class="list-group"><li class="list-group-item"><b>Description:</b> Akabir Abbasi Test</li></ul>';
                         $('#myModalLarge').modal('show')
-                         $("#myModalLarge .modal-footer").html('<button type="button" data-dismiss="modal" class="btn btn-primary  pull-right">Cancel</button>');
+                         $("#myModalLarge .modal-footer").html('<button type="button" data-dismiss="modal" class="btn btn-outline-primary  pull-right">Cancel</button>');
                         $("#myModalLarge .modal-body").html(test_desc);
                         }
                     });
@@ -315,9 +320,9 @@ $(document).ready(function() {
                        
                         $('#myModalLarge').modal('show')
                         <?php if($review_approval == true) {?>
-                            $("#myModalLarge .modal-footer").html('<button type="button" data-dismiss="modal" class="btn btn-primary  pull-right">Cancel</button> <button type="button" class="btn btn-primary pull-right submit_check" > Review & Approved</button> <button type="button" class="btn btn-primary pull-right reassign_check" > Reassign Check</button>');
+                            $("#myModalLarge .modal-footer").html('<button type="button" data-dismiss="modal" class="btn btn-outline-primary  pull-right">Cancel</button> <button type="button" class="btn btn-outline-primary pull-right submit_check" > Review & Approved</button> <button type="button" class="btn btn-primary pull-right reassign_check" > Reassign Check</button>');
                         <?php } else {?>
-                            $("#myModalLarge .modal-footer").html('<button type="button" data-dismiss="modal" class="btn btn-primary  pull-right">Cancel</button> <button type="button" class="btn btn-primary pull-right submit_check" > Reviewed</button>');
+                            $("#myModalLarge .modal-footer").html('<button type="button" data-dismiss="modal" class="btn btn-outline-primary  pull-right">Cancel</button> <button type="button" class="btn btn-outline-primary pull-right submit_check" > Reviewed</button>');
                         <?php }?>
                         $("#myModalLarge .modal-body").html(test_desc);
                         var review_approval = $("#myModalLarge").find(".review_approval").text();

@@ -54,7 +54,7 @@ $resultRank[$i] = $i;
 
 $data['rank'] = $resultRank;
 $this->load->module('template');
-$this->template->admin_form($data);
+$this->template->admin($data);
 
 }
 function _get_data_from_post_subcat(){
@@ -75,6 +75,7 @@ $update_id = $this->uri->segment(4);
 
 $data_subcat= $this->_get_data_from_post_subcat();
 $data = $this->_get_data_from_post();
+$data['parent_id']="0";
 if ($update_id && $update_id != 0) {
 $where['id'] = $update_id;
 $itemInfo = $this->_getItemById($update_id);
@@ -214,45 +215,35 @@ $this->template->admin($data);
 }
 
 function create_sub_catagories() {
-
-$is_edit = 0;
-$parent_id = $this->uri->segment(4);
-$where['parent_id'] = $parent_id;
-$whereParent['id'] = $parent_id;
-$self_id = $this->uri->segment(5);
-$data['cat_name'] = $self_id;
-///////////////////////For Language///////////////////////////
-$data['query'] = $this->_get_sub_catagories($where, 'rank asc');
-
-$data['record'] = $this->_get_records($where);
-
-$query = $this->_get_by_arr_id($whereParent, 'id desc');
-
-$data['ParentCatDetails'] = $query->row_array();
-$data['ParentId'] = $parent_id;
-
-
-if ($self_id > 0) {
-
-$data['catagories'] = $this->_get_data_from_db($self_id);
-//echo "data is".print_r($data['catagories']);exit;
-
-} else {
-$data['catagories'] = $this->_get_data_from_post();
-}
-$data['parent_id'] = $parent_id;
-$data['update_id'] = $self_id;
+    $is_edit = 0;
+    $parent_id = $this->uri->segment(4);
+    $where['parent_id'] = $parent_id;
+    $whereParent['id'] = $parent_id;
+    $self_id = $this->uri->segment(5);
+    $data['cat_name'] = $self_id;
+    $data['query'] = $this->_get_sub_catagories($where, 'rank asc');
+    $data['record'] = $this->_get_records($where);
+    $query = $this->_get_by_arr_id($whereParent, 'id desc');
+    $data['ParentCatDetails'] = $query->row_array();
+    $data['ParentId'] = $parent_id;
+    if ($self_id > 0) {
+        $data['catagories'] = $this->_get_data_from_db($self_id);
+    } else {
+        $data['catagories'] = $this->_get_data_from_post();
+    }
+    $data['parent_id'] = $parent_id;
+    $data['update_id'] = $self_id;
 
 
-$data['view_file'] = 'create_sub_catagories';
-for ($i = 1;
-$i <= 30;
-$i++) {
-$resultRank[$i] = $i;
-}
-$data['rank'] = $resultRank;
-$this->load->module('template');
-$this->template->admin_form($data);
+    $data['view_file'] = 'create_sub_catagories';
+    for ($i = 1;
+    $i <= 30;
+    $i++) {
+        $resultRank[$i] = $i;
+    }
+    $data['rank'] = $resultRank;
+    $this->load->module('template');
+    $this->template->admin($data);
 }
 
 function submit_sub_catagories() {
@@ -1116,7 +1107,7 @@ function delete_org_outlet_db($arr_col){
         $data['view_file'] = 'create_sub_catagories_attributes';
         $data['back_page'] = $_SERVER['HTTP_REFERER'];
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
     function submit_sub_catagories_attributes() {
         $update_id = 0;

@@ -1,12 +1,5 @@
 <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>pretty-checkbox.min.css">
 <style type="text/css">
-   /*.pretty.p-default input~.state label:before {
-    border: 1px solid red !important;
-  }*/
-  /*.pretty.p-default input:checked~.state label:before {
-    border: 1px solid #bdc3c7 !important;
-  }*/
-
   .redd {
     border: 1px solid red !important;
   }
@@ -15,58 +8,30 @@
   }
 </style>
 <?php include_once("select_box.php");?>
-<div class="page-content-wrapper">
-  <div class="page-content"> 
-    <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
-    <div id="contractors_measurements_modal" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-            <h4 class="modal-title">Modal title</h4>
-          </div>
-          <div class="modal-body"> Widget settings form goes here </div>
-          <div class="modal-footer">
-            <button type="button" class="btn green" id="confirm"><i class="fa fa-check"></i>&nbsp;Save changes</button>
-            <button type="button" class="btn default" data-dismiss="modal"><i class="fa fa-undo"></i>&nbsp;Close</button>
-          </div>
-        </div>
-        <!-- /.modal-content --> 
-      </div>
-      <!-- /.modal-dialog --> 
-    </div>
-    <!-- /.modal --> 
-    <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM--> 
-    <!-- BEGIN PAGE HEADER-->
-    <div class="content-wrapper">
-        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
-      <h3>
-        <?php 
-        if (empty($update_id)) 
-                    $strTitle = 'Add Checks';
-                else 
-                    $strTitle = 'Edit Checks';
-                    echo $strTitle;
-                    ?>
-                    <a href="<?php echo ADMIN_BASE_URL . 'static_form'; ?>"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-chevron-left"></i>&nbsp;&nbsp;&nbsp;Back</button></a>
-       </h3>             
-            
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="tabbable tabbable-custom boxless">
-          <div class="tab-content">
-          <div class="panel panel-default" style="margin-top:-30px;">
-         
-            <div class="tab-pane  active" id="tab_2" >
-              <div class="portlet box green ">
-                <div class="portlet-title ">
-                 
+
+
+
+
+            <main>
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-12">
+                    <h1>  <?php 
+                    if (empty($update_id)) 
+                                $strTitle = 'Add Checks';
+                            else 
+                                $strTitle = 'Edit Checks';
+                                echo $strTitle;
+                                ?></h1>
+                    <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="<?php echo ADMIN_BASE_URL . 'static_form'; ?>">&nbsp;&nbsp;&nbsp;Back</a> 
+                    <div class="separator mb-5"></div>
+                  </div>
                 </div>
+            <div class="card mb-4">
+              <div class="card-body">
+                <h5 class="mb-4">
                 
-                <div class="portlet-body form " style="padding-top:15px;"> 
-                  
-                  <!-- BEGIN FORM-->
+                  </h5>
                   <?php
                   $attributes = array('autocomplete' => 'off', 'id' => 'form_sample_1', 'class' => 'form-horizontal');
                   if (empty($update_id)) {
@@ -80,7 +45,7 @@
                   <div class="form-body">
                     <!-- <h3 class="form-section">Post Information</h3>-->
                     <div class="row">
-                      <div class="col-sm-5" >
+                      <div class="col-sm-6" >
                         <div class="form-group">
                           <?php
                           $data = array(
@@ -94,7 +59,7 @@
                           $attribute = array('class' => 'control-label col-md-4');
                           ?>
                           <?php echo form_label('Check Name<span class="red" style="color:red;">*</span>', 'txtPhone', $attribute); ?>
-                          <div class="col-md-8">
+                          <div class="col-md-12">
                           <?php echo form_input($data); ?>
                           </div>
                         </div>
@@ -102,8 +67,8 @@
                       <div class="col-sm-6">
                         <div class="form-group">
                           <label class="col-sm-4 control-label">Inspection Team<span class="red" style="color:red;">*</span></label>
-                          <div class="col-sm-8">
-                            <select name="inspection_team[]" class="form-control chosen-select inspection_team" required="required" multiple>
+                          <div class="col-sm-12">
+                            <select name="inspection_team[]" class="form-control select-1 inspection_team" required="required" multiple>
                               <option >Select</option>
                               <?php if(!isset($groups) || empty($groups))
                                       $groups = array();
@@ -118,10 +83,10 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-sm-5">
+                      <div class="col-sm-6">
                         <div class="form-group">
                           <label class="col-sm-4 control-label">Review Team<span class="red" style="color:red;">*</span></label>
-                          <div class="col-sm-8">
+                          <div class="col-sm-12">
                             <select class="form-control review_team" name="review_team" required="required">
                               <option >Select</option>
                               <?php if(!isset($groups) || empty($groups))
@@ -138,7 +103,7 @@
                       <div class="col-sm-6">
                         <div class="form-group">
                           <label class="col-sm-4 control-label">Approve Team<span class="red" style="color:red;">*</span></label>
-                          <div class="col-sm-8">
+                          <div class="col-sm-12">
                             <select class="form-control approve_team" name="approve_team" required="required">
                               <option >Select</option>
                               <?php if(!isset($groups) || empty($groups))
@@ -152,13 +117,13 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-sm-5">
+                      <div class="col-sm-6">
                         <div class="form-group">
                           <label class="col-sm-4 control-label">
                             Program Type <span class="required" style="color:#ff60a3">*</span>
                           </label>
-                          <div class="col-sm-8">
-                            <select  multiple="multiple" class="form-control program_type  chosen-select " name="program_type[]">
+                          <div class="col-sm-12">
+                            <select  multiple="multiple" class="form-control program_type select-1 " name="program_type[]">
                               <?php 
                                   if(!isset($program_type)) 
                                       $program_type = array();
@@ -190,7 +155,7 @@
                             <label>Hide preview</label>
                         </div>
                       </div> -->
-                      <div class="col-sm-5" style="clear: both">
+                      <div class="col-sm-6" style="clear: both">
                         <div class="form-group">
                           <div class="pretty p-default ">
                                 <label class="col-sm-4">Set Check duration</label>
@@ -203,7 +168,7 @@
                     <div class="row datetimeshow" <?php if(!isset($news['is_dates']) || empty($news['is_dates'])) echo 'style="display: none;"';?> >
                         <fieldset>
                     <legend>Check Duration</legend>
-                      <div class="col-sm-5">
+                      <div class="col-sm-6">
                         <?php $news_date='';
                          if (isset($news['sf_start_datetime']) && $news['sf_start_datetime'] != "0000-00-00 00:00:00" && !empty($news['sf_start_datetime']) && $news['sf_start_datetime']!="1970-01-01") {
                              $news_date = date('m/d/Y', strtotime($news['sf_start_datetime']));
@@ -224,12 +189,12 @@
                             $attribute = array('class' => 'control-label col-md-4');
                             ?>
                           <?php echo form_label('Start Date <span class="required" style="color:red">*</span>', 'start_date', $attribute); ?>
-                          <div class="col-md-8 input-group date datetimepicker2"> <?php echo form_input($data); ?> 
+                          <div class="col-md-12 input-group date datetimepicker2"> <?php echo form_input($data); ?> 
                             <span class="input-group-addon"> <span class="fa fa-calendar"></span> </span>
                           </div>
                         </div>
                       </div>
-                      <div class="col-sm-5">
+                      <div class="col-sm-6">
                         <?php $news_date='';
                         if (isset($news['sf_start_datetime']) && $news['sf_start_datetime'] != "0000-00-00 00:00:00" && !empty($news['sf_start_datetime'])) {
                            $news_date = date('H:i', strtotime($news['sf_start_datetime']));
@@ -253,12 +218,14 @@
                               $attribute = array('class' => 'control-label col-md-4');
                               ?>
                            <?php echo form_label('Start time <span class="required" style="color:red">*</span>', 'txtNewsDate', $attribute); ?>
-                           <div class="col-md-8 input-group date datetimepicker4"> <?php echo form_input($data); ?> 
-                              <span class="input-group-addon"> <span class="fa fa-calendar"></span> </span>
+                           <div class="col-md-12 input-group  datetimepicker1"> <?php echo form_input($data); ?> 
+                              <span class="input-group-text input-group-append input-group-addon">
+                                                <i class="simple-icon-clock"></i>
+                                            </span>
                            </div>
                         </div>
                       </div>
-                      <div class="col-sm-5">
+                      <div class="col-sm-6">
                         <?php $news_date='';
                           if (isset($news['sf_end_datetime']) &&  $news['sf_end_datetime'] != "0000-00-00 00:00:00" && !empty($news['sf_end_datetime'])  && $news['sf_end_datetime']!="1970-01-01") {
                                $news_date = date('m/d/Y', strtotime($news['sf_end_datetime']));
@@ -278,12 +245,12 @@
                             $attribute = array('class' => 'control-label col-md-4');
                             echo form_label('End date', 'txtNewsDate', $attribute);
                           ?>
-                          <div class="col-md-8 input-group date datetimepicker2"> <?php echo form_input($data); ?> 
+                          <div class="col-md-12 input-group date datetimepicker2"> <?php echo form_input($data); ?> 
                               <span class="input-group-addon"> <span class="fa fa-calendar"></span> </span>
                           </div>
                         </div>
                       </div>
-                      <div class="col-sm-5">
+                      <div class="col-sm-6">
                         <?php 
                           $news_date='';
                           if (isset($news['sf_end_datetime']) && $news['sf_end_datetime'] != "0000-00-00 00:00:00" && !empty($news['sf_end_datetime'])) {
@@ -308,8 +275,10 @@
                             $attribute = array('class' => 'control-label col-md-4');
                             echo form_label('End time', 'txtNewsDate', $attribute);
                           ?>
-                          <div class="col-md-8 input-group date datetimepicker4"> <?php echo form_input($data); ?> 
-                            <span class="input-group-addon"> <span class="fa fa-calendar"></span> </span>
+                          <div class="col-md-12 input-group  datetimepicker1"> <?php echo form_input($data); ?> 
+                             <span class="input-group-text input-group-append input-group-addon">
+                                                <i class="simple-icon-clock"></i>
+                                            </span>
                           </div>
                         </div>
                       </div>
@@ -319,9 +288,9 @@
                       <div class="row">
                         <div class="col-md-6">
                           <div class="col-md-offset-2 col-md-9" style="padding-bottom:15px;">
-                           <span style="margin-left:40px"></span> <button type="submit" class="btn btn-primary submit_from"><i class="fa fa-check"></i>&nbsp;Save</button>
+                           <span style="margin-left:40px"></span> <button type="submit" class="btn btn-outline-primary submit_from"><i class="fa fa-check"></i>&nbsp;Save</button>
                             <a href="<?php echo ADMIN_BASE_URL . 'static_form'; ?>">
-                            <button type="button" class="btn green btn-default" style="margin-left:20px;"><i class="fa fa-undo"></i>&nbsp;Cancel</button>
+                            <button type="button" class="btn green btn-outline-primary" style="margin-left:20px;"><i class="fa fa-undo"></i>&nbsp;Cancel</button>
                             </a> </div>
                         </div>
                         <div class="col-md-6"> </div>
@@ -330,18 +299,10 @@
 
                   </div>
                   <?php echo form_close(); ?> 
-                  <!-- END FORM-->  
-               </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-</div>
+        </main>
 <script type="text/javascript">
   $(document).off('click', '.submit_from').on('click', '.submit_from', function(e){
     var reviewing = $( ".review_team option:selected" ).val();

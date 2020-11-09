@@ -1,14 +1,19 @@
-<!-- Page content-->
-<div class="content-wrapper">
-    <h3>WIP Product
-  <a href="<?=ADMIN_BASE_URL?>product/add_new_wip"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Add New Wip Product</button></a><a href="<?=ADMIN_BASE_URL?>product/replace_wip_product"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Replace Wip Product</button></a></h3>
-    <div class="container-fluid">
-        <!-- START DATATABLE 1 -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                    <table id="datatable11" class="table table-body">
+<main>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1>WIP Product</h1>
+            <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="<?php echo ADMIN_BASE_URL ?>product/add_new_wip">&nbsp;Add New Wip Product&nbsp;</a>
+            <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="<?php echo ADMIN_BASE_URL ?>product/replace_wip_product">&nbsp;Replace Wip Product&nbsp;</a>
+            <div class="separator mb-5"></div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <table class="data-table data-table-feature">
                         <thead class="bg-th">
                         <tr class="bg-col">
                         <th>Navision Number(wip) <i class="fa fa-sort" style="font-size:13px;"></i></th>
@@ -62,18 +67,18 @@
                                         <?php
                                         $publish_class = ' table_action_publish';
                                         $publis_title = 'Set Un-Publish';
-                                        $icon = '<i class="fas fa-arrow-up"></i>';
+                                        $icon = '<i class="simple-icon-arrow-up-circle"></i>';
                                         $iconbgclass = ' btn green greenbtn c-btn';
                                         if ($new->status != 1) {
                                             $publish_class = ' table_action_unpublish';
                                             $publis_title = 'Set Publish';
-                                            $icon = '<i class="fas fa-arrow-down"></i>';
+                                            $icon = '<i class="simple-icon-arrow-down-circle"></i>';
                                             $iconbgclass = ' btn default c-btn';
                                         }
                                         echo anchor("javascript:;",$icon, array('class' => 'action_publish' . $publish_class . $iconbgclass, 
                                         'title' => $publis_title,'rel' => $new->navision_number,'id' => $new->navision_number, 'status' => $new->status));
-                                        echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit Product'));
-                                        echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $new->navision_number, 'title' => 'Delete WipProduct'));
+                                        echo anchor($edit_url, '<i class="iconsminds-file-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit Product'));
+                                        echo anchor('"javascript:;"', '<i class="simple-icon-close"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $new->navision_number, 'title' => 'Delete WipProduct'));
                                         ?>
                                         </td>
                                     </tr>
@@ -81,13 +86,12 @@
                                 <?php } ?>
                             </tbody>
                     </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    
-    </div>
-</div>    
+    </main>    
 
 <script type="text/javascript">
 $(document).ready(function(){

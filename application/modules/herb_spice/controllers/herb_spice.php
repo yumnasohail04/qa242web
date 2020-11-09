@@ -41,7 +41,7 @@ Modules::run('site_security/has_permission');
         $data['checkid']=$checkid;
         $data['view_file'] = 'newsform';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
     
    

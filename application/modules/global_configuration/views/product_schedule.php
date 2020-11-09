@@ -21,10 +21,10 @@
                             <div class="form-body"> 
                                 <div class="row main_div">
                                    	<div class="col-sm-12 selecting_div">
-                                        <div class="form-group">
+                                        <div class="form-group row">
                                           <label class="col-sm-4 control-label">Product</label>
                                             <div class="col-sm-8">
-                                               	<select  id="selectboxing" class="selectpicker"  data-show-subtext="true" data-live-search="true" name="product_name" required="required">
+                                               	<select   style="width: 100%!important;" id="selectboxing" class="selectpicker form-control"  data-show-subtext="true" data-live-search="true" name="product_name" required="required">
                                                   <option value="">Select</option>
                                                   <?php 
                                                     if(!isset($selected_product))
@@ -38,25 +38,24 @@
                                     </div>
                                     <br><br>
                                   	<div class="col-sm-12 selecting_date">
-                                    	<div class="form-group">
+                                    	<div class="form-group row">
                                       		<label class="col-sm-4 control-label">Start Date</label>
                                         	<div class="col-sm-8">
                                             <?php if(!isset($start_date))
                                                       $start_date =''; ?>
-                                           		<div class='input-group datetimepicker6'>
-			                                    	<input type='text' name="scheduledate" class="form-control scheduledate date" id="datetimepicker6"  required="required" value="<?=$start_date;?>" />
-			                                    	<span class="input-group-addon">
-			                                        	<span class="fa fa-calendar">
-			                                        	</span>
-			                                    	</span>
+                                           		<div class='input-group date'>
+			                                    	<input type='text' name="scheduledate" class="form-control scheduledate" id="startdate"  required="required" value="<?=$start_date;?>" />
+			                                    	<span class="input-group-text input-group-append input-group-addon">
+                                                  <i class="simple-icon-calendar"></i>
+                                              </span>
 			                                	</div>
-                                        	</div>
+                                          </div>
                                     	</div>
                                   	</div>
                                     <br><br>
-                                    <div class="group_div" style="clear: both; padding-top: 10px;">
+                                    <div class="group_div" style="clear: both; padding-top: 10px; width:100%">
                                       <div class="col-sm-12">
-                                          <div class="form-group">
+                                          <div class="form-group row">
                                             <label class="col-sm-4 control-label">Plant</label>
                                             <div class="col-sm-8">
                                                 <select  class="form-control plants_team validate_form" name="plants" required="required">
@@ -77,9 +76,9 @@
                                       </div>
                                     </div>
                                     <br><br>
-                                    <div class="group_line_div <?php if(!isset($line) || empty($line)) echo 'disable_class';?>" style="clear: both; padding-top: 10px;">
+                                    <div class="group_line_div <?php if(!isset($line) || empty($line)) echo 'disable_class';?>" style="clear: both; padding-top: 10px; width:100%">
                                       <div class="col-sm-12">
-                                      	<div class="form-group">
+                                      	<div class="form-group row">
                                         	<label class="col-sm-4 control-label">Line</label>
                                         	<div class="col-sm-8">
                                           		<select  class="form-control responsible_team validate_form" name="shift" required="required">

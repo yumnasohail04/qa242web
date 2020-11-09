@@ -44,6 +44,30 @@ function get_data_for_completed_assignments_from_db($where,$sNeedle,$group_by){
 		return $this->db->get();
 	
 }
+function table_list()
+{
+    $tables=$this->db->list_tables();
+    foreach($tables as $key=>$value)
+    {
+        $columns=$this->db->list_fields($value);
+        foreach($columns as $k =>$val)
+        {
+            $primary = $this->db->query("SHOW KEYS FROM $value WHERE Key_name = 'PRIMARY'")->result_array();
+            if($primary[0]['Column_name']!=$val)
+            {   
+                if($val!="range"){
+                  $type = $this->db->query("SHOW FIELDS FROM $value where Field ='$val'")->result_array();
+                  if($type[0]['Default']==""){
+                    $type = $type[0]['Type'];
+                    $this->db->query("ALTER TABLE $value MODIFY $val $type  NULL");
+                  }
+                }
+              //  $this->db->set($val, null);
+               // $this->db->update($value);
+            }
+        }
+    }
+}
 
 function get_scorecard_reporting()
 {
@@ -241,6 +265,48 @@ function get_sites_checkreport_plantwise($where,$table,$j_table1)
         $this->db->from($outlet_id.'_static_assignments static_assign');
 		$this->db->join($outlet_id.'_static_form static_form','static_assign.check_id = static_form.sf_id','left');
 		$this->db->join($outlet_id.'_static_assignment_answer static_assign_answer','static_assign.assign_id = static_assign_answer.assignment_id','left');
+        if(!empty($group_by))
+            $this->db->group_by($group_by);
+        if(!empty($cols))
+            $this->db->where($cols);
+        if(!empty($or_where))
+            $this->db->where($or_where);
+        if(!empty($and_where))
+            $this->db->where($and_where);
+        if(!empty($having))
+            $this->db->having($having);
+        if($limit != 0)
+            $this->db->limit($limit, $offset);
+        $this->db->order_by($order_by);
+        $query=$this->db->get();
+        return $query;
+    }
+	function get_graph_checks_count($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having=''){
+        $offset=($page_number-1)*$limit;
+        $this->db->select($select);
+        $this->db->from($outlet_id.'_assignments');
+        if(!empty($group_by))
+            $this->db->group_by($group_by);
+        if(!empty($cols))
+            $this->db->where($cols);
+        if(!empty($or_where))
+            $this->db->where($or_where);
+        if(!empty($and_where))
+            $this->db->where($and_where);
+        if(!empty($having))
+            $this->db->having($having);
+        if($limit != 0)
+            $this->db->limit($limit, $offset);
+        $this->db->order_by($order_by);
+        $query=$this->db->get();
+        return $query;
+    }
+
+	function get_graph_checks_count_static($cols, $order_by,$group_by,$outlet_id,$select,$page_number,$limit,$or_where='',$and_where='',$having='')
+    {
+    	  $offset=($page_number-1)*$limit;
+        $this->db->select($select);
+        $this->db->from($outlet_id.'_static_assignments');
         if(!empty($group_by))
             $this->db->group_by($group_by);
         if(!empty($cols))

@@ -60,7 +60,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                     }
                                     elseif(isset($product_check[0]['check_subcat_id']) && !empty($product_check[0]['check_subcat_id'])) {
                                     	$product_heading = "Process Check Type";  
-                                    	$prodct_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$product_check[0]['check_subcat_id']),"id desc","id desc",'catagories','cat_name as product_title','1','1','','','')->result_array();
+                                    	$prodct_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$product_check[0]['check_subcat_id']),"id desc","id ",'catagories','cat_name as product_title','1','1','','','')->result_array();
                                     }
                                     else
                                       $prodct_detail[0]['product_title'] = 'N/A';
@@ -79,7 +79,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                                  <?=$product_heading?>:
                                               </th>
                                               <td>
-                                                <?php $name=''; if(isset($prodct_detail[0]['product_title']) && !empty($prodct_detail[0]['product_title'])) $name=$prodct_detail[0]['product_title']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; ?>
+                                                <?php $name=''; if(isset($prodct_detail[0]['product_title']) && !empty($prodct_detail[0]['product_title'])) $name=$prodct_detail[0]['product_title']; $name=  Modules::run('api/string_length',$name,'8000','',''); echo $name; ?>
                                               </td>
                                           </tr>
                                           <tr class="bg-col">
@@ -87,7 +87,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                                   User name:
                                               </th>
                                               <td>
-                                                  <?php $name=''; if(isset($user_detail[0]['first_name']) && !empty($user_detail[0]['first_name']) ) $name=$user_detail[0]['first_name'].' '.$user_detail[0]['last_name']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; ?>
+                                                  <?php $name=''; if(isset($user_detail[0]['first_name']) && !empty($user_detail[0]['first_name']) ) $name=$user_detail[0]['first_name'].' '.$user_detail[0]['last_name']; $name=  Modules::run('api/string_length',$name,'8000','',''); echo $name; ?>
                                               </td>
                                           </tr>
                                           <?php if(empty($line_na)) { ?>
@@ -96,7 +96,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                                   Line number:
                                               </th>
                                               <td>
-                                                  <?php $name=''; if(isset($assignmet_answers[0]['line_no']) && !empty($assignmet_answers[0]['line_no'])) $name=$assignmet_answers[0]['line_no']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; ?>
+                                                  <?php $name=''; if(isset($assignmet_answers[0]['line_no']) && !empty($assignmet_answers[0]['line_no'])) $name=$assignmet_answers[0]['line_no']; $name=  Modules::run('api/string_length',$name,'8000','',''); echo $name; ?>
                                               </td>
                                           </tr>
                                         <?php } if(empty($shift_na)) { ?>
@@ -105,7 +105,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                                   Shift detail:
                                               </th>
                                               <td>
-                                                  <?php $name=''; if(isset($assignmet_answers[0]['shift_no']) && !empty($assignmet_answers[0]['shift_no'])) $name=$assignmet_answers[0]['shift_no']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; ?>
+                                                  <?php $name=''; if(isset($assignmet_answers[0]['shift_no']) && !empty($assignmet_answers[0]['shift_no'])) $name=$assignmet_answers[0]['shift_no']; $name=  Modules::run('api/string_length',$name,'8000','',''); echo $name; ?>
                                               </td>
                                           </tr>
                                         <?php }?>
@@ -148,7 +148,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                             echo $qa['given_answer'];
                                           elseif(isset($qa['answer_id']) && !empty($qa['answer_id'])) {
                                             $question_anwer = Modules::run('api/_get_specific_table_with_pagination',array("question_id"=>$qa['question_id'],"answer_id"=>$qa['answer_id']),'answer_id desc',DEFAULT_OUTLET.'_checks_answers','possible_answer','1','1')->result_array();
-                                            $name=''; if(isset($question_anwer[0]['possible_answer']) && !empty($question_anwer[0]['possible_answer'])) $name=$question_anwer[0]['possible_answer']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name;
+                                            $name=''; if(isset($question_anwer[0]['possible_answer']) && !empty($question_anwer[0]['possible_answer'])) $name=$question_anwer[0]['possible_answer']; $name=  Modules::run('api/string_length',$name,'8000','',''); echo $name;
                                           }
                                           else echo "";?></td>
                                       <td>
@@ -207,7 +207,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                             echo $rqa['range'];
                                           elseif(isset($rqa['answer_id']) && !empty($rqa['answer_id'])) {
                                             $question_anwer = Modules::run('api/_get_specific_table_with_pagination',array("question_id"=>$rqa['question_id'],"answer_id"=>$rqa['answer_id']),'answer_id desc',DEFAULT_OUTLET.'_checks_answers','possible_answer','1','1')->result_array();
-                                            $name=''; if(isset($question_anwer[0]['possible_answer']) && !empty($question_anwer[0]['possible_answer'])) $name=$question_anwer[0]['possible_answer']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name;
+                                            $name=''; if(isset($question_anwer[0]['possible_answer']) && !empty($question_anwer[0]['possible_answer'])) $name=$question_anwer[0]['possible_answer']; $name=  Modules::run('api/string_length',$name,'8000','',''); echo $name;
                                           }else echo "";?></td>
                                       </tr>
                                       <?}}?>
@@ -226,7 +226,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                               <td>
                                                   <?php 
                                                   $review_user_detail = Modules::run('api/_get_specific_table_with_pagination',array("id"=>$assign_detail[0]['review_user']),'id desc','users','user_name','1','1')->result_array();
-                                                  $name=''; if(isset($review_user_detail[0]['user_name']) && !empty($review_user_detail[0]['user_name'])) $name=$review_user_detail[0]['user_name']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; 
+                                                  $name=''; if(isset($review_user_detail[0]['user_name']) && !empty($review_user_detail[0]['user_name'])) $name=$review_user_detail[0]['user_name']; $name=  Modules::run('api/string_length',$name,'8000','',''); echo $name; 
                                                    ?>
                                               </td>
                                           </tr>
@@ -281,7 +281,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                               <td>
                                                   <?php 
                                                   $review_user_detail = Modules::run('api/_get_specific_table_with_pagination',array("id"=>$assign_detail[0]['approval_user']),'id desc','users','user_name','1','1')->result_array();
-                                                  $name=''; if(isset($review_user_detail[0]['user_name']) && !empty($review_user_detail[0]['user_name'])) $name=$review_user_detail[0]['user_name']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; 
+                                                  $name=''; if(isset($review_user_detail[0]['user_name']) && !empty($review_user_detail[0]['user_name'])) $name=$review_user_detail[0]['user_name']; $name=  Modules::run('api/string_length',$name,'8000','',''); echo $name; 
                                                    ?>
                                               </td>
                                           </tr>

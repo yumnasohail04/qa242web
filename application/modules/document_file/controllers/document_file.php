@@ -17,10 +17,7 @@ date_default_timezone_set("Asia/karachi");
     function manage() {
         $data['news'] = $this->_get('id desc')->result_array();
         foreach($data['news'] as $key => $value){
-            $result = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id" =>$value['carrier_type']),'id desc','id','carrier_types','type','1','0','','','')->row_array();
-            $data['news'][$key]['carrier_type']="None";
-            if(isset($result['type']) && !empty($result['type']))
-                $data['news'][$key]['type_name']=$result['type'];
+            $data['news'][$key]['type'] = $this->get_doc_assigned_types(array('doc_carrier_types.doc_id'=>$value['id']),"doc_carrier_types","doc_carrier_types.id desc","carrier_types","carrier_type","id","carrier_types.type")->result_array();
         } 
         $data['view_file'] = 'news';
         $this->load->module('template');
@@ -31,24 +28,25 @@ date_default_timezone_set("Asia/karachi");
         if (is_numeric($update_id) && $update_id != 0) {
             $data['news'] = $this->_get_data_from_db($update_id);
             $data['new'] = $this->_get_data_from_db_question($update_id);
+            $selected_type = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("doc_id" =>$update_id),'id desc','id','doc_carrier_types','id,carrier_type','1','0','','','')->result_array();
+            if(!empty($selected_type)) {
+                $temp= array();
+                foreach ($selected_type as $key => $gp):
+                    $temp[$gp['id']] = $gp['carrier_type'];
+                endforeach;
+                $selected_type = $temp;
+            }
+            $data['selected_type']=$selected_type;
         } else {
             $data['news'] = $this->_get_data_from_post();
             $data['new'] = $this->_get_data_from_post_question();
         }
-        $type = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array(),'id desc','id','carrier_types','id,type','1','0','','','')->result_array();
-        if(!empty($type)) {
-            $temp= array();
-            foreach ($type as $key => $gp):
-                $temp[$gp['id']] = $gp['type'];
-            endforeach;
-            $type = $temp;
-        }
-        $data['carrier_type'] = $type;
+        $data['carrier_type'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array(),'id desc','id','carrier_types','id,type','1','0','','','')->result_array();
         $data['type']=array("Mandatory"=>"Mandatory","Optional"=>"Optional");
         $data['update_id'] = $update_id;
         $data['view_file'] = 'newsform';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
  
     function _get_data_from_db($update_id) {
@@ -75,7 +73,6 @@ date_default_timezone_set("Asia/karachi");
     }
     function _get_data_from_post() {
         $data['doc_name'] = $this->input->post('doc_name');
-        $data['carrier_type'] = $this->input->post('carrier_type');
         $data['question'] = $this->input->post('question');
         return $data;
     }
@@ -95,6 +92,14 @@ date_default_timezone_set("Asia/karachi");
         if (is_numeric($update_id) && $update_id != 0) {
             $where['id'] = $update_id;
             $this->_update($where, $data);
+            Modules::run('api/delete_from_specific_table',array("doc_id"=>$update_id),'doc_carrier_types');
+            $where_arr['doc_id'] = $update_id;
+            $carrier_type = $this->input->post('carrier_type');
+            if(!empty($carrier_type)) {
+                foreach ($carrier_type as $key => $it):
+                    Modules::run('api/insert_or_update',array("doc_id"=>$update_id,"carrier_type"=>$it),array("doc_id"=>$update_id,"carrier_type"=>$it),'doc_carrier_types');
+                endforeach;
+            }
             $data_quest['doc_id']=$update_id;
             if($data['question']=="1")
                 Modules::run('api/insert_or_update',array("doc_id"=> $update_id),$data_quest,'document_question');
@@ -105,6 +110,12 @@ date_default_timezone_set("Asia/karachi");
         }
         if (is_numeric($update_id) && $update_id == 0) {
             $id = $this->_insert($data);
+            $carrier_type = $this->input->post('carrier_type');
+            if(!empty($carrier_type)) {
+                foreach ($carrier_type as $key => $it):
+                    Modules::run('api/insert_or_update',array("doc_id"=>$id,"carrier_type"=>$it),array("doc_id"=>$id,"carrier_type"=>$it),'doc_carrier_types');
+                endforeach;
+            }
             $data_quest['doc_id']=$id;
             Modules::run('api/insert_or_update',array("doc_id"=> $id),$data_quest,'document_question');
             $this->session->set_flashdata('message', 'document'.' '.DATA_SAVED);
@@ -170,6 +181,12 @@ date_default_timezone_set("Asia/karachi");
     function _delete($arr_col) {       
         $this->load->model('mdl_document_file');
         $this->mdl_document_file->_delete($arr_col);
+    }
+
+    function get_doc_assigned_types($where,$table,$order_by,$join_table,$table_attr,$jointable_attr,$select)
+    {
+        $this->load->model('mdl_document_file');
+       return  $this->mdl_document_file->get_doc_assigned_types($where,$table,$order_by,$join_table,$table_attr,$jointable_attr,$select);
     }
      
 }

@@ -23,10 +23,10 @@ $count_row = 0;
     <option value="100">100</option>
     <option value="-1">All</option>
 </select>
-<button class="btn btn-info" onclick="export_to_CSV('Assignment Report')">Export to CSV </button>
+<button class="btn btn-outline-primary" onclick="export_to_CSV('Assignment Report')">Export to CSV </button>
 <div class="table-responsive">
-    <table class="table" id="tblReportData">
-        <thead style="background-color: #7BABED;">
+    <table class="table data-table data-table-feature" id="tblReportData">
+        <thead >
         <tr>
             <th data-htmltoarray="true" data-arrayclassth="assign_id">Record #</th>
             <th data-htmltoarray="true" data-arrayclassth="assign_date">Date</th>

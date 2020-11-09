@@ -1,228 +1,178 @@
-<!-- Header   -->
-
 <!DOCTYPE html>
 <html lang="en">
-<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   
-   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-   <meta name="description" content="DS Car Wash">
-   <meta name="keywords" content="">
-   <title>QA Project- Admin</title>
-    <link rel="icon" href="<?php echo STATIC_FRONT_IMAGE?>16X16.ico" type="image/x-icon">
-   
-   <!-- JQUERY-->
-   <script src="<?php echo STATIC_ADMIN_JS?>jquery.js"></script>
-   <!-- =============== APP SCRIPTS ===============-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>EQ SMART - Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_FONT?>iconsmind-s/css/iconsminds.css" />
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_FONT?>simple-line-icons/css/simple-line-icons.css">
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>vendor/bootstrap.min.css" />
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>vendor/bootstrap.rtl.only.min.css" />
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>vendor/fullcalendar.min.css" />
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>vendor/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>vendor/datatables.responsive.bootstrap4.min.css" />
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>vendor/select2.min.css" />
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>vendor/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>vendor/glide.core.min.css" />
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>vendor/bootstrap-stars.css" />
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>vendor/nouislider.min.css" />
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>vendor/bootstrap-datepicker3.min.css" />
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>vendor/component-custom-switch.min.css" />
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>main.css" />
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>custom.css" />  
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>sweetalert.css">  
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>chosen.min.css">
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>toastr.css">
+	<link href="http://valor-software.com/ngx-bootstrap/assets/css/glyphicons.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
 
 
-    <!-- =============== Custom CSS ===============-->
-    <link rel="stylesheet"  type="text/css" href="<?php echo STATIC_ADMIN_CSS?>custom.css">
+    <script src="<?php echo STATIC_ADMIN_JS?>vendor/jquery-3.3.1.min.js"></script>
 
-  <!-- ============== Toastr ====================== -->
-   <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>toastr.css"> 
-
-   <!-- FONT AWESOME-->
-   <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>font-awesome.min.css">
-
-   <!-- SIMPLE LINE ICONS-->
-   <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>simple-line-icons.css">
-    
-   <!-- ANIMATE.CSS-->
-   <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>animate.min.css">
-
-   <!-- WHIRL (spinners)-->
-   <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>whirl.css">
-
-   <!-- SWEET ALERT-->
-   <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>sweetalert.css">
-   <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>bs-filestyle.css">
-   <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>dropify.min.css">
-   <!-- DATATABLES-->
-   <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>dataTables.colVis.css">
-   <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>dataTables.bootstrap.css">
-
-   <!-- =============== BOOTSTRAP STYLES ===============-->
-   <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>bootstrap.css" id="bscss">
-
-   <!-- =============== APP STYLES ===============-->
-   <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>app.css"    id="maincss">
-  
-   <!-- =============== DATETIME PICKER STYLES ===============-->
-   <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>bootstrap-datetimepicker.min.css" id="maincss">
-   <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>chosen.min.css">
-    <!-- FULLCALENDAR  addedd by wasim 29-02-2016-->
-   <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>fullcalendar.css">
-   <script src="<?php echo STATIC_ADMIN_JS?>chosen.jquery.min.js"></script>
-  <style type="text/css">
- 
-#myInput {
-    border-box: box-sizing;
-    background-image: url('searchicon.png');
-    background-position: 14px 12px;
-    background-repeat: no-repeat;
-    font-size: 16px;
-    padding: 14px 20px 12px 45px;
-    border: none;
-    border-bottom: 1px solid #ddd;
-}
-
-#myInput:focus {outline: 3px solid #ddd;}
-
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f6f6f6;
-    min-width: 230px;
-    overflow: auto;
-    border: 1px solid #ddd;
-    z-index: 1;
-}
-
-.dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-}
-
-.dropdown a:hover {background-color: #ddd}
-
-.show {display:block;}
-.scrollable-menu{
-      height: auto;
-    max-height: 400px;
-    overflow-x: hidden;
-}
-.message-counter > span
-{
-    left: 28px;
-    top: 8px;
-}
-  </style>
-
- 
+    <link rel="stylesheet" href="<?php echo STATIC_ADMIN_CSS?>dropify.min.css">
+    <script src="<?php echo STATIC_ADMIN_JS?>dropify.min.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>chosen.jquery.min.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>select-boxes.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>select-boxes.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>toastr.js"></script>
 </head>
-<body>
-<div class="wrapper">
-      <!-- top navbar-->
-      <header class="topnavbar-wrapper">
-         <!-- START Top Navbar-->
-         <nav role="navigation" class="navbar topnavbar" style="margin-top:15px;">
-            <!-- START navbar header-->
-           <?php $displaymod='';   foreach($outlets['all_outlet_id'] as $logo_row) {
-			    
-				if ($logo_row['id']==DEFAULT_OUTLET)
-				$displaymod='';
-				else
-				$displaymod='style="display:none"';
-			   ?>
-           
-            <div class="navbar-header" id="logo_<?php echo $logo_row['id']?>" <?php echo $displaymod;?>>
-               <a href="<?php echo ADMIN_BASE_URL.'dashboard'; ?>" class="navbar-brand">
-                  <div class="brand-logo">
-                    <img src="<?php echo STATIC_ADMIN_IMAGE.'eq_smart_log_f1.png' ?>" style="width:56%; margin-top:8%;">
-                  </div>
-                  <div class="brand-logo-collapsed">
-                     <img src="<?php echo STATIC_ADMIN_IMAGE.'eq_smart_log_f1.png' ?>" style="width:50%;">
-                  </div>
-               </a>
-            </div>
-           <?php } ?>
-           
-            <!-- END navbar header-->
-
-            <!-- START Nav wrapper-->
-            <div class="nav-wrapper">
-               <!-- START Left navbar-->
-               <ul class="nav navbar-nav">
-                  <li class="asider-collapse custome-toggle">
-                     <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
-                     <a  href="#" data-toggle-state="aside-collapsed" class="hidden-xs font-collapse">
-                        <i class="fa fa-tasks "></i>                     </a>
-                     <!-- Button to show/hide the sidebar on mobile. Visible on mobile only.-->
-                     <a href="#" data-toggle-state="aside-toggled" data-no-persist="true" class="visible-xs sidebar-toggle">
-                        <em class="fa fa-navicon"></em>
-                     </a>
-                  </li>
-                    <!--_________________________notification code________________________________!-->
-                   <?php if(isset($total_notification) && !empty($total_notification)) { ?>
-                    <span class="badge_noti"><?=$total_notification?></span>
-                    <?php } ?>
-                   <li class="header-icons dropdown ">
-                     <i class="dropbtn" data-feather="bell" style="margin-top: 75%;color: black;" onclick="myFunction()"></i>
-                     <div id="myDropdown" class="dropdown-content" style="    width: 500px;">
-                     <div class="notify_head">
-                       <p class="p_notify">Notification</p>
-                       <span class="mark_view dropbtn">Mark all as read</span>
-                     </div>
-                     <?php if(isset($notification) && !empty($notification)) {
-                      foreach ($notification as $key => $noti):
-                      ?>
-                     <div class="position_set">
-                      <a href="javascript:void(0);">
-                        <div class="li-set">
-                          <p class="text-style"><?=$noti['notification_message']?></p>
-                        </div>
-                        <div class="close_btn">
-                          <div class="close_div dropbtn">
-                          <span class="cross_set dropbtn" notiattr= "<?=$noti['notification_id']?>">x</span>
-                          </div>
-                        </div>
-                      </a>
-                      </div>
-                      <?php endforeach; } ?>
-                      </div>
-                  </li>
-                  <!--_________________notification code end__ also add the sript(go down)___________!-->
-                  <li class="header-icons message-counter">
-                     <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
-                     <a  href="javascript:void(0);"  class="hidden-xs  header-icon-font view_chat">
-                     <i data-feather="message-square"></i>
-                     </a>
-                     
-                  </li>
-                    <li class="header-icons">
-                     <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
-                     <a  href="<?=ADMIN_BASE_URL.'global_configuration'?>"  class="hidden-xs  header-icon-font">
-                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                  
-                     </a>
-                  </li>
-               </ul>
-
-               <?php $data = $this->session->userdata('user_data');?>
-
-               <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                          <span class="username"><img src="<?php   if(empty($data['user_image'])){
-                 echo STATIC_ADMIN_IMAGE.'no_item_image_small.jpg'; } else { echo BASE_URL.ACTUAL_OUTLET_USER_IMAGE_PATH.$data['user_image']; } ?>" style="width:32px;border-radius: 23px;"></span>
+<script>
+function css_constant(){
+     var css_constant= "<?php echo STATIC_ADMIN_CSS ?>";
+return css_constant;
+}
+</script>
+<style>
+th {
+    text-align: inherit!important;
+    padding-left: 1%;
+}
+</style>
+<?php $data = $this->session->userdata('user_data');?>
+<!-- show-spinner -->
+<body id="app-container" class="menu-default show-spinner" >
+<nav class="navbar fixed-top">
+        <div class="d-flex align-items-center navbar-left">
+            <a href="#" class="menu-button d-none d-md-block">
+                <svg class="main" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 17">
+                    <rect x="0.48" y="0.5" width="7" height="1" />
+                    <rect x="0.48" y="7.5" width="7" height="1" />
+                    <rect x="0.48" y="15.5" width="7" height="1" />
+                </svg>
+                <svg class="sub" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 17">
+                    <rect x="1.56" y="0.5" width="16" height="1" />
+                    <rect x="1.56" y="7.5" width="16" height="1" />
+                    <rect x="1.56" y="15.5" width="16" height="1" />
+                </svg>
+            </a>
+            <a href="#" class="menu-button-mobile d-xs-block d-sm-block d-md-none">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 17">
+                    <rect x="0.5" y="0.5" width="25" height="1" />
+                    <rect x="0.5" y="7.5" width="25" height="1" />
+                    <rect x="0.5" y="15.5" width="25" height="1" />
+                </svg>
+            </a>
+        </div>
+        <a class="navbar-logo" href="<?php echo ADMIN_BASE_URL.'dashboard' ?>">
+            <span class="logo d-none d-xs-block"></span>
+            <span class="logo-mobile d-block d-xs-none"></span>
+        </a>
+        <div class="navbar-right">
+            <div class="header-icons d-inline-block align-middle">
+                <div class="position-relative d-none d-sm-inline-block">
+                    <button class="header-icon btn btn-empty" type="button" id="iconMenuButton" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <i class="simple-icon-grid"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right mt-3  position-absolute" id="iconMenuDropdown">
+                        <a href="<?php echo ADMIN_BASE_URL.'global_configuration'; ?>" class="icon-menu-item">
+                            <i class="iconsminds-equalizer d-block"></i>
+                            <span>Settings</span>
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="change_password" rel="<?=$data['user_id']?>" href="#"><i class="fa fa-key"></i> Change Password</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="<?=ADMIN_BASE_URL.'logout'?>"><i class="fa fa-key"></i> Log Out</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#" data-toggle-fullscreen=""><em class="fa fa-expand"></em> Full Screen</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="<?php echo ADMIN_BASE_URL?>login/logout" title="Lock screen"><em class="icon-lock"></em> Lock Screen</a></li>
-                            
-                        </ul>
-                    </li>
-               </ul>
-               <!-- END Right Navbar-->
+                        <a href="<?php echo ADMIN_BASE_URL.'users' ?>" class="icon-menu-item">
+                            <i class="iconsminds-male-female d-block"></i>
+                            <span>Users</span>
+                        </a>
+                        <a href="#" class="icon-menu-item">
+                            <div class="d-none d-md-inline-block align-text-bottom mr-3">
+                                <div class="custom-switch custom-switch-primary-inverse custom-switch-small pl-1" 
+                                    data-toggle="tooltip" data-placement="left" title="Dark Mode">
+                                    <input class="custom-switch-input" id="switchDark" type="checkbox" checked>
+                                    <label class="custom-switch-btn" for="switchDark"></label>
+                                </div>
+                            </div>
+                            <span>Dark Mode</span>
+                        </a>
+                        <a href=""  class="icon-menu-item view_chat">
+                            <i class="simple-icon-bubbles d-block"></i>
+                            <span>Chat</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="position-relative d-inline-block">
+                    <button class="header-icon btn btn-empty" type="button" id="notificationButton"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="simple-icon-bell"></i>
+                        <?php if(isset($total_notification) && !empty($total_notification)) { ?>
+                        <span class="count"><?=$total_notification?></span>
+                        <?php } ?>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right mt-3 position-absolute" id="notificationDropdown" onclick="myFunction()">
+                        <div class="scroll">
+                            <?php if(isset($notification) && !empty($notification)) {
+                            foreach ($notification as $key => $noti):
+                            ?>
+                            <div class="d-flex flex-row mb-3 pb-3 border-bottom">
+                                <div class="pl-3">
+                                    <a href="#">
+                                        <p class="font-weight-medium mb-1"><?=$noti['notification_message']?></p>
+                                        <!-- <p class="text-muted mb-0 text-small">09.04.2018 - 12:45</p> -->
+                                    </a>
+                                </div>
+                                <div class="close_btn">
+                                  <div class="close_div dropbtn">
+                                  <span class="cross_set dropbtn" notiattr= "<?=$noti['notification_id']?>">x</span>
+                                  </div>
+                                </div>
+                            </div>
+                            <?php endforeach; } ?>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="header-icon btn btn-empty d-none d-sm-inline-block" type="button" id="fullScreenButton">
+                    <i class="simple-icon-size-fullscreen"></i>
+                    <i class="simple-icon-size-actual"></i>
+                </button>
+
             </div>
-            <!-- END Nav wrapper-->
-		
-         </nav>
-         <!-- END Top Navbar-->
-      </header>
-      
+            <?php $data = $this->session->userdata('user_data');?>
+            <div class="user d-inline-block">
+                <button class="btn btn-empty p-0" type="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    <span class="name"><?php echo $data['name']; ?></span>
+                    <span>
+                        <img alt="Profile Picture" src="<?php   if(empty($data['user_image']) || !file_exists(ACTUAL_OUTLET_USER_IMAGE_PATH.$data['user_image']) ){
+                          echo STATIC_ADMIN_IMAGE.'no_item_image_small.jpg'; } else { echo BASE_URL.ACTUAL_OUTLET_USER_IMAGE_PATH.$data['user_image']; } ?>" />
+                    </span>
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-right mt-3">
+                    <!-- <a class="dropdown-item" href="#">Account</a>
+                    <a class="dropdown-item" href="#">Features</a>
+                    <a class="dropdown-item" href="#">History</a> -->
+                    <a class="dropdown-item change_password" rel="<?=$data['user_id']?>" href="#">Change Password</a>
+                    <a class="dropdown-item" href="<?php echo ADMIN_BASE_URL?>login/logout">Sign out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+
 <?php
 $message = $this->session->flashdata('message');$status = $this->session->flashdata('status');
 if (isset($message) && !empty($message) && $status == 'success') {?><script>$(document).ready(function() {toastr.success("<?php echo $message?>")});</script><?php }
@@ -230,77 +180,66 @@ if (isset($message) && !empty($message) && $status == 'error') {?><script>$(docu
 ?>
 
 <script>
-/* When the user clicks on the button,
-toggle between hiding and showing the dropdown content */
-
-function filterFunction() {
-    var input, filter, ul, li, a, i;
-    input = document.getElementById("myInput");
-    filter = input.value.toUpperCase();
-    div = document.getElementById("myDropdown");
-    a = div.getElementsByTagName("li");
-    for (i = 0; i < a.length; i++) {
-        if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
-            a[i].style.display = "";
-        } else {
-            a[i].style.display = "none";
+    function filterFunction() {
+        var input, filter, ul, li, a, i;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        div = document.getElementById("myDropdown");
+        a = div.getElementsByTagName("li");
+        for (i = 0; i < a.length; i++) {
+            if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                a[i].style.display = "";
+            } else {
+                a[i].style.display = "none";
+            }
         }
     }
-}
 </script>
-<!--_________________________notification code________________________________!-->
 <script>
-/* When the user clicks on the button, 
-toggle between hiding and showing the dropdown content */
-function myFunction() {
-  document.getElementById("myDropdown").classList.toggle("show");
-}
-/*$('li.myDropdown').on('click', function (event) {
+    function myFunction() {
     document.getElementById("myDropdown").classList.toggle("show");
-});*/
-
-window.onclick = function(event) {
-  if (!event.target.matches('.dropbtn')) {
-    var dropdowns = document.getElementsByClassName("dropdown-content");
-    var i;
-    for (i = 0; i < dropdowns.length; i++) {
-      var openDropdown = dropdowns[i];
-      if (openDropdown.classList.contains('show')) {
-        openDropdown.classList.remove('show');
-      }
-
     }
-  }
-}
-  $(document).off('click', '.cross_set').on('click', '.cross_set', function(e){
-       e.preventDefault();
-      $this = $(this);
-      var id  =$this .attr('notiattr'); 
-      $.ajax({
+    window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+        }
+
+        }
+    }
+    }
+    $(document).off('click', '.cross_set').on('click', '.cross_set', function(e){
+        e.preventDefault();
+        $this = $(this);
+        var id  =$this .attr('notiattr'); 
+        $.ajax({
         type: 'POST',
         url: "<?= ADMIN_BASE_URL ?>dashboard/change_notification_status",
         data: {'id': id},
         async: false,
         success: function(result) {
-          $this.parent().parent().parent().parent().remove();
-          var number = parseInt($('.badge_noti').text(),10);
-          $('.badge_noti').text(number-1);
+            $this.parent().parent().parent().parent().remove();
+            var number = parseInt($('.badge_noti').text(),10);
+            $('.badge_noti').text(number-1);
         }
-      });
+        });
     });
     $(document).off('click', '.mark_view').on('click', '.mark_view', function(e){
-       e.preventDefault();
-      $this = $(this);
-      var id  =$this .attr('notiattr'); 
-      $.ajax({
+        e.preventDefault();
+        $this = $(this);
+        var id  =$this .attr('notiattr'); 
+        $.ajax({
         type: 'POST',
         url: "<?= ADMIN_BASE_URL ?>dashboard/change_all_notification_status",
         data: {},
         async: false,
         success: function(result) {
-          location.reload();
+            location.reload();
         }
-      });
+        });
     });
 </script>
-<!--_________________notification code end_____________!-->

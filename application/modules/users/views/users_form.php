@@ -1,68 +1,38 @@
-<div class="page-content-wrapper">
-  <div class="page-content"> 
-    <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
-    <div id="contractors_measurements_modal" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-            <h4 class="modal-title">Modal title</h4>
-          </div>
-          <div class="modal-body"> Widget settings form goes here </div>
-          <div class="modal-footer">
-            <button type="button" class="btn green" id="confirm"><i class="fa fa-check"></i>&nbsp;Save changes</button>
-            <button type="button" class="btn default" data-dismiss="modal"><i class="fa fa-undo"></i>&nbsp;Close</button>
-          </div>
-        </div>
-        <!-- /.modal-content --> 
-      </div>
-      <!-- /.modal-dialog --> 
-    </div>
-    <!-- /.modal --> 
-    <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM--> 
-    <!-- BEGIN PAGE HEADER-->
-    <div class="content-wrapper">
-      <h3> 
-          <?php if (empty($update_id)) 
-                        $strTitle = 'Add Users';
-                    else 
-                        $strTitle = 'Edit Users';
-                        echo $strTitle;
-             
-                 ?>
-                            <a href="<?php echo ADMIN_BASE_URL . 'users'; ?>"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-chevron-left"></i>&nbsp;&nbsp;&nbsp;Back</button></a> 
-        </h3>
-          
-    </div>
-
+<main>
+  <div class="container-fluid">
     <div class="row">
-      <div class="col-md-12">
-        <div class="tabbable tabbable-custom boxless">
-           <div class="tab-content" style="margin-top:-30px;">
-          <div class="panel panel-default">
-            <div class="tab-pane  active" id="tab_2">
-              <div class="portlet box green">
-                <div class="portlet-title">
+      <div class="col-12">
+        <h1> <?php if (empty($update_id)) 
+        $strTitle = 'Add Users';
+      else 
+        $strTitle = 'Edit Users';
+        echo $strTitle;
+      ?></h1>
+        <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="<?php echo ADMIN_BASE_URL . 'users'; ?>">&nbsp;&nbsp;&nbsp;Back</a> 
+        <div class="separator mb-5"></div>
+      </div>
+    </div>
+<div class="card mb-4">
+  <div class="card-body">
+    <h5 class="mb-4">
+    
+      </h5>
+      <?php
+        $attributes = array('autocomplete' => 'off', 'id' => 'form_sample_1', 'class' => 'form-horizontal', 'data-parsley-validate' => '', 'novalidate' => '' );
+        if (empty($update_id)) {
+          $update_id = 0;
+        } else {
+          $hidden = array('hdnId' => $update_id);
+        }
+        if (isset($hidden) && !empty($hidden))
+          echo form_open_multipart(ADMIN_BASE_URL . 'users/submit/' . $update_id , $attributes, $hidden);
+        else
+          echo form_open_multipart(ADMIN_BASE_URL . 'users/submit/' . $update_id , $attributes);
+      ?>
 
-                </div>
-                <div class="portlet-body form"> 
-
-                   <?php
-					$attributes = array('autocomplete' => 'off', 'id' => 'form_sample_1', 'class' => 'form-horizontal', 'data-parsley-validate' => '', 'novalidate' => '' );
-					if (empty($update_id)) {
-						$update_id = 0;
-					} else {
-						$hidden = array('hdnId' => $update_id);
-					}
-					if (isset($hidden) && !empty($hidden))
-						echo form_open_multipart(ADMIN_BASE_URL . 'users/submit/' . $update_id , $attributes, $hidden);
-					else
-						echo form_open_multipart(ADMIN_BASE_URL . 'users/submit/' . $update_id , $attributes);
-					?>
-
-                    <div class="row" style="margin-top:15px;">
-                      <div class="col-sm-5">
-                        <div class="form-group">
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="input-group  mb-3">
                           <?php
                           $data = array(
                           'name' => 'user_name',
@@ -70,23 +40,29 @@
                           'class' => 'form-control validatefield',
                           'type' => 'text',
                           'required' => 'required',
-                          'tabindex' => '1',
-                          'data-parsley-maxlength'=>TEXT_BOX_RANGE,
+                          'aria-label' => '',
+                          'aria-describedby'=>"basic-addon1",
                           'value' => $users['user_name'],
                           );
                           $attribute = array('class' => 'control-label col-md-4');
                           ?>                   
-                          <?php echo form_label('User Name<span style="color:red">*</span>', 'user_name', $attribute); ?>
-                          <div class="col-md-8"> <?php echo form_input($data); ?>  <span id="message"></span></div>
+                          <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Username<span style="color:red">*</span></button>
+                                </div>
+                          <?php echo form_input($data); ?>
                          
                         </div>
+                      <div id="message"></div>
                          <?php  $read_only = false;
                           if (isset($update_id) && !empty($update_id)) { ?>
                           <script type="text/javascript">jQuery('#user_name').attr('readonly', true);</script>
-                          <? } ?>
+                          <?php } ?>
                       </div>
-                      <div class="col-sm-5">
-                        <div class="form-group">
+
+
+
+                      <div class="col-sm-6">
+                        <div class="input-group mb-3">
                           <?php
                           $data = array(
                           'name' => 'email',
@@ -94,20 +70,19 @@
                           'class' => 'form-control validatefield',
                           'type' => 'email',
                           'tabindex' => '2',
-                          'data-parsley-maxlength'=>TEXT_BOX_RANGE,
                           'value' => $users['email'],
                           );
                           $attribute = array('class' => 'control-label col-md-4');
                           ?>
-                          <?php echo form_label('Email<span style="color:red">*</span>', 'email', $attribute); ?>
-                          <div class="col-md-8"> <?php echo form_input($data); ?> </div>
+                          <div class="input-group-prepend">
+                              <button class="btn btn-outline-secondary" type="button">Email<span style="color:red">*</span></button>
+                          </div>
+                          <?php echo form_input($data); ?>
                         </div>
                       </div>
-                    </div>
-                    
-                    <div class="row">
-                      <div class="col-sm-5">
-                        <div class="form-group">
+
+                      <div class="col-sm-6">
+                        <div class="input-group mb-3">
                           <?php
                           $data = array(
                           'name' => 'first_name',
@@ -121,12 +96,17 @@
                           );
                           $attribute = array('class' => 'control-label col-md-4');
                           ?>
-                          <?php echo form_label('First Name<span style="color:red">*</span>', 'first_name', $attribute); ?>
-                          <div class="col-md-8"> <?php echo form_input($data); ?> </div>
+                          <div class="input-group-prepend">
+                              <button class="btn btn-outline-secondary" type="button">First Name<span style="color:red">*</span></button>
+                          </div>
+                          <?php echo form_input($data); ?>
                         </div>
                       </div>
-                      <div class="col-sm-5">
-                        <div class="form-group">
+
+
+
+                      <div class="col-sm-6">
+                        <div class="input-group mb-3">
                           <?php
                           $data = array(
                           'name' => 'last_name',
@@ -139,15 +119,14 @@
                           );
                           $attribute = array('class' => 'control-label col-md-4');
                           ?>
-                          <?php echo form_label('Last Name<span style="color:red">*</span>', 'last_name', $attribute); ?>
-                          <div class="col-md-8"> <?php echo form_input($data); ?> </div>
+                          <div class="input-group-prepend">
+                              <button class="btn btn-outline-secondary" type="button">Last Name<span style="color:red">*</span></button>
+                          </div>
+                          <?php echo form_input($data); ?>
                         </div>                     
-                      </div>                   
-                    </div>
-
-                    <div class="row">
-                     <div class="col-sm-5">
-                        <div class="form-group">
+                      </div>          
+                     <div class="col-sm-6">
+                        <div class="input-group mb-3">
                           <?php
                           $data = array(
                           'name' => 'phone',
@@ -157,14 +136,15 @@
                           'tabindex' => '5',
                           'value' => $users['phone'],
                           //'pattern' => '\d{3}[\-]\d{3}[\-]\d{4}',
-                          );
-                          $attribute = array('class' => 'control-label col-md-4');
-                          echo form_label('Cell Phone<span style="color:red">*</span>', 'phone', $attribute); ?>
-                          <div class="col-md-8"> <?php echo form_input($data); ?> </div>
+                          ); ?>
+                          <div class="input-group-prepend">
+                              <button class="btn btn-outline-secondary" type="button">Phone<span style="color:red">*</span></button>
+                          </div>
+                          <?php echo form_input($data); ?>
                         </div>
                       </div>
-                      <div class="col-sm-5">
-                        <div class="form-group">
+                      <div class="col-sm-6">
+                        <div class="input-group mb-3">
                           <?php
                           $data = array(
                             'name' => 'office_phone',
@@ -175,18 +155,16 @@
                               'data-parsley-maxlength'=>TEXT_BOX_RANGE,
                             'value' => $users['office_phone'],
                             );
-                            $attribute = array('class' => 'control-label col-md-4');
-                            echo form_label('Office Phone<span style="color:red">*</span>', 'office_phone', $attribute); ?>
-                          <div class="col-md-8"> <?php echo form_input($data); ?> </div>
+                            ?>
+                            <div class="input-group-prepend">
+                              <button class="btn btn-outline-secondary" type="button">Office Phone<span style="color:red">*</span></button>
+                          </div>
+                          <?php echo form_input($data); ?>
                         </div>
                       </div>
-                    </div>
-                    
-                    
-                    <div class="row">
 						          <?php if($update_id == 0){ ?>
-                      <div class="col-sm-5">
-                        <div class="form-group">
+                      <div class="col-sm-6">
+                        <div class="input-group mb-3">
                           <?php
                           $data = array(
                             'name' => 'password',
@@ -196,153 +174,92 @@
                             'tabindex' => '7',
                             'required' => 'required',
                             'data-parsley-maxlength'=>TEXT_BOX_RANGE,
-                          );
-                          $attribute = array('class' => 'control-label col-md-4');
-                          echo form_label('Password<span style="color:red">*</span>', 'password', $attribute); ?>
-                          <div class="col-md-8"> <?php echo form_input($data); ?> </div>
+                          );?>
+                          <div class="input-group-prepend">
+                              <button class="btn btn-outline-secondary" type="button">Password<span style="color:red">*</span></button>
+                          </div>
+                          <?php echo form_input($data); ?>
                         </div>
                       </div>
-						          <?php } ?>
-                    </div>
-                    
-                    <div class="row">
-                     <div class="col-sm-5">
-                        <div class="form-group">
+                      <?php } ?>
+                     <div class="col-sm-6">
+                        <div class="input-group mb-3">
                           <?php if(!isset($groups)) $groups = array();
                           if(!isset($users['group'])) $users['group'] = ""; ?>
                           <input type="hidden" name="previous_primary" value="<?=$users['group']?>">
                           <?php $options = array('' => 'Select')+$groups ;
-                          $attribute = array('class' => 'control-label col-md-4');
-                          echo form_label('Primary Group <span style="color:red">*</span>', 'role_id', $attribute);?>
-                          <div class="col-md-8">
-                            <?php echo form_dropdown('group', $options, $users['group'],  'class="form-control select2me required validatefield" id="prim_grp" tabindex ="8"'); ?>
+                          ?>
+                          <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary" type="button">Primary Group<span style="color:red">*</span></button>
                           </div>
+                          <?php echo form_dropdown('group', $options, $users['group'],  'class="custom-select validatefield" id="prim_grp"'); ?>
                         </div>
                     </div>
-                    <div class="col-sm-5">
-                      <div class="form-group">
+                    <div class="col-sm-6">
+                      <div class="input-group mb-3">
                        <?php if(!isset($groups)) $groups = array();
                           if(!isset($users['second_group'])) $users['second_group'] = ""; ?>
                           <input type="hidden" name="previous_secondry" value="<?=$users['second_group']?>">
                           <?php $options = array('' => 'Select')+$groups ;
-                          $attribute = array('class' => 'control-label col-md-4');
-                          echo form_label('Secondary Group ', 'role_id', $attribute);?>
-                          <div class="col-md-8">
-                            <?php echo form_dropdown('second_group', $options, $users['second_group'],  'class="form-control select2me" id="sec_grp" tabindex ="8"'); ?>
+                          ?>
+                          <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary" type="button">Secondary Group<span style="color:red">*</span></button>
+                          </div>
+                          <?php echo form_dropdown('second_group', $options, $users['second_group'],  'class="custom-select validatefield" id="sec_grp"'); ?>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6" style="margin-bottom: 5px;">
+                        <div class="input-group">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary" type="button">Profile Pic</button>
+                          </div>
+                            <div class="col-md-10" imagetype="imagevalidation" id=""  image="">
+                            <?php
+                            $path="";
+                              if(!isset($users['user_image']))
+                                  $users['user_image'] = "";
+                              $file_name=  BASE_URL.ACTUAL_OUTLET_USER_IMAGE_PATH.$users['user_image'];?>
+                                <input type="file" name="user_image" id="user_image"  class="dropify imagevalidation dropify-image-clone"  accept='image/*' data-default-file="<?php echo $file_name?>">
+                            </div>
                         </div>
-                      </div>
-                    </div>
-                     
-                    <div class="col-sm-5">
-                      <div class="form-group">
-                      <label class="control-label col-md-4">Image</label>
-                      <div class="col-md-8">
-                      <div class="fileupload fileupload-new" data-provides="fileupload">
-                      <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
-                      <?php
-                      if(!isset($users['user_image']))
-                          $users['user_image'] = "";
-                      $filename =  FCPATH.'/'.ACTUAL_OUTLET_USER_IMAGE_PATH.$users['user_image'];
-                      if (isset($users['user_image']) && !empty($users['user_image']) && file_exists($filename)) {
-                      ?>
-                      <img class="uploaded-image" src = "<?php echo BASE_URL.ACTUAL_OUTLET_USER_IMAGE_PATH.$users['user_image'] ?>" />
-                      <?php
-                      } else {
-                      ?>
-                      <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt=""/>
-                      <?php
-                      }
-                      ?>
-                      </div>
-                      <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;">
-                      </div>
-                      <div>
-                      <span class="btn default btn-file">
-                      <span class="fileupload-new">
-                      <i class="fa fa-paper-clip"></i> Select Image
-                      </span>
-                      <span class="fileupload-exists">
-                      <i class="fa fa-undo"></i> Change
-                      </span>
-                      <input type="file" name="user_image" id="user_image" class="default" />
-                      </span>
-                      <a href="#" class="btn red fileupload-exists" data-dismiss="fileupload"><i class="fa fa-trash-o"></i> Remove</a>
-                      </div>
-                      </div>
-                      </div>
-                      </div>
-                    </div> 
-                    <div class="col-sm-5" id="sign_show">
-                      <div class="form-group last">
-                      <label class="control-label col-md-4">Signature</label>
-                      <div class="col-md-8">
-                      <div class="fileupload fileupload-new" data-provides="fileupload">
-                      <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
-                      <?php
-                      if(!isset($users['sign_image']))
-                          $users['sign_image'] = "";
-                      $filename =  FCPATH.'/'.ACTUAL_SIGNATURE_IMAGE_PATH.$users['sign_image'];
-                      if (isset($users['sign_image']) && !empty($users['sign_image']) && file_exists($filename)) {
-                      ?>
-                      <img class="uploaded-image" src = "<?php echo BASE_URL.ACTUAL_SIGNATURE_IMAGE_PATH.$users['sign_image'] ?>" />
-                      <?php
-                      } else {
-                      ?>
-                      <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt=""/>
-                      <?php
-                      }
-                      ?>
-                      </div>
-                      <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;">
-                      </div>
-                      <div>
-                      <span class="btn default btn-file">
-                      <span class="fileupload-new">
-                      <i class="fa fa-paper-clip"></i> Select Image
-                      </span>
-                      <span class="fileupload-exists">
-                      <i class="fa fa-undo"></i> Change
-                      </span>
-                      <input type="file" name="sign_image" id="sign_image" class="default" />
-                      </span>
-                      <a href="#" class="btn red fileupload-exists" data-dismiss="fileupload"><i class="fa fa-trash-o"></i> Remove</a>
-                      </div>
-                      </div>
-                      </div>
-                      </div>
-                    </div>
-                     
                     </div>
 
-                    <div class="form-actions fluid no-mrg">
-                      <div class="row">
-                        <div class="col-md-6">
-                         <div class="col-md-offset-3 col-md-9" style="padding-bottom:15px;">
-                            <button type="submit" class="btn btn-primary buttonsubmit btnsave" tabindex="13" style="margin-left:10px;"><i class="fa fa-check"></i>&nbsp;Save</button>
-                            <a href="<?php echo ADMIN_BASE_URL . 'users'; ?>">
-                             <button type="button"  class="btn green btn-default" style="margin-left:20px;"><i class="fa fa-undo"></i>&nbsp;Cancel</button>
-                            </a> </div>
+                    <div class="col-md-6" style="margin-bottom: 5px;" id="sign_show">
+                        <div class="input-group">
+                         <?php
+                            $path="";
+                              if(!isset($users['sign_image']))
+                                  $users['sign_image'] = "";
+                              $file_name=  BASE_URL.ACTUAL_SIGNATURE_IMAGE_PATH.$users['sign_image'];?>
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary" type="button">Signature</button>
+                          </div>
+                            <div class="col-md-10" imagetype="imagevalidation" id="<?php echo $update_id; ?>"  image="<?php echo $file_name; ?>">
+                                <input type="file" name="sign_image" id="sign_image"   class="dropify imagevalidation dropify-image-clone"  accept='image/*' data-default-file="<?php echo $file_name?>">
+                            </div>
                         </div>
-                        <div class="col-md-6"> </div>
+                    </div>
+                    </div>
+                    <div class="row">
+                      <div class="input-group" style="margin-top:3%;">
+                        <button type="submit" class="btn btn-outline-success mb-1 buttonsubmit btnsave">Save</button>
+                        <a href="<?php echo ADMIN_BASE_URL . 'users'; ?>"><button type="button" class="btn btn-outline-primary  mb-1">Cancel</button></a>
                       </div>
                     </div>
+                   
 
                   </div>
                 </div>
 
                 <?php echo form_close(); ?> 
-                <!-- END <--> 
               </div>
-               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-</div>
+        </main>
+
+
 
 <script type="text/javascript">
         $(document).ready(function(){
@@ -379,7 +296,7 @@
               isValid = false;
             }
             else 
-                $(this).css("border", "1px solid #dde6e9");
+                $(this).css("border", "1px solid #28a745");
           });
           if($('#role_id').find(":selected").val() != '' && $('#role_id').find(":selected").val() != '0') {
             $('#role_id').attr('style','border:1px solid #dde6e9;');
@@ -422,5 +339,82 @@
               }
             });
         }
-        
+        function image_remover() {
+            var pathURL = "file_path/";
+            var dropifyElements = {};
+            $('.dropify').each(function() {
+                dropifyElements[this.id] = true;
+            });
+            var drEvent = $('.dropify').dropify();
+            drEvent.on('dropify.beforeClear', function(event, element) {
+                if($('.dropify-image-clone').length >1) {
+                    var abc = $(this);
+                    id = event.target.id;
+                    if(dropifyElements[id]) {
+                        swal({
+                            title: "Are you sure?",
+                            text: "You will not be able undo this operation!",
+                            type: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#DD6B55",
+                            confirmButtonText: "Yes, delete it!",
+                            cancelButtonText: "No, cancel please!",
+                            closeOnConfirm: false,
+                            closeOnCancel: false
+                        }, function(isConfirm) {
+                            if (isConfirm) {
+                                var id = abc.parent().parent().attr('id');
+                                var image = abc.parent().parent().attr('image');
+                                if(id) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: "<?= ADMIN_BASE_URL?>product/delete_product_image",
+                                        data: {'id': id,image:image},
+                                        async: false,
+                                        success: function(result) {
+                                            var array = []; 
+                                            $("input[name='"+change_images_id+"[]']").each(function() {
+                                                if($(this).val() !== null && $(this).val() !== '' || $(this).val() != 0 && id != $(this).val())
+                                                    array.push($(this).val());
+                                            });
+                                            $("input[name='"+change_images_id+"[]']").val(array);
+                                        }
+                                    });
+                                }
+                                element.resetPreview();
+                                element.clearElement();
+                                swal.close();
+                               // abc.parent().parent().parent().parent().remove();
+                            } else {
+                                swal({
+                                    title:"Cancelled",
+                                    text:"Delete Cancelled :)",
+                                    type:"error",
+                                    timer: 2000,
+                                });
+                            }
+                        });
+                        return false;
+                    }
+                }
+                else {
+                    swal({title:"Cancelled",text:"Last image can't be remove :)",type:"error",timer: 2000,});
+                    return false;
+                }
+            });
+            drEvent.on('change', function(event, element) {
+                var abc = $(this);
+                var id = abc.parent().parent().attr('id');
+                var array = []; 
+                $("input[name='"+change_images_id+"[]']").each(function() {
+                    if($(this).val() !== null && $(this).val() !== '' || $(this).val() != 0)
+                        array.push($(this).val());
+                });
+                if(id !== null && id !== '' || id != 0)
+                    array.push(id);
+                if (array.length != 0)
+                    $("input[name='"+change_images_id+"[]']").val(array);
+            });
+	}
+	image_remover();
        </script>

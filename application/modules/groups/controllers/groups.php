@@ -47,13 +47,13 @@ date_default_timezone_set("Asia/karachi");
         $data['update_id'] = $update_id;
         $data['view_file'] = 'newsform';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
     function import_file(){
      
         $data['view_file'] = 'fileupload';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
      function _get_data_from_db($update_id) {
         $where[DEFAULT_OUTLET.'_groups.id'] = $update_id;

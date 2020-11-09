@@ -5,16 +5,21 @@ function clean($string) {
    return preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
 }
 ?>
-<!-- Page content-->
-<div class="content-wrapper">
-    <h3>Categories<a href="catagories/create"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Add New</button></a></h3>
-    <div class="container-fluid">
-        <!-- START DATATABLE 1 -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                     <table class="table table-striped table-bordered table-hover" id="datatable1">
+    <main>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Categories</h1>
+                    <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="catagories/create">&nbsp;Add New&nbsp;</a>
+                    <div class="separator mb-5"></div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-12 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="data-table data-table-feature">
                             <thead class="bg-th">
                                 <tr>
                                     <th class="table-checkbox" style="display:none;">S.No</th>
@@ -62,10 +67,10 @@ function clean($string) {
                                                  </select>
                                             </td>
                                              <td class="table_action">
-                                                 <?php echo anchor($add_url, '<i class="fa fa-tags" style="color: #B7E031;"></i>', array('class' => ' btn blue c-btn','title' => 'Add check types'));?>
-                                             <a class="btn yellow  c-btn view_attributes" rel="<?=$row->id?>"><i class="fa fa-sitemap"  title="Manage Attributes"></i></a>
-                                            <a class="btn green c-btn editbtn" rel="<?=$row->id?>" dataurl="<?=clean($row->cat_name)?>"><i class="fa fa-edit"  title="Edit detail"></i></a>
-                                            <a  class="btn blue c-btn delete_record" rel="<?=$row->id?>" dataurl="<?=clean($row->cat_name)?>"><i class="fa fa-times "  title="Delete category/sub category" style="color: #ffc735;"></i></a>
+                                                 <?php echo anchor($add_url, '<i class="iconsminds-tag" style="color: #B7E031;"></i>', array('class' => ' btn blue c-btn','title' => 'Add check types'));?>
+                                             <a class="btn yellow  c-btn view_attributes" rel="<?=$row->id?>"><i class="iconsminds-three-arrow-fork"  title="Manage Attributes"></i></a>
+                                            <a class="btn green c-btn editbtn" rel="<?=$row->id?>" dataurl="<?=clean($row->cat_name)?>"><i class="iconsminds-file"  title="Edit detail"></i></a>
+                                            <a  class="btn blue c-btn delete_record" rel="<?=$row->id?>" dataurl="<?=clean($row->cat_name)?>"><i class="simple-icon-close "  title="Delete category/sub category" style="color: #ffc735;"></i></a>
                                            
                                             
 
@@ -110,14 +115,12 @@ function clean($string) {
                                 <?php } ?>
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    <!-- END DATATABLE 1 -->
-    
-    </div>
-</div>    
+    </main>>    
 
 <input type="hidden"  value="" id="selectsubcat"/>
 <input type="hidden"  value="" id="selectsubcaturl"/>

@@ -192,7 +192,7 @@
                                                     $color="#ecec4c";
                                                     ?>
                                                     <td class="form-group">
-                                                        <input  type="checkbox" id="html"  class="check_color" >
+                                                        <input  type="checkbox" id="html"  class="check_color" disabled>
                                                         <label for="html"  style="background-color:<?php echo $color; ?>"></label>
                                                     </td>
                                           </tr>
@@ -205,7 +205,6 @@
                         <!-- END FORM-->
                         <div class="row ">
                             <legend></legend>
-                            <div class="form-body">
                                      <table id="datatable1" class="table table-bordered">
                                          <thead class="bg-th">
                                             <tr class="bg-col">
@@ -228,7 +227,6 @@
                                           <?php } ?>
                                       </tbody>
                                     </table>
-                                </div>
                         </div>
                     </div>
                 </div>

@@ -55,13 +55,17 @@
             <td></td>
             <td></td>
             <td></td>
-            <td>
-                <h4>No Record Found</h4>
+            <td style="display: none">
+              
             </td>
+            <td style="display: none"></td>
+            <td style="display: none"></td>
+            <td>  <h4>No Record Found</h4></td>
             <td></td>
+        	<td></td>
             <td></td>
-            <td></td>
-            <td></td>
+        	<td></td>
+        <td></td>
         </tr> <?php }?>
 
         </tbody>

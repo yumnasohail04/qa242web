@@ -10,9 +10,8 @@ if (isset($hidden) && !empty($hidden))
 else
 	echo form_open_multipart(ADMIN_BASE_URL . 'users/change_pass/' . $update_id , $attributes);
 ?>
-<div class="row">
     <div class="col-sm-12">
-        <div class="form-group">
+        <div class="input-group mb-3">
         <?php
         $data = array(
         'name' => 'user_name',
@@ -26,15 +25,15 @@ else
         );
         $attribute = array('class' => 'control-label col-md-3');
         ?>
-        <?php echo form_label('Username ', 'user_name', $attribute); ?>
-        <div class="col-md-7"> <?php echo form_input($data); ?> </div>
-        </div>
+         <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary" type="button">Username<span style="color:red">*</span></button>
+                          </div>
+        <?php echo form_input($data); ?>
     </div>
-</div>
+    </div>
 
-<div class="row">
     <div class="col-sm-12">
-        <div class="form-group">
+        <div class="input-group mb-3">
         <?php
         $data = array(
         'name' => 'password',
@@ -47,18 +46,17 @@ else
         );
         $attribute = array('class' => 'control-label col-md-3');
         ?>
-        <?php echo form_label('New Password <span class="required" style="color:red">*</span>', 'password', $attribute); ?>
-        <div class="col-md-7"> <?php echo form_input($data); ?> </div>
-        </div>
+        <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary" type="button">New Password<span style="color:red">*</span></button>
+                          </div>
+        <?php echo form_input($data); ?>
+          </div>
     </div>
-</div>
 
 <div class="form-actions fluid no-mrg">
-    <div class="row">
         <div class="col-md-offset-3 col-md-3">
-            <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i>&nbsp;Save</button>
+            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-check"></i>&nbsp;Save</button>
         </div>
-    </div>
 </div>
 
 <?php echo form_close(); ?> 

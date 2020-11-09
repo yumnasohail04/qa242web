@@ -26,7 +26,10 @@ $config = array(
          22 => 'ingredients',
          23 => 'document',
          24 => 'scorecard_form',
-         25 => 'supplier'
+         25 => 'supplier',
+         26 => 'scheduled_checks',
+		 27 => 'carrier',
+    	 28 => 'document_file'
 		  
 	),
 );

@@ -1,6 +1,6 @@
 <div class="panel panel-default">
 <div class="panel-body">
-<input type="hidden" value="datatable1">
+<input type="hidden" value="">
 <select id="ddl_tbl_show_row_count" onchange="func_set_tbl_rows(this.value)">
     <option value="5">5</option>
     <option value="10">10</option>
@@ -11,8 +11,8 @@
 </select>
 
 <div class="table-responsive">
-    <table class="table table-striped table-hover table-body table-bordered" id="datatable1">
-        <thead style="background-color: #7BABED;" class="bg-th">
+    <table class="" id="">
+        <thead  class="bg-th">
           <tr class="bg-col">
             <th data-htmltoarray="true" data-arrayclassth="assign_id">Check<i class="fa fa-sort" style="font-size:13px;"></th>
             <th data-htmltoarray="true" data-arrayclassth="assign_date">Date<i class="fa fa-sort" style="font-size:13px;"></th>
@@ -37,7 +37,7 @@
                 <tr>
             <?php } ?>
             <td data-htmltoarray="true" >
-                <a data-arrayclasstd="assign_id" class="btn c-btn view_details" style="color: #A4D014;" rel="<?= $row['assign_id'] ?>"  static="<?= $row['is_static'] ?>" ><?= $row['checkname'] ?></a>
+                <a data-arrayclasstd="assign_id" class="btn c-btn view_details"  rel="<?= $row['assign_id'] ?>"  static="<?= $row['is_static'] ?>" ><?= $row['checkname'] ?></a>
                 </td>
             <td data-htmltoarray="true" data-arrayclasstd="assign_date"><?=date('m-d-Y',strtotime($row['approval_datetime']))?></td>
             <td data-htmltoarray="true" data-arrayclasstd="assign_time"><?=date('h:i',strtotime($row['approval_datetime']))?></td>

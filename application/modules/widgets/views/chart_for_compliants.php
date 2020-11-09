@@ -4,7 +4,7 @@
     <div class="card text-white white_bg">
         <div class="card-body pb-0">
             <h4 class="mb-0">
-                Compliance
+                Compliants
             </h4>
             <div class="row sub_row">
                 <div class="col-lg-6 cards" style="color:#929292">

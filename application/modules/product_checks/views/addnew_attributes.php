@@ -25,12 +25,12 @@ display: block;
  <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
                                     <thead>
                                       <tr>
-                                        <th  style="color: black !important">Attribute Name</th>
-                                        <th  style="color: black !important">Choice Type</th>
+                                        <th   >Attribute Name</th>
+                                        <th   >Choice Type</th>
                                         
-                                        <!--<th style="color: black !important">Possible Value</th>-->
+                                        <!--<th  >Possible Value</th>-->
                                         <?php if($datacheck==false){?>
-                                        <th style="color: black !important"></th><?}?> 
+                                        <th  ></th><?}?> 
                                       </tr>
                                     </thead>
                                     <tbody>
@@ -82,7 +82,7 @@ display: block;
             <td> <div class="form-group">
             <div class="col-md-8" style="width:100%;">
                   
-                    <i  style="color:#ffc735;" class="fa fa-plus  pull-right addto_attribute"  data-org_id="0" data-outlet_id="0" style="margin-left: 20px;" onclick="myfunction(this)" title=" Add this attribute to check"></i>              </div>
+                    <i  style="color:#ffc735;" class="simple-icon-plus  pull-right addto_attribute"  data-org_id="0" data-outlet_id="0" style="margin-left: 20px;" onclick="myfunction(this)" title=" Add this attribute to check"></i>              </div>
                    
                    
             </div></td> <?}?>
@@ -96,11 +96,11 @@ display: block;
  <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
                                     <thead>
                                       <tr>
-                                        <th  style="color: black !important">Attribute Name</th>
+                                        <th   >Attribute Name</th>
                                         
-                                        <th style="color: black !important"></th>
+                                        <th  ></th>
                                        <?php if($datacheck==false){?>
-                                        <th style="color: black !important"></th><?}?> 
+                                        <th  ></th><?}?> 
                                       </tr>
                                     </thead>
                                     <tbody>
@@ -152,7 +152,7 @@ display: block;
             <td> <div class="form-group">
             <div class="col-md-8" style="width:100%;">
                   
-                    <i  style="color:#ffc735;" class="fa fa-plus  pull-right addto_attribute"  data-org_id="0" data-outlet_id="0" style="margin-left: 20px;" title=" Add this attribute to check"></i>              </div>
+                    <i  style="color:#ffc735;" class="simple-icon-plus  pull-right addto_attribute"  data-org_id="0" data-outlet_id="0" style="margin-left: 20px;" title=" Add this attribute to check"></i>              </div>
                    
                    
             </div></td> <?}?>
@@ -166,14 +166,14 @@ display: block;
 <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
                                     <thead>
                                       <tr>
-                                        <th  style="color: black !important">Attribute Name</th>
-                                        <th style="color: black !important">Min</th>
-                                        <th style="color: black !important">Target</th>
+                                        <th   >Attribute Name</th>
+                                        <th  >Min</th>
+                                        <th  >Target</th>
                                         <th style="display:none;"></th>
-                                        <th style="color: black !important">Max</th>
-                                        <!--<th style="color: black !important">Possible Value</th>-->
+                                        <th  >Max</th>
+                                        <!--<th  >Possible Value</th>-->
                                        <?php if($datacheck==false){?>
-                                        <th style="color: black !important"></th><?}?> 
+                                        <th  ></th><?}?> 
                                       </tr>
                                     </thead>
                                     <tbody>
@@ -308,7 +308,7 @@ display: block;
             <td> <div class="form-group">
             <div class="col-md-8" style="width:100%;">
                   
-                    <i  style="color:#ffc735;" class="fa fa-plus  pull-right addto_attribute"  data-org_id="0" data-outlet_id="0" style="margin-left: 20px;"  title=" Add this attribute to check"></i>              </div>
+                    <i  style="color:#ffc735;" class="simple-icon-plus  pull-right addto_attribute"  data-org_id="0" data-outlet_id="0" style="margin-left: 20px;"  title=" Add this attribute to check"></i>              </div>
                    
                    
             </div></td> <?}?>
@@ -323,11 +323,11 @@ display: block;
                               <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
                                     <thead>
                                       <tr>
-                                        <th  style="color: black !important">Attribute Name</th>
+                                        <th  style="width:100%;"   >Attribute Name</th>
                                         
-                                        <th style="color: black !important"></th>
+                                        <th  ></th>
                                        <?php if($datacheck==false){?>
-                                        <th style="color: black !important"></th><?}?> 
+                                        <th  ></th><?}?> 
                                       </tr>
                                     </thead>
                                     <tbody>
@@ -379,7 +379,7 @@ display: block;
             <td> <div class="form-group">
             <div class="col-md-8" style="width:100%;">
                   
-                    <i  style="color:#ffc735;" class="fa fa-plus  pull-right addto_attribute"  data-org_id="0" data-outlet_id="0" style="margin-left: 20px;" title=" Add this attribute to check"></i>              </div>
+                    <i  style="color:#ffc735;" class="simple-icon-plus  pull-right addto_attribute"  data-org_id="0" data-outlet_id="0" style="margin-left: 20px;" title=" Add this attribute to check"></i>              </div>
                    
                    
             </div></td> <?}?>
@@ -394,11 +394,11 @@ display: block;
                                     <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
                                     <thead>
                                       <tr>
-                                        <th  style="color: black !important">Attribute Name</th>
+                                        <th   style="width:100%;"  >Attribute Name</th>
                                         
-                                        <th style="color: black !important"></th>
+                                        <th  ></th>
                                        <?php if($datacheck==false){?>
-                                        <th style="color: black !important"></th><?}?> 
+                                        <th  ></th><?}?> 
                                       </tr>
                                     </thead>
                                     <tbody>
@@ -450,7 +450,7 @@ display: block;
             <td> <div class="form-group">
             <div class="col-md-8" style="width:100%;">
                   
-                    <i  style="color:#ffc735;" class="fa fa-plus  pull-right addto_attribute"  data-org_id="0" data-outlet_id="0" style="margin-left: 20px;" title=" Add this attribute to check"></i>              </div>
+                    <i  style="color:#ffc735;" class="simple-icon-plus  pull-right addto_attribute"  data-org_id="0" data-outlet_id="0" style="margin-left: 20px;" title=" Add this attribute to check"></i>              </div>
                    
                    
             </div></td> <?}?>
@@ -464,11 +464,11 @@ display: block;
                                  <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
                                     <thead>
                                       <tr>
-                                        <th  style="color: black !important">Attribute Name</th>
+                                        <th  style="width:100%;" >Attribute Name</th>
                                         
-                                        <th style="color: black !important"></th>
+                                        <th  ></th>
                                        <?php if($datacheck==false){?>
-                                        <th style="color: black !important"></th><?}?> 
+                                        <th  ></th><?}?> 
                                       </tr>
                                     </thead>
                                     <tbody>
@@ -520,7 +520,7 @@ display: block;
             <td> <div class="form-group">
             <div class="col-md-8" style="width:100%;">
                   
-                    <i  style="color:#ffc735;" class="fa fa-plus  pull-right addto_attribute"  data-org_id="0" data-outlet_id="0" style="margin-left: 20px;" title=" Add this attribute to check"></i>              </div>
+                    <i  style="color:#ffc735;" class="simple-icon-plus  pull-right addto_attribute"  data-org_id="0" data-outlet_id="0" style="margin-left: 20px;" title=" Add this attribute to check"></i>              </div>
                    
                    
             </div></td> <?}?>

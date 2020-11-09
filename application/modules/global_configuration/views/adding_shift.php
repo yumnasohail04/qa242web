@@ -12,11 +12,11 @@
                         <!-- BEGIN FORM-->
                        <form method="post" id="submited_shift" action="<?= ADMIN_BASE_URL.'global_configuration/submit_shift_data/';?>">
                             <div class="form-body"> 
-                                <div class="row main_div">
+                                <div class=" main_div">
                                    	<div class="col-sm-12 selecting_div">
                                         <div class="form-group">
                                           <label class="col-sm-4 control-label">Shift Name</label>
-                                            <div class="col-sm-8">
+                                            <div class="col-sm-12">
                                                	<input type="text" name="shift_name" class="form-control validate_form" value="<?=ucfirst($shift_name);?>">
                                                 <input type="hidden" name="update_id" class="form-control" value="<?=$update_id?>">
                                             </div>

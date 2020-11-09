@@ -16,7 +16,7 @@ function __construct() {
 }
 
 function manage(){
-	$rs_rights = '';
+	$rs_rights = array();
 	$outlets = array();
 	$role_id = intval($this->uri->segment(4));
 	if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
@@ -48,6 +48,7 @@ function manage(){
 				$where2['parent_id'] = 0;
 				$where2['role_id'] = $user_data['role_id'];
 				$qry2 = $this->_get_where_cols($where2); 
+     
 				foreach($qry2->result_array() as $right){
 					$arr_rights[] = $right['right_id'];
 					$where3['parent_id'] = $right['right_id'];
@@ -152,19 +153,22 @@ function set_permission($role_id,$outlet_id){
   	 $where['role_id'] = $role_id;
 	 $where['outlet_id'] = $outlet_id;
 	 $result = $this->_get_where_cols($where); 
-	 $arr_rights = '';
+	 $arr_rights = array();
 	 $controller = '';
 	 $parent_id = '';
 	 foreach($result->result() as $right){
 		if($right->parent_id == 0 ){
 			$query =  Modules::run('rights/_get_where',$right->right_id);
 			$rs_parent = $query->row();
+        if(isset($rs_parent->right))
 			$controller = $rs_parent->right;
 			$parent_id = $right->right_id;
 		}
 		if($right->parent_id == $parent_id){
 			$query =  Modules::run('rights/_get_where',$right->right_id);
 			$rs_method = $query->row();
+        
+        if(isset($rs_method->right))
 			$arr_rights[$controller][] = $rs_method->right;
 		}
 	 }

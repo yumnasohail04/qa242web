@@ -1,61 +1,22 @@
-<?php include('select_box.php'); ?>
-<style type="text/css">
-    .red_class {
-        border: 1px solid red !important;
-    }
-</style>
-<div class="page-content-wrapper">
-  <div class="page-content"> 
-    <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
-    <div id="contractors_measurements_modal" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-            <h4 class="modal-title">Modal title</h4>
-          </div>
-          <div class="modal-body"> Widget settings form goes here </div>
-          <div class="modal-footer">
-            <button type="button" class="btn green" id="confirm"><i class="fa fa-check"></i>&nbsp;Save changes</button>
-            <button type="button" class="btn default" data-dismiss="modal"><i class="fa fa-undo"></i>&nbsp;Close</button>
-          </div>
-        </div>
-        <!-- /.modal-content --> 
-      </div>
-      <!-- /.modal-dialog --> 
-    </div>
-    <!-- /.modal --> 
-    <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM--> 
-    <!-- BEGIN PAGE HEADER-->
-    <div class="content-wrapper">
-        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
-      <h3>
-        <?php 
-        if (empty($update_id)) 
-                    $strTitle = 'Add Product';
-                else 
-                    $strTitle = 'Edit Product';
-                    echo $strTitle;
-                    ?>
-                    <a href="<?php echo ADMIN_BASE_URL . 'product'; ?>"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-chevron-left"></i>&nbsp;&nbsp;&nbsp;Back</button></a>
-       </h3>             
-            
-    </div>
+<?php include('select_box.php'); ?>             
+<main>
+  <div class="container-fluid">
     <div class="row">
-      <div class="col-md-12">
-        <div class="tabbable tabbable-custom boxless">
-          <div class="tab-content">
-          <div class="panel panel-default" style="border-radius:10px;">
-         
-            <div class="tab-pane  active" id="tab_2" >
-              <div class="portlet box green ">
-                <div class="portlet-title ">
-                 
-                </div>
-                
-                <div class="portlet-body form " style="padding-top:15px;"> 
-                  
-                  <!-- BEGIN FORM-->
+      <div class="col-12">
+        <h1> <?php if (empty($update_id)) 
+        $strTitle = 'Add Product';
+      else 
+        $strTitle = 'Edit Product';
+        echo $strTitle;
+      ?></h1>
+        <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="<?php echo ADMIN_BASE_URL . 'product'; ?>">&nbsp;&nbsp;&nbsp;Back</a> 
+        <div class="separator mb-5"></div>
+      </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="mb-4">
+            </h5>
                         <?php
                         $attributes = array('autocomplete' => 'off', 'id' => 'form_sample_1', 'class' => 'form-horizontal');
                         if (empty($update_id)) {
@@ -68,197 +29,212 @@
                         else
                             echo form_open_multipart(ADMIN_BASE_URL . 'product/submit/' . $update_id, $attributes);
                         ?>
-                  <div class="form-body">
-                    
-                    <!-- <h3 class="form-section">Post Information</h3>-->
                     <div class="row">
-                    <div class="col-sm-5">
-                        <div class="form-group">
-                            <label for="txtNewsTitle" class="control-label col-md-12 heading-label">Product Information<span class="required" style="color:#ff60a3"></span></label>
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
+                            <?php
+                            $data = array(
+                            'name' => 'product_title',
+                            'id' => 'product_title',
+                            'class' => 'form-control validatefield',
+                            'type' => 'text',
+                            'required' => 'required',
+                            'aria-label' => '',
+                            'aria-describedby'=>"basic-addon1",
+                            'value' => $news['product_title'],
+                            );
+                            $attribute = array('class' => 'control-label col-md-4');
+                            ?>                   
+                            <div class="input-group-prepend">
+                                        <button class="btn btn-outline-secondary" type="button">Product Title<span style="color:red">*</span></button>
+                                    </div>
+                            <?php echo form_input($data); ?>
+                            
+                            </div>
                         </div>
-                    </div>
-                    </div>
-                    <div class="row section-box">
-                        <div class="col-sm-5">
-                            <div class="form-group">
-                                <?php
-                                $data = array(
-                                    'name' => 'product_title',
-                                    'id' => 'product_title',
-                                    'class' => 'form-control',
-                                    'value' => $news['product_title'],
-                                    'type' => 'text',
-                                    'required' => 'required',
-                                    'data-parsley-maxlength'=>TEXT_BOX_RANGE
-                                );
-                                $attribute = array('class' => 'control-label col-md-4');
+                        
+                       <div class="col-sm-6">
+                            <div class="input-group  mb-3">
+                            <?php
+                            $data = array(
+                            'name' => 'navision_no',
+                            'id' => 'navision_no',
+                            'class' => 'form-control validatefield',
+                            'type' => 'text',
+                            'required' => 'required',
+                            'aria-label' => '',
+                            'aria-describedby'=>"basic-addon1",
+                            'value' => $news['navision_no'],
+                            );
+                            $attribute = array('class' => 'control-label col-md-4');
+                            ?>                   
+                            <div class="input-group-prepend">
+                                        <button class="btn btn-outline-secondary" type="button">Navision Number<span style="color:red">*</span></button>
+                                    </div>
+                            <?php echo form_input($data); ?>
+                            
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
+                            <?php
+                            $data = array(
+                            'name' => 'brand_name',
+                            'id' => 'brand_name',
+                            'class' => 'form-control validatefield',
+                            'type' => 'text',
+                            'required' => 'required',
+                            'aria-label' => '',
+                            'aria-describedby'=>"basic-addon1",
+                            'value' => $news['brand_name'],
+                            );
+                            $attribute = array('class' => 'control-label col-md-4');
+                            ?>                   
+                            <div class="input-group-prepend">
+                                        <button class="btn btn-outline-secondary" type="button">Brand Name<span style="color:red">*</span></button>
+                                    </div>
+                            <?php echo form_input($data); ?>
+                            
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
+                            <?php
+                            $data = array(
+                            'name' => 'channel',
+                            'id' => 'channel',
+                            'class' => 'form-control validatefield',
+                            'type' => 'text',
+                            'required' => 'required',
+                            'aria-label' => '',
+                            'aria-describedby'=>"basic-addon1",
+                            'value' => $news['channel'],
+                            );
+                            $attribute = array('class' => 'control-label col-md-4');
+                            ?>                   
+                            <div class="input-group-prepend">
+                                        <button class="btn btn-outline-secondary" type="button">Product Channel <span style="color:red">*</span></button>
+                                    </div>
+                            <?php echo form_input($data); ?>
+                            
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
+                            <?php
+                            $data = array(
+                            'name' => 'shelf_life',
+                            'id' => 'shelf_life',
+                            'class' => 'form-control validatefield',
+                            'type' => 'text',
+                            'required' => 'required',
+                            'aria-label' => '',
+                            'aria-describedby'=>"basic-addon1",
+                            'value' => $news['shelf_life'],
+                            );
+                            $attribute = array('class' => 'control-label col-md-4');
+                            ?>                   
+                            <div class="input-group-prepend">
+                                        <button class="btn btn-outline-secondary" type="button">Shelf Life <span style="color:red">*</span></button>
+                                    </div>
+                            <?php echo form_input($data); ?>
+                            
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
+                            <?php
+                            $data = array(
+                            'name' => 'packaging_type',
+                            'id' => 'packaging_type',
+                            'class' => 'form-control validatefield',
+                            'type' => 'text',
+                            'required' => 'required',
+                            'aria-label' => '',
+                            'aria-describedby'=>"basic-addon1",
+                            'value' => $news['packaging_type'],
+                            );
+                            $attribute = array('class' => 'control-label col-md-4');
+                            ?>                   
+                            <div class="input-group-prepend">
+                                        <button class="btn btn-outline-secondary" type="button">Packaging Type <span style="color:red">*</span></button>
+                                    </div>
+                            <?php echo form_input($data); ?>
+                            
+                            </div>
+                        </div>
+<!--                         <div class="col-sm-6">
+                            <div class="input-group mb-3">
+                            <?php if(!isset($groups)) $groups = array();
+                                if(!isset($users['second_group'])) $users['second_group'] = ""; ?>
+                                <input type="hidden" name="previous_secondry" value="<?=$users['second_group']?>">
+                                <?php $options = array('' => 'Select')+$groups ;
                                 ?>
-                                <?php echo form_label('Product Title <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Program Type<span style="color:red">*</span></button>
                                 </div>
+                                <?php echo form_dropdown('second_group', $options, $users['second_group'],  'class="custom-select" id="sec_grp"'); ?>
                             </div>
-                        </div>
-                         <div class="col-sm-5">
-                            <div class="form-group">
-                                <?php
-                                $data = array(
-                                    'name' => 'navision_no',
-                                    'id' => 'navision_no',
-                                    'class' => 'form-control',
-                                    'value' => $news['navision_no'],
-                                    'type' => 'text',
-                                    'required' => 'required',
-                                    'data-parsley-maxlength'=>TEXT_BOX_RANGE
-                                );
-                                $attribute = array('class' => 'control-label col-md-4');
-                                ?>
-                                <?php echo form_label('Navision Number<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
-                                </div>
-                            </div>
-                        </div>
-                         <div class="col-sm-5">
-                            <div class="form-group">
-                                <?php
-                                $data = array(
-                                    'name' => 'brand_name',
-                                    'id' => 'brand_name',
-                                    'class' => 'form-control',
-                                    'value' => $news['brand_name'],
-                                    'type' => 'text',
-                                    'required' => 'required',
-                                    'data-parsley-maxlength'=>TEXT_BOX_RANGE
-                                );
-                                $attribute = array('class' => 'control-label col-md-4');
-                                ?>
-                                <?php echo form_label('Brand Name <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
-                                </div>
-                            </div>
-                        </div>
-                         
-                         <div class="col-sm-5">
-                            <div class="form-group">
-                                <?php
-                                $data = array(
-                                    'name' => 'channel',
-                                    'id' => 'channel',
-                                    'class' => 'form-control',
-                                    'value' => $news['channel'],
-                                    'type' => 'text',
-                                    'required' => 'required',
-                                    'data-parsley-maxlength'=>TEXT_BOX_RANGE
-                                );
-                                $attribute = array('class' => 'control-label col-md-4');
-                                ?>
-                                <?php echo form_label('Product Channel <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
-                                </div>
-                            </div>
-                        </div>
-                         <div class="col-sm-5">
-                            <div class="form-group">
-                                <?php
-                                $data = array(
-                                    'name' => 'shelf_life',
-                                    'id' => 'shelf_life',
-                                    'class' => 'form-control',
-                                    'value' => $news['shelf_life'],
-                                    'type' => 'text',
-                                    'required' => 'required',
-                                    'data-parsley-type'=>"integer",
-                                    'data-parsley-maxlength'=>TEXT_BOX_RANGE
-                                );
-                                $attribute = array('class' => 'control-label col-md-4');
-                                ?>
-                                <?php echo form_label('Shelf Life <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-5">
-                            <div class="form-group">
-                                <?php
-                                $data = array(
-                                    'name' => 'packaging_type',
-                                    'id' => 'packaging_type',
-                                    'class' => 'form-control',
-                                    'value' => $news['packaging_type'],
-                                    'type' => 'text',
-                                    'required' => 'required',
-                                    'data-parsley-maxlength'=>TEXT_BOX_RANGE
-                                );
-                                $attribute = array('class' => 'control-label col-md-4');
-                                ?>
-                                <?php echo form_label('Packaging Type <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-5">
-                            <div class="form-group">
-                                <label class="col-sm-4 control-label">
-                                    Program Type <span class="required" style="color:#ff60a3">*</span>
-                                </label>
-                                <div class="col-sm-8">
-                                    <select  multiple="multiple" class="form-control program_type  chosen-select " name="program_type[]">
-                                        <?php 
-                                            if(!isset($program_type)) 
-                                                $program_type = array();
-                                            if(!isset($selected_program))
-                                                $selected_program = array();
-                                            if(!empty($program_type)) {
-                                                foreach ($program_type as $pt_key => $pt):
-                                                    $checking = array_search($pt['program_id'], array_column($selected_program, 'ppt_program_id'));
-                                                  if($pt['program_status'] != 0 || is_numeric($checking)) { ?>
-                                                    <option value="<?=$pt['program_id']?>" <?php if(is_numeric($checking)) echo 'selected="selected"'; ?>>
-                                                      <?=$pt['program_name']?>
-                                                    </option>
-                                                  <?php }
-                                                endforeach;
-                                            }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                         <div class="col-sm-5">
-                            <div class="form-group">
+                        </div> -->
+                         <div class="col-sm-6">
+                            <div class="input-group mb-3">
                                 <?php
                                 $storage_type = array('Refrigerated'=>'Refrigerated','Frozen'=>'Frozen');
                                 $options = array('Refrigerated' => 'Refrigerated')+$storage_type ;
-                                $attribute = array('class' => 'control-label col-md-4');
-                                echo form_label('Storage Type <span style="color:red">*</span>', 'product_type', $attribute);?>
-                                <div class="col-md-8">
-                                    <?php echo form_dropdown('storage_type', $options, $news['storage_type'],  'class="form-control select2me" required="required" id="storage_type" tabindex ="12"'); ?>
+                                $attribute = array('class' => 'control-label col-md-4');?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Storage Type<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_dropdown('storage_type', $options, $news['storage_type'],  'class="form-control select2me validatefield" required="required" id="storage_type" tabindex ="12"'); ?>
+                              
                             </div>
                         </div>
+
+                        <div class="col-sm-6">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Program Type<span style="color:red">*</span></button>
+                                </div>
+                                <select multiple="multiple" class="select-1 custom-select  program_type validatefield" id="inputGroupSelect03" name="program_type[]">
+                                    <?php 
+                                        if(!isset($program_type)) 
+                                            $program_type = array();
+                                        if(!isset($selected_program))
+                                            $selected_program = array();
+                                        if(!empty($program_type)) {
+                                            foreach ($program_type as $pt_key => $pt):
+                                                $checking = array_search($pt['program_id'], array_column($selected_program, 'ppt_program_id'));
+                                                if($pt['program_status'] != 0 || is_numeric($checking)) { ?>
+                                                <option value="<?=$pt['program_id']?>" <?php if(is_numeric($checking)) echo 'selected="selected"'; ?>>
+                                                    <?=$pt['program_name']?>
+                                                </option>
+                                                <?php }
+                                            endforeach;
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        
                     
                     </div>
-                <div class="row">
-                    <div class="col-sm-5">
-                        <div class="form-group">
-                            <label for="txtNewsTitle" class="control-label col-md-12 heading-label">Product's attribute<span class="required" style="color:#ff60a3"></span></label>
-                        </div>
-                    </div>
-                </div>
+               
                 <div class="row section-box" style="box-shadow:none;">
-                   <fieldset>
-  					<legend>Fixed Attributes</legend>
-                     <div class="col-sm-5">
-                            <div class="form-group">
+                   <fieldset  class="col-sm-12" >
+                      <legend>Fixed Attributes</legend>
+                   </fieldset>
+                     <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'unit_weight',
                                     'id' => 'unit_weight',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $news['unit_weight'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -267,19 +243,20 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Min Unit Weight (oz)<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
+                                <div class="input-group-prepend">
+                                        <button class="btn btn-outline-secondary" type="button">Min Unit Weight (oz)<span style="color:red">*</span></button>
+                                    </div>
                                     <?php echo form_input($data); ?>
-                                </div>
                             </div>
                         </div>
-                   		<div class="col-sm-5">
-                            <div class="form-group">
+
+                   		<div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'max_unitweight',
                                     'id' => 'max_unitweight',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $news['max_unitweight'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -288,19 +265,18 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Max Unit Weight (oz)<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
+                                <div class="input-group-prepend">
+                                        <button class="btn btn-outline-secondary" type="button">Max Unit Weight (oz)<span style="color:red">*</span></button>
+                                    </div>
                                     <?php echo form_input($data); ?>
-                                </div>
                             </div>
                          </div>
-                         <div class="col-sm-5">
-                            <div class="form-group">
+                         <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'machine_number',
-                                    'id' => 'machine_number',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $news['machine_number'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -309,19 +285,19 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Machine Number<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
+                                <div class="input-group-prepend">
+                                        <button class="btn btn-outline-secondary" type="button">Machine Number<span style="color:red">*</span></button>
+                                    </div>
                                     <?php echo form_input($data); ?>
-                                </div>
                             </div>
                         </div>
-                         <div class="col-sm-5">
-                            <div class="form-group">
+                         <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'whole_weight',
                                     'id' => 'whole_weight',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $news['whole_weight'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -330,19 +306,25 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Whole Weight<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
+                                 <div class="input-group-prepend">
+                                        <button class="btn btn-outline-secondary" type="button">Whole Weight<span style="color:red">*</span></button>
+                                    </div>
                                     <?php echo form_input($data); ?>
-                                </div>
                             </div>
                         </div>
-                         <div class="col-sm-5">
-                            <div class="form-group">
+
+
+
+                       
+
+
+                         <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'dough_weight',
                                     'id' => 'dough_weight',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $news['dough_weight'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -351,19 +333,19 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Dough Weight<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Dough Weight<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                        <div class="col-sm-5">
-                            <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'filling_weight',
                                     'id' => 'filling_weight',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $news['filling_weight'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -372,19 +354,19 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Filling Weight<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Filling Weight<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                        <div class="col-sm-5">
-                            <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'filling_percentage',
                                     'id' => 'filling_percentage',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $news['filling_percentage'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -393,19 +375,19 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Filling Percentage<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Filling Percentage<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                         <div class="col-sm-5">
-                            <div class="form-group">
+                         <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'shape',
                                     'id' => 'shape',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $news['shape'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -413,27 +395,26 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Product Shape <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Product Shape<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                </fieldset> 
                   </div>
                 <div class="row rap_clone section-box" >
-                <fieldset>
-  				 <legend> Range Attributes</legend>
+                <fieldset class="col-sm-12">
+                   <legend> Range Attributes</legend>
+                </fieldset>
                     <?php if(isset($product_attribute) && !empty($product_attribute)){
                         foreach($product_attribute as $value){ ?>
-                    <div class="input_fields_wrap">
-                      <div class="col-sm-5">
-                            <div class="form-group">
+                    <div class="input_fields_wrap " style="display: contents;width:100%">
+                      <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'attribute_name[]',
-                                    'id' => 'attribute_name',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $value['attribute_name'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -442,19 +423,21 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Attribute Name <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Attribute Name <span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                          <div class="col-sm-5">
-                            <div class="form-group">
+
+
+
+                          <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'min_value[]',
-                                    'id' => 'min_value',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $value['min_value'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -463,19 +446,18 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Min value <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Min value<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                          <div class="col-sm-5">
-                            <div class="form-group">
+                          <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'target_val[]',
-                                    'id' => 'target_val',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $value['target_value'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -484,19 +466,18 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Target value <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Target value<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                          <div class="col-sm-5">
-                            <div class="form-group">
+                          <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'max_value[]',
-                                    'id' => 'max_value',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => $value['max_value'],
                                     'type' => 'text',
                                     'required' => 'required',
@@ -505,23 +486,23 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Max value <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Max value<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
                         <i class="fa fa-times delete_record cross-icon" rel="<?php echo $value['id'];?>" rel_product="<?php echo $value['product_id'];?>" style="float:left;"></i>
                     </div>
                     <?}}else{?>
-                    <div class="input_fields_wrap">
-                      <div class="col-sm-5">
-                            <div class="form-group">
+                    <div class="input_fields_wrap " style="display: contents; width:100%;">
+                      <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'attribute_name[]',
-                                    'id' => 'attribute_name',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => '',
                                     'type' => 'text',
                                     'required' => 'required',
@@ -530,19 +511,18 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Attribute Name <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Attribute Name<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                          <div class="col-sm-5">
-                            <div class="form-group">
+                          <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'min_value[]',
-                                    'id' => 'min_value',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => '',
                                     'type' => 'text',
                                     'required' => 'required',
@@ -551,19 +531,19 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Min value <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Min value<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                          <div class="col-sm-5">
-                            <div class="form-group">
+                          <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'target_val[]',
-                                    'id' => 'target_val',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                      'value' => '',
                                     'type' => 'text',
                                     'required' => 'required',
@@ -572,19 +552,18 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Target value <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                 <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Target value<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                          <div class="col-sm-5">
-                            <div class="form-group">
+                          <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'max_value[]',
-                                    'id' => 'max_value',
-                                    'class' => 'form-control',
+                                    'class' => 'form-control validatefield',
                                     'value' => '',
                                     'type' => 'text',
                                     'required' => 'required',
@@ -593,62 +572,87 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Max value <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Max value<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
                     </div>
                     <?}?>
-                </fieldset> 
                 </div>
                 <br>
                 <div>
-                    <button class="add_field_button btn btn-primary" style="float:right;margin-right: 30px;">Add Attribute</button>
+                    <button class="add_field_button btn btn-outline-primary" style="float:right;margin-right: 30px;">Add Attribute</button>
                 </div>
                 <br>
-                <div class="row">
-                    <div class="col-sm-5">
-                        <div class="form-group">
-                            <label for="txtNewsTitle" class="control-label col-md-12 heading-label">Wip Profile<span class="required" style="color:#ff60a3"></span></label>
+                <div class="">
+                <fieldset class="col-sm-12">
+                   <legend> Wip Profile</legend>
+                </fieldset>
+                    <div class="col-sm-6" style="clear: both !important;">
+                        <div class="input-group  mb-3">
+                        <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Wip Product<span style="color:red">*</span></button>
+                                </div>
+                            <select  multiple="multiple" class="select-1 form-control product_select " name="navigation_select[]">
+                                <?php
+                                    if(!isset($all_navigation) || empty($all_navigation))
+                                        $all_navigation = array();
+                                    if(!empty($all_navigation)) {
+                                        if(!isset($selected_navigation) || empty($selected_navigation))
+                                            $selected_navigation = array();
+                                        foreach ($all_navigation as $key => $an):
+                                            $checking = array_search($an['navision_number'], array_column($selected_navigation, 'navision_number'));
+                                            if(is_numeric($checking) || $an['status'] == '1') { ?>
+                                                <option <?php if(is_numeric($checking)) echo 'selected="selected"'; ?> value="<?=$an['navision_number']?>">
+                                                    <?=$an['navision_number']?>
+                                                </option>
+                                            <?php }
+                                        endforeach;
+                                    }?>
+                            </select>
                         </div>
                     </div>
                 </div>
-                <div class="row section-box">
-                    <div class="row">
-                        <div class="col-sm-5" style="clear: both !important;">
+
+
+
+
+
+                <!-- <div class="col-sm-6">
                             <div class="form-group">
-                                <label class="col-sm-4 control-label">Select Wip Product<span class="required" style="color:#ff60a3">*</span></label>
+                                <label class="col-sm-4 control-label">Select Finish Good(s): <span class="required" style="color:#ff60a3">*</span></label>
                                 <div class="col-sm-8">
-                                    <select  multiple="multiple" class="form-control product_select  chosen-select " name="navigation_select[]">
+                                    <select  multiple="multiple" class="form-control product_select  chosen-select " name="product_select[]">
                                         <?php
-                                            if(!isset($all_navigation) || empty($all_navigation))
-                                                $all_navigation = array();
-                                            if(!empty($all_navigation)) {
-                                                if(!isset($selected_navigation) || empty($selected_navigation))
-                                                    $selected_navigation = array();
-                                                foreach ($all_navigation as $key => $an):
-                                                    $checking = array_search($an['navision_number'], array_column($selected_navigation, 'navision_number'));
-                                                    if(is_numeric($checking) || $an['status'] == '1') { ?>
-                                                        <option <?php if(is_numeric($checking)) echo 'selected="selected"'; ?> value="<?=$an['navision_number']?>">
-                                                            <?=$an['navision_number']?>
-                                                        </option>
-                                                    <?php }
-                                                endforeach;
-                                            }?>
+                                        if(!isset($products) || empty($products))
+                                            $products = array();
+                                        if(!empty($products)) {
+                                            if(!isset($selected) || empty($selected))
+                                                $selected = array();
+                                            foreach ($products as $key => $an):
+                                                $checking = array_search($an['id'], array_column($selected, 'product_id'));
+                                                if(is_numeric($checking) || $an['status'] == '1') { ?>
+                                                    <option <?php if(is_numeric($checking)) echo 'selected="selected"'; ?> value="<?=$an['id']?>">
+                                                        <?=$an['navision_no']?>
+                                                    </option>
+                                                <?php }
+                                            endforeach;
+                                        }?>
                                     </select>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
+                        </div> -->
+
+
+
                 <br>
                 <div class="form-actions fluid no-mrg">
                   <div class="row">
                     <div class="col-md-6">
                       <div class="col-md-offset-2 col-md-9" style="padding-bottom:15px;">
-                       <span style="margin-left:40px"></span> <button type="submit" class="btn btn-primary submited_form"><i class="fa fa-check"></i>&nbsp;Save</button>
+                       <span style="margin-left:40px"></span> <button type="submit" class="btn btn-outline-primary submited_form"><i class="fa fa-check"></i>&nbsp;Save</button>
                         <a href="<?php echo ADMIN_BASE_URL . 'product'; ?>">
                         <button type="button" class="btn green btn-default" style="margin-left:20px;"><i class="fa fa-undo"></i>&nbsp;Cancel</button>
                         </a> </div>
@@ -658,19 +662,11 @@
                 </div>
                 
                 <?php echo form_close(); ?> 
-                <!-- END FORM--> 
                 
-               </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-</div>
+        </main>
 
 
 <script>
@@ -693,7 +689,8 @@
     var add_button      = $(".add_field_button");
     
     var x = 1;
-    hyTy = '<div class="input_fields_wrap"> <div class="col-sm-5"> <div class="form-group"> <label for="txtNewsTitle" class="control-label col-md-4">Attribute Name <span class="required" style="color:#ff60a3">*</span></label> <div class="col-md-8"> <input type="text" name="attribute_name[]" value="" id="attribute_name" class="form-control" required="required" data-parsley-type="integer" data-parsley-maxlength="100"> </div></div></div><div class="col-sm-5"> <div class="form-group"> <label for="txtNewsTitle" class="control-label col-md-4">Min value <span class="required" style="color:#ff60a3">*</span></label> <div class="col-md-8"> <input type="text" name="min_value[]" value="" id="min_value" class="form-control" required="required" data-parsley-type="integer" data-parsley-maxlength="100"> </div></div></div><div class="col-sm-5"> <div class="form-group"> <label for="txtNewsTitle" class="control-label col-md-4">Target value <span class="required" style="color:#ff60a3">*</span></label> <div class="col-md-8"> <input type="text" name="target_val[]" value="" id="target_val" class="form-control" required="required" data-parsley-type="integer" data-parsley-maxlength="100"> </div></div></div><div class="col-sm-5"> <div class="form-group"> <label for="txtNewsTitle" class="control-label col-md-4">Max value <span class="required" style="color:#ff60a3">*</span></label> <div class="col-md-8"> <input type="text" name="max_value[]" value="" id="max_value" class="form-control" required="required" data-parsley-type="integer" data-parsley-maxlength="100"> </div></div></div><i class="fa fa-times clone-remover cross-icon" style="float:left;"></i></div>';
+    
+    hyTy = '<div class="input_fields_wrap" style=" display:contents;width:100%;"><i class="simple-icon-close clone-remover cross-icon col-md-12" style="font-size: 24px;float: right;padding: 1%;"></i><div class="col-sm-6"> <div class="input-group mb-3"> <div class="input-group-prepend"> <button class="btn btn-outline-secondary" type="button">Attribute Name<span style="color:red">*</span></button> </div><input type="text" name="attribute_name[]" value="" id="attribute_name" class="form-control validatefield" required="required" data-parsley-type="integer" data-parsley-maxlength="100"> </div></div><div class="col-sm-6"> <div class="input-group mb-3"> <div class="input-group-prepend"> <button class="btn btn-outline-secondary" type="button">Min value<span style="color:red">*</span></button> </div><input type="text" name="min_value[]" value=""  class="form-control validatefield" required="required" data-parsley-type="integer" data-parsley-maxlength="100"> </div></div><div class="col-sm-6"> <div class="input-group mb-3"> <div class="input-group-prepend"> <button class="btn btn-outline-secondary" type="button">Target value<span style="color:red">*</span></button> </div><input type="text" name="target_val[]" value=""  class="form-control validatefield" required="required" data-parsley-type="integer" data-parsley-maxlength="100"> </div></div><div class="col-sm-6"> <div class="input-group mb-3"> <div class="input-group-prepend"> <button class="btn btn-outline-secondary" type="button">Max value<span style="color:red">*</span></button> </div><input type="text" name="max_value[]" value=""  class="form-control validatefield" required="required" data-parsley-type="integer" data-parsley-maxlength="100"> </div></div></div>';
     $(add_button).click(function(e){
         e.preventDefault();
              $('.rap_clone').append(hyTy);
@@ -713,9 +710,11 @@
     
     $('.clone-remover').on("click", function(e){
 
-        e.preventDefault();  $(this).parent().remove();
+        e.preventDefault();  
+        $(this).parent().remove();
          x--;
     })
+    return false;
 });
 
           $(document).off('click', '.delete_record').on('click', '.delete_record', function(e){
@@ -751,17 +750,19 @@
         if(validateForm()) {
             $('#form_sample_1').submit();
         } else {
-          console.log('');
+          //console.log('');
+          return false;
         }
     });
     function validateForm() {
         var isValid = true;
-        $('.validate_form').each(function(){
-          if($(this).val() == '' || $(this).val() == null){
-            $(this).addClass('red_class');
+        $('.validatefield').each(function(){
+          if($(this).val() === '' || $(this).val() == null){
+          
+            $(this).css("border", "1px solid red");
             isValid = false;
           } else {
-            $(this).removeClass('red_class');
+            $(this).css("border", "1px solid #28a745");
           }
         });
         var program_select = $('.program_type').val();
@@ -771,6 +772,8 @@
         }
         else
             $('.program_type').parent().find('.chosen-choices').removeClass('red_class');
+    
         return isValid;
+    
     }
 </script>

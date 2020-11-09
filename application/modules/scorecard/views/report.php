@@ -1,15 +1,24 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
-<!-- Page content-->
-<div class="content-wrapper">
-    <input type="hidden" id="assign_type" value="<?=$this->uri->segment(3);?>" />
-    <h3><?php if($this->uri->segment(3) == 'active_checks') echo "Active"; elseif($this->uri->segment(3) == 'overdue_checks') echo "Overdue"; elseif($this->uri->segment(3) == 'pending_review') echo "Pending";  elseif($this->uri->segment(3) == 'pending_approval') echo "Pending Approval"; else echo ""; ?> Assignments</h3>
-    <div class="container-fluid">
-        <!-- START DATATABLE 1 -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-body">
+
+
+
+
+    <main>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <input type="hidden" id="assign_type" value="<?=$this->uri->segment(3);?>" />
+                    <h1>Scorecard Report</h1>
+                    <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="users/create">&nbsp;Add New&nbsp;</a>
+                    <div class="separator mb-5"></div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-12 mb-4">
+                    <div class="card">
+                        <div class="card-body">
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
@@ -22,23 +31,23 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="form-group">
+                                <div class="form-group mb-1">
                                 <label>From:</label>
-                                    <div class='input-group datetimepicker2'>
+                                    <div class='input-group date'>
                                         <input type='text' class="form-control" id="startdate" style="padding: 6px;" />
-                                        <span class="input-group-addon">
-                                            <span class="fa fa-calendar"></span>
+                                        <span class="input-group-text input-group-append input-group-addon">
+                                            <i class="simple-icon-calendar"></i>
                                         </span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="form-group">
+                                <div class="form-group mb-1">
                                  <label>To:</label>
-                                    <div class='input-group datetimepicker2'>
+                                    <div class='input-group date'>
                                     <input type='text' class="form-control" id="enddate" style="padding: 6px;"/>
-                                    <span class="input-group-addon">
-                                        <span class="fa fa-calendar"></span>
+                                    <span class="input-group-text input-group-append input-group-addon">
+                                        <i class="simple-icon-calendar"></i>
                                     </span>
                                  </div>
                                 </div>

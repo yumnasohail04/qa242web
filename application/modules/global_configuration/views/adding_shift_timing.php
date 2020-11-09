@@ -16,9 +16,9 @@
                                    	<div class="col-sm-12 selecting_div">
                                         <div class="form-group">
                                           <label class="col-sm-4 control-label">Shift Name</label>
-                                            <div class="col-sm-8">
+                                            <div class="col-sm-12">
                                                	<select name="shift" class="form-control validate_form">
-                                                  <option value="">Select Day</option>
+                                                  <option value="">Select </option>
                                                   <?php if(isset($shifts) && !empty($shifts)) {
                                                     foreach ($shifts as $key => $sh): ?>
                                                       <option value="<?=$sh['shift_id'];?>" <?php if(isset($st_shift) && !empty($st_shift)) if($st_shift == $sh['shift_id']) echo 'selected="selected"'; ?> ><?=$sh['shift_name'];?></option>
@@ -31,7 +31,7 @@
                                         <hr>
                                         <div class="form-group" style="margin-top: 8px;">
                                           <label class="col-sm-4 control-label">Shift Day</label>
-                                            <div class="col-sm-8">
+                                            <div class="col-sm-12">
                                               <select name="shift_day" class="form-control validate_form">
                                                 <option value="">Select Day</option>
                                                 <option value="Sunday" <?php if(isset($st_day) && !empty($st_day)) if($st_day == 'Sunday') echo 'selected="selected"'; ?>>Sunday</option>
@@ -44,24 +44,24 @@
                                               </select>
                                             </div>
                                         </div>
-                                        <div class="form-group" style="float: left;margin-top: 8px;">
+                                        <div class="form-group" style="margin-top: 8px;">
                                           <label class="col-sm-4 control-label">Start Time</label>
-                                            <div class="col-sm-8">
-                                                <div class="input-group date">
+                                            <div class="col-sm-12">
+                                                <div class="input-group datetimepicker1">
                                                   <input type="text" name="start_time" class="form-control validate_form" value="<?php if(isset($st_start) && !empty($st_start)) echo $st_start; ?>" >
-                                                  <span class="input-group-addon">
-                                                    <span class="fa fa-clock-o"></span>
+                                                  <span class="input-group-text input-group-append input-group-addon">
+                                                      <i class="simple-icon-clock"></i>
                                                   </span>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-group" style="float: left;">
+                                        <div class="form-group" style="">
                                           <label class="col-sm-4 control-label">End Time</label>
-                                            <div class="col-sm-8">
-                                                <div class="input-group date">
+                                            <div class="col-sm-12">
+                                                <div class="input-group datetimepicker1">
                                                   <input type="text" name="end_time" class="form-control validate_form" value="<?php if(isset($st_end) && !empty($st_end)) echo $st_end; ?>">
-                                                  <span class="input-group-addon">
-                                                    <span class="fa fa-clock-o"></span>
+                                                  <span class="input-group-text input-group-append input-group-addon">
+                                                      <i class="simple-icon-clock"></i>
                                                   </span>
                                                 </div>
                                             </div>

@@ -139,7 +139,7 @@ date_default_timezone_set("Asia/karachi");
         $data['datacheck']=false;
         $data['view_file'] = 'newsform';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
     function get_attibutes_div_ajax(){
         $data['product_attribute']=array();
@@ -447,6 +447,22 @@ date_default_timezone_set("Asia/karachi");
                 $insert_answer_data[1]['checkid']=$checkid;
                 $insert_answer_data[1]['question_id']=$insert_or_update;
             }
+            elseif($possible_answer[$i]=="on/off"){
+                $insert_answer_data=array();
+                $insert_answer_data[0]['possible_answer']='on';
+                $insert_answer_data[0]['min']=0;
+                $insert_answer_data[0]['max']= 0;
+                $insert_answer_data[0]['is_acceptable']=1;
+                $insert_answer_data[0]['checkid']=$checkid;
+                $insert_answer_data[0]['question_id']=$insert_or_update;
+
+                $insert_answer_data[1]['possible_answer']='off';
+                $insert_answer_data[1]['min']=0;
+                $insert_answer_data[1]['max']= 0;
+                $insert_answer_data[1]['is_acceptable']=0;
+                $insert_answer_data[1]['checkid']=$checkid;
+                $insert_answer_data[1]['question_id']=$insert_or_update;
+            }
             else{
                 $insert_answer_data=array();
                 $sub_attributes=Modules::run('supplier/_get_data_from_db_table',array("opt_question_id" =>$attribute_list[$i],"opt_delete"=>"0"),"attribute_other_options","id asc","","opt_option,opt_acceptance,id","")->result_array();
@@ -679,6 +695,22 @@ date_default_timezone_set("Asia/karachi");
                     $insert_answer_data[0]['question_id']=$insert_or_update;
 
                     $insert_answer_data[1]['possible_answer']='locked';
+                    $insert_answer_data[1]['min']=0;
+                    $insert_answer_data[1]['max']= 0;
+                    $insert_answer_data[1]['is_acceptable']=0;
+                    $insert_answer_data[1]['checkid']=$checkid;
+                    $insert_answer_data[1]['question_id']=$insert_or_update;
+                }
+                elseif($possible_answer[$i]=="on/off"){
+                    $insert_answer_data=array();
+                    $insert_answer_data[0]['possible_answer']='on';
+                    $insert_answer_data[0]['min']=0;
+                    $insert_answer_data[0]['max']= 0;
+                    $insert_answer_data[0]['is_acceptable']=1;
+                    $insert_answer_data[0]['checkid']=$checkid;
+                    $insert_answer_data[0]['question_id']=$insert_or_update;
+
+                    $insert_answer_data[1]['possible_answer']='off';
                     $insert_answer_data[1]['min']=0;
                     $insert_answer_data[1]['max']= 0;
                     $insert_answer_data[1]['is_acceptable']=0;

@@ -23,6 +23,26 @@ date_default_timezone_set("Asia/karachi");
         $this->load->module('template');
         $this->template->admin($data);
     }
+    function get_all_attributes()
+    {
+        $check_id=$this->input->post('check_id');
+        $cat_id=$this->input->post('cat_id');
+        
+        if(empty($check_id))
+        {
+            $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('check_cat_id'=>$cat_id,'delete_status'=>0), 'id asc','check_catagories_attributes','id as attribute_id, attribute_name as question','1','0')->result_array();
+            foreach($master_catagories as $key => $value)
+            {
+                $master_catagories[$key]['question_id']=$value['attribute_id']."_new";
+                $master_catagories[$key]['parent_id']="0";
+            }
+        }else{
+            $master_catagories = Modules::run('api/_get_specific_table_with_pagination',array('checkid'=>$check_id), 'question_id asc',DEFAULT_OUTLET.'_checks_questions','question_id,question,attribute_id,parent_id','1','0')->result_array();
+        }
+        $data=json_encode($master_catagories);
+        echo $data;
+        exit;
+    }
     function create() {
         $update_id = $this->uri->segment(4);
         $data['datacheck']=false;
@@ -38,7 +58,6 @@ date_default_timezone_set("Asia/karachi");
             $arr_sub=array();
             if($data['news']['checktype']=="general qa check"){
                 $sub_catagories = Modules::run('api/_get_specific_table_with_pagination',array('parent_id'=>$data['news']['check_cat_id']), 'id desc','catagories','id,cat_name','1','0')->result_array();
-           
                 foreach ($sub_catagories as $key => $value) {
                     $arr_sub[$value['id']]=$value['cat_name'];
                 }
@@ -59,11 +78,6 @@ date_default_timezone_set("Asia/karachi");
                     }
                 }
             }
-            /*else{
-                $where_attr['id']=$productid;
-                $data['master_attributes']=$this->get_attriutes_list($productid)->result_array();
-            
-            }*/
             $where['checkid']=$update_id;
             $data['team']=$this->get_checkteam_list($where)->result_array();
             $data['arr_sub']=$arr_sub;
@@ -100,7 +114,7 @@ date_default_timezone_set("Asia/karachi");
         $data['datacheck']=false;
         $data['view_file'] = 'newsform';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
     function get_attibutes_div_ajax(){
         $data['product_attribute']=array();
@@ -264,7 +278,7 @@ date_default_timezone_set("Asia/karachi");
             $slash=substr_count($possible_answer[$i], '/');
             $ans_data['question_id']=$insert_or_update;
             if($attribute_type[$i]=="Choice" ){
-                $ans_array=explode(" ",$possible_answer);
+               // $ans_array=explode(" ",$possible_answer);
 
                 if($possible_answer[$i]=="yes/no"){
                     $insert_answer_data=array();
@@ -393,6 +407,22 @@ date_default_timezone_set("Asia/karachi");
                     $insert_answer_data[1]['checkid']=$checkid;
                     $insert_answer_data[1]['question_id']=$insert_or_update;
                 }
+                elseif($possible_answer[$i]=="on/off"){
+                    $insert_answer_data=array();
+                    $insert_answer_data[0]['possible_answer']='on';
+                    $insert_answer_data[0]['min']=0;
+                    $insert_answer_data[0]['max']= 0;
+                    $insert_answer_data[0]['is_acceptable']=1;
+                    $insert_answer_data[0]['checkid']=$checkid;
+                    $insert_answer_data[0]['question_id']=$insert_or_update;
+
+                    $insert_answer_data[1]['possible_answer']='off';
+                    $insert_answer_data[1]['min']=0;
+                    $insert_answer_data[1]['max']= 0;
+                    $insert_answer_data[1]['is_acceptable']=0;
+                    $insert_answer_data[1]['checkid']=$checkid;
+                    $insert_answer_data[1]['question_id']=$insert_or_update;
+                }
                 elseif($possible_answer[$i]=="sealed/locked"){
                     $insert_answer_data=array();
                     $insert_answer_data[0]['possible_answer']='sealed';
@@ -513,7 +543,7 @@ date_default_timezone_set("Asia/karachi");
             $slash=substr_count($possible_answer[$i], '/');
             $ans_data['question_id']=$insert_or_update;
             if($attribute_type[$i]=="Choice" ){
-                $ans_array=explode(" ",$possible_answer);
+               // $ans_array=explode(" ",$possible_answer);
 
                 if($possible_answer[$i]=="yes/no"){
                     $insert_answer_data=array();
@@ -663,6 +693,22 @@ date_default_timezone_set("Asia/karachi");
                     $insert_answer_data[1]['checkid']=$checkid;
                     $insert_answer_data[1]['question_id']=$insert_or_update;
                 }
+                elseif($possible_answer[$i]=="on/off"){
+                    $insert_answer_data=array();
+                    $insert_answer_data[0]['possible_answer']='on';
+                    $insert_answer_data[0]['min']=0;
+                    $insert_answer_data[0]['max']= 0;
+                    $insert_answer_data[0]['is_acceptable']=1;
+                    $insert_answer_data[0]['checkid']=$checkid;
+                    $insert_answer_data[0]['question_id']=$insert_or_update;
+
+                    $insert_answer_data[1]['possible_answer']='off';
+                    $insert_answer_data[1]['min']=0;
+                    $insert_answer_data[1]['max']= 0;
+                    $insert_answer_data[1]['is_acceptable']=0;
+                    $insert_answer_data[1]['checkid']=$checkid;
+                    $insert_answer_data[1]['question_id']=$insert_or_update;
+                }
                 elseif($slash>1){
                     $insert_answer_data=array();
                     $sub_attributes=Modules::run('supplier/_get_data_from_db_table',array("opt_question_id" =>$attribute_list[$i],"opt_delete"=>"0"),"attribute_other_options","id asc","","opt_option,opt_acceptance,id","")->result_array();
@@ -767,6 +813,7 @@ date_default_timezone_set("Asia/karachi");
         }
     }
     function submit() {
+        $dependent_array=json_decode($this->input->post('dependent_array'));
         $program_working_id = $update_id = $this->uri->segment(4);
         $data = $this->_get_data_from_post();
         $update_data['frequency']=$data['frequency'];
@@ -792,21 +839,21 @@ date_default_timezone_set("Asia/karachi");
             $arr_where['checkid']=$update_id;
             
             $resonce = Modules::run('api/_get_specific_table_with_pagination',$arr_where, 'assign_id desc',DEFAULT_OUTLET.'_assignments','*','1','0')->result_array();
-            if(empty($resonce)){
-                $this->delete_checks_question_from_db($arr_where);
-                $this->delete_checks_answers_from_db($arr_where);
-                $check_cat= Modules::run('api/_get_specific_table_with_pagination',array('catagories.id'=> $data['check_cat_id']), 'id desc','catagories','id,cat_name','1','1')->row_array();
+            // if(empty($resonce)){
+            //     $this->delete_checks_question_from_db($arr_where);
+            //     $this->delete_checks_answers_from_db($arr_where);
+            //     $check_cat= Modules::run('api/_get_specific_table_with_pagination',array('catagories.id'=> $data['check_cat_id']), 'id desc','catagories','id,cat_name','1','1')->row_array();
                 
-                    $this->_get_general_checks_attribute_data_from_post($update_id);
+            //         $this->_get_general_checks_attribute_data_from_post($update_id);
                
-                $this->_update($where, $data); 
-            }else{
+            //     $this->_update($where, $data); 
+           // }else{
                 unset($data['check_cat_id']);
                 unset($data['check_subcat_id']);
                 
                  
                  $this->_update($where, $data);
-            }
+            // }
             /////////// code for adding new attribute 
             $new_attribute_data=$this->input->post('new_attribute_name');
            
@@ -847,7 +894,23 @@ date_default_timezone_set("Asia/karachi");
             //$this->_get_attribute_data_from_post($update_id);
             //$this->insert_qa_checks_shapes_questions($update_id);
            // $this->insert_attribute_question_data($update_id);
-           
+           if(isset($dependent_array) && !empty($dependent_array))
+           {
+               foreach($dependent_array as $dpa)
+               {
+                   $str=substr($dpa->question_id, -3);
+                   $str_attr=substr($dpa->question_id, 0, -4);
+                   if($str=="new")
+                   {
+                       $res = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('attribute_id'=>$dpa->attr_id,'checkid'=>$update_id),'question_id desc','question_id',DEFAULT_OUTLET.'_checks_questions','question_id','1','0','','','')->row();
+                       $atr_val = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('attribute_id'=>$str_attr,'checkid'=>$update_id),'question_id desc','question_id',DEFAULT_OUTLET.'_checks_questions','question_id','1','0','','','')->row();
+                       Modules::run('api/update_specific_table',array("question_id"=>$atr_val->question_id,'checkid'=>$update_id),array("parent_id"=>$res->question_id),DEFAULT_OUTLET.'_checks_questions');
+                   }else{
+                       $res = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('attribute_id'=>$dpa->attr_id,'checkid'=>$update_id),'question_id desc','question_id',DEFAULT_OUTLET.'_checks_questions','question_id','1','0','','','')->row();
+                       Modules::run('api/update_specific_table',array("question_id"=>$dpa->question_id,'checkid'=>$update_id),array("parent_id"=>$res->question_id),DEFAULT_OUTLET.'_checks_questions');
+                   }
+               }
+           }
             $this->session->set_flashdata('message', 'product'.' '.DATA_UPDATED);                                       
                     $this->session->set_flashdata('status', 'success');
         }
@@ -895,6 +958,24 @@ date_default_timezone_set("Asia/karachi");
               $this->insert_attribute_question_data($id);
             }elseif($checktype=="general qa check"){
                 $this->_get_general_checks_attribute_data_from_post($id);
+            }
+
+            if(isset($dependent_array) && !empty($dependent_array))
+            {
+                foreach($dependent_array as $dpa)
+                {
+                    $str=substr($dpa->question_id, -3);
+                    $str_attr=substr($dpa->question_id, 0, -4);
+                    if($str=="new")
+                    {
+                        $res = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('attribute_id'=>$dpa->attr_id,'checkid'=>$id),'question_id desc','question_id',DEFAULT_OUTLET.'_checks_questions','question_id','1','0','','','')->row();
+                        $atr_val = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('attribute_id'=>$str_attr,'checkid'=>$id),'question_id desc','question_id',DEFAULT_OUTLET.'_checks_questions','question_id','1','0','','','')->row();
+                        Modules::run('api/update_specific_table',array("question_id"=>$atr_val->question_id,'checkid'=>$id),array("parent_id"=>$res->question_id),DEFAULT_OUTLET.'_checks_questions');
+                    }else{
+                        $res = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('attribute_id'=>$dpa->attr_id,'checkid'=>$id),'question_id desc','question_id',DEFAULT_OUTLET.'_checks_questions','question_id','1','0','','','')->row();
+                        Modules::run('api/update_specific_table',array("question_id"=>$dpa->question_id,'checkid'=>$id),array("parent_id"=>$res->question_id),DEFAULT_OUTLET.'_checks_questions');
+                    }
+                }
             }
            
             $this->session->set_flashdata('message', 'product'.' '.DATA_SAVED);                                     

@@ -1,17 +1,30 @@
 <script src="<?php echo STATIC_FRONT_JS ?>pdf.js"></script>
 <script src="<?php echo STATIC_FRONT_JS ?>pdf.worker.js"></script>
+
 <script src="<?php echo STATIC_FRONT_JS ?>custom-file-input.js"></script>
 
 <link rel="stylesheet" type="text/css" href="<?php echo STATIC_FRONT_CSS  ?>normalize.css" />
 <link rel="stylesheet" type="text/css" href="<?php echo STATIC_FRONT_CSS  ?>demo.css" />
 <link rel="stylesheet" type="text/css" href="<?php echo STATIC_FRONT_CSS  ?>component.css" />
 <style type="text/css">
+
+.inputfile-4 + label figure {
+    width: 50px;
+    height: 50px;
+    padding: 5px;
+}
+
+
 @media (min-width: 1200px){
   .container {
       width: 1545px;
   }
 }
-
+.show
+{
+  box-shadow: 0 0 32px rgba(0,0,0,0.11);
+  border-color:red;
+}
 #upload-button {
 	width: 210px;
 	display: block;
@@ -23,7 +36,7 @@
 }
 td img {
     max-height: 50px;
-    width: 50%;
+    width: 50px;
 }
 #file-to-upload {
 	display: none;
@@ -92,6 +105,40 @@ td img {
 	margin: 20px auto 0 auto;
 	font-size: 13px;
 	text-align: center;
+}
+.btn-sm{
+  margin-left: 8px;
+}
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltiptext {
+  visibility: visible;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+.tooltiptext-hide
+{
+  visibility: hidden;
+}
+.tooltiptext-show
+{
+  visibility: visible;
+}
+.inputfile + label {
+    font-size: initial;
+    font-weight: 100;
 }
 
 </style>  
@@ -268,20 +315,97 @@ td img {
                 
                   <canvas id="pdf-canvas" width="750" height="1200"></canvas>
                   <div id="page-loader">Loading page ...</div>
-                  <button type="submit"> Save </button>
                 </div>
+
+                <table class="table table-user-information table-striped">
+                  <thead>
+                      <tr>
+                        <th scope="col" style="width:60%">Document Name</th>
+                        <th scope="col">Upload</th>
+                        <th scope="col">Uploaded Document</th>
+                      </tr>
+                    </thead>
+                  <tbody>
+                    <tr>
+                      <td style="width:10%"><span>Sample temperature log</span></td>
+                      <td>
+                        <div class="box">
+                          <input type="file"  name="doc_file1" id="file_1" class=" file_load inputfile inputfile-4 tooltip" data-multiple-caption="{count} files selected"  />
+                          <label  for="file_1"><figure><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg></figure> <span></span></label>
+                        </div>
+                        <span class="tooltiptext tooltiptext-hide">Upload File</span> 
+                      </td>
+                      <td>
+                        <?php if(!empty($detail['sample_temperature_log']) && file_exists(LETTER_OF_CONFORMANCE_PATH.$detail['sample_temperature_log'])) {?>
+                        <a href="<?php echo BASE_URL.LETTER_OF_CONFORMANCE_PATH.$detail['sample_temperature_log'] ?>"><img class="pdf-img" src="<?php echo STATIC_FRONT_IMAGE.'doc.png' ?>"  rel-exist="1"></a><br>
+                        <?php } else{ ?>
+                          <img src="<?php echo STATIC_FRONT_IMAGE.'Delete-file-icon.png' ?>" class="pdf-img" >
+                        <?php }?>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width:10%"><span>Cleaning records</span></td>
+                      <td>
+                        <div class="box">
+                          <input type="file"  name="doc_file2" id="file_2" class=" file_load inputfile inputfile-4 tooltip" data-multiple-caption="{count} files selected"  />
+                          <label  for="file_2"><figure><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg></figure> <span></span></label>
+                        </div>
+                        <span class="tooltiptext tooltiptext-hide">Upload File</span> 
+                      </td>
+                      <td>
+                      <?php if(!empty($detail['cleaning_records']) && file_exists(LETTER_OF_CONFORMANCE_PATH.$detail['cleaning_records'])) {?>
+                        <a href="<?php echo BASE_URL.LETTER_OF_CONFORMANCE_PATH.$detail['cleaning_records'] ?>"><img class="pdf-img" src="<?php echo STATIC_FRONT_IMAGE.'doc.png' ?>"  rel-exist="1"></a><br>
+                        <?php } else{?>
+                          <img src="<?php echo STATIC_FRONT_IMAGE.'Delete-file-icon.png' ?>" class="pdf-img" >
+                          <?php }?>                 </td>
+                    </tr>
+                    <tr>
+                      <td style="width:10%"><span>Employee training</span></td>
+                      <td>
+                        <div class="box">
+                          <input type="file"  name="doc_file3" id="file_3" class=" file_load inputfile inputfile-4 tooltip" data-multiple-caption="{count} files selected"  />
+                          <label  for="file_3"><figure><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg></figure> <span></span></label>
+                        </div>
+                        <span class="tooltiptext tooltiptext-hide">Upload File</span> 
+                      </td>
+                      <td>
+                      <?php if(!empty($detail['employee_training']) && file_exists(LETTER_OF_CONFORMANCE_PATH.$detail['employee_training'])) {?>
+                        <a href="<?php echo BASE_URL.LETTER_OF_CONFORMANCE_PATH.$detail['employee_training'] ?>"><img class="pdf-img" src="<?php echo STATIC_FRONT_IMAGE.'doc.png' ?>"  rel-exist="1"></a><br>
+                        <?php } else{?>
+                          <img src="<?php echo STATIC_FRONT_IMAGE.'Delete-file-icon.png' ?>" class="pdf-img" >
+                          <?php }?>                  </td>
+                    </tr>
+                    <tr>
+                      <td style="width:10%"><span>Prior load information</span></td>
+                      <td>
+                        <div class="box">
+                          <input type="file"  name="doc_file4" id="file_4" class=" file_load inputfile inputfile-4 tooltip" data-multiple-caption="{count} files selected"  />
+                          <label  for="file_4"><figure><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg></figure> <span></span></label>
+                        </div>
+                        <span class="tooltiptext tooltiptext-hide">Upload File</span> 
+                      </td>
+                      <td>
+                      <?php if(!empty($detail['prior_load_information']) && file_exists(LETTER_OF_CONFORMANCE_PATH.$detail['prior_load_information'])) {?>
+                        <a href="<?php echo BASE_URL.LETTER_OF_CONFORMANCE_PATH.$detail['prior_load_information'] ?>"><img class="pdf-img" src="<?php echo STATIC_FRONT_IMAGE.'doc.png' ?>"  rel-exist="1"></a><br>
+                        <?php } else{?>
+                          <img src="<?php echo STATIC_FRONT_IMAGE.'Delete-file-icon.png' ?>" class="pdf-img" >
+                          <?php }?>                 </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <button type="submit"> Save </button>
               </div>
               </form >
             </section>
 
             <section class="pt-page pt-page-2" data-id="carrier_documents">
               <div class="section-title-block">
-                <h2 class="section-title">Basic Documents</h2>
-                <h5 class="section-description"></h5>
+                <h2 class="section-title">Mandatory Documents</h2>
+                
               </div>
               <div class="row">
                 <div class="col-sm-12 col-md-12 subpage-block">
-                <div class="container">
+                <div class="">
                     <div class="row">
                     <div class="col-md-5  toppad  pull-right col-md-offset-3 ">
                     </div>
@@ -290,17 +414,20 @@ td img {
                           <form action="<?php echo BASE_URL.'carrier_front/submit_doc' ?>" method="post" class="panel panel-info" enctype="multipart/form-data" style="border: none;">
                             <div class="panel-body" >
                             <div class="row">
+                            <h5 class="section-description">Carrier- Select if involved in transporting Valley Fine Foods products<br>
+												Storage- Select if involved in storage of Valley Fine Foods products<br>
+												Both- Select if involved in both transportation and storage of Valley Fine Foods products</h5>
                               <input type="hidden" name="id" value="<?php echo $detail['id'] ?>">
-                                <div class=" col-md-12 col-lg-12 "> 
+                                <div class=" col-md-12 col-lg-12 " style="    overflow: auto;"> 
                                 <div class="supp_type" style="padding: 0% 0% 4% 0%;"> 
-                                  <select class="form-control" name="carrier_type" id="carrier_type" style="width: 12%;">
+                                  <select class="form-control" name="carrier_type" id="carrier_type" style="width: 32%;">
                                     <?php foreach($carrier_type as $key =>$value): ?>
                                       <option value="<?php echo $value['id']; ?>" <?php if($value['id']==$detail['type']) echo "selected"; ?>><?php echo $value['type']; ?></option>
                                     <?php endforeach; ?>
                                   </select>
                                 </div>
                                 <h2 class="section-title">Upload Documents</h2>
-                                <table class="table table-user-information table_doc table-striped">
+                                <table class="table table-user-information table_doc table-striped " id="table-carrier-doc">
                                 </table>
                                 </div>
                               </div>
@@ -488,7 +615,7 @@ window.WDS_Chosen_Multiple_Dropdown = {};
               async: false,
               success: function(result) {
                   $('.table_doc').html(result);
-                  $('.save_btn').html('<button id="submited_form" class="btn btn-sm btn-success"><i class="fa fa-floppy-o"></i> Save</button>');
+                  $('.save_btn').html('<button id="submited_form" class="btn btn-sm btn-success"><i class="fa fa-floppy-o"></i> Save</button><button  class="btn btn-sm btn-success  btn-validate-doc-form"><i class="fa fa-floppy-o"></i> Validate</button><button  class="btn btn-sm btn-success  btn-submit-doc-form"><i class="fa fa-floppy-o"></i> Submit</button>');
               }
           });
         }
@@ -512,7 +639,6 @@ window.WDS_Chosen_Multiple_Dropdown = {};
 file_image_change();
 function file_image_change(){
   $(document).off('change', '.file_load').on('change', '.file_load', function(e){
-      e.preventDefault();
       // var name=$(this).attr("data-doc-name");
       // str=str.split("\\"); 
       // str = str[str.length - 1];
@@ -524,14 +650,18 @@ function file_image_change(){
       //     $(this).val('')
       // }else{
         $(this).parent().parent().parent().find('td').find('img').attr("src","<?php echo STATIC_FRONT_IMAGE.'doc.png' ?>");
-      // }
   });
 }
 
 
 </script>
 
-
+<script>
+(function(e,t,n){
+    var r=e.querySelectorAll("html")[0];
+    r.className=r.className.replace(/(^|\s)no-js(\s|$)/,"$1js$2")
+    })(document,window,0);
+</script>
 <script>
 
 var __PDF_DOC,
@@ -560,8 +690,6 @@ function showPDF(pdf_url) {
 	}).catch(function(error) {
 		// If error re-show the upload button
 		$("#upload-button").show();
-		
-		alert(error.message);
 	});;
 }
 
@@ -621,7 +749,6 @@ $("#upload-button").on('click', function() {
 
 // When user chooses a PDF file
 $("#file-to-upload").on('change', function() {
-  alert();
 	// Validate whether PDF
     if(['application/pdf'].indexOf($("#file-to-upload").get(0).files[0].type) == -1) {
         alert('Error : Not a PDF');
@@ -646,5 +773,140 @@ $("#pdf-next").on('click', function() {
 
 // Download button
 
+ 
+  $(document).off("click", "#check_answer").on("click", "#check_answer",function(event){
+    var val=$(this).val();
+    if(val=="0"){
+      if($(this).parent().parent().find('td').find('.comment_opt').val()=="")
+        {
+          $(this).parent().parent().find('td').find('.comment_opt').addClass("show");
+        }
+        $(this).parent().parent().find('td').find('.tooltiptext').delay(1000).fadeIn(300); 
+        $(this).parent().parent().find('td').find('.tooltiptext').addClass("tooltiptext-hide");
+        $(this).parent().parent().find('td').find('.tooltiptext').removeClass("tooltiptext-visible");
+    }else{
+      $(this).parent().parent().find('td').find('.comment_opt').removeClass("show");
+      if($(this).parent().parent().find('td').find('.box').find('.tooltip').val()=="")
+      {
+        if($(this).parent().parent().find("td").find("img").attr('rel-exist')!="1")
+        {
+          $(this).parent().parent().find('td').find('.tooltiptext').addClass("tooltiptext-visible");
+          $(this).parent().parent().find('td').find('.tooltiptext').removeClass("tooltiptext-hide");
+          $(this).parent().parent().find('td').find('.tooltiptext').delay(1000).fadeOut(300); 
+        }
+      }
+    } 
+      
+  });
 
+  var validated="0";
+  $(document).off('click', '.del_doc').on('click', '.del_doc', function(e){
+  e.preventDefault();
+  var id = $(this).attr('del_id');
+  swal({
+    title : "Are you sure to delete the selected Document?",
+    text : "You will not be able to recover this Document!",
+    type : "warning",
+    showCancelButton : true,
+    confirmButtonColor : "#DD6B55",
+    confirmButtonText : "Yes, delete it!",
+    closeOnConfirm : false
+  },
+  function () {
+      
+          $.ajax({
+              type: 'POST',
+              url: "<?php echo ADMIN_BASE_URL?>carrier_front/delete_doc",
+              data: {'id': id},
+              async: false,
+              success: function() {
+                  location.reload();
+              }
+          });
+  swal("Deleted!", "supplier has been deleted.", "success");
+});
+
+});
+
+
+$(document).off("click", ".btn-validate-doc-form").on("click", ".btn-validate-doc-form",function(event){
+  event.preventDefault();
+  check_validity();
+  return false;
+    });
+
+function check_validity()
+{
+  var clicked="0";
+  $("input[type=radio]:checked").each(function() {
+    var selected=$(this).parent().parent();
+    if($(this).val()=="1"){
+     var exist= selected.find("td").find("img").attr('rel-exist');
+     if(exist=="0"){
+      clicked="1";
+        var message="Please Upload documents against the Options selected YES and save the form";
+        toastr.error(message);
+        return false;
+     }
+    }
+    else
+    {
+      var comment=selected.find("td").find(".comment_opt").val();
+      if(comment=="")
+      {
+        clicked="1";
+        var message="Please Provide Comment against the Options selected NO and save the form";
+        toastr.error(message);
+        return false;
+      }
+      else
+      {
+        if(selected.find("td").find(".comment_opt").attr('c_exist')!="1")
+        {
+          clicked="1";
+          var message="Please Save the comment first";
+          toastr.error(message);
+          return false;
+        }
+      }
+      
+    }
+  });
+  if(clicked=="0"){
+    validated="1";
+    toastr.success("Form Validated Successfully! Now you can submit the Form");
+  }
+   return false;
+}
+
+    
+  $(document).off("click", ".btn-submit-doc-form").on("click", ".btn-submit-doc-form",function(event){
+    event.preventDefault();
+    check_validity();
+    if(validated=="1"){
+      $.ajax({
+        type: 'POST',
+        url: "<?php echo BASE_URL?>carrier_front/submit_documents_form",
+        data: {},
+        async: false,
+        success: function(result) {
+          var status= $(result).find('status').text();
+          var message= $(result).find('message').text();
+          if(status==true)
+          {
+            toastr.success(message);
+          }
+        }
+      });
+    }else{
+      toastr.error("Please Validate the Form first");
+    }
+  });
+
+  $(document).on("change", ".comment_opt",function(event){
+    if($(this).val()!="")
+    {
+      $(this).removeClass("show");
+    }
+});
 </script>

@@ -1,45 +1,24 @@
-<div class="page-content-wrapper">
-  <div class="page-content"> 
-    <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
-    <div id="contractors_measurements_modal" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-            <h4 class="modal-title">Modal title</h4>
-          </div>
-          <div class="modal-body"> Widget settings form goes here </div>
-          <div class="modal-footer">
-            <button type="button" class="btn green" id="confirm"><i class="fa fa-check"></i>&nbsp;Save changes</button>
-            <button type="button" class="btn default" data-dismiss="modal"><i class="fa fa-undo"></i>&nbsp;Close</button>
-          </div>
-        </div>
-        <!-- /.modal-content --> 
-      </div>
-      <!-- /.modal-dialog --> 
-    </div>
-        <div class="content-wrapper">
-      <h3>
-          <?php
-                    if (empty($update_id)) 
-                        $strTitle = 'Add Roles';
-                    else 
-                        $strTitle = 'Edit Roles';
-                    echo $strTitle;
-                    ?>
-                    <a href="<?php echo ADMIN_BASE_URL . 'roles'; ?>"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-chevron-left"></i>&nbsp;&nbsp;&nbsp;Back</button></a>
-    </h3>
-    </div>
+  
+<main>
+  <div class="container-fluid">
     <div class="row">
-      <div class="col-md-12">
-        <div class="tabbable tabbable-custom boxless">
-          <div class="tab-content" style="margin-top:-30px;">
-          <div class="panel panel-default">
-         
-            <div class="tab-pane  active" id="tab_2">
-              <div class="portlet box green">
-                <div class="portlet-title"></div>
-                <div class="portlet-body form " style="padding-top:15px;"> 
+      <div class="col-12">
+        <h1> <?php if (empty($update_id)) 
+        $strTitle = 'Add Roles';
+      else 
+        $strTitle = 'Edit Roles';
+        echo $strTitle;
+      ?></h1>
+        <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="<?php echo ADMIN_BASE_URL . 'roles'; ?>">&nbsp;&nbsp;&nbsp;Back</a> 
+        <div class="separator mb-5"></div>
+      </div>
+    </div>
+<div class="card mb-4">
+  <div class="card-body">
+    <h5 class="mb-4">
+    
+      </h5>
+
                      <?php
                                     $attributes = array('autocomplete' => 'off', 'id' => 'form_sample_1', 'class' => 'form-horizontal', 'data-parsley-validate' => '', 'novalidate' => '' );
                                     if (empty($update_id)) {
@@ -96,7 +75,7 @@
                                          'value' => $roles_admin['role'],
                                         'tabindex'=>2
                                     );
-                                    $attribute = array('class' => 'control-label col-md-4','style'=>'text-align:right;');
+                                    $attribute = array('class' => 'control-label col-md-4');
                                     ?>
                                     <?php echo form_label('Title', 'title', $attribute); ?>
                                     <div class="col-md-8">
@@ -110,9 +89,9 @@
                                     <div class="col-md-6">
                                         <div class="col-md-offset-4 col-md-8">
                                         <span id="role_spinners" style="color:#F60; display:none;"><i class="fa fa-spinner fa-spin" style="font-size:40px;"></i></span>
-                                           <button type="submit" class="btn btn-primary" style="margin-left:40px;"><i class="fa fa-check"></i>&nbsp;Save</button>
+                                           <button type="submit" class="btn btn-outline-primary" style="margin-left:40px;"><i class="fa fa-check"></i>&nbsp;Save</button>
                                             <a href="<?php echo ADMIN_BASE_URL . 'roles'; ?>">
-                                                <button type="button" class="btn green btn-default" style="margin-left:20px;"><i class="fa fa-undo"></i>&nbsp;Cancel</button>
+                                                <button type="button" class="btn green btn-outline-default" style="margin-left:20px;"><i class="fa fa-undo"></i>&nbsp;Cancel</button>
                                             </a>
                                         </div>
                                     </div>
@@ -125,11 +104,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+</main>
 
 
 <script>

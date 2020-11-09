@@ -46,7 +46,7 @@ class Scorecard_form extends MX_Controller
         $data['update_id'] = $update_id;
         $data['view_file'] = 'newsform';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
 
     function submit() {

@@ -31,14 +31,7 @@ class widgets extends MX_Controller {
         echo json_encode($this->db->query("call proc_load_lines_by_plant_id_for_ddl(".$this->input->post('plant_id').')')->result_array());
     }
     function load_product_checks() {
-    	$array = $this->db->query('call proc_load_product_checks_for_ddl()')->result_array();
-    	if(!empty($array)) {
-			foreach ($array as $key => $row) {
-         		$vc_array_name[$key] = $row['text'];
-        	}
-        	array_multisort($vc_array_name, SORT_ASC, $array);
-        }
-        echo json_encode($array);
+        echo json_encode($this->db->query('call proc_load_product_checks_for_ddl()')->result_array());
     }
     function load_products() {
         echo json_encode($this->db->query('call proc_load_products_for_ddl()')->result_array());
@@ -47,14 +40,7 @@ class widgets extends MX_Controller {
         echo json_encode($this->db->query('call proc_load_lines_for_ddl()')->result_array());
     }
     function load_program_types() {
-		$array = $this->db->query('call proc_load_program_types_for_ddl()')->result_array();
-    	if(!empty($array)) {
-			foreach ($array as $key => $row) {
-         		$vc_array_name[$key] = $row['text'];
-        	}
-        	array_multisort($vc_array_name, SORT_ASC, $array);
-        }
-        echo json_encode($array);
+        echo json_encode($this->db->query('call proc_load_program_types_for_ddl()')->result_array());
     }
     function load_questions_by_program_type_or_product_checks(){
         echo json_encode($this->db->query("call proc_load_questions_by_program_type_or_product_checks_for_ddl("
@@ -93,6 +79,7 @@ class widgets extends MX_Controller {
         else if($this->input->post("view_request") == "report_home") $Mode = 2;
         $data['Mode'] = $Mode;
         //$data['tbl_id_name']=$this->input->post('tbl_id_name');
+
         echo $this->load->view('report_by_product_check',$data ,TRUE);
     }
 

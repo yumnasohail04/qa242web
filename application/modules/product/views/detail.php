@@ -18,7 +18,7 @@
 
                            
                                      <table id="datatable1" class="table table-bordered">
-            <tbody class="table-body">
+                                        <tbody class="table-body">
                                           <tr class="bg-col">
                                               <th style="color: #6c9cde!important;">
                                                   Product Title:
@@ -127,7 +127,7 @@
                             <div class="form-body">                               
 
                            
-                                        <table class="table table-bordered" style="color: black !important">
+                                        <table class="table table-bordered" >
                                     <thead>
                                       <tr>
                                         <th  style="color: #6C9CDE !important">Attribute</th>

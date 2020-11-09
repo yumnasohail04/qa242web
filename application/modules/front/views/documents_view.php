@@ -1,5 +1,4 @@
-<tbody>
-    <input type="hidden" value="<?php echo $detail['id']; ?>" name="id" >
+    <tbody>
             <tr><td><h2 class="section-title">Upload Documents</h2></td></tr>
         <?php 
             $level="";
@@ -23,9 +22,9 @@
             </td>
             <td>
             <?php if(!empty($values['document'])){ ?>
-                <a href="<?php echo BASE_URL.SUPPLIER_DOCUMENTS_PATH.$values['document'];?>" download><img src="<?php echo STATIC_FRONT_IMAGE.'doc.png' ?>"></a>
+                <a href="<?php echo BASE_URL.SUPPLIER_DOCUMENTS_PATH.$values['document'];?>" download><img src="<?php echo STATIC_FRONT_IMAGE.'doc.png' ?>" rel-exist="1"></a>
             <?php }else{ ?>
-                <img src="<?php echo STATIC_FRONT_IMAGE.'Delete-file-icon.png' ?>">
+                <img src="<?php echo STATIC_FRONT_IMAGE.'Delete-file-icon.png' ?>" rel-exist="0">
             <?php } ?>
             </td>
             </tr>

@@ -58,6 +58,7 @@
     
     <script src="<?php echo STATIC_FRONT_JS?>jquery-2.1.3.min.js"></script>
     <script src="<?php echo STATIC_FRONT_JS?>bootstrap.min.js"></script>
+<script src="https://momentjs.com/downloads/moment.js"></script>
     <script src="<?php echo STATIC_ADMIN_JS?>moment/min/moment-with-locales.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
     <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
@@ -68,12 +69,12 @@
 
   <body>
     <!-- Loading animation -->
-    <div class="preloader">
+    <!-- <div class="preloader">
       <div class="preloader-animation">
         <div class="dot1"></div>
         <div class="dot2"></div>
       </div>
-    </div>
+    </div> -->
     <!-- /Loading animation -->
 
     <div id="page" class="page">

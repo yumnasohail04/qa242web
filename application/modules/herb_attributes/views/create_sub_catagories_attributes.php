@@ -1,32 +1,11 @@
-<?php // print_r($thought_of_day); exit(); ?>
 
-<div class="page-content-wrapper">
-  <div class="page-content"> 
-    <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
-    <div id="contractors_measurements_modal" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-            <h4 class="modal-title">Modal title</h4>
-          </div>
-          <div class="modal-body"> Widget settings form goes here </div>
-          <div class="modal-footer">
-            <button type="button" class="btn green" id="confirm"><i class="fa fa-check"></i>&nbsp;Save changes</button>
-            <button type="button" class="btn default" data-dismiss="modal"><i class="fa fa-undo"></i>&nbsp;Close</button>
-          </div>
-        </div>
-        <!-- /.modal-content --> 
-      </div>
-      <!-- /.modal-dialog --> 
-    </div>
-    <!-- /.modal --> 
-    <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM--> 
-    <!-- BEGIN PAGE HEADER-->
-    <div class="content-wrapper">
- <h3>
-      
-          <?php
+                
+                
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <h1>   <?php
           $update_id=$this->uri->segment(5);
             if (!empty($update_id)) {
               $strTitle = "Edit attribute";
@@ -37,25 +16,16 @@
             }
                     
                     echo $strTitle;
-                    ?>
-                    <a href="<?php echo ADMIN_BASE_URL.'herb_attributes'?>"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-chevron-left"></i>&nbsp;&nbsp;&nbsp;Back</button></a>
-    </h3>
+                    ?></h1>
+        <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="<?php echo ADMIN_BASE_URL . 'herb_attributes'; ?>">&nbsp;&nbsp;&nbsp;Back</a> 
+        <div class="separator mb-5"></div>
+      </div>
     </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="tabbable tabbable-custom boxless">
-          <div class="tab-content">
-          <div class="panel panel-default" style="margin-top:-30px;">
-         
-            <div class="tab-pane  active" id="tab_2" >
-              <div class="portlet box green ">
-                <div class="portlet-title ">
-                 
-                </div>
-                
-                <div class="portlet-body form " style="padding-top:15px;"> 
-                  
-                  <!-- BEGIN FORM-->
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="mb-4">
+        
+          </h5>
                           <?php 
                           $attributes = array('autocomplete' => 'off', 'id' => 'frmSubCatagories', 'class' => 'form-horizontal');
                           if(empty($update_id)){
@@ -74,8 +44,8 @@
                             <fieldset>
                               <legend>Check Attributes</legend>
                                <div class="row add_row" >
-                                             <div class="col-md-5">
-                                                <div class="form-group">
+                                             <div class="col-md-6">
+                                                <div class="input-group mb-3">
                                                     <?php
                                                      $data = array(
                                                         'name' => 'attribute_name',
@@ -86,25 +56,25 @@
                                                     );
                                                     $attribute = array('class' => 'control-label col-md-4');
                                                     ?>
-                                                    <?php echo form_label('Attibute`Name <span class="red" style="color:red;">*</span>', 'txtCatName', $attribute); ?>
-                                                    <div class="col-md-8">
+                                                <div class="input-group-prepend">
+                                    					<button class="btn btn-outline-secondary" type="button">Attibute`Name<span style="color:red">*</span></button>
+                               						 </div>
                                                         <?php echo form_input($data); ?>
-                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-5 ">
-                                                <div class="form-group">
+                                            <div class="col-md-6">
+                                                <div class="input-group mb-3">
                                                  <?php $attribute = array('class' => 'control-label col-md-4');
                                                     ?>
-                                                    <?php echo form_label('Attibute`type<span class="red" style="color:red;">*</span>', 'txtCatName', $attribute); ?>
-                                                    <div class="col-md-8">
+                                                <div class="input-group-prepend">
+                                    					<button class="btn btn-outline-secondary" type="button">Attibute`type<span style="color:red">*</span></button>
+                               						 </div>
                                                        <select name="attribute_type" class="form-control answer_type" required="required">
                                                          <option value="">--Select--</option>
                                                          <option value="Range" <?php if($catagories['attribute_type']=="Range") echo 'selected="selected"';?>>Range</option>
                                                          <option value="Choice" <?php if($catagories['attribute_type']=="Choice") echo 'selected="selected"';?>>Choice</option>
                                         <option value="Fixed" <?php if($catagories['attribute_type']=="Fixed") echo 'selected="selected"';?>>Text</option>
                                                        </select>
-                                                    </div>
                                                 </div>
                                             </div>
                                           
@@ -160,7 +130,7 @@
                   <div class="row">
                     <div class="col-md-6">
                       <div class="col-md-offset-2 col-md-9" style="padding-bottom:15px;">
-                       <span style="margin-left:40px"></span> <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i>&nbsp;Save</button>
+                       <span style="margin-left:40px"></span> <button type="submit" class="btn btn-outline-primary"><i class="fa fa-check"></i>&nbsp;Save</button>
                         <a href="<?php echo ADMIN_BASE_URL . 'herb_attributes'; ?>">
                         <button type="button" class="btn green btn-default" style="margin-left:20px;"><i class="fa fa-undo"></i>&nbsp;Cancel</button>
                         </a> </div>
@@ -293,10 +263,10 @@ $('#txtCatName').keyup(function() {
         $('.answer_type').change(function(){
       $('.possible_select').attr('style','display:none');
       $('.add_ans_btn').attr('style','display:none');
-      $('.add_answers').html('<div ><div class="col-md-12 " style="margin-bottom:20px;"><div class="form-group"> <label for="txtCatName" class="control-label col-md-2">Choice Type<span class="red" style="color:red;">*</span></label><div class="col-md-5"> <select name="possible_answer" class="form-control answer_type" required="required"><option value="">--Select--</option><option value="yes/no">Yes/No</option><option value="acceptable/unacceptable">Acceptable/Unacceptable</option><option value="completed/not completed" >Completed/not Completed</option><option value="cleaned/completed" >Cleaned/Completed</option> </select></div></div></div><br> ');
+      $('.add_answers').html('<div class="row " style="width:100%;" ><div class="col-sm-6 " style="margin-bottom:20px;"><div class="input-group mb-3"> <div class="input-group-prepend"><button class="btn btn-outline-secondary" type="button">Choice Type<span style="color:red">*</span></button></div><select name="possible_answer" class="form-control answer_type" required="required"><option value="">--Select--</option><option value="yes/no">Yes/No</option><option value="acceptable/unacceptable">Acceptable/Unacceptable</option><option value="completed/not completed" >Completed/not Completed</option><option value="cleaned/completed" >Cleaned/Completed</option> </select></div></div><br> ');
       var htty='<p style=""font-size:16px;color: #7296CA;>User will be asked to provide an input on mobile app.</p>';
       var httvrange=''
-      var rangrtt='<div class="col-md-12" style="margin-bottom:20px;"> <div class="form-group"> <label for="txtCatName" class="control-label col-md-2">Min Value<span class="red" style="color:red;">*</span></label> <div class="col-md-5"> <input type="text" name="min_value" value="" id="possible_answer" class="form-control validate[required] text-input " required="required"> </div></div></div><div class="col-md-12" style="margin-bottom:20px;"> <div class="form-group"> <label for="txtCatName" class="control-label col-md-2">Max Value<span class="red" style="color:red;">*</span></label> <div class="col-md-5"> <input type="text" name="max_value" value="" id="possible_answer" class="form-control validate[required] text-input " required="required"> </div></div></div><div class="col-md-12" style="margin-bottom:20px;"> <div class="form-group"> <label for="txtCatName" class="control-label col-md-2">Target Value<span class="red" style="color:red;">*</span></label> <div class="col-md-5"> <input type="text" name="target_value" value="" id="possible_answer" class="form-control validate[required] text-input " required="required"> </div></div></div>';
+      var rangrtt='<div class="col-md-6" style="margin-bottom:20px;"> <div class="input-group mb-3"><div class="input-group-prepend"><button class="btn btn-outline-secondary" type="button">Min Value<span style="color:red">*</span></button></div> <input type="text" name="min_value" value="" id="possible_answer" class="form-control validate[required] text-input " required="required"></div></div><div class="col-md-6" style="margin-bottom:20px;"> <div class="input-group mb-3"><div class="input-group-prepend"><button class="btn btn-outline-secondary" type="button">Max Value<span style="color:red">*</span></button></div><input type="text" name="max_value" value="" id="possible_answer" class="form-control validate[required] text-input " required="required"></div></div><div class="col-md-6" style="margin-bottom:20px;"> <div class="input-group mb-3"><div class="input-group-prepend"><button class="btn btn-outline-secondary" type="button">Target<span style="color:red">*</span></button></div> <input type="text" name="target_value" value="" id="possible_answer" class="form-control validate[required] text-input " required="required"> </div></div>';
       if($('.answer_type').val() == 'Choice'){
          $('.possible_select').attr('style','display:block');
          $('.add_ans_btn').attr('style','display:block');

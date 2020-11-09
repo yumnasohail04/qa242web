@@ -13,56 +13,29 @@
     width: 100% !important;
   }
 </style>
-<div class="page-content-wrapper">
-  <div class="page-content"> 
-    <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
-    <div id="contractors_measurements_modal" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-            <h4 class="modal-title">Modal title</h4>
-          </div>
-          <div class="modal-body"> Widget settings form goes here </div>
-          <div class="modal-footer">
-            <button type="button" class="btn green" id="confirm"><i class="fa fa-check"></i>&nbsp;Save changes</button>
-            <button type="button" class="btn default" data-dismiss="modal"><i class="fa fa-undo"></i>&nbsp;Close</button>
-          </div>
-        </div>
-        <!-- /.modal-content --> 
-      </div>
-      <!-- /.modal-dialog --> 
-    </div>
-    <!-- /.modal --> 
-    <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM--> 
-    <!-- BEGIN PAGE HEADER-->
-    <div class="content-wrapper">
-        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
-      <h3>
+
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <h1> 
         <?php 
         if (empty($update_id)) 
         $update_id=0;
-                    $strTitle = 'Replace Wip Product';
-                
-                    echo $strTitle;
-                    ?>
-                    <a href="<?php echo ADMIN_BASE_URL . 'product/wip_products'; ?>"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-chevron-left"></i>&nbsp;&nbsp;&nbsp;Back</button></a>
-       </h3>             
-            
+        $strTitle = 'Replace Wip Product';
+    
+        echo $strTitle;
+        ?>
+        </h1>
+        <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="<?php echo ADMIN_BASE_URL . 'product/wip_products'; ?>">&nbsp;&nbsp;&nbsp;Back</a> 
+        <div class="separator mb-5"></div>
+      </div>
     </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="tabbable tabbable-custom boxless">
-          <div class="tab-content">
-          <div class="panel panel-default" style="margin-top:-30px;">
-         
-            <div class="tab-pane  active" id="tab_2" >
-              <div class="portlet box green ">
-                <div class="portlet-title ">
-                 
-                </div>
-                
-                <div class="portlet-body form " style="padding-top:15px;"> 
+<div class="card mb-4">
+  <div class="card-body">
+    <h5 class="mb-4">
+    
+      </h5>
                   
                   <!-- BEGIN FORM-->
                         <?php
@@ -80,11 +53,12 @@
                  
 
                     <div class="row">
-                        <div class="col-sm-5">
-                            <div class="form-group">
-                              <label class="col-sm-4 control-label">Select New WIP Nav: <span class="required" style="color:#ff60a3">*</span></label>
-                                <div class="col-sm-8">
-                                    <select  id="selectboxing" class="selectpicker new_wip"  data-show-subtext="true" data-live-search="true" name="new_wip" required="required">
+                        <div class="col-sm-6">
+                            <div class="input-group mb-3">
+                              <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Select New WIP Nav:<span style="color:red">*</span></button>
+                                </div>
+                                    <select  id="selectboxing" class="form-control selectpicker new_wip"  data-show-subtext="true" data-live-search="true" name="new_wip" required="required">
                                         <option>Select</option>
                                       <?php 
                                         if(isset($all_navigation) && !empty($all_navigation)) { 
@@ -92,14 +66,14 @@
                                         <option  value="<?=$an['navision_number'];?>" data-subtext="<?php if(isset($an['navision_number']) && !empty($an['navision_number'])) echo $an['navision_number'];?>"><?=$an['product_name'];?></option>
                                        <?php endforeach; } ?>
                                     </select>
-                                </div>
                             </div>
                         </div>
-                        <div class="col-sm-5">
-                            <div class="form-group">
-                              <label class="col-sm-4 control-label">Select Old WIP Nav: <span class="required" style="color:#ff60a3">*</span></label>
-                                <div class="col-sm-8">
-                                    <select  id="selectboxing" class="selectpicker old_wip"  data-show-subtext="true" data-live-search="true" name="old_wip" required="required">
+                        <div class="col-sm-6">
+                            <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Select Old WIP Nav:<span style="color:red">*</span></button>
+                                </div>
+                                    <select  id="selectboxing" class="form-control selectpicker old_wip"  data-show-subtext="true" data-live-search="true" name="old_wip" required="required">
                                         <option>Select</option>
                                         <?php 
                                         if(isset($all_navigation) && !empty($all_navigation)) { 
@@ -107,7 +81,6 @@
                                         <option  value="<?=$an['navision_number'];?>" data-subtext="<?php if(isset($an['navision_number']) && !empty($an['navision_number'])) echo $an['navision_number'];?>"><?=$an['product_name'];?></option>
                                        <?php endforeach; } ?>
                                     </select>
-                                </div>
                             </div>
                         </div>
                         <div class="multi_select_product">
@@ -128,19 +101,11 @@
                 </div>
                 
                 <?php echo form_close(); ?> 
-                <!-- END FORM--> 
                 
-               </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-</div>
+        </main>
 
 <script type="text/javascript">
     $('.selectpicker').selectpicker('refresh');

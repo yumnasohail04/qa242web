@@ -19,10 +19,7 @@ class Login extends MX_Controller{
 	}
 	///////////////////////////////////////////////////////////////////////////////////
 
-	function submit_login(){
-		$this->load->library('form_validation');
-		$this->form_validation->set_rules('txtUserName', 'Username', 'required|trim|xss_clean');
-		$this->form_validation->set_rules('txtPassword', 'Passwords', 'required|trim|xss_clean|callback_pword_check');
+		function submit_login(){
 		$username = $this->input->post('txtUserName', TRUE);
 		$password = md5($this->input->post('txtPassword', TRUE)); 
 		$row = Modules::run('users/_get_where_login',$username, $password )->row();

@@ -50,7 +50,7 @@ date_default_timezone_set($timezone[0]['timezones']);
         }
         $data['view_file'] = 'newsform';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
     function delete_scorecard()
     {
@@ -71,7 +71,7 @@ date_default_timezone_set($timezone[0]['timezones']);
         $data['update_id'] = $update_id;
         $data['view_file'] = 'newsform';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
     function scorecard_report() {
         $supplier =Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('status'=>"1"),'id asc','','supplier','*','1','0','','','')->result_array();
@@ -85,7 +85,7 @@ date_default_timezone_set($timezone[0]['timezones']);
         $data['supplier']=$suppliers;
         $data['view_file'] = 'report';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
     function reporting_list()
     {
@@ -109,7 +109,7 @@ date_default_timezone_set($timezone[0]['timezones']);
         $data['card_list'] =$this->get_completed_scorecard($where)->result_array();
         foreach($data['card_list'] as $key => $value)
         {
-            $graph_date[]=date("d-m-Y", strtotime($value['at_reviewed_date']));
+            $graph_date[]=date("m-d-Y", strtotime($value['at_reviewed_date']));
             $graph_points[]=number_format((float)$value['total_percentage'], 2, '.', '');
         }
         
@@ -190,7 +190,7 @@ date_default_timezone_set($timezone[0]['timezones']);
         $data['update_id'] = $update_id;
         $data['view_file'] = 'scorecard';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
     function submitt_scorecard()
     {
@@ -288,7 +288,7 @@ date_default_timezone_set($timezone[0]['timezones']);
         $data['card_list'] =$this->get_scorecard_list($where);
         $data['view_file'] = 'news';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
     function pending_scorecard() {
         $group_id=$this->session->userdata['user_data']['group'];
@@ -314,7 +314,7 @@ date_default_timezone_set($timezone[0]['timezones']);
         }
         $data['view_file'] = 'pending_news';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
     function fill_pending_scorecard()
     {
@@ -363,7 +363,7 @@ date_default_timezone_set($timezone[0]['timezones']);
         $data['update_id'] = $update_id;
         $data['view_file'] = 'pending_scorecard';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
     function complete_scorecard()
     {
@@ -379,7 +379,7 @@ date_default_timezone_set($timezone[0]['timezones']);
         $data['card_list'] =$this->get_completed_scorecard($where)->result_array();
         $data['view_file'] = 'completed_scorecard';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
     function detail() {
         $update_id = $this->input->post('id');

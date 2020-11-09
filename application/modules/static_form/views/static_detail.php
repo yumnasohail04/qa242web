@@ -23,7 +23,7 @@
           <div class="form-body">
 
             <h3>
-              <?php $name=''; if(isset($assign_detail[0]['sf_name']) && !empty($assign_detail[0]['sf_name'])) $name=$assign_detail[0]['sf_name']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; ?>
+              <?php $name=''; if(isset($assign_detail[0]['sf_name']) && !empty($assign_detail[0]['sf_name'])) $name=$assign_detail[0]['sf_name']; $name=  Modules::run('api/string_length',$name,'8000','',''); echo $name; ?>
             </h3>        
             <table id="datatable1" class="table table-bordered">
               <tbody class="table-body">
@@ -41,7 +41,7 @@
                         User name:
                     </th>
                     <td>
-                      <?php $name=''; if(isset($user_detail[0]['user_name']) && !empty($user_detail[0]['user_name'])) $name=$user_detail[0]['user_name']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; ?>
+                      <?php $name=''; if(isset($user_detail[0]['user_name']) && !empty($user_detail[0]['user_name'])) $name=$user_detail[0]['user_name']; $name=  Modules::run('api/string_length',$name,'8000','',''); echo $name; ?>
                     </td>
                 </tr>
                 <?php if(!empty($line_na)) { ?>
@@ -106,6 +106,27 @@
                 <?}}?>
               </tbody>
             </table>
+          
+          
+          	<?php $media_check = Modules::run('api/_get_specific_table_with_pagination',array("assignment_id"=>$assign_detail[0]['assign_id'],'outlet_id'=>DEFAULT_OUTLET),'media_id desc',DEFAULT_OUTLET.'_static_media','media_id,media_name,media_type,media_status','1','0')->result_array();
+          if(!empty($media_check)) { ?>
+                                    <script src="<?php echo STATIC_ADMIN_JS?>html5gallery.js"></script>
+                                    <h3>Media Files</h3>
+                                    <div style="display:none;margin:0 auto;" class="html5gallery" data-skin="gallery" data-width="480" data-height="272" data-resizemode="fill">
+                                    <?php  foreach ($media_check as $key => $mc):
+                                      if(isset($mc['media_type']) && !empty($mc['media_type'])) {
+                                        if($mc['media_type'] == 'image') {?>
+                                      <!-- Add images to Gallery -->
+                                          <a href="<?php $path=STATIC_ADMIN_IMAGE.'no-image-available.jpg'; if(isset($mc['media_name']) && !empty($mc['media_name'])) $path=Modules::run('api/image_path_with_default',ACTUAL_STATIC_ASSIGNMENT_ANSWER_IMAGE_PATH,$mc['media_name'],STATIC_ADMIN_IMAGE,'no-image-available.jpg'); echo $path; ?>">
+                                            <img src="<?=$path?>" alt="Image">
+                                          </a>
+                                        <?php } elseif($mc['media_type'] == 'video') {?>
+                                          <a href="<?php $path=STATIC_ADMIN_IMAGE.'no-image-available.jpg'; if(isset($mc['media_name']) && !empty($mc['media_name'])) $path=Modules::run('api/image_path_with_default',ACTUAL_STATIC_ASSIGNMENT_ANSWER_IMAGE_PATH,$mc['media_name'],STATIC_ADMIN_IMAGE,'no-image-available.jpg'); echo $path; ?>" data-webm="<?=STATIC_ADMIN_IMAGE.'no-image-available.jpg'?>"><img src="<?=STATIC_ADMIN_IMAGE.'no-image-available.jpg'?>" alt="Video"></a>
+                                        <?php } else echo "";
+                                      }
+                                    endforeach;?>
+                                    </div>
+                                    <?php } ?>
             <?php if($function == 'static_forms_reviewed' || $function=="static_forms_approved") { ?>
             <h3>Review Detail</h3>
             <table class="table table-bordered" style="color: black !important">
@@ -117,7 +138,7 @@
                   <td>
                       <?php 
                       $review_user_detail = Modules::run('api/_get_specific_table_with_pagination',array("id"=>$assign_detail[0]['review_user']),'id desc','users','user_name','1','1')->result_array();
-                      $name=''; if(isset($review_user_detail[0]['user_name']) && !empty($review_user_detail[0]['user_name'])) $name=$review_user_detail[0]['user_name']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; 
+                      $name=''; if(isset($review_user_detail[0]['user_name']) && !empty($review_user_detail[0]['user_name'])) $name=$review_user_detail[0]['user_name']; $name=  Modules::run('api/string_length',$name,'8000','',''); echo $name; 
                        ?>
                   </td>
                 </tr>
@@ -129,18 +150,6 @@
                         <?php if(isset($assign_detail[0]['review_datetime']) && !empty($assign_detail[0]['review_datetime'])) {
                           echo date('m-d-Y H:i:s',strtotime($assign_detail[0]['review_datetime'])); 
                         } ?>
-                    </td>
-                </tr>
-                <tr class="bg-col">
-                    <th>
-                        Signature:
-                    </th>
-                    <td>
-                        <?php
-                        $signature=Modules::run('api/_get_specific_table_with_pagination',array("id"=>$assign_detail[0]['review_user']),'id desc','users','sign_image','1','1')->result_array();
-                          if(isset($signature[0]['sign_image']) && !empty($signature[0]['sign_image'])) {?>
-                          <img style="height: 36px;max-width: 300px;" src="<?php echo BASE_URL.ACTUAL_SIGNATURE_IMAGE_PATH.$signature[0]['sign_image']?>">
-                        <?php } ?>
                     </td>
                 </tr>
                 <?php if(isset($assign_detail[0]['review_comments']) && !empty($assign_detail[0]['review_comments'])) {?>
@@ -169,7 +178,7 @@
                   <td>
                       <?php 
                       $review_user_detail = Modules::run('api/_get_specific_table_with_pagination',array("id"=>$assign_detail[0]['approval_user']),'id desc','users','user_name','1','1')->result_array();
-                      $name=''; if(isset($review_user_detail[0]['user_name']) && !empty($review_user_detail[0]['user_name'])) $name=$review_user_detail[0]['user_name']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; 
+                      $name=''; if(isset($review_user_detail[0]['user_name']) && !empty($review_user_detail[0]['user_name'])) $name=$review_user_detail[0]['user_name']; $name=  Modules::run('api/string_length',$name,'8000','',''); echo $name; 
                        ?>
                   </td>
                 </tr>
@@ -182,18 +191,6 @@
                         echo date('m-d-Y H:i:s',strtotime($assign_detail[0]['approval_datetime'])); 
                       } ?>
                   </td>
-                </tr>
-                <tr class="bg-col">
-                    <th>
-                        Signature:
-                    </th>
-                    <td>
-                        <?php
-                        $signature=Modules::run('api/_get_specific_table_with_pagination',array("id"=>$assign_detail[0]['approval_user']),'id desc','users','sign_image','1','1')->result_array();
-                          if(isset($signature[0]['sign_image']) && !empty($signature[0]['sign_image'])) {?>
-                          <img style="height: 36px;max-width: 300px;" src="<?php echo BASE_URL.ACTUAL_SIGNATURE_IMAGE_PATH.$signature[0]['sign_image']?>">
-                        <?php } ?>
-                    </td>
                 </tr>
                 <?php if(isset($assign_detail[0]['approval_comments']) && !empty($assign_detail[0]['approval_comments'])) { ?>
                 <tr class="bg-col">

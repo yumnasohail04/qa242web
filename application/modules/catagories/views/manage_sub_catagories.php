@@ -59,7 +59,7 @@
                                         $icon = '<i class="fas fa-arrow-down"></i>';
                                         $iconbgclass = ' btn default c-btn';
                                                     }
-                                                     echo anchor($manage_sub_page_url, '<i class="fa fa-sitemap" title="Manage Sub categories" ></i>','class="btn purple c-btn"');
+                                                     echo anchor($manage_sub_page_url, '<i class="iconsminds-three-arrow-fork" title="Manage Sub categories" ></i>','class="btn purple c-btn"');
                                                // echo anchor('javascript:;', $icon, array('class' => 'action_publish ' . $publish_class . $iconbgclass, 'title' => $publis_title, 'rel' => $row->id, 'id' => $row->id, 'status' => $row->is_active));
                                                 echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => ' btn blue c-btn','title' => 'Edit Sub Category'));
                                                 echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_records btn red c-btn', 'rel' => $row->id, 'rel2' => $row->parent_id,'title' => 'Delete Sub Category'));

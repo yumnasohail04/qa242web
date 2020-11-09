@@ -7,8 +7,8 @@ class Carrier extends MX_Controller
 function __construct() {
 parent::__construct();
  $this->load->library('csvimport');
-Modules::run('site_security/is_login');
-Modules::run('site_security/has_permission');
+//Modules::run('site_security/is_login');
+//Modules::run('site_security/has_permission');
 date_default_timezone_set("Asia/karachi");
 $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id asc','general_setting','timezones','1','1')->result_array();
 if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
@@ -20,31 +20,22 @@ if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
     }
 
     function manage() {
-        $data['news'] = $this->_get('id desc');
+        $data['news'] = $this->_get('carrier.id desc');
         $data['view_file'] = 'news';
         $this->load->module('template');
         $this->template->admin($data);
     }
-    
+    function import_file(){
+        
+        $data['view_file'] = 'fileupload';
+        $this->load->module('template');
+        $this->template->admin($data);
+    }
     function create() {
         $update_id = $this->uri->segment(4);
         $data['update_id'] = $update_id;
         if (is_numeric($update_id) && $update_id != 0) {
             $data['news'] = $this->_get_data_from_db($update_id);
-            $res= Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("id"=>$update_id), "id asc","carrier","type","","","","","")->row();
-            $data['doc'] = Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("carrier_type"=>$res->type,"status"=>"1"), "question asc","document_file","*","","","","","")->result_array();
-            if(!empty($data['doc'])){
-                foreach($data['doc'] as $key => $value):
-                    $doc_uploaded=Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("doc_id"=>$value['id'],"carrier_id"=>$update_id), "id asc","document_uploaded","document","","","","","")->row();
-                    $data['doc'][$key]['doc_uploaded']=$doc_uploaded;
-                    if($value['question']=="1"){
-                        $result=Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("doc_id"=>$value['id']), "id asc","document_question","*","","","","","")->row();
-                        $ans=Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("question_id"=>$result->id,"carrier_id"=>$update_id), "id asc","document_answer","option,comment_box,reference_link","","","","","")->row();
-                        $data['doc'][$key]['sub_question']=$result;
-                        $data['doc'][$key]['sub_ans']=$ans;
-                    } 
-                endforeach;
-            }
         } else {
             $data['news'] = $this->_get_data_from_post();
             $data['doc'] = Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("carrier_type"=>"1","status"=>"1"), "question asc","document_file","*","","","","","")->result_array();
@@ -58,14 +49,11 @@ if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
                     } 
                 endforeach;
             }
-
-
-
         }
         $data['carrier_type'] = Modules::run('ingredients/_get_data_from_db_table',array(),"carrier_types","","","*","")->result_array();
         $data['view_file'] = 'newsform';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
      function _get_data_from_db($update_id) {
         $where['id'] = $update_id;
@@ -84,15 +72,49 @@ if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
         }
         return $data;
     }
-    
+    function submit_csv(){
+        $this->load->library('PHPExcel');
+        $ext = pathinfo($_FILES['csvfile']['name'], PATHINFO_EXTENSION);
+          if($ext=="xls" || $ext=="xlsx"){
+            $path = $_FILES['csvfile']['tmp_name'];
+            $object = PHPExcel_IOFactory::load($path);
+            foreach($object->getWorksheetIterator() as $worksheet):
+              $highestRow = $worksheet->getHighestRow();
+              $highestColumn = $worksheet->getHighestColumn();
+              for($row=2; $row<=$highestRow; $row++) {
+                $storing_check = true;
+                $arr_data=array();
+                $arr_data['name'] = $worksheet->getCellByColumnAndRow(0, $row)->getValue();
+                $arr_data['contact'] = $worksheet->getCellByColumnAndRow(1, $row)->getValue();
+                $arr_data['email'] = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
+                $arr_data['phone'] = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
+                $arr_data['address'] = $worksheet->getCellByColumnAndRow(5, $row)->getValue();
+                $arr_data['city'] = $worksheet->getCellByColumnAndRow(6, $row)->getValue();
+                $arr_data['state'] = $worksheet->getCellByColumnAndRow(7, $row)->getValue();
+                $arr_data['zipcode'] = $worksheet->getCellByColumnAndRow(8, $row)->getValue();
+                if(!empty($arr_data['name']) )
+                  $carrier_id=$this->_insert($arr_data);
+                  $this->session->set_flashdata('message', 'File Uploaded Successfully ');                                        
+                  $this->session->set_flashdata('status', 'success');
+              }
+            endforeach;
+          }
+          else{
+              $this->session->set_flashdata('message', "Invalid file format");                                        
+              $this->session->set_flashdata('status', 'success');
+              }
+          redirect(ADMIN_BASE_URL . 'carrier');
+      }
     function get_carrier_documents()
     {
+
+
         $carrier_id = $this->input->post('update_id');
         $carrier_type = $this->input->post('carrier_type');
-        $data['doc'] = Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("carrier_type"=>$carrier_type,"status"=>"1"), "question asc","document_file","*","","","","","")->result_array();
+        $data['doc'] = Modules::run('carrier/get_doc_by_carrier_type',array("status"=>"1"),"question asc","document_file","document_file.*","","",$carrier_type,"","")->result_array();
         if(!empty($data['doc'])){
             foreach($data['doc'] as $key => $value):
-                $doc_uploaded=Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("doc_id"=>$value['id'],"carrier_id"=>$carrier_id), "id asc","document_uploaded","document","","","","","")->row();
+                $doc_uploaded=Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("doc_id"=>$value['id'],"carrier_id"=>$carrier_id), "id asc","document_uploaded","id,document","","","","","")->result_array();
                 $data['doc'][$key]['doc_uploaded']=$doc_uploaded;
                 if($value['question']=="1"){
                     $result=Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("doc_id"=>$value['id']), "id asc","document_question","*","","","","","")->row();
@@ -103,6 +125,7 @@ if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
             endforeach;
         }
         $this->load->view('document_view',$data);
+        
     }
         
     function _get_data_from_post() {
@@ -137,43 +160,38 @@ if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
 
         $carrier_id=$update_id;
         $carrier_type=$this->input->post('type');
-        $doc= Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("carrier_type"=>$carrier_type,"status"=>"1"), "question asc","document_file","*","","","","","")->result_array();
+        $doc=$this->get_doc_by_carrier_type(array("status"=>"1"),"question asc","document_file","document_file.*","","",$carrier_type,"","")->result_array();
         if(!empty($doc)){
-            foreach($doc as $key => $value):
-                if($value['question']=="1"){
-                    $result=Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("doc_id"=>$value['id']), "id asc","document_question","*","","","","","")->row();
-                    if(!empty($result))
-                    {
-                            $ans['option']=$this->input->post('answer_'.$key);
-                            if(!empty($this->input->post('reference_link_'.$key)))
-                            $ans['reference_link']=$this->input->post('reference_link_'.$key);
-                            if(!empty($this->input->post('comment_'.$key)) )
-                            $ans['comment_box']=$this->input->post('comment_'.$key);
-                            $ans['doc_id']=$this->input->post('id_'.$key);
-                            $ans['question_id']=$result->id;
-                            $ans['carrier_id']=$carrier_id;
-                            if(!empty($ans['doc_id']) && !empty($ans['question_id']) && !empty($ans['carrier_id']) )
-                                Modules::run('api/insert_or_update',array("doc_id"=>$ans['doc_id'],"question_id"=>$ans['question_id'],"carrier_id"=>$ans['carrier_id']),$ans,'document_answer');
-                    }
-                }
-                if(isset($_FILES["news_main_page_file_$key"]['size']) &&  $_FILES["news_main_page_file_$key"]['size'] >0){
-                    $doc_data['doc_id']=$this->input->post('id_'.$key);
-                    $doc_data['carrier_type']=$carrier_type;
-                    $doc_data['carrier_id']=$carrier_id;
-                    $update_id=Modules::run('api/insert_or_update',array("doc_id"=>$doc_data['doc_id'],"carrier_id"=>$doc_data['carrier_id']),$doc_data,'document_uploaded');
-                    if($update_id=="0")
-                    {
-                        $itemInfo= Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',$doc_data, "id desc","document_uploaded","id","","","","","")->row();
-                        $update_id=$itemInfo->id;
-                    }
-                        if($_FILES["news_main_page_file_$key"]['size'] > 0) {
-                            $itemInfo= Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',$doc_data, "id desc","document_uploaded","*","","","","","")->row();
-                            if(isset($itemInfo->document) && !empty($itemInfo->document)) 
-                            Modules::run('carrier_front/delete_images_by_name',CARRIER_DOCUMENTS_PATH,$itemInfo->document);
-                            Modules::run('carrier_front/upload_dynamic_image',CARRIER_DOCUMENTS_PATH,$update_id,"news_main_page_file_$key",'document','id','document_uploaded');
-                        }
-                }
-            endforeach;
+           foreach($doc as $key => $value):
+					if($value['question']=="1"){
+						$result=Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("doc_id"=>$value['id']), "id asc","document_question","*","","","","","")->row();
+						if(!empty($result))
+						{
+								$ans['option']=$this->input->post('answer_'.$key);
+								if(!empty($this->input->post('reference_link_'.$key)))
+								$ans['reference_link']=$this->input->post('reference_link_'.$key);
+								$ans['comment_box']=$this->input->post('comment_'.$key);
+								$ans['doc_id']=$this->input->post('id_'.$key);
+								$ans['question_id']=$result->id;
+								$ans['carrier_id']=$carrier_id;
+                        
+								if(!empty($ans['doc_id']) && !empty($ans['question_id']) && !empty($ans['carrier_id']) )
+									Modules::run('api/insert_or_update',array("question_id"=>$ans['question_id'],"carrier_id"=>$ans['carrier_id']),$ans,'document_answer');
+						}
+					}
+					if(isset($_FILES["news_main_page_file_$key"]) && !empty($_FILES["news_main_page_file_$key"])){
+						$doc_data['doc_id']=$this->input->post('id_'.$key);
+						$doc_data['carrier_type']=$carrier_type;
+						$doc_data['carrier_id']=$carrier_id;
+                    	$doc_data['submit']="1";
+						$itemInfo= Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',$doc_data, "id desc","document_uploaded","*","","","","","")->result_array();
+						if(isset($itemInfo) && !empty($itemInfo)) 
+						foreach($itemInfo as $it => $itm):
+							Modules::run('carrier_front/delete_images_by_name',CARRIER_DOCUMENTS_PATH,$itm['document']);
+						endforeach;
+							Modules::run('carrier_front/upload_dynamic_image',CARRIER_DOCUMENTS_PATH,"news_main_page_file_$key",'document','id','document_uploaded',$doc_data);
+					}
+				endforeach;
         }
 
 
@@ -201,7 +219,10 @@ if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
         ); 
         $where['id']=$id;
         $query = $this->_get_by_arr_id($where)->row_array();
-        $data['username']=$query['name'].$id;
+        $string = str_replace(' ', '', $query['name']);
+        $string=strtolower($string);
+        $string=(strlen($string) > 13) ? substr($string,0,12).'' : $string;
+        $data['username']=$string.$id;
         $password=$this->generateRandomString("8");
         $data['password'] = md5($password);
         $data['carrier_id']=$id;
@@ -212,6 +233,59 @@ if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
         $this->email->subject($mailtitle . ' - Profile Completion');
         $this->email->message('<p>Dear ' . $query['name'].',<br><br>You have been Registered at EQ smart  by Valley Fine Foods. Please Open this Link "'.BASE_URL.'carrier/login/'.$query['id'].'" and Submit the Required Documents.Your Credentials for login to the website are Username: "'.$data['username'].'" and Password: "'.$password.'"</p> <br>With Best Regards,<br>' . $mailtitle . 'Team');
         $this->email->send();
+    }
+    function send_carrier_email()
+    {
+        $id=$this->input->post('id');
+        $type=$this->input->post('type');
+        $where['id']=$id;
+        $query = $this->_get_by_arr_id($where)->row_array();
+        if(isset($query['email']) && !empty($query['email'])){
+            if($type=="reminder")
+                $message='<p>Dear ' . $query['name'].',<br><br>This is a reminder email. Please Open this Link "'.BASE_URL.'carrier/login/'.$query['id'].'" and Submit the Required Documents.</p> <br>With Best Regards,<br>  EQ Smart Team';
+            else if($type=="credentials"){
+                $password=$this->generateRandomString("8");
+                $string = str_replace(' ', '', $query['name']);
+                $string=strtolower($string);
+                $string=(strlen($string) > 13) ? substr($string,0,12).'' : $string;
+                $data['username']=$string.$id;
+                $data['password'] = md5($password);
+                $data['carrier_id']=$id;
+                Modules::run('api/insert_or_update',array("carrier_id"=>$id),$data,"carrier_account");
+
+                $message='<p>Dear ' . $query['name'].',<br><br> Please Open this Link "'.BASE_URL.'carrier/login/'.$query['id'].'" and Submit the Required Documents.Your New Credentials for login to the website are Username: "'.$data['username'].'" and Password: "'.$password.'"</p> <br>With Best Regards,<br> EQ Smart Team';
+            }else
+            {}
+            $this->load->library('email');
+            $port = 465;
+            $user = "info@qa.hwryk.com";
+            $pass = "OV%YsZY[hfDI";
+            $host = 'ssl://qa.hwryk.com';  
+            $mailtitle="EQ Smart";
+            $config = Array(
+            'protocol' => 'smtp',
+            'smtp_host' => $host,
+            'smtp_port' => $port,
+            'smtp_user' =>  $user,
+            'smtp_pass' =>  $pass,
+            'mailtype'  => 'html', 
+            'starttls'  => true,
+            'newline'   => "\r\n"
+            ); 
+            $this->email->initialize($config);
+            $this->email->from($user, $mailtitle);
+            $this->email->to($query['email']);
+            $this->email->subject($mailtitle . ' - Carrier Profile Completion');
+            $this->email->message($message);
+            $this->email->send();
+            $status=TRUE;
+            $message="Email sent successfully";
+        }
+        else{
+            $status=FALSE;
+            $message="Please Provide Carrier Email first";
+        }
+        echo '<article><status>'.$status.'</status><message>'.$message.'</message><article>';
     }
     function generateRandomString($length) {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -307,5 +381,9 @@ if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
     {
         $this->load->model('mdl_carrier');
         return $this->mdl_carrier->check_if_exists($where);
+    }
+    function get_doc_by_carrier_type($cols, $order_by,$table,$select,$page_number,$limit,$or_where,$and_where='',$having=''){
+        $this->load->model('mdl_carrier');
+        return $this->mdl_carrier->get_doc_by_carrier_type($cols, $order_by,$table,$select,$page_number,$limit,$or_where,$and_where='',$having='');
     }
 }

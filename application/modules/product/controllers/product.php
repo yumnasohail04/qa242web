@@ -39,7 +39,7 @@ date_default_timezone_set("Asia/karachi");
         $data['update_id'] = $update_id;
         $data['view_file'] = 'newsform';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
     function submit_wips_replacement_data() {
         $new_wip = $this->input->post('new_wip');
@@ -84,7 +84,7 @@ date_default_timezone_set("Asia/karachi");
         
         $data['view_file'] = 'fileupload';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
      function manage_wips(){
         $product_id=$this->uri->segment(4);
@@ -92,14 +92,14 @@ date_default_timezone_set("Asia/karachi");
         $data['news'] = $this->_get_wips_data('id desc',$product_id);
         $data['view_file'] = 'new_wips';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
      function import_wips(){
         $product_id=$this->uri->segment(4);
         $data['product_id']=$product_id;
         $data['view_file'] = 'import_wips';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
      function create_wips(){
           $product_id = $this->uri->segment(4);
@@ -111,13 +111,12 @@ date_default_timezone_set("Asia/karachi");
         $data['update_id'] = $update_id;
         $data['view_file'] = 'wip_form';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
     function submit_wips_data(){
         $update_id = $this->input->post('update_id');
         $old_nav = $this->input->post('old_nav');
         $product_select = $this->input->post('product_select');
-        $document_name = $this->input->post('document_name');
         if (is_numeric($update_id) && $update_id != 0) {
             $navision_number = $this->input->post('navision_number');
             $product_name = $this->input->post('product_name');
@@ -142,7 +141,7 @@ date_default_timezone_set("Asia/karachi");
                     }
                 endforeach;
             }
-            Modules::run('api/update_specific_table',array("navision_number"=>$old_nav), array("navision_number"=>$navision_number,"product_name"=>$product_name,"document_name"=>$document_name),'wip_attributes');
+            Modules::run('api/update_specific_table',array("navision_number"=>$old_nav), array("navision_number"=>$navision_number,"product_name"=>$product_name),'wip_attributes');
             $this->session->set_flashdata('message', 'Wip Product Updated');
             $this->session->set_flashdata('status', 'success');
         }
@@ -152,7 +151,6 @@ date_default_timezone_set("Asia/karachi");
                     $arr_data['product_id'] = $ps;
                     $arr_data['navision_number']= $this->input->post('navision_number');
                     $arr_data['product_name']= $this->input->post('product_name');
-                    $arr_data['document_name']= $document_name;
                     $product_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$ps),'id desc','id',DEFAULT_OUTLET.'_product','product_title','1','1','','','')->row_array();
                     $arr_data['parent_navision'] = $product_detail['product_title'];
                     Modules::run('api/insert_into_specific_table',$arr_data,'wip_attributes');
@@ -467,7 +465,7 @@ date_default_timezone_set("Asia/karachi");
     function add_new_wip() {
         $data['update_id'] = $update_id = $this->uri->segment(4);
         if (is_numeric($update_id) && $update_id != 0) {
-            $data['news'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('id'=>$update_id),'id desc','id','wip_attributes','id,navision_number,product_name,document_name','1','1','','','')->result_array();
+            $data['news'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('id'=>$update_id),'id desc','id','wip_attributes','id,navision_number,product_name','1','1','','','')->result_array();
             if(isset($data['news'][0]['navision_number']) && $data['news'][0]['navision_number']) {
                 $data['selected'] = $this->selected_navigation_products(array('navision_number'=>$data['news'][0]['navision_number']), 'wip_attributes.id desc','wip_attributes.id',DEFAULT_OUTLET,'product_id,navision_no','1','0','','','')->result_array();
             }

@@ -31,6 +31,7 @@
     <script src="<?php echo STATIC_FRONT_JS?>jquery.hoverdir.js"></script>
     <script src="<?php echo STATIC_FRONT_JS?>main.js"></script>
     <script src="<?php echo STATIC_FRONT_JS?>lmpixels-demo-panel.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>sweetalert.min.js"></script>
     <!-- <script src="<?php echo STATIC_FRONT_JS?>validator.js"></script> -->
 
 

@@ -1,4 +1,5 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
@@ -16,7 +17,7 @@
 
 // ************** FOR LOCAL SERVER
 $_SERVER['HTTP_HOST'] = preg_replace('/www./', '', $_SERVER['HTTP_HOST'], 1);
-$config['base_url']	= 'http://'.$_SERVER['HTTP_HOST'].'/dinehome';
+$config['base_url']	= 'http://'.$_SERVER['HTTP_HOST'].'/';
 
 // ************** FOR LIVE SERVER
 //echo '----------------------wwwwwww-'.$_SERVER['HTTP_HOST']; exit();
@@ -26,13 +27,13 @@ if (strpos($_SERVER['HTTP_HOST'], '.') > 0 && $_SERVER['HTTP_HOST'] != '192.168.
 	$localname='';
 }
 else
-	$localname='';
+	$localname='Fajira';
 //	echo $localname; exit;
-$prefix='https';
-if ( $_SERVER['HTTP_HOST'] == 'dinehome.no' || $_SERVER['HTTP_HOST'] =='www.dinehome.no' )
+$prefix='http';
+if ( $_SERVER['HTTP_HOST'] == 'localhost')
 	$prefix = 'https';
 
-$config['base_url']	='';
+$config['base_url']	= $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname;
 //$config['base_url']	= 'http://tastybite.digitalspinners.com/';
 
 
@@ -47,6 +48,7 @@ $config['base_url']	='';
 |
 */
 $config['index_page'] = '';
+
 /*
 |--------------------------------------------------------------------------
 | URI PROTOCOL
@@ -110,7 +112,7 @@ $config['charset'] = 'UTF-8';
 | setting this variable to TRUE (boolean).  See the user guide for details.
 |
 */
-$config['enable_hooks'] = FALSE;
+$config['enable_hooks'] = TRUE;
 
 
 /*
@@ -145,7 +147,7 @@ $config['subclass_prefix'] = 'MY_';
 | DO NOT CHANGE THIS UNLESS YOU FULLY UNDERSTAND THE REPERCUSSIONS!!
 |
 */
-$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-#%@*(){}[]';
+$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-@\=';
 
 
 /*

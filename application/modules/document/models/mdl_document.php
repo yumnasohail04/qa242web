@@ -53,5 +53,24 @@ class Mdl_document extends CI_Model {
         $this->db->insert($table, $data);
             
     }
+
+    function update_attribute_data($where,$attribute_data,$table){
+        $this->db->where($where);
+        $this->db->update($table, $attribute_data);
+    }
+    function insert_attribute_data($data,$table){
+        $this->db->insert($table, $data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+    function check_atrribute_exists($arr_col,$table){
+        $this->db->where($arr_col);
+       return $this->db->get($table);
+    }
+    function delete_from_table($where,$table)
+    {
+        $this->db->where($where);
+        $this->db->delete($table);
+    }
    
 }

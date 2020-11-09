@@ -367,7 +367,113 @@ class Global_configuration extends MX_Controller
     function get_upload_file() {
       $this->load->view('get_upload_file','');
     }
-    function submit_upload_image() {
+//     function submit_upload_image() {
+//       $this->load->library('PHPExcel');
+//       if(isset($_FILES['upload_file']) && $_FILES['upload_file']['size'] >0) {
+//         date_default_timezone_set("Asia/karachi");
+//         $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id asc','general_setting','timezones','1','1')->result_array();
+//         if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
+//           date_default_timezone_set($timezone[0]['timezones']);
+//         $ext = pathinfo($_FILES['upload_file']['name'], PATHINFO_EXTENSION);
+      
+//         if($ext=="xls" || $ext=="xlsx"){
+//           $path = $_FILES["upload_file"]["tmp_name"];
+//           $object = PHPExcel_IOFactory::load($path);
+//           $store_date= "";
+//           $checking = false;
+//           foreach($object->getWorksheetIterator() as $worksheet):
+//             $highestRow = $worksheet->getHighestRow();
+//             $highestColumn = $worksheet->getHighestColumn();
+//             for($row=2; $row<=$highestRow; $row++) {
+//               $storing_check = true;
+//               $date = $worksheet->getCellByColumnAndRow(0, $row)->getValue();
+//               $date = PHPExcel_Style_NumberFormat::toFormattedString($date, "YYYY-M-D");
+//               if($this->checkIsAValidDate($date) == 1) {
+//                 $checking = true;
+//                 $storing_check = false;
+//                 $store_date = date('Y-m-d', strtotime($date));
+//               } 
+//               if($checking == true) {
+//                 $next_checking = false;
+//                 $plant_id = $line_id = "";
+//                 $line = $worksheet->getCellByColumnAndRow(1, $row)->getValue();
+//                 $line_name = preg_replace('/[^0-9]/', '', $line);
+//                 $line_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("lower(line_name)"=>$line_name),'line_id desc','line_id',DEFAULT_OUTLET.'_lines','line_id','1','1','','','')->row_array();
+//               if(isset($line_detail['line_id']) && !empty($line_detail['line_id'])) {
+//                   $line_id = $line_detail['line_id'];
+//                   $plant_name = substr(preg_replace('/[^a-zA-Z]/', '', $line), 0, 2);
+//                   $plant_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("lower(plant_name)"=>$plant_name),'plant_id desc','plant_id',DEFAULT_OUTLET.'_plants','plant_id','1','1','','','')->row_array();
+//                   if(isset($plant_detail['plant_id']) && !empty($plant_detail['plant_id'])) {
+//                     $plant_id = $plant_detail['plant_id'];
+//                     $next_checking = true;
+//                   }
+//                 }
+//                 $navigation_number = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
+//                 if(!empty($line) && !empty($navigation_number) && !empty($store_date) && $next_checking == true) {
+//                   $line = substr($line, -1);
+//                   $counter ++;
+//                   $navigation_number = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
+//                   $product = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("navision_no"=>$navigation_number),'id desc','id',DEFAULT_OUTLET.'_product','id','1','0','','','')->result_array();
+                
+//                 if(!empty($product[0]['id']))
+//                     Modules::run('api/insert_or_update',array("ps_product"=>$product[0]['id'],"ps_date"=>$store_date,"ps_end_date"=>$store_date),array("ps_product"=>$product[0]['id'],"ps_date"=>$store_date,"ps_end_date"=>$store_date,"ps_line"=>$line_id ,"ps_plant"=>$plant_id),DEFAULT_OUTLET.'_product_schedules');
+//                 }
+//               }
+//             }
+//           endforeach;
+//           if($checking == true)
+//             $this->session->set_flashdata('message', 'product scheduling'.' Data Saved');
+//           else
+//             $this->session->set_flashdata('message', 'product scheduling'.' Data Saved');
+//           $this->session->set_flashdata('status', 'success');
+//           /*$data = $this->csvToArray($_FILES['upload_file']['tmp_name'], ',');
+//           $count = count($data) - 1;
+//           $labels = array_shift($data);  
+//           foreach ($labels as $label) {
+//             $keys[] = $label;
+//           }
+//           $keys[] = 'id';
+//           for ($i = 0; $i < $count; $i++) {
+//             $data[$i][] = $i;
+//           }
+//           for ($j = 0; $j < $count; $j++) {
+//             $d = array_combine($keys, $data[$j]);
+//             $newArray[$j] = $d;
+//           }
+//           if(isset($newArray) && !empty($newArray)){
+//             foreach ($newArray as $key => $row_value):
+//               if(isset($row_value['Navigation Number']) && !empty($row_value['Navigation Number'])) {
+//                 $product = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("navision_no"=>$row_value['Navigation Number']),'id desc','id',DEFAULT_OUTLET.'_product','id','1','0','','','')->result_array();
+//                 if(!empty($product[0]['id'])) {
+//                   $start_date = date('Y-m-d');
+//                   if(isset($row_value['Start Date']) && !empty($row_value['Start Date']))
+//                     $start_date = date('Y-m-d', strtotime($row_value['Start Date']));
+//                   $end_date = date('Y-m-d',strtotime('+1 Week',strtotime(date('Y-m-d'))));
+//                   if(isset($row_value['End Date']) && !empty($row_value['End Date']))
+//                     $end_date = date('Y-m-d', strtotime($row_value['End Date']));
+//                   $line = 1;
+//                   if(isset($row_value['Line']) && !empty($row_value['Line']) && is_numeric($row_value['Line']) ) 
+//                       $line = $row_value['Line'];
+//                   Modules::run('api/insert_or_update',array("ps_product"=>$product[0]['id'],"ps_date"=>$start_date,"ps_end_date"=>$end_date),array("ps_product"=>$product[0]['id'],"ps_date"=>$start_date,"ps_end_date"=>$end_date,"ps_line"=>$line),DEFAULT_OUTLET.'_product_schedules');
+//                 }
+//               }
+//             endforeach;
+//           }
+//           $this->session->set_flashdata('message', 'product scheduling'.' Data Saved');
+//           $this->session->set_flashdata('status', 'success');*/
+//         }
+//         else{
+//           $this->session->set_flashdata('message', "Invalid file format");
+//           $this->session->set_flashdata('status', 'success');
+//         }
+//       }
+//       else{
+//         $this->session->set_flashdata('message', "Please select the file");
+//         $this->session->set_flashdata('status', 'success');
+//       }
+//       redirect(ADMIN_BASE_URL.'global_configuration');
+//     }
+        function submit_upload_image() {
       $this->load->library('PHPExcel');
       if(isset($_FILES['upload_file']) && $_FILES['upload_file']['size'] >0) {
         date_default_timezone_set("Asia/karachi");
@@ -410,7 +516,6 @@ class Global_configuration extends MX_Controller
                     $next_checking = true;
                   }
                 }
-                
                 $navigation_number = $worksheet->getCellByColumnAndRow(6, $row)->getValue();
                 if(!empty($line) && !empty($navigation_number) && !empty($store_date) && $next_checking == true) {
                   $line = substr($line, -1);

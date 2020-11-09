@@ -54,7 +54,7 @@ function create(){
     $data['view_file'] = 'create_sub_catagories_attributes';
 
     $this->load->module('template');
-    $this->template->admin_form($data);
+    $this->template->admin($data);
 }
 function submit_sub_catagories_attributes() {
     $update_id = 0;

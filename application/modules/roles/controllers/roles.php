@@ -64,7 +64,7 @@ class Roles extends MX_Controller {
 		$data['outlets'] = $outlets;
 		$data['roles'] = $arr_roles;
         $data['view_file'] = 'rolesform';
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
 
 /////////////////////////////////////////////////////////////////////////////

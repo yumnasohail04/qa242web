@@ -7,7 +7,7 @@
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
-include_once APPPATH . '/modules/outlet/controllers/outlet.php';
+include_once APPPATH . 'modules/outlet/controllers/Outlet.php';
 
 class Admin_api extends MX_Controller {
 
@@ -18,57 +18,37 @@ class Admin_api extends MX_Controller {
         date_default_timezone_set("Asia/karachi");
         parent::__construct();
     }
-    function delete_join_table_data(){
-        $this->db->where('1_checks_questions.assignment_id !=', 0);
-         $this->db->delete('1_checks_questions');
-       /* $result_arr=$this->db->get('1_checks_questions')->result_array();
-      
-        foreach($result_arr as $value){
-            $table="1_checks_answers";
-            $this->db->where('1_checks_answers.question_id ', $value['question_id']);
-            $this->db->delete($table);
-            
-            
-        }*/
-       
-        
-    }
-    function delete_checks()
-    {
-        $outlet_id = '1';
-        $start_time = date('Y-m-d H:i:s',strtotime('2019-01-01 00:00:00'));
-        $date=date('Y-m-d');
-        $end_time=date('Y-m-d', strtotime($date. ' - 2 days'));
-        $end_time=$end_time." 00:00:00";
-        $checks = Modules::run('admin_api/get_checks_for_delete',array("assignments.end_datetime <="=>$end_time),'assign_id desc','assign_id',$outlet_id,'checkid,assign_id,checktype,assign_status','1','0','(lower(assign_status)="overdue")','','')->result_array();
-        if(isset($checks) && !empty($checks)) {
-            foreach ($checks as $key => $ck):
-                if(strtolower($ck['checktype']) == 'product attribute') {
-                    $questions = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("checkid"=>$ck['checkid'],"assignment_id"=>$ck['assign_id']),'question_id desc','question_id',$outlet_id.'_checks_questions','question_id','1','0','','','')->result_array();
-                    echo "<br><br><br>questions<br>";
-                    print_r($questions);
-                    echo "<br>";
-                    if(!empty($questions)) {
-                        foreach ($questions as $key => $qa):
-                            echo "<br><br><br>delete specific questions<br>";
-                            print_r($qa);
-                            echo "<br>";
-                            if(isset($qa['question_id']) && !empty($qa['question_id']))
-                                Modules::run('api/delete_from_specific_table',array("question_id"=>$qa['question_id']),$outlet_id."_checks_answers");
 
-                            Modules::run('api/delete_from_specific_table',array("question_id"=>$qa['question_id']),$outlet_id."_checks_questions");
-                        endforeach;
-                    }
-                    else
-                        echo "<br><br>no questions available of current check  ".$ck['checkid']."<br>";
-                }
-                Modules::run('api/delete_from_specific_table',array("assign_id"=>$ck['assign_id']),$outlet_id."_assignments");
-            endforeach;
-        }
-        else
-            echo "<br><br>no checks available during start datetime ".$start_time." and end datetime ".$end_time."<br>";
+  function delete_join_table_data(){
+//         $this->db->where('1_checks_questions.assignment_id !=', 0);
+//          $this->db->delete('1_checks_questions');
+//        /* $result_arr=$this->db->get('1_checks_questions')->result_array();
+      
+//         foreach($result_arr as $value){
+//             $table="1_checks_answers";
+//             $this->db->where('1_checks_answers.question_id ', $value['question_id']);
+//             $this->db->delete($table);
+//         }*/
+    	$res = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('question_id >'=>'795731' ,'question_id <'=>  '995731'),'question_id desc','question_id','1_checks_questions','assignment_id, question_id','','','','','')->result_array();
+    	foreach($res as $key => $value)
+    	{
+    	    $tat = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("assign_id"=>$value['assignment_id']),'assign_id desc','assign_id','1_assignments','assign_id','','','','','')->num_rows();
+    		if($tat==0){
+                   Modules::run('api/delete_from_specific_table',array("question_id"=>$value['question_id']),'1_checks_questions');
+            }
+    	}  
     }
-function admin_login() {
+	function delete_join_table_data_answers(){
+    	$res = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('answer_id >'=>'19008' ,'answer_id <'=>  '50008'),'answer_id desc','question_id','1_checks_answers','question_id, answer_id','','','','','')->result_array();
+    	foreach($res as $key => $value)
+    	{
+    		$tat = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("question_id"=>$value['question_id']),'question_id desc','question_id','1_checks_questions','question_id','','','','','')->num_rows();
+    		if($tat==0){
+            	Modules::run('api/delete_from_specific_table',array("answer_id"=>$value['answer_id']),'1_checks_answers');
+        	}
+    	} 
+	}
+    function admin_login() {
         $status=false;
         $message="parameter missing";
         $username = $this->input->post('user_name');
@@ -434,7 +414,7 @@ function admin_login() {
         header('Content-Type: application/json');
         echo json_encode(array("status" => $status, "message" => $message));
     }
-    function get_user_notification() {
+    function get_user_notinotification() {
         $status = false;
         $message="Please fill the code.";
         $user_id = $this->input->post("user_id");
@@ -460,7 +440,7 @@ function admin_login() {
                             $assignment_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("assign_id"=>$noti['assingment_id']),'assign_id desc','assign_id',$noti['outlet_id'].'_assignments','checkid','1','1','','','')->result_array();
                             if(isset($assignment_detail[0]['checkid']) && !empty($assignment_detail[0]['checkid'])) {
                                 $check_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$assignment_detail[0]['checkid']),'id desc','id',$noti['outlet_id'].'_product_checks','checkname','1','1','','','')->result_array();
-                                 if(isset($check_detail[0]['checkname']) && !empty($check_detail[0]['checkname'])) $noti['title']=$check_detail[0]['checkname']; $noti['title']=  Modules::run('api/string_length',$noti['title'],'8000',''); 
+                                 if(isset($check_detail[0]['checkname']) && !empty($check_detail[0]['checkname'])) $noti['title']=$check_detail[0]['checkname']; $noti['title']=  Modules::run('api/string_length',$noti['title'],'8000','',''); 
                             }
                         }
                         $temp[] = $noti;
@@ -525,10 +505,10 @@ function admin_login() {
                         $primary_group = $user_detail[0]['group'];
                         $temp['id'] = $user_detail[0]['group'];
                         $group_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$user_detail[0]['group']),'id desc','id',$outlet_id.'_groups','group_title','1','0','','','')->result_array();
-                        $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','');
+                        $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','','');
                         $temp['trackig_id'] = 'G_'.$user_detail[0]['group'];
                         $group_message = Modules::run('admin_api/get_chat_detail',array("group_id"=>$user_detail[0]['group']), 'chat_id desc','chat_id',$outlet_id,'message,chat_id','1','1','','','')->result_array();
-                        $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','');
+                        $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','','');
                         $temp['last_chat'] = "0";
                         if(isset($group_message[0]['chat_id']) && !empty($group_message[0]['chat_id'])) 
                             $temp['last_chat']=$group_message[0]['chat_id'];
@@ -546,10 +526,10 @@ function admin_login() {
                         if($user_detail[0]['group'] != $user_detail[0]['second_group']) {
                             $temp['id'] = $user_detail[0]['second_group'];
                             $group_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$user_detail[0]['second_group']),'id desc','id',$outlet_id.'_groups','group_title','1','0','','','')->result_array();
-                            $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','');
+                            $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','','');
                             $temp['trackig_id'] = 'G_'.$user_detail[0]['second_group'];
                             $group_message = Modules::run('admin_api/get_chat_detail',array("group_id"=>$user_detail[0]['second_group']), 'chat_id desc','chat_id',$outlet_id,'message,chat_id','1','1','','','')->result_array();
-                            $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','');
+                            $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','','');
                             $temp['last_chat'] = "0";
                             if(isset($group_message[0]['chat_id']) && !empty($group_message[0]['chat_id'])) 
                                 $temp['last_chat']=$group_message[0]['chat_id'];
@@ -565,10 +545,10 @@ function admin_login() {
                         foreach ($group_chat as $key => $gc):
                             $temp['id'] = $gc['group_id'];
                             $group_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$gc['group_id']),'id desc','id',$outlet_id.'_groups','group_title','1','0','','','')->result_array();
-                            $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','');
+                            $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','','');
                             $temp['trackig_id'] = 'G_'.$user_detail[0]['second_group'];
                             $group_message = Modules::run('admin_api/get_chat_detail',array("group_id"=>$gc['group_id']), 'chat_id desc','group_id',$outlet_id,'message,chat_id','1','1','','','')->result_array();
-                            $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','');
+                            $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','','');
                             $temp['last_chat'] = "0";
                             if(isset($group_message[0]['chat_id']) && !empty($group_message[0]['chat_id'])) 
                                 $temp['last_chat']=$group_message[0]['chat_id'];
@@ -601,7 +581,7 @@ function admin_login() {
                                             $pre_temp['trackig_id'] = $temp['trackig_id'] = 'U_'.$user_id.'_'.$gc['message_to'];
                                         else
                                             $pre_temp['trackig_id'] = $temp['trackig_id'] = 'U_'.$gc['message_to'].'_'.$user_id;
-                                        $temp['last_message'] = ""; if(isset($gc['message']) && !empty($gc['message'])) $temp['last_message']=$gc['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','');
+                                        $temp['last_message'] = ""; if(isset($gc['message']) && !empty($gc['message'])) $temp['last_message']=$gc['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','','');
                                         $temp['last_chat'] = "0";
                                         if(isset($gc['chat_id']) && !empty($gc['chat_id'])) 
                                             $temp['last_chat']=$gc['chat_id'];
@@ -610,7 +590,7 @@ function admin_login() {
                                         if(isset($user_detail[0]['is_online']) && !empty($user_detail[0]['is_online'])) 
                                             $temp['is_online']=true;
                                         $temp['type'] = 'user';
-                                        $user_image = "user.png"; if(isset($user_detail[0]['user_image']) && !empty($user_detail[0]['user_image'])) $user_image=$user_detail[0]['user_image']; $user_image=  Modules::run('api/string_length',$user_image,'8000','');
+                                        $user_image = "user.png"; if(isset($user_detail[0]['user_image']) && !empty($user_detail[0]['user_image'])) $user_image=$user_detail[0]['user_image']; $user_image=  Modules::run('api/string_length',$user_image,'8000','','');
 
                                         $temp['image'] = Modules::run('api/image_path_with_default',ACTUAL_OUTLET_USER_IMAGE_PATH,$user_image,STATIC_FRONT_IMAGE,'user.png');
                                         $temp['next_chat'] = true;
@@ -638,7 +618,7 @@ function admin_login() {
                                             $pre_temp['trackig_id'] = $temp['trackig_id'] = 'U_'.$user_id.'_'.$gc['message_from'];
                                         else
                                             $pre_temp['trackig_id'] = $temp['trackig_id'] = 'U_'.$gc['message_from'].'_'.$user_id;
-                                        $temp['last_message'] = ""; if(isset($gc['message']) && !empty($gc['message'])) $temp['last_message']=$gc['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','');
+                                        $temp['last_message'] = ""; if(isset($gc['message']) && !empty($gc['message'])) $temp['last_message']=$gc['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','','');
                                         $temp['last_chat'] = "0";
                                         if(isset($gc['chat_id']) && !empty($gc['chat_id'])) 
                                             $temp['last_chat']=$gc['chat_id'];
@@ -647,7 +627,7 @@ function admin_login() {
                                         if(isset($user_detail[0]['is_online']) && !empty($user_detail[0]['is_online'])) 
                                             $temp['is_online']=true;
                                         $temp['type'] = 'user';
-                                        $user_image = "user.png"; if(isset($user_detail[0]['user_image']) && !empty($user_detail[0]['user_image'])) $user_image=$user_detail[0]['user_image']; $user_image=  Modules::run('api/string_length',$user_image,'8000','');
+                                        $user_image = "user.png"; if(isset($user_detail[0]['user_image']) && !empty($user_detail[0]['user_image'])) $user_image=$user_detail[0]['user_image']; $user_image=  Modules::run('api/string_length',$user_image,'8000','','');
 
                                         $temp['image'] = Modules::run('api/image_path_with_default',ACTUAL_OUTLET_USER_IMAGE_PATH,$user_image,STATIC_FRONT_IMAGE,'user.png');
                                         $temp['next_chat'] = true;
@@ -690,7 +670,7 @@ function admin_login() {
                         $primary_group = $user_detail[0]['group'];
                         $temp['id'] = $user_detail[0]['group'];
                         $group_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$user_detail[0]['group']),'id desc','id',$outlet_id.'_groups','group_title','1','0','','','')->result_array();
-                        $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','');
+                        $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','','');
                         $temp['trackig_id'] = 'G_'.$user_detail[0]['group'];
                         $temp['type'] = 'group';
                         $temp['image'] = STATIC_FRONT_IMAGE.'group.png';
@@ -705,7 +685,7 @@ function admin_login() {
                         if($user_detail[0]['group'] != $user_detail[0]['second_group']) {
                             $temp['id'] = $user_detail[0]['second_group'];
                             $group_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$user_detail[0]['second_group']),'id desc','id',$outlet_id.'_groups','group_title','1','0','','','')->result_array();
-                            $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','');
+                            $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','','');
                             $temp['trackig_id'] = 'G_'.$user_detail[0]['second_group'];
                             $temp['type'] = 'group';
                             $temp['image'] = STATIC_FRONT_IMAGE.'group.png';
@@ -731,7 +711,7 @@ function admin_login() {
                             else
                                 $pre_temp['trackig_id'] = $temp['trackig_id'] = 'U_'.$gc['id'].'_'.$user_id;
                             $pre_temp['type'] = $temp['type'] = 'user';
-                            $user_image = "user.png"; if(isset($gc['user_image']) && !empty($gc['user_image'])) $user_image=$gc['user_image']; $user_image=  Modules::run('api/string_length',$user_image,'8000','');
+                            $user_image = "user.png"; if(isset($gc['user_image']) && !empty($gc['user_image'])) $user_image=$gc['user_image']; $user_image=  Modules::run('api/string_length',$user_image,'8000','','');
 
                             $pre_temp['image'] = $temp['image'] = Modules::run('api/image_path_with_default',ACTUAL_OUTLET_USER_IMAGE_PATH,$user_image,STATIC_FRONT_IMAGE,'user.png');
                             $pre_temp['is_online'] = $temp['is_online'] = false;
@@ -801,7 +781,7 @@ function admin_login() {
                 $user_image = "user.png"; 
                 if(isset($user_detail[0]['user_image']) && !empty($user_detail[0]['user_image'])) 
                     $user_image=$user_detail[0]['user_image']; 
-                $user_image=  Modules::run('api/string_length',$user_image,'8000','');
+                $user_image=  Modules::run('api/string_length',$user_image,'8000','','');
                 $user_image = Modules::run('api/image_path_with_default',ACTUAL_OUTLET_USER_IMAGE_PATH,$user_image,STATIC_FRONT_IMAGE,'user.png');
             }
         }
@@ -1787,6 +1767,7 @@ function admin_login() {
     }
      ////////////////////////////////////// Qa project api///////////
     function get_user_check_lists(){
+                  //         print_r("______");exit; 
          $arr_data=NULL;
         date_default_timezone_set("Asia/karachi");
         $page_number = $this->input->post('page_number');
@@ -1846,7 +1827,7 @@ function admin_login() {
                     }
                     else
                         $checklist_data = $this->get_complete_by_user(array("user_id"=>$user_id,"assignments.plant_no"=>$plant_id), 'assignments.assign_id',"assignment_answer.assignment_id",$outlet_id,'assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status,assignments.start_datetime,assignments.assignment_type',$page_number,$limit,$this->get_and_where(array('OverDue','Open'),'assignments.assign_status !'),'','')->result_array();
-                    //print_r($checklist_data);exit;
+          
                     if(!empty($checklist_data)) {
                         $temp = array();
                         foreach ($checklist_data as $key => $cd):
@@ -1855,16 +1836,23 @@ function admin_login() {
                             $cd['checkname'] = $cd['check_desc'] = "";
                             if(isset($cd['checkid']) && !empty($cd['checkid'])) {
                                 $check_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$cd['checkid']),'id desc',$outlet_id.'_product_checks.id',$outlet_id.'_product_checks','checkname,check_desc,checktype','1','1','','','',$line_timing)->result_array();
-                                if(isset($check_detail[0]['checkname']) && !empty($check_detail[0]['checkname'])) $cd['checkname'] =$check_detail[0]['checkname']; $cd['checkname']=  Modules::run('api/string_length',$cd['checkname'],'8000','');
-                                if(isset($check_detail[0]['check_desc']) && !empty($check_detail[0]['check_desc'])) $cd['check_desc'] =$check_detail[0]['check_desc']; $cd['check_desc']=  Modules::run('api/string_length',$cd['check_desc'],'8000','');
-                                if(isset($check_detail[0]['checktype']) && !empty($check_detail[0]['checktype'])) $cd['checktype'] =$check_detail[0]['checktype']; $cd['checktype']=  Modules::run('api/string_length',$cd['checktype'],'8000','');
+                            
+                            if(isset($check_detail[0]['checkname']) && !empty($check_detail[0]['checkname'])) 
+                            $cd['checkname'] =$check_detail[0]['checkname']; 
+                           //  print_r($cd['checkname']);echo "=========<br><br>";   
+                            $cd['checkname']=  Modules::run('api/string_length',$cd['checkname'],'8000','','');
+                                if(isset($check_detail[0]['check_desc']) && !empty($check_detail[0]['check_desc'])) $cd['check_desc'] =$check_detail[0]['check_desc']; $cd['check_desc']=  Modules::run('api/string_length',$cd['check_desc'],'8000','','');
+                                if(isset($check_detail[0]['checktype']) && !empty($check_detail[0]['checktype'])) $cd['checktype'] =$check_detail[0]['checktype']; $cd['checktype']=  Modules::run('api/string_length',$cd['checktype'],'8000','','');
                                 $cd['timestamp'] = date('m-d-Y h:i:s A');
                                 if(isset($cd['start_datetime']) && !empty($cd['start_datetime']))
                                 $cd['timestamp'] = date('m-d-Y h:i:s A',strtotime($cd['start_datetime']));
                                 unset($cd['start_datetime']);    
                                 unset($cd['checkid']);
+                              //  print_r($cd);exit;
                                 $assign_id=$cd['assign_id'];
+                                  
                                 if(isset($outlet_id) && !empty($outlet_id) && isset($assign_id) && !empty($assign_id)) {
+                                
                                     /*$timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>$outlet_id),'id desc','general_setting','timezones','1','1')->result_array();
                                           if(!empty($timezone)) {
                                               if(isset($timezone[0]['timezones']) && !empty($timezone[0]['timezones']))
@@ -1979,7 +1967,10 @@ function admin_login() {
                             $total_pages=intval($diviser);
                     }
                     else
+                    {
+                    $status = false;
                         $message="No checklist found";
+                    }
                     $open = $this->get_checks_lists_from_db(array('assignments.assign_status'=>"Open"),'',$outlet_id.'_assignments assignments','assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status','1','0','(assignments.inspection_team ="'.$group_id.'" OR assignments.reassign_user ="'.$user_id.'")',array("product_id"=>$product_id),'',$like)->num_rows();
                     $overdue = $this->get_checks_lists_from_db(array('assignments.assign_status'=>"OverDue"),'',$outlet_id.'_assignments assignments','assignments.assign_id,assignments.checkid,assignments.start_time,assignments.end_time,assignments.assign_status','1','0','(assignments.inspection_team ="'.$group_id.'" OR assignments.reassign_user ="'.$user_id.'")',array("product_id"=>$product_id),'',$like)->num_rows();
                     $complete = $this->get_complete_by_user(array("user_id"=>$user_id,"assignments.plant_no"=>$plant_id), 'assignments.assign_id',"assignment_answer.assignment_id",$outlet_id,'assign_id','1','0',$this->get_and_where(array('OverDue','Open'),'assignments.assign_status !'),'','')->num_rows();
@@ -1999,9 +1990,9 @@ function admin_login() {
                                 $cd['checkname'] = $cd['check_desc'] = $cd['checktype'] = "";
                                 if(isset($cd['checkid']) && !empty($cd['checkid'])) {
                                     $check_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$cd['checkid']),'id desc',$outlet_id.'_product_checks.id',$outlet_id.'_product_checks','checkname,check_desc,checktype','1','1','','','')->result_array();
-                                    if(isset($check_detail[0]['checkname']) && !empty($check_detail[0]['checkname'])) $cd['checkname'] =$check_detail[0]['checkname']; $cd['checkname']=  Modules::run('api/string_length',$cd['checkname'],'8000','');
-                                    if(isset($check_detail[0]['check_desc']) && !empty($check_detail[0]['check_desc'])) $cd['check_desc'] =$check_detail[0]['check_desc']; $cd['check_desc']=  Modules::run('api/string_length',$cd['check_desc'],'8000','');
-                                    if(isset($check_detail[0]['checktype']) && !empty($check_detail[0]['checktype'])) $cd['checktype'] =$check_detail[0]['checktype']; $cd['checktype']=  Modules::run('api/string_length',$cd['checktype'],'8000','');
+                                    if(isset($check_detail[0]['checkname']) && !empty($check_detail[0]['checkname'])) $cd['checkname'] =$check_detail[0]['checkname']; $cd['checkname']=  Modules::run('api/string_length',$cd['checkname'],'8000','','');
+                                    if(isset($check_detail[0]['check_desc']) && !empty($check_detail[0]['check_desc'])) $cd['check_desc'] =$check_detail[0]['check_desc']; $cd['check_desc']=  Modules::run('api/string_length',$cd['check_desc'],'8000','','');
+                                    if(isset($check_detail[0]['checktype']) && !empty($check_detail[0]['checktype'])) $cd['checktype'] =$check_detail[0]['checktype']; $cd['checktype']=  Modules::run('api/string_length',$cd['checktype'],'8000','','');
                                     $cd['timestamp'] = date('m-d-Y h:i:s A');
                                     if(isset($cd['complete_datetime']) && !empty($cd['complete_datetime']))
                                     $cd['timestamp'] = date('m-d-Y h:i:s A',strtotime($cd['complete_datetime']));
@@ -2243,7 +2234,10 @@ function admin_login() {
                                 $total_pages=intval($diviser);
                         }
                         else
+                        {
+                        $status = false;
                             $message="No checklist found";
+                        }
                     }
                     else
                         $message = "user can not be member of any group";
@@ -2264,9 +2258,9 @@ function admin_login() {
                                 $cd['checkname'] = $cd['check_desc'] = $cd['checktype'] = "";
                                 if(isset($cd['checkid']) && !empty($cd['checkid'])) {
                                     $check_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$cd['checkid']),'id desc',$outlet_id.'_product_checks.id',$outlet_id.'_product_checks','checkname,check_desc,checktype','1','1','','','')->result_array();
-                                    if(isset($check_detail[0]['checkname']) && !empty($check_detail[0]['checkname'])) $cd['checkname'] =$check_detail[0]['checkname']; $cd['checkname']=  Modules::run('api/string_length',$cd['checkname'],'8000','');
-                                    if(isset($check_detail[0]['check_desc']) && !empty($check_detail[0]['check_desc'])) $cd['check_desc'] =$check_detail[0]['check_desc']; $cd['check_desc']=  Modules::run('api/string_length',$cd['check_desc'],'8000','');
-                                    if(isset($check_detail[0]['checktype']) && !empty($check_detail[0]['checktype'])) $cd['checktype'] =$check_detail[0]['checktype']; $cd['checktype']=  Modules::run('api/string_length',$cd['checktype'],'8000','');
+                                    if(isset($check_detail[0]['checkname']) && !empty($check_detail[0]['checkname'])) $cd['checkname'] =$check_detail[0]['checkname']; $cd['checkname']=  Modules::run('api/string_length',$cd['checkname'],'8000','','');
+                                    if(isset($check_detail[0]['check_desc']) && !empty($check_detail[0]['check_desc'])) $cd['check_desc'] =$check_detail[0]['check_desc']; $cd['check_desc']=  Modules::run('api/string_length',$cd['check_desc'],'8000','','');
+                                    if(isset($check_detail[0]['checktype']) && !empty($check_detail[0]['checktype'])) $cd['checktype'] =$check_detail[0]['checktype']; $cd['checktype']=  Modules::run('api/string_length',$cd['checktype'],'8000','','');
                                     $cd['timestamp'] = date('m-d-Y h:i:s A');
                                     if(isset($cd['review_datetime']) && !empty($cd['review_datetime']))
                                     $cd['timestamp'] = date('m-d-Y h:i:s A',strtotime($cd['review_datetime']));
@@ -2509,7 +2503,10 @@ function admin_login() {
                                 $total_pages=intval($diviser);
                         }
                         else
+                        {
+                        $status=false;
                             $message="No checklist found";
+                        }
                     }
                     else
                         $message = "user can not be member of any group";
@@ -2689,7 +2686,7 @@ function admin_login() {
         header('Content-Type: application/json');
         echo json_encode(array("status"=>$status,"message"=>$message,"data"=>array($arr_data)));
     }*/
-     function checklists_detail(){
+      function checklists_detail(){
         //////////////////////// function for check list detail///////
         $reassing_answer = $reassign = $status=false;
         $message="Something Went Wrong";
@@ -2717,12 +2714,16 @@ function admin_login() {
                 $where['assignments.assign_id']=$assign_id;
                 $where['product_checks.status']=1;
                 $checksdata=$this->get_checks_detail_from_db($where,$outlet_id)->result_array();*/
-                $assignment_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array($table.".assign_id"=>$assign_id), $table.".assign_id desc",$table.".assign_id desc",$table,'checkid,complete_datetime,reassign_id,review_user,review_datetime,review_comments,approval_user,approval_datetime,appoval_comments,product_id,assignment_type,is_calculation','1','1','','','')->result_array();
-                $i=0;
+
+                $assignment_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array($table.".assign_id"=>$assign_id), $table.'.assign_id desc','',$table,'checkid,complete_datetime,reassign_id,review_user,review_datetime,review_comments,approval_user,approval_datetime,appoval_comments,product_id,assignment_type,is_calculation','1','1','','','')->result_array();
+           
+            $i=0;
                 if(isset($assignment_detail[0]['checkid']) && !empty($assignment_detail[0]['checkid'])){
+                
                     $message="Record found successfully";
-                    $checksdata = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$assignment_detail[0]['checkid']),"id desc","id desc",$outlet_id.'_product_checks','checkname,productid,check_subcat_id','1','1','','','')->result_array();
-                    if(!empty($checksdata)) {
+                    $checksdata = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$assignment_detail[0]['checkid']),"id desc","id ",$outlet_id.'_product_checks','checkname,productid,check_subcat_id','1','1','','','')->result_array();
+                     
+                	if(!empty($checksdata)) {
                         if(isset($assignment_detail[0]['product_id']) && !empty($assignment_detail[0]['product_id']))
                             $arr_data['productid'] = $assignment_detail[0]['product_id'];
                         elseif(isset($checksdata[0]['productid']) && !empty($checksdata[0]['productid']))
@@ -2734,15 +2735,15 @@ function admin_login() {
                             $arr_data['is_calculation']=$assignment_detail[0]['is_calculation'];
                         $arr_data['productname'] = "";
                         if(!empty($arr_data['productid'])) {
-                                $product_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$arr_data['productid']),"id desc","id desc",$outlet_id.'_product','product_title','1','1','','','')->result_array();
-                                $arr_data['productname']='N/A'; if(isset($product_detail[0]['product_title']) && !empty($product_detail[0]['product_title'])) $arr_data['productname'] = $product_detail[0]['product_title']; $arr_data['productname'] =  Modules::run('api/string_length',$arr_data['productname'],'8000','');
+                                $product_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$arr_data['productid']),"id desc","id ",$outlet_id.'_product','product_title','1','1','','','')->result_array();
+                                $arr_data['productname']='N/A'; if(isset($product_detail[0]['product_title']) && !empty($product_detail[0]['product_title'])) $arr_data['productname'] = $product_detail[0]['product_title']; $arr_data['productname'] =  Modules::run('api/string_length',$arr_data['productname'],'8000','','');
                         }
                         elseif(isset($checksdata[0]['check_subcat_id']) && !empty($checksdata[0]['check_subcat_id'])) {
-                            $product_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$checksdata[0]['check_subcat_id']),"id desc","id desc",'catagories','cat_name','1','1','','','')->result_array();
-                            $arr_data['productname']='N/A'; if(isset($product_detail[0]['cat_name']) && !empty($product_detail[0]['cat_name'])) $arr_data['productname']=$product_detail[0]['cat_name']; $arr_data['productname']=  Modules::run('api/string_length',$arr_data['productname'],'8000','');
+                            $product_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$checksdata[0]['check_subcat_id']),"id desc","id",'catagories','cat_name','1','1','','','')->result_array();
+                            $arr_data['productname']='N/A'; if(isset($product_detail[0]['cat_name']) && !empty($product_detail[0]['cat_name'])) $arr_data['productname']=$product_detail[0]['cat_name']; $arr_data['productname']=  Modules::run('api/string_length',$arr_data['productname'],'8000','','');
                         }
                         else {
-                            $arr_data['productname']='N/A'; if(isset($checksdata[0]['checkname']) && !empty($checksdata[0]['checkname'])) $arr_data['productname']=$checksdata[0]['checkname']; $arr_data['productname']=  Modules::run('api/string_length',$arr_data['productname'],'8000','');
+                            $arr_data['productname']='N/A'; if(isset($checksdata[0]['checkname']) && !empty($checksdata[0]['checkname'])) $arr_data['productname']=$checksdata[0]['checkname']; $arr_data['productname']=  Modules::run('api/string_length',$arr_data['productname'],'8000','','');
                         }
                         $j=0;
                         $question_condtion = array("checkid"=>$assignment_detail[0]['checkid']);
@@ -2752,12 +2753,13 @@ function admin_login() {
                                 $assignment_type = true;
                         if(isset($assignment_detail[0]['product_id']) && !empty($assignment_detail[0]['product_id']) && $assignment_type == true)
                             $question_condtion['assignment_id'] = $assign_id;
-                        $questions = Modules::run('api/_get_specific_table_with_pagination_where_groupby',$question_condtion,"page_rank asc","question_id desc",$outlet_id.'_checks_questions','type,question_id,parent_id,question,question_selection','1','0','','','')->result_array();
+                        $questions = Modules::run('api/_get_specific_table_with_pagination_where_groupby',$question_condtion,"page_rank asc","question_id",$outlet_id.'_checks_questions','type,question_id,parent_id,question,question_selection','1','0','','','')->result_array();
                         $reassign_question = array();
                         if(!empty($assignment_detail[0]['reassign_id'])) {
                             $reassign_question = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("rq_assign_id"=>$assign_id),"rq_id desc","rq_id",$outlet_id.'_reassign_questions','rq_question_id,','1','0','','','')->result_array();
                         }
                         $arr_question = array();
+                                
                         if(!empty($questions)) {
                             foreach ($questions as $key => $row):
                                 $key = "";
@@ -2772,6 +2774,7 @@ function admin_login() {
                                     if($row['question_selection']=="multi_select")
                                     $arr_question[$j]['question_type']="multi_select";
                                     $where_ans['question_id']=$row['question_id'];
+                                	$where_ans['checkid']=$assignment_detail[0]['checkid'];
                                     $ans_data=$this->get_question_answers($where_ans,$outlet_id)->result_array();
                                     $arr_question[$j]['answers']=$ans_data;
                                     if($role == 'editor' || $role == 'admin') {
@@ -2815,8 +2818,8 @@ function admin_login() {
                                                 if (file_exists(ACTUAL_SIGNATURE_IMAGE_PATH.$user_detail[0]['sign_image']))  
                                                     $arr_data['review_sign']=BASE_URL.ACTUAL_SIGNATURE_IMAGE_PATH.$user_detail[0]['sign_image'];
                                             }
-                                            $arr_data['reviewer_datetime']=''; if(isset($assignment_detail[0]['review_datetime']) && !empty($assignment_detail[0]['review_datetime'])) $arr_data['reviewer_datetime']=$assignment_detail[0]['review_datetime']; $arr_data['reviewer_datetime']=  Modules::run('api/string_length',$arr_data['reviewer_datetime'],'8000','');
-                                            $arr_data['review_comments']=''; if(isset($assignment_detail[0]['review_comments']) && !empty($assignment_detail[0]['review_comments'])) $arr_data['review_comments']=$assignment_detail[0]['review_comments']; $arr_data['review_comments']=  Modules::run('api/string_length',$arr_data['review_comments'],'8000','');
+                                            $arr_data['reviewer_datetime']=''; if(isset($assignment_detail[0]['review_datetime']) && !empty($assignment_detail[0]['review_datetime'])) $arr_data['reviewer_datetime']=$assignment_detail[0]['review_datetime']; $arr_data['reviewer_datetime']=  Modules::run('api/string_length',$arr_data['reviewer_datetime'],'8000','','');
+                                            $arr_data['review_comments']=''; if(isset($assignment_detail[0]['review_comments']) && !empty($assignment_detail[0]['review_comments'])) $arr_data['review_comments']=$assignment_detail[0]['review_comments']; $arr_data['review_comments']=  Modules::run('api/string_length',$arr_data['review_comments'],'8000','','');
 
                                             $arr_data['approval_user']='N/A'; 
                                             if(isset($assignment_detail[0]['approval_user']) && !empty($assignment_detail[0]['approval_user'])) {
@@ -2835,8 +2838,8 @@ function admin_login() {
 
                                                 $arr_data['approval_user']=  Modules::run('api/string_length',$first_name,'8000','',$second_name);
                                             }
-                                            $arr_data['approval_datetime']=''; if(isset($assignment_detail[0]['approval_datetime']) && !empty($assignment_detail[0]['approval_datetime'])) $arr_data['approval_datetime']=$assignment_detail[0]['approval_datetime']; $arr_data['approval_datetime']=  Modules::run('api/string_length',$arr_data['approval_datetime'],'8000','');
-                                            $arr_data['appoval_comments']=''; if(isset($assignment_detail[0]['appoval_comments']) && !empty($assignment_detail[0]['appoval_comments'])) $arr_data['appoval_comments']=$assignment_detail[0]['appoval_comments']; $arr_data['appoval_comments']=  Modules::run('api/string_length',$arr_data['appoval_comments'],'8000','');
+                                            $arr_data['approval_datetime']=''; if(isset($assignment_detail[0]['approval_datetime']) && !empty($assignment_detail[0]['approval_datetime'])) $arr_data['approval_datetime']=$assignment_detail[0]['approval_datetime']; $arr_data['approval_datetime']=  Modules::run('api/string_length',$arr_data['approval_datetime'],'8000','','');
+                                            $arr_data['appoval_comments']=''; if(isset($assignment_detail[0]['appoval_comments']) && !empty($assignment_detail[0]['appoval_comments'])) $arr_data['appoval_comments']=$assignment_detail[0]['appoval_comments']; $arr_data['appoval_comments']=  Modules::run('api/string_length',$arr_data['appoval_comments'],'8000','','');
                                         }
                                     }
                                     $j=$j+1;
@@ -2868,7 +2871,7 @@ function admin_login() {
                                 $reassign_user = 0;
                                 if(isset($reassign_assignment[0]['inspection_team']) && !empty($reassign_assignment[0]['inspection_team'])) {
                                     $group_name = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$reassign_assignment[0]['inspection_team']),"id desc","id",$outlet_id.'_groups','group_title','1','1','','','')->result_array();
-                                    $name=''; if(isset($group_name[0]['group_title']) && !empty($group_name[0]['group_title'])) $name=$group_name[0]['group_title']; $name=  Modules::run('api/string_length',$name,'8000','');
+                                    $name=''; if(isset($group_name[0]['group_title']) && !empty($group_name[0]['group_title'])) $name=$group_name[0]['group_title']; $name=  Modules::run('api/string_length',$name,'8000','','');
                                     $name_type = "group";
                                 }
                                 elseif(isset($reassign_assignment[0]['reassign_user']) && !empty($reassign_assignment[0]['reassign_user'])) {
@@ -2888,8 +2891,8 @@ function admin_login() {
                                 $reassign_data['name'] = $name;
                                 $reassign_data['name_type'] = $name_type;
                                 $assignment_answer = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("assignment_id"=>$reassign_assignment[0]['assign_id']),"assign_ans_id desc","assign_ans_id",$outlet_id.'_assignment_answer','line_no,shift_no,user_id','1','1','','','')->result_array();
-                                $reassign_data['line_no']=''; if(isset($assignment_answer[0]['line_no']) && !empty($assignment_answer[0]['line_no'])) { $reassign_data['line_no']=$assignment_answer[0]['line_no']; $reassing_answer = true; } $reassign_data['line_no']=  Modules::run('api/string_length',$reassign_data['line_no'],'8000','');
-                                $reassign_data['shift_no']=''; if(isset($assignment_answer[0]['shift_no']) && !empty($assignment_answer[0]['shift_no'])) { $reassign_data['shift_no']=$assignment_answer[0]['shift_no']; $reassing_answer = true; } $reassign_data['shift_no']=  Modules::run('api/string_length',$reassign_data['shift_no'],'8000','');
+                                $reassign_data['line_no']=''; if(isset($assignment_answer[0]['line_no']) && !empty($assignment_answer[0]['line_no'])) { $reassign_data['line_no']=$assignment_answer[0]['line_no']; $reassing_answer = true; } $reassign_data['line_no']=  Modules::run('api/string_length',$reassign_data['line_no'],'8000','','');
+                                $reassign_data['shift_no']=''; if(isset($assignment_answer[0]['shift_no']) && !empty($assignment_answer[0]['shift_no'])) { $reassign_data['shift_no']=$assignment_answer[0]['shift_no']; $reassing_answer = true; } $reassign_data['shift_no']=  Modules::run('api/string_length',$reassign_data['shift_no'],'8000','','');
                                 if(isset($assignment_answer[0]['user_id']) && !empty($assignment_answer[0]['user_id'])) {
                                     if($assignment_answer[0]['user_id'] != $reassign_user && $reassign_user != 0) {
                                         $user_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$assignment_answer[0]['user_id']),"id desc","id",'users','first_name,last_name','1','1','','','')->result_array();
@@ -2930,10 +2933,11 @@ function admin_login() {
                     }
                }
             }
+
             if($checktype !="general qa check" || $checktype!='herb_spice'){
                 $table = $outlet_id.'_assignments';
                 $where_data=array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d'));
-                $assignment_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array($table.".assign_id"=>$assign_id), $table.".assign_id desc",$table.".assign_id desc",$table,'checkid,complete_datetime,reassign_id,review_user,review_datetime,review_comments,approval_user,approval_datetime,appoval_comments,product_id,assignment_type','1','1','','','')->result_array();
+                $assignment_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array($table.".assign_id"=>$assign_id), $table.".assign_id desc",$table.".assign_id",$table,'checkid,complete_datetime,reassign_id,review_user,review_datetime,review_comments,approval_user,approval_datetime,appoval_comments,product_id,assignment_type','1','1','','','')->result_array();
                 if(!empty($assignment_detail)){
                     $checkid=$assignment_detail[0]['checkid'];
                     $checkdetail_s=$this->get_check_category_details($checkid)->row_array();
@@ -3136,51 +3140,6 @@ function admin_login() {
             $message=$user_key['key_message'];
         header('Content-Type: application/json');
         echo json_encode(array("status"=>$status,"message"=>$message));
-    }
-    function submit_static_media_file() {
-        $status=false;
-        $message="Bad request";
-        $assign_id=$this->input->post('assign_id');
-        $user_id=$this->input->post('user_id');
-        $outlet_id=$this->input->post('outlet_id');
-        $media_type=$this->input->post('media_type');
-        $open_close=$this->outlet_open_close($outlet_id);
-        $user_key = $this->check_user_api_key();
-        if($user_key['key_status'] == true) {
-            if(!empty($assign_id) && !empty($user_id) && !empty($outlet_id) && !empty($media_type)) {
-                if(isset($_FILES['answer_media']) && !empty($_FILES['answer_media']) && $_FILES['answer_media']['size'] >0) {
-                    $status = true;
-                    $message ="Data saved";
-                    $this->upload_answer_static_media_files($assign_id,$outlet_id,$media_type);
-                }
-            }
-        }
-        else
-            $message=$user_key['key_message'];
-        header('Content-Type: application/json');
-        echo json_encode(array("status"=>$status,"message"=>$message));
-    }
-    function upload_answer_static_media_files($nId,$outlet_id,$media_type){
-        $upload_image_file = $_FILES['answer_media']['name'];
-        $upload_image_file = str_replace(' ', '_', $upload_image_file);
-        $file_name = 'assignment-'.$outlet_id.$nId . '-'.$this->random_color().'_'. $upload_image_file;
-        $file_name = strtolower(str_replace(['  ', '/','-','--','---','----', '_', '__'], '-',$file_name));
-        $config['upload_path'] = ACTUAL_STATIC_ASSIGNMENT_ANSWER_IMAGE_PATH;
-        $config['allowed_types'] = '*';
-        $config['max_size'] = '20000';
-        $config['max_width'] = '2000000000';
-        $config['max_height'] = '2000000000';
-        $config['file_name'] = $file_name;
-        $this->load->library('upload');
-        $this->upload->initialize($config);
-        if (isset($_FILES['answer_media'])) {
-            $this->upload->do_upload('answer_media');
-        }
-        $upload_data = $this->upload->data();
-        unset($data);unset($where);
-        $data = array('media_name' => $file_name,'outlet_id'=>$outlet_id,'assignment_id'=>$nId);
-        $where['assignment_id'] = $nId;
-        Modules::run('api/insert_into_specific_table',array('media_name' => $file_name,'outlet_id'=>$outlet_id,'assignment_id'=>$nId,'media_type'=>$media_type),$outlet_id.'_static_media');
     }
     function submit_truck_inspection(){
         $status=false;
@@ -3770,7 +3729,7 @@ function admin_login() {
                                                             $assign_name='Assignment Name';
                                                             if(isset($value['checkname']) && !empty($value['checkname'])) 
                                                                 $assign_name = $value['checkname'];
-                                                            $assign_name =  Modules::run('api/string_length',$assign_name,'8000','');
+                                                            $assign_name =  Modules::run('api/string_length',$assign_name,'8000','','');
                                                             Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
                                                             $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$insp_team['sci_team_id'].'" or `group`="'.$insp_team['sci_team_id'].'")','','')->result_array();
                                                             $fcm_token = array();
@@ -3865,7 +3824,7 @@ function admin_login() {
                                                                 $assign_name = 'Assignment Name';
                                                                 if(isset($value['checkname']) && !empty($value['checkname']))
                                                                     $assign_name = $value['checkname'];
-                                                                $assign_name = Modules::run('api/string_length',$assign_name,'8000','');
+                                                                $assign_name = Modules::run('api/string_length',$assign_name,'8000','','');
                                                                 $fcm_data = $fcm_token = array();
                                                                 Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$ina['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
                                                                 $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$ina['sci_team_id'].'" or `group`="'.$ina['sci_team_id'].'")','','')->result_array();
@@ -4010,7 +3969,7 @@ function admin_login() {
                                                                 $assign_name = 'Assignment Name';
                                                                 if(isset($value['checkname']) && !empty($value['checkname']))
                                                                     $assign_name = $value['checkname'];
-                                                                $assign_name = Modules::run('api/string_length',$assign_name,'8000','');
+                                                                $assign_name = Modules::run('api/string_length',$assign_name,'8000','','');
                                                                 $fcm_data = $fcm_token = array();
                                                                 Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$ina['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
                                                                 $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$ina['sci_team_id'].'" or `group`="'.$ina['sci_team_id'].'")','','')->result_array();
@@ -4121,7 +4080,7 @@ function admin_login() {
                                                                                 $assign_name = 'Assignment Name';
                                                                                 if(isset($value['checkname']) && !empty($value['checkname']))
                                                                                     $assign_name = $value['checkname'];
-                                                                                $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
+                                                                                $assign_name=  Modules::run('api/string_length',$assign_name,'8000','','');
                                                                                 $fcm_token = array();
                                                                                 Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
                                                                                 $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$insp_team['sci_team_id'].'" or `group`="'.$insp_team['sci_team_id'].'")','','')->result_array();
@@ -4239,7 +4198,7 @@ function admin_login() {
                                                             $assign_name='Assignment Name';
                                                             if(isset($value['checkname']) && !empty($value['checkname'])) 
                                                                 $assign_name = $value['checkname'];
-                                                            $assign_name =  Modules::run('api/string_length',$assign_name,'8000','');
+                                                            $assign_name =  Modules::run('api/string_length',$assign_name,'8000','','');
                                                             Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
                                                             $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$insp_team['sci_team_id'].'" or `group`="'.$insp_team['sci_team_id'].'")','','')->result_array();
                                                             $fcm_token = array();
@@ -4337,7 +4296,7 @@ function admin_login() {
                                                                 $assign_name = 'Assignment Name';
                                                                 if(isset($value['checkname']) && !empty($value['checkname']))
                                                                     $assign_name = $value['checkname'];
-                                                                $assign_name = Modules::run('api/string_length',$assign_name,'8000','');
+                                                                $assign_name = Modules::run('api/string_length',$assign_name,'8000','','');
                                                                 $fcm_data = $fcm_token = array();
                                                                 Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$ina['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
                                                                 $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$ina['sci_team_id'].'" or `group`="'.$ina['sci_team_id'].'")','','')->result_array();
@@ -4494,7 +4453,7 @@ function admin_login() {
                                                                 $assign_name = 'Assignment Name';
                                                                 if(isset($value['checkname']) && !empty($value['checkname']))
                                                                     $assign_name = $value['checkname'];
-                                                                $assign_name = Modules::run('api/string_length',$assign_name,'8000','');
+                                                                $assign_name = Modules::run('api/string_length',$assign_name,'8000','','');
                                                                 $fcm_data = $fcm_token = array();
                                                                 Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$ina['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
                                                                 $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$ina['sci_team_id'].'" or `group`="'.$ina['sci_team_id'].'")','','')->result_array();
@@ -4622,7 +4581,7 @@ function admin_login() {
                                                                 $assign_name='Assignment Name';
                                                                 if(isset($value['checkname']) && !empty($value['checkname'])) 
                                                                     $assign_name = $value['checkname'];
-                                                                $assign_name =  Modules::run('api/string_length',$assign_name,'8000','');
+                                                                $assign_name =  Modules::run('api/string_length',$assign_name,'8000','','');
                                                                 Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
                                                                 $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$insp_team['sci_team_id'].'" or `group`="'.$insp_team['sci_team_id'].'")','','')->result_array();
                                                                 $fcm_token = array();
@@ -4719,7 +4678,7 @@ function admin_login() {
                                                                     $assign_name = 'Assignment Name';
                                                                     if(isset($value['checkname']) && !empty($value['checkname']))
                                                                         $assign_name = $value['checkname'];
-                                                                    $assign_name = Modules::run('api/string_length',$assign_name,'8000','');
+                                                                    $assign_name = Modules::run('api/string_length',$assign_name,'8000','','');
                                                                     $fcm_data = $fcm_token = array();
                                                                     Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$ina['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
                                                                     $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$ina['sci_team_id'].'" or `group`="'.$ina['sci_team_id'].'")','','')->result_array();
@@ -4871,7 +4830,7 @@ function admin_login() {
                                                                     $assign_name = 'Assignment Name';
                                                                     if(isset($value['checkname']) && !empty($value['checkname']))
                                                                         $assign_name = $value['checkname'];
-                                                                    $assign_name = Modules::run('api/string_length',$assign_name,'8000','');
+                                                                    $assign_name = Modules::run('api/string_length',$assign_name,'8000','','');
                                                                     $fcm_data = $fcm_token = array();
                                                                     Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$ina['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
                                                                     $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$ina['sci_team_id'].'" or `group`="'.$ina['sci_team_id'].'")','','')->result_array();
@@ -4912,12 +4871,14 @@ function admin_login() {
             $this->create_seafood_checks(date('Y-m-d'),date('Y-m-d'),date('Y-m-d', strtotime(date('Y-m-d') . ' +1 day')),"00:00:00",date('Y-m-d', strtotime(date('Y-m-d') . ' +1 day')),"23:59:59",date('l', strtotime(date('l') . ' +1 day')),DEFAULT_OUTLET,'weekly');
             $this->create_seafood_checks(date('Y-m-d'),date('Y-m-d'),date('Y-m-d', strtotime(date('Y-m-d') . ' +1 day')),"00:00:00",date('Y-m-d', strtotime(date('Y-m-d') . ' +1 day')),"23:59:59",date('l', strtotime(date('l') . ' +1 day')),DEFAULT_OUTLET,'monthly');
             
-        }
+        	}
+    
             $outlet_id = '1';
             $start_time = date('Y-m-d H:i:s',strtotime('2019-01-01 00:00:00'));
             $date=date('Y-m-d');
             $end_time=date('Y-m-d', strtotime($date. ' - 2 days'));
-            $checks = Modules::run('admin_api/get_checks_for_delete',array("assignments.end_datetime <="=>$end_time),'assign_id desc','assign_id',$outlet_id,'checkid,assign_id,checktype,assign_status','1','0','(lower(assign_status)="overdue")','','')->result_array();
+    		$end_time=$end_time." 00:00:00";
+            $checks = Modules::run('admin_api/get_checks_for_delete',array("assignments.end_datetime <="=>$end_time),'assign_id desc','assign_id',$outlet_id,'checkid,assign_id,checktype,assign_status','1','0','(lower(assign_status)="overdue" OR lower(assign_status)="closed")','','')->result_array();
             if(isset($checks) && !empty($checks)) {
                 foreach ($checks as $key => $ck):
                     if(strtolower($ck['checktype']) == 'product attribute') {
@@ -4944,6 +4905,9 @@ function admin_login() {
             }
             else
                 echo "<br><br>no checks available during start datetime ".$start_time." and end datetime ".$end_time."<br>";
+			
+    
+    		Modules::run('api/delete_from_specific_table',array("notification_status"=>"1"),"notification");
 
             $date=date('Y-m-d');
             $date=date('Y-m-d', strtotime($date. ' + 30 days'));
@@ -5750,6 +5714,22 @@ function admin_login() {
                                                                 $insert_answer_data[1]['checkid']=$value['id'];
                                                                 $insert_answer_data[1]['question_id']=$insert_id;
                                                             }
+                                                        	elseif($pa['possible_answers']=="on/off") {
+                                                                $insert_answer_data=array();
+                                                                $insert_answer_data[0]['possible_answer']='on';
+                                                                $insert_answer_data[0]['min']=0;
+                                                                $insert_answer_data[0]['max']= 0;
+                                                                $insert_answer_data[0]['is_acceptable']=1;
+                                                                $insert_answer_data[0]['checkid']=$value['id'];
+                                                                $insert_answer_data[0]['question_id']=$insert_id;
+
+                                                                $insert_answer_data[1]['possible_answer']='off';
+                                                                $insert_answer_data[1]['min']=0;
+                                                                $insert_answer_data[1]['max']= 0;
+                                                                $insert_answer_data[1]['is_acceptable']=0;
+                                                                $insert_answer_data[1]['checkid']=$value['id'];
+                                                                $insert_answer_data[1]['question_id']=$insert_id;
+                                                            }
                                                             else {
                                                                 $insert_answer_data=array();
                                                                 $insert_answer_data[0]['possible_answer']='yes';
@@ -5792,7 +5772,7 @@ function admin_login() {
                                             $assign_name = 'Assignment Name';
                                             if(isset($value['checkname']) && !empty($value['checkname']))
                                                 $assign_name = $value['checkname'];
-                                            $assign_name = Modules::run('api/string_length',$assign_name,'8000','');
+                                            $assign_name = Modules::run('api/string_length',$assign_name,'8000','','');
                                             $fcm_data = $fcm_token = array();
                                             Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$ina['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
                                             $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$ina['sci_team_id'].'" or `group`="'.$ina['sci_team_id'].'")','','')->result_array();
@@ -5837,7 +5817,7 @@ function admin_login() {
                         $where=array('wip_type'=>'Bowl Filling (Dough check)');
                     else
                     $where=array('wip_type'=>'Bowl Filling (Filling check)');
-                    $product_attribute = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array($where),'wip_id desc','wip_id','wip_profile','*','1','0','','','')->result_array();
+                    $product_attribute = Modules::run('api/_get_specific_table_with_pagination_where_groupby',$where,'wip_id desc','wip_id','wip_profile','*','1','0','','','')->result_array();
                         $valid = false;
 
                     if(!empty($product_attribute))
@@ -5966,7 +5946,24 @@ function admin_login() {
                                                 $insert_answer_data[1]['is_acceptable']=0;
                                                 $insert_answer_data[1]['checkid']=$value['id'];
                                                 $insert_answer_data[1]['question_id']=$insert_id;
-                                            }else{
+                                            }
+                                        	elseif($pa['possible_answers']=="on/off"){
+                                                $insert_answer_data=array();
+                                                $insert_answer_data[0]['possible_answer']='on';
+                                                $insert_answer_data[0]['min']=0;
+                                                $insert_answer_data[0]['max']= 0;
+                                                $insert_answer_data[0]['is_acceptable']=1;
+                                                $insert_answer_data[0]['checkid']=$value['id'];
+                                                $insert_answer_data[0]['question_id']=$insert_id;
+
+                                                $insert_answer_data[1]['possible_answer']='off';
+                                                $insert_answer_data[1]['min']=0;
+                                                $insert_answer_data[1]['max']= 0;
+                                                $insert_answer_data[1]['is_acceptable']=0;
+                                                $insert_answer_data[1]['checkid']=$value['id'];
+                                                $insert_answer_data[1]['question_id']=$insert_id;
+                                            }
+                                        	else{
 
                                                 $insert_answer_data=array();
                                                 $insert_answer_data[0]['possible_answer']='yes';
@@ -6023,7 +6020,7 @@ function admin_login() {
 
                                 /////////// notification code umar start///////////
                                 if(!empty($assign_id) && !empty($outlet_id)) {
-                                    $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
+                                    $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','','');
                                     $fcm_data = $fcm_token = array();
                                     foreach ($inspection_team_array as $key => $insp_team):
                                         Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
@@ -6208,7 +6205,7 @@ function admin_login() {
                                     
                                      /////////// notification code umar start///////////
                                     if(!empty($assign_id) && !empty($outlet_id)) {
-                                        $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
+                                        $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','','');
                                         $fcm_token = array();
                                           foreach ($inspection_team_array as $key => $insp_team):
                                                 Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
@@ -6306,7 +6303,7 @@ function admin_login() {
                                                              $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
                                                              /////////// notification code umar start///////////
                                                             if(!empty($assign_id) && !empty($outlet_id)) {
-                                                                $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
+                                                                $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','','');
                                                                 $fcm_token = array();
                                                                 $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$value['inspection_team'].'" or `group`="'.$value['inspection_team'].'")','','')->result_array();
                                                                 if(!empty($tokens)) {
@@ -6550,6 +6547,22 @@ function admin_login() {
                                                                 $insert_answer_data[1]['is_acceptable']=0;
                                                                 $insert_answer_data[1]['checkid']=$value['id'];
                                                                 $insert_answer_data[1]['question_id']=$insert_id;
+                                                            }
+                                                        elseif($pa['possible_answers']=="on/off"){
+                                                                $insert_answer_data=array();
+                                                                $insert_answer_data[0]['possible_answer']='on';
+                                                                $insert_answer_data[0]['min']=0;
+                                                                $insert_answer_data[0]['max']= 0;
+                                                                $insert_answer_data[0]['is_acceptable']=1;
+                                                                $insert_answer_data[0]['checkid']=$value['id'];
+                                                                $insert_answer_data[0]['question_id']=$insert_id;
+    
+                                                                $insert_answer_data[1]['possible_answer']='off';
+                                                                $insert_answer_data[1]['min']=0;
+                                                                $insert_answer_data[1]['max']= 0;
+                                                                $insert_answer_data[1]['is_acceptable']=0;
+                                                                $insert_answer_data[1]['checkid']=$value['id'];
+                                                                $insert_answer_data[1]['question_id']=$insert_id;
                                                             }else{
     
                                                                 $insert_answer_data=array();
@@ -6607,7 +6620,7 @@ function admin_login() {
                                                 }
                                                 /////////// notification code umar start///////////
                                                 if(!empty($assign_id) && !empty($outlet_id)) {
-                                                    $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
+                                                    $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','','');
                                                     $fcm_data = $fcm_token = array();
                                                     $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$value['inspection_team'].'" or `group`="'.$value['inspection_team'].'")','','')->result_array();
                                                     if(!empty($tokens)) {
@@ -6752,7 +6765,7 @@ function admin_login() {
         $outlet_id = '1';
         $start_time = date('Y-m-d H:i:s',strtotime('2019-01-01 00:00:00'));
         $end_time= "2019-12-12 15:39:31";
-        $checks = $this->get_checks_for_delete(array("assignments.start_datetime >="=>$start_time),'assign_id desc','assign_id',$outlet_id,'checkid,assign_id,checktype','1','0','','','')->result_array();
+        $checks = Modules::run('admin_api/get_checks_for_delete',array("assignments.start_datetime >="=>$start_time),'assign_id desc','assign_id',$outlet_id,'checkid,assign_id,checktype,assign_status','1','0','(lower(assign_status)="overdue" OR lower(assign_status)="closed")','','')->result_array();
         print_r($checks);echo "<br><br>";
         if(isset($checks) && !empty($checks)) {
             foreach ($checks as $key => $ck):
@@ -6931,7 +6944,7 @@ function admin_login() {
                                                     $assign_name = 'Assignment Name';
                                                     if(isset($cl['checkname']) && !empty($cl['checkname'])) 
                                                         $assign_name = $cl['checkname'];
-                                                    $assign_name =  Modules::run('api/string_length',$assign_name,'8000','');
+                                                    $assign_name =  Modules::run('api/string_length',$assign_name,'8000','','');
                                                     $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$insp_team['sci_team_id'].'" or `group`="'.$insp_team['sci_team_id'].'")','','')->result_array();
                                                     $fcm_token = array();
                                                     if(!empty($tokens)) {
@@ -7084,7 +7097,7 @@ function admin_login() {
                                     
                                      /////////// notification code umar start///////////
                                     if(!empty($assign_id) && !empty($outlet_id)) {
-                                        $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
+                                        $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','','');
                                         $fcm_token = array();
                                          
                                             foreach ($inspection_team_array as $key => $insp_team):
@@ -7186,7 +7199,7 @@ function admin_login() {
                                                         $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
                                                              /////////// notification code umar start///////////
                                                            if(!empty($assign_id) && !empty($outlet_id)) {
-                                                                $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','');
+                                                                $assign_name='Assignment Name'; if(isset($value['checkname']) && !empty($value['checkname'])) $assign_name=$value['checkname']; $assign_name=  Modules::run('api/string_length',$assign_name,'8000','','');
                                                                 $fcm_token = array();
                                                                    foreach ($inspection_team_array as $key => $insp_team):
                                                                          Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$insp_team['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
@@ -7343,7 +7356,52 @@ function admin_login() {
         else
             $message = $api_key['key_message'];
         header('Content-Type: application/json');
-        echo json_encode(array("status"=> $status, "message"=>$message,"id"=>$data['assignment_id']));
+       echo json_encode(array("status"=> $status, "message"=>$message,"id"=>$data['assignment_id']));
+    }
+    function submit_static_media_file() {
+        $status=false;
+        $message="Bad request";
+        $assign_id=$this->input->post('assign_id');
+        $user_id=$this->input->post('user_id');
+        $outlet_id=$this->input->post('outlet_id');
+        $media_type=$this->input->post('media_type');
+        $open_close=$this->outlet_open_close($outlet_id);
+        $user_key = $this->check_user_api_key();
+        if($user_key['key_status'] == true) {
+            if(!empty($assign_id) && !empty($user_id) && !empty($outlet_id) && !empty($media_type)) {
+                if(isset($_FILES['answer_media']) && !empty($_FILES['answer_media']) && $_FILES['answer_media']['size'] >0) {
+                    $status = true;
+                    $message ="Data saved";
+                    $this->upload_answer_static_media_files($assign_id,$outlet_id,$media_type);
+                }
+            }
+        }
+        else
+            $message=$user_key['key_message'];
+        header('Content-Type: application/json');
+        echo json_encode(array("status"=>$status,"message"=>$message));
+    }
+    function upload_answer_static_media_files($nId,$outlet_id,$media_type){
+        $upload_image_file = $_FILES['answer_media']['name'];
+        $upload_image_file = str_replace(' ', '_', $upload_image_file);
+        $file_name = 'assignment-'.$outlet_id.$nId . '-'.$this->random_color().'_'. $upload_image_file;
+        $file_name = strtolower(str_replace(['  ', '/','-','--','---','----', '_', '__'], '-',$file_name));
+        $config['upload_path'] = ACTUAL_STATIC_ASSIGNMENT_ANSWER_IMAGE_PATH;
+        $config['allowed_types'] = '*';
+        $config['max_size'] = '20000';
+        $config['max_width'] = '2000000000';
+        $config['max_height'] = '2000000000';
+        $config['file_name'] = $file_name;
+        $this->load->library('upload');
+        $this->upload->initialize($config);
+        if (isset($_FILES['answer_media'])) {
+            $this->upload->do_upload('answer_media');
+        }
+        $upload_data = $this->upload->data();
+        unset($data);unset($where);
+        $data = array('media_name' => $file_name,'outlet_id'=>$outlet_id,'assignment_id'=>$nId);
+        $where['assignment_id'] = $nId;
+        Modules::run('api/insert_into_specific_table',array('media_name' => $file_name,'outlet_id'=>$outlet_id,'assignment_id'=>$nId,'media_type'=>$media_type),$outlet_id.'_static_media');
     }
 	function submit_draft() {
         $status=FALSE;
@@ -7533,5 +7591,15 @@ function admin_login() {
         $this->load->model('mdl_perfectmodel');
         $query = $this->mdl_perfectmodel->get_expiring_documents($where);
         return $query;
+    }
+    function _insert_data($data,$table)
+    {
+        $this->load->model('mdl_perfectmodel');
+        return $this->mdl_perfectmodel->_insert_data($data,$table);
+    }
+    function get_supplier_ingreients($where)
+    {
+     	$this->load->model('mdl_perfectmodel');
+        return $this->mdl_perfectmodel->get_supplier_ingreients($where);
     }
 }

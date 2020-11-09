@@ -73,7 +73,7 @@ Modules::run('site_security/has_permission');
         $data['update_id'] = $update_id;
         $data['view_file'] = 'newsform';
         $this->load->module('template');
-        $this->template->admin_form($data);
+        $this->template->admin($data);
     }
     function get_attibutes_div_ajax(){
         $data['product_attribute']=array();

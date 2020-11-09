@@ -6,18 +6,11 @@ table.dataTable.no-footer {
 <div class=" panel-default">
 <div class="panel-body">
 <input type="hidden" value="datatable1">
-<select id="ddl_tbl_show_row_count" onchange="func_set_tbl_rows(this.value)">
-    <option value="5">5</option>
-    <option value="10">10</option>
-    <option value="20">20</option>
-    <option value="50">50</option>
-    <option value="100">100</option>
-    <option value="-1">All</option>
-</select>
+
 
 <div class="table-responsive">
-    <table class="table table-striped table-hover table-body table-bordered" id="datatable1">
-        <thead style="background-color: #7BABED;" class="bg-th">
+    <table class="data-table data-table-feature" id="datatable1">
+        <thead  class="bg-th">
           <tr class="bg-col">
             <th style="border:none;">Supplier</th>
             <th style="border:none;">Completed on </th>
@@ -37,7 +30,7 @@ table.dataTable.no-footer {
             <td data-htmltoarray="true" data-arrayclasstd="assign_date"><?=$row['name']?></td>
             <td data-htmltoarray="true" data-arrayclasstd="assign_time"><?=$row['at_reviewed_date']?></td>
             <td data-htmltoarray="true" data-arrayclasstd="assign_day"><?= round($row['total_percentage'], 2);?>%</td>
-            <td data-htmltoarray="true" data-arrayclasstd="assign_day"><a class="btn yellow c-btn view_details" rel="<?=$row['id']?>"><i class="fa fa-list"  title="See Detail"></i></a></td>
+            <td data-htmltoarray="true" data-arrayclasstd="assign_day"><a class="btn yellow c-btn view_details" rel="<?=$row['id']?>"><i class="iconsminds-file"  title="See Detail"></i></a></td>
         </tr>
         <?}}else {?>  <tr>
             <td></td>

@@ -20,7 +20,7 @@
                                      <table id="datatable1" class="table table-bordered">
                                         <tbody class="table-body">
                                           <tr class="bg-col">
-                                              <th style="color: #6c9cde!important;">
+                                              <th >
                                                  Raw Material Name
                                               </th>
                                               <td>
@@ -28,7 +28,7 @@
                                               </td>
                                           </tr>
                                           <tr class="bg-col">
-                                              <th style="color: #6c9cde!important;">
+                                              <th  >
                                                   NAV Number:
                                               </th>
                                               <td>
@@ -36,7 +36,7 @@
                                               </td>
                                           </tr>
                                           <tr class="bg-col">
-                                              <th style="color: #6c9cde!important;">
+                                              <th  >
                                                   RM PLM Number:
                                               </th>
                                               <td>
@@ -44,7 +44,7 @@
                                               </td>
                                           </tr>
                                            <tr class="bg-col">
-                                              <th style="color: #6c9cde!important;">
+                                              <th  >
                                                   Type:
                                               </th>
                                               <td>
@@ -64,7 +64,7 @@
                             <div class="form-body">                               
 
                            
-                                        <table class="table table-bordered" style="color: black !important">
+                                        <table class="table table-bordered"  >
                                     <thead>
                                       <tr>
                                         <th  style="color: #6C9CDE !important">Supplier</th>
@@ -90,7 +90,7 @@
                         
                         <legend> <?php echo $post['item_name']; ?> Documents List</legend>
                             <div class="form-body">    
-                                <table class="table table-bordered" style="color: black !important">
+                                <table class="table table-bordered"  >
                                     <thead>
                                       <tr>
                                         <th  style="color: #6C9CDE !important">Supplier</th>

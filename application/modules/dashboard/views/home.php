@@ -1,6 +1,7 @@
 <link href="<?php echo STATIC_ADMIN_CSS?>ionicons.min.css" rel="stylesheet">
 <link href="<?php echo STATIC_ADMIN_CSS?>typicons.css" rel="stylesheet">
 <link href="<?php echo STATIC_ADMIN_CSS?>morris.css" rel="stylesheet">
+<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script> -->
     
 <style>
 
@@ -46,100 +47,502 @@
       .btn_time_period {
         cursor: pointer;
     }
+.badge-primary
+{
+border-radius:8px;
+color: white!important;
+padding: 5px;}
 </style>
-<div class="checking_previous"></div>
-<div class="page-content-wrapper">
-    <div class="page-content">
-        <section>
-            <div class="content-wrapper" style="padding-bottom: 0px !important;">
-                <div class="content-heading" style="margin-bottom: 0px !important;">
-                    Dashboard
-                    <small data-localize="dashboard.WELCOME"></small>
+<main>
+  <div class="container-fluid">
+      <div class="row">
+          <div class="col-12">
+              <h1>Dashboard</h1>
+              <div class="separator mb-5"></div>
+          </div>
+      </div>
+         <div class="row sortable content-wrapper">
+                <div class="col-xl-2 col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-header p-0 position-relative">
+                        </div>
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <h6 class=""><a class="btn_time_period badge-primary" data-type="week" data-value="7">&nbsp;&nbsp;Week&nbsp;&nbsp;</a></h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2 col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-header p-0 position-relative">
+                        </div>
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <h6 class=""><a class="btn_time_period  btn-default" data-type="month" data-value="1">&nbsp;&nbsp;1 Month&nbsp;&nbsp;</a></h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2 col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-header p-0 position-relative">
+                        </div>
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <h6 class=""><a class="btn_time_period btn-default" data-type="threemonth" data-value="3">&nbsp;&nbsp;3 Months&nbsp;&nbsp;</a></h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2 col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-header p-0 position-relative">
+                        </div>
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <h6 class=""><a class="btn_time_period btn-default" data-type="sixmonth" data-value="6">&nbsp;&nbsp;6 Months&nbsp;&nbsp;</a></h6>
+                            
+                        </div>
+                    </div>
+                </div>
+         		<div class="col-xl-2 col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-header p-0 position-relative">
+                        </div>
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <h6 class=""><a class="btn_time_period btn-default" data-type="oneyear" data-value="12">&nbsp;&nbsp;1 Year&nbsp;&nbsp;</a></h6>
+                            
+                        </div>
+                    </div>
+                </div>
+         		<div class="col-xl-2 col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-header p-0 position-relative">
+                        </div>
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <h6 class=""><a class="btn_time_period btn-default" data-type="two" data-value="24">&nbsp;&nbsp;2 Year&nbsp;&nbsp;</a></h6>
+                            
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
-        <section>
-            <div class="content-wrapper">
-                 <div>
-                <a class="btn_time_period btn-default" data-type="week" data-value="7">&nbsp;&nbsp;Week&nbsp;&nbsp;</a>
-                <a class="btn_time_period btn-info" data-type="month" data-value="1">&nbsp;&nbsp;1 Month&nbsp;&nbsp;</a>
-                <a class="btn_time_period btn-default" data-type="threemonth" data-value="3">&nbsp;&nbsp;3 Months&nbsp;&nbsp;</a>
-                <a class="btn_time_period btn-default" data-type="sixmonth" data-value="6">&nbsp;&nbsp;6 Months&nbsp;&nbsp;</a>
-                <a class="btn_time_period btn-default" data-type="oneyear" data-value="12">&nbsp;&nbsp;1 Year&nbsp;&nbsp;</a>
-                <a class="btn_time_period btn-default" data-type="two" data-value="24">&nbsp;&nbsp;2 Year&nbsp;&nbsp;</a>
+  			<div class="row">
+                <div class="col-md-6 col-sm-12 mb-4">
+                    <div class="card dashboard-filled-line-chart">
+                        <div class="card-body ">
+                            <div class="float-left float-none-xs">
+                                <div class="d-inline-block">
+                                    <h5 class="d-inline">Completed / Pending Checks</h5>
+                                    <span class="text-muted text-small d-block"></span>
+                                </div>
+                            </div>
+<!--                             <div class="btn-group float-right float-none-xs mt-2">
+                                <button class="btn btn-outline-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Overdue
+                                </button>
+                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 25px, 0px);">
+                                    <a class="dropdown-item" href="#">Overdue</a>
+                                    <a class="dropdown-item" href="#">Completed</a>
+                                </div>
+                            </div> -->
+                        </div>
+                        <div class="chart card-body pt-0"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                            <canvas id="visitChart1" width="646" height="194" class="chartjs-render-monitor" style="display: block; width: 646px; height: 194px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-12 mb-4">
+                    <div class="card dashboard-filled-line-chart">
+                        <div class="card-body ">
+                            <div class="float-left float-none-xs">
+                                <div class="d-inline-block">
+                                    <h5 class="d-inline">Compliant / Non-Compliant Checks</h5>
+                                </div>
+                            </div>
+<!--                             <div class="btn-group float-right mt-2 float-none-xs">
+                                <button class="btn btn-outline-secondary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Compliant
+                                </button>
+                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 25px, 0px);">
+                                    <a class="dropdown-item" href="#">Compliants</a>
+                                    <a class="dropdown-item" href="#">Non Compliants</a>
+                                </div>
+                            </div> -->
+                        </div>
+                        <div class="chart card-body pt-0"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                            <canvas id="conversionChart1" width="646" height="194" class="chartjs-render-monitor" style="display: block; width: 646px; height: 194px;"></canvas>
+                        </div>
+                    </div>
+                </div>
             </div>
-                 <div class="card-body pb-0">
-                    <div class="card text-white white_bg">
-                        <div class="row ">
-                            <div class="col-sm-12 col-lg-6">
-                                <div class="col-sm-12 col-lg-4">
-                                    <div id="morrisDonut1" class="morris-donut-wrapper-demo" style="height:150px; "></div>
-                                </div>
-                                <div class="col-sm-12 col-lg-8">
-                                    <div id="morrisBar1" class="morris-wrapper-demo" style="height:150px;"></div>
-                                </div>
-                             </div>
-                            <div class="col-sm-12 col-lg-6">
-                                <div class="col-sm-12 col-lg-4">
-                                    <div id="morrisDonut2" class="morris-donut-wrapper-demo" style="height:150px;"></div>
-                                </div>
-                                <div class="col-sm-12 col-lg-8">
-                                    <div id="morrisBar2" class="morris-wrapper-demo" style="height:150px;"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row ">
-                            <div class="col-sm-12 col-lg-6">
-                                <div class="col-sm-12 col-lg-4">
-                                    <div id="morrisDonut3" class="morris-donut-wrapper-demo" style="height:150px;"></div>
-                                </div>
-                                <div class="col-sm-12 col-lg-8">
-                                    <div id="morrisBar3" class="morris-wrapper-demo" style="height:150px;"></div>
-                                </div>
-                            </div>
-                            <div class="col-sm-12 col-lg-6">
-                                <div class="col-sm-12 col-lg-4">
-                                    <div id="morrisDonut4" class="morris-donut-wrapper-demo" style="height:150px;"></div>
-                                </div>
-                                <div class="col-sm-12 col-lg-8">
-                                    <div id="morrisBar4" class="morris-wrapper-demo" style="height:150px;"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class=" col-sm-12 col-lg-8">
-                                <div id="chart">
-                            </div>
-                            </div>
-                            <div class=" col-sm-12 col-lg-4">
-                                <div id="morrisLine1" class="morris-wrapper-demo" style="height:330px;" ></div>
+  <div class="row">
+                <div class="col-md-12 col-lg-6 col-xl-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Static Checks</h5>
+                            <div class="chart-container chart">
+                                <canvas id="polarChart1"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="col-md-12 col-lg-6 col-xl-4 mb-4">
+                    <div class="card dashboard-progress">
+                        <div class="position-absolute card-top-buttons">
+                            <button class="btn btn-header-light icon-button">
+                                <i class="simple-icon-refresh"></i>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Status</h5>
+                            <div class="mb-4">
+                                <p class="mb-2">Active Users
+                                    <span class="float-right text-muted"><?php echo $a_users.'/'.$t_users;?></span>
+                                </p>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $user_percent ?>" aria-valuemin="0"
+                                        aria-valuemax="100"></div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <p class="mb-2">Active Groups
+                                    <span class="float-right text-muted"><?php echo $a_groups.'/'.$t_groups;?></span>
+                                </p>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $group_percent ?>" aria-valuemin="0"
+                                        aria-valuemax="100"></div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <p class="mb-2">Active Standard Checks
+                                    <span class="float-right text-muted"><?php echo $a_standard.'/'.$t_standard;?></span>
+                                </p>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $standard_percent ?>" aria-valuemin="0"
+                                        aria-valuemax="100"></div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <p class="mb-2">Active Scheduled checks
+                                    <span class="float-right text-muted"><?php echo $a_schedule.'/'.$t_schedule;?></span>
+                                </p>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $schedule_percent ?>" aria-valuemin="0"
+                                        aria-valuemax="100"></div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <p class="mb-2">Active Static Checks
+                                    <span class="float-right text-muted"><?php echo $a_static.'/'.$t_static;?></span>
+                                </p>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $static_percent ?>" aria-valuemin="0"
+                                        aria-valuemax="100"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-12 col-xl-4">
+                    <div class="row">
+                        <div class="col-6 mb-4">
+                            <div class="card dashboard-small-chart-analytics">
+                                <div class="card-body">
+                                    <p class="lead color-theme-1 mb-1 value"></p>
+                                    <p class="mb-0 label text-small badge-primary"></p>
+                                    <div class="chart">
+                                        <canvas id="smallChart1"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-4">
+                            <div class="card dashboard-small-chart-analytics">
+                                <div class="card-body">
+                                    <p class="lead color-theme-1 mb-1 value"></p>
+                                    <p class="mb-0 label text-small badge-primary"></p>
+                                    <div class="chart">
+                                        <canvas id="smallChart2"></canvas>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-6 mb-4">
+                            <div class="card dashboard-small-chart-analytics">
+                                <div class="card-body">
+                                    <p class="lead color-theme-1 mb-1 value"></p>
+                                    <p class="mb-0 label text-small badge-primary"></p>
+                                    <div class="chart">
+                                        <canvas id="smallChart3"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-4">
+                            <div class="card dashboard-small-chart-analytics">
+                                <div class="card-body">
+                                    <p class="lead color-theme-1 mb-1 value"></p>
+                                    <p class="mb-0 label text-small badge-primary"></p>
+                                    <div class="chart">
+                                        <canvas id="smallChart4"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+   <div class="row">
+                <div class="col-md-6 col-sm-12 mb-4">
+                    <div class="card dashboard-filled-line-chart">
+                        <div class="card-body ">
+                            <div class="float-left float-none-xs">
+                                <div class="d-inline-block">
+                                    <h5 class="d-inline">Pre-op</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart card-body pt-0 row">
+                        <div class="col-sm-12 col-lg-3">
+<!--                                     <div id="morrisDonut1" class="morris-donut-wrapper-demo" style="height:150px; "></div> -->
+                                  <div class="chart-container chart">
+                                        <canvas id="categoryChart1"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-lg-9 mb-5">
+                                <div class="chart-container chart">
+                                     <canvas id="productChart1"></canvas>
+                                 </div>
+                             </div>
+                        
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-12 mb-4">
+                    <div class="card dashboard-filled-line-chart">
+                        <div class="card-body ">
+                            <div class="float-left float-none-xs">
+                                <div class="d-inline-block">
+                                    <h5 class="d-inline">CCP</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart card-body pt-0 row">
+                            <div class="col-sm-12 col-lg-3">
+<!--                                     <div id="morrisDonut2" class="morris-donut-wrapper-demo" style="height:150px;"></div> -->
+                                <div class="chart-container chart">
+                                        <canvas id="categoryChart2"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-lg-9 mb-5">
+                                <div class="chart-container chart">
+                                     <canvas id="productChart2"></canvas>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+  
+                        
+   <div class="row">
+                <div class="col-md-6 col-sm-12 mb-4">
+                    <div class="card dashboard-filled-line-chart">
+                        <div class="card-body ">
+                            <div class="float-left float-none-xs">
+                                <div class="d-inline-block">
+                                    <h5 class="d-inline">ATP Swab</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart card-body pt-0 row">
+                        <div class="col-sm-12 col-lg-3">
+<!--                                     <div id="morrisDonut1" class="morris-donut-wrapper-demo" style="height:150px; "></div> -->
+                                     <div class="chart-container chart">
+                                        <canvas id="categoryChart3"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-lg-9 mb-5">
+                                <div class="chart-container chart">
+                                     <canvas id="productChart3"></canvas>
+                                 </div>
+                             </div>
+                        
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-12 mb-4">
+                    <div class="card dashboard-filled-line-chart">
+                        <div class="card-body ">
+                            <div class="float-left float-none-xs">
+                                <div class="d-inline-block">
+                                    <h5 class="d-inline">Receiving Log</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart card-body pt-0 row">
+                            <div class="col-sm-12 col-lg-3">
+<!--                                     <div id="morrisDonut2" class="morris-donut-wrapper-demo" style="height:150px;"></div> -->
+                                <div class="chart-container chart">
+                                        <canvas id="categoryChart4"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-lg-9 mb-5">
+                                <div class="chart-container chart">
+                                     <canvas id="productChart4"></canvas>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+  
+                        
+                        
+                        
+ <div class="row mb-4">
+          <div class="col-12 mb-4">
+              <div class="card">
+                  <div class="card-body">
+                        <div class="row ">
+<!--                             <div class=" col-sm-12 col-lg-8">
+                                <div id="chart">
+                            </div>
+                            </div> -->
+<!--                             <div class=" col-sm-12 col-lg-4">
+                                <div id="morrisLine1" class="morris-wrapper-demo" style="height:330px;" ></div>
+                            </div> -->
+                                <div class="col-sm-12 col-lg-12">
+                                    <div class="chart-container chart">
+                                        <canvas id="salesChart"></canvas>
+                                    </div>
+                                </div>
+                             
+       </div>
+      </div>
+     </div>
+ </div>
+          </div>                
+                        
+    
+                  
+ 
+        <div class="row mb-4">
+          <div class="col-12 mb-4">
+              <div class="card">
+                  <div class="card-body">
                 <div class="row">
                     <div class="col-sm-12">
                         <div id="div_tblreport"></div>
                     </div>
                 </div>
-            
-            </div>   
-        </section>
-    </div>
-</div>
-<script src="<?php echo STATIC_ADMIN_JS?>jquery.min.js"></script>
-<script src="<?php echo STATIC_ADMIN_JS?>ionicons.js"></script>
-<script src="<?php echo STATIC_ADMIN_JS?>raphael.min.js"></script>
-<script src="<?php echo STATIC_ADMIN_JS?>morris.min.js"></script>
-<script src="<?php echo STATIC_ADMIN_JS?>chart.morris.js?v=5"></script>
- <script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"></script>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</main>
+    <script src="<?php echo STATIC_ADMIN_JS?>vendor/Chart.bundle.min.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>vendor/chartjs-plugin-datalabels.js"></script>
+<!--  	<script src="<?php echo STATIC_ADMIN_JS?>dore.script.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>vendor/moment.min.js"></script>
+    <script src="<?php echo STATIC_ADMIN_JS?>scripts.js"></script> -->
 
-<script src="<?php echo STATIC_ADMIN_JS?>widgets.js"></script>
-<script src="<?php echo STATIC_ADMIN_JS?>controller.js"></script>
 
 <script type="text/javascript">
+ var chartTooltip = {
+        backgroundColor: foregroundColor,
+        titleFontColor: primaryColor,
+        borderColor: separatorColor,
+        borderWidth: 0.5,
+        bodyFontColor: primaryColor,
+        bodySpacing: 10,
+        xPadding: 15,
+        yPadding: 15,
+        cornerRadius: 0.15,
+        displayColors: false
+      };
+   var rootStyle = getComputedStyle(document.body);
+    var themeColor1 = rootStyle.getPropertyValue("--theme-color-1").trim();
+    var themeColor2 = rootStyle.getPropertyValue("--theme-color-2").trim();
+    var themeColor3 = rootStyle.getPropertyValue("--theme-color-3").trim();
+    var themeColor4 = rootStyle.getPropertyValue("--theme-color-4").trim();
+    var themeColor5 = rootStyle.getPropertyValue("--theme-color-5").trim();
+    var themeColor6 = rootStyle.getPropertyValue("--theme-color-6").trim();
+    var themeColor1_10 = rootStyle
+      .getPropertyValue("--theme-color-1-10")
+      .trim();
+    var themeColor2_10 = rootStyle
+      .getPropertyValue("--theme-color-2-10")
+      .trim();
+    var themeColor3_10 = rootStyle
+      .getPropertyValue("--theme-color-3-10")
+      .trim();
+    var themeColor4_10 = rootStyle
+      .getPropertyValue("--theme-color-4-10")
+      .trim();
+
+    var themeColor5_10 = rootStyle
+      .getPropertyValue("--theme-color-5-10")
+      .trim();
+    var themeColor6_10 = rootStyle
+      .getPropertyValue("--theme-color-6-10")
+      .trim();
+
+    var primaryColor = rootStyle.getPropertyValue("--primary-color").trim();
+    var foregroundColor = rootStyle
+      .getPropertyValue("--foreground-color")
+      .trim();
+    var separatorColor = rootStyle.getPropertyValue("--separator-color").trim();
+
+    /* 03.02. Resize */
+    var subHiddenBreakpoint = 1440;
+    var searchHiddenBreakpoint = 768;
+    var menuHiddenBreakpoint = 768;
+
     var var_time_period = 1;
     var today = new Date();
+    function get_graphs_data(date_from_str,date_to_str,var_time_period){
+    
+  var gph_data={};
+        $.ajax({
+            type: "POST",
+            url: "<?=ADMIN_BASE_URL.'dashboard/testing'?>",
+            
+            data:{'start_date':date_from_str,'end_date':date_to_str,'var_time_period':$('.content-wrapper').find('.badge-primary').attr('data-type')},
+            success: function (response) {            
+              $('#morrisDonut1').html('');
+              $('#morrisDonut2').html('');
+              $('#morrisDonut3').html('');
+              $('#morrisDonut4').html('');
+              $('#morrisBar1').html('');
+              $('#morrisBar2').html('');
+              $('#morrisBar3').html('');
+              $('#morrisBar4').html('');
+              $('#morrisLine1').html('');
+              $('#chart').html('');
+            
+              var obj = JSON.parse(response);
+              triiger_pie_charts(obj.ppc_pie_report,obj.ccp_pie_report,obj.atp_swab_pie_report,obj.receivinglog_pie_report);
+              trigger_bar_grphs(obj.ppc_bar_report,obj.ccp_bar_report,obj.atp_swab_bar_report,obj.receivinglog_bar_report);
+           //   show_trendline_graph_data(obj.trendline_graph_data);
+             compliant_data(obj.compliant_graph);
+             status_data(obj.status_graph);
+             morrisline1_data(obj.plants,obj.date,obj.plants_name);
+            }
+         });
+    }
+
+
+
+
     function func_load_dt(){
         today = new Date();
         date_to = new Date(today.getFullYear(), today.getMonth() + 1, 0);
@@ -168,287 +571,742 @@
     			});
             }
          });
-         get_graphs_data(date_from_str,date_to_str,var_time_period)
+         get_graphs_data(date_from_str,date_to_str,var_time_period);
     
     }
 
     $('.btn_time_period').on('click', function() {
         var_time_period = $(this).attr("data-value");
-        $('.btn_time_period').removeClass("btn-info").addClass("btn-default");
-        $(this).removeClass("btn-default").addClass("btn-info");
+        $('.btn_time_period').removeClass("badge-primary").addClass("btn-default");
+        $(this).removeClass("btn-default").addClass("badge-primary");
         func_load_dt();
     });
 
     $(document).ready(function() {
         var_time_period = 1;
         func_load_dt();
+    
        
     });
-   
-</script>
-
-<script type="text/javascript">
-    function get_graphs_data(date_from_str,date_to_str,var_time_period){
-        $.ajax({
-            type: "POST",
-            url: "<?=ADMIN_BASE_URL.'dashboard/testing'?>",
-            
-            data:{'start_date':date_from_str,'end_date':date_to_str,'var_time_period':$('.content-wrapper').find('.btn-info').attr('data-type')},
-            success: function (response) {            
-              $('#morrisDonut1').html('');
-              $('#morrisDonut2').html('');
-              $('#morrisDonut3').html('');
-              $('#morrisDonut4').html('');
-              $('#morrisBar1').html('');
-              $('#morrisBar2').html('');
-              $('#morrisBar3').html('');
-              $('#morrisBar4').html('');
-              $('#morrisLine1').html('');
-              $('#chart').html('');
-              var obj = JSON.parse(response);
-              triiger_pie_charts(obj.ppc_pie_report,obj.ccp_pie_report,obj.atp_swab_pie_report,obj.receivinglog_pie_report);
-              trigger_bar_grphs(obj.ppc_bar_report,obj.ccp_bar_report,obj.atp_swab_bar_report,obj.receivinglog_bar_report);
-              show_trendline_graph_data(obj.trendline_graph_data);
-              morrisline1_data(obj.final,obj.plants_name,obj.plant_indexes);
-            }
-         });
-    }
-    function triiger_pie_charts(ppc_pie_report,ccp_pie_report,atp_swab_pie_report,receivinglog_pie_report){
-    
-  new Morris.Donut({
-    element: 'morrisDonut2',
-    data: ppc_pie_report,
-    colors: ['#4CB581','#717373'],
-    resize: true
-  }).on('click', function (i, row) {  
-        if(i==1)
-        {
-            today = new Date();
-            date_to = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-            date_from = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-            date_from = new Date(var_time_period == 7? date_from.setDate(date_to.getDate() - var_time_period)
-                                                     : date_from.setMonth(date_to.getMonth() -var_time_period));
-            date_from = new Date(date_from.setDate(date_to.getDate() + 1))
-            date_to_str = date_to.getFullYear() + '-' + (date_to.getMonth() + 1) + '-' + date_to.getDate();
-            date_from_str = date_from.getFullYear() + '-' + (date_from.getMonth() + 1) + '-' + date_from.getDate();
-            $.ajax({
-                type: "POST",
-                url: "<?=ADMIN_BASE_URL.'dashboard/get_table_data'?>",
-                data:{'start_date':date_from_str,'end_date':date_to_str,'var_time_period':var_time_period,'row':row},
-                success: function (data) {
-                    var test_desc = data;
-                    $('#myModalLarge').modal('show')
-                    $("#myModalLarge .modal-body").html(test_desc);
-                }
-            });
-        }
-    });
-  new Morris.Donut({
-    element: 'morrisDonut1',
-    data: ccp_pie_report,
-    colors: ['#D14F57','#717373'],
-    resize: true
-  }).on('click', function (i, row) {  
-        if(i==1)
-        {
-            today = new Date();
-            date_to = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-            date_from = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-            date_from = new Date(var_time_period == 7? date_from.setDate(date_to.getDate() - var_time_period)
-                                                     : date_from.setMonth(date_to.getMonth() -var_time_period));
-            date_from = new Date(date_from.setDate(date_to.getDate() + 1))
-            date_to_str = date_to.getFullYear() + '-' + (date_to.getMonth() + 1) + '-' + date_to.getDate();
-            date_from_str = date_from.getFullYear() + '-' + (date_from.getMonth() + 1) + '-' + date_from.getDate();
-            $.ajax({
-                type: "POST",
-                url: "<?=ADMIN_BASE_URL.'dashboard/get_table_data'?>",
-                data:{'start_date':date_from_str,'end_date':date_to_str,'var_time_period':var_time_period,'row':row},
-                success: function (data) {
-                    var test_desc = data;
-                    $('#myModalLarge').modal('show')
-                    $("#myModalLarge .modal-body").html(test_desc);
-                }
-            });
-        }
-    });
-  
-    new Morris.Donut({
-    element: 'morrisDonut3',
-    data:atp_swab_pie_report,
-    colors: ['#5D89A8','#717373'],
-    resize: true
-  }).on('click', function (i, row) {  
-        if(i==1)
-        {
-            today = new Date();
-            date_to = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-            date_from = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-            date_from = new Date(var_time_period == 7? date_from.setDate(date_to.getDate() - var_time_period)
-                                                     : date_from.setMonth(date_to.getMonth() -var_time_period));
-            date_from = new Date(date_from.setDate(date_to.getDate() + 1))
-            date_to_str = date_to.getFullYear() + '-' + (date_to.getMonth() + 1) + '-' + date_to.getDate();
-            date_from_str = date_from.getFullYear() + '-' + (date_from.getMonth() + 1) + '-' + date_from.getDate();
-            $.ajax({
-                type: "POST",
-                url: "<?=ADMIN_BASE_URL.'dashboard/get_table_data'?>",
-                data:{'start_date':date_from_str,'end_date':date_to_str,'var_time_period':var_time_period,'row':row},
-                success: function (data) {
-                    var test_desc = data;
-                    $('#myModalLarge').modal('show')
-                    $("#myModalLarge .modal-body").html(test_desc);
-                }
-            });
-        }
-    });
-  
-    new Morris.Donut({
-    element: 'morrisDonut4',
-    data: receivinglog_pie_report,
-    colors: ['#EF9738', '#717373'],
-    resize: true
-  }).on('click', function (i, row) {  
-        if(i==1)
-        {
-            today = new Date();
-            date_to = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-            date_from = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-            date_from = new Date(var_time_period == 7? date_from.setDate(date_to.getDate() - var_time_period)
-                                                     : date_from.setMonth(date_to.getMonth() -var_time_period));
-            date_from = new Date(date_from.setDate(date_to.getDate() + 1))
-            date_to_str = date_to.getFullYear() + '-' + (date_to.getMonth() + 1) + '-' + date_to.getDate();
-            date_from_str = date_from.getFullYear() + '-' + (date_from.getMonth() + 1) + '-' + date_from.getDate();
-            $.ajax({
-                type: "POST",
-                url: "<?=ADMIN_BASE_URL.'dashboard/get_table_data'?>",
-                data:{'start_date':date_from_str,'end_date':date_to_str,'var_time_period':var_time_period,'row':row},
-                success: function (data) {
-                    var test_desc = data;
-                    $('#myModalLarge').modal('show')
-                    $("#myModalLarge .modal-body").html(test_desc);
-                }
-            });
-        }
-    });
-  $("[id^='morrisDonut1'] svg").on('mouseover', function() {
-    var md1_previous = $("[id^='morrisDonut1'] text:last-child").find('tspan').text();
-    var md1_new = md1_previous.replace('%', '');
-    $( "[id^='morrisDonut1'] text:last-child" ).find('tspan').text(md1_new+"%");
-  });
-  $("[id^='morrisDonut2'] svg").on('mouseover', function() {
-    var md2_previous = $("[id^='morrisDonut2'] text:last-child").find('tspan').text();
-    var md2_new = md2_previous.replace('%', '');
-    $( "[id^='morrisDonut2'] text:last-child" ).find('tspan').text(md2_new+"%");
-  });
-  $("[id^='morrisDonut3'] svg").on('mouseover', function() {
-    var md3_previous = $("[id^='morrisDonut3'] text:last-child").find('tspan').text();
-    var md3_new = md3_previous.replace('%', '');
-    $( "[id^='morrisDonut3'] text:last-child" ).find('tspan').text(md3_new+"%");
-  });
-  $("[id^='morrisDonut4'] svg").on('mouseover', function() {
-    var md4_previous = $("[id^='morrisDonut4'] text:last-child").find('tspan').text();
-    var md4_new = md4_previous.replace('%', '');
-    $( "[id^='morrisDonut4'] text:last-child" ).find('tspan').text(md4_new+"%");
-  });
-  var d1_previous = $("[id^='morrisDonut1'] text:last-child").find('tspan').text();
-  var d1_new = d1_previous.replace('%', '');
-  $( "[id^='morrisDonut1'] text:last-child" ).find('tspan').text(d1_new+"%");
-  var d2_previous = $("[id^='morrisDonut2'] text:last-child").find('tspan').text();
-  var d2_new = d2_previous.replace('%', '');
-  $( "[id^='morrisDonut2'] text:last-child" ).find('tspan').text(d2_new+"%");
-  var d3_previous = $("[id^='morrisDonut3'] text:last-child").find('tspan').text();
-  var d3_new = d3_previous.replace('%', '');
-  $( "[id^='morrisDonut3'] text:last-child" ).find('tspan').text(d3_new+"%");
-  var d4_previous = $("[id^='morrisDonut4'] text:last-child").find('tspan').text();
-  var d4_new = d4_previous.replace('%', '');
-  $( "[id^='morrisDonut4'] text:last-child" ).find('tspan').text(d4_new+"%");
-
-  }
-    function trigger_bar_grphs(ppc_pie_report,ccp_pie_report,atp_swab_pie_report,receivinglog_pie_report){
-         new Morris.Bar({
-    element: 'morrisBar2',
-    data:ppc_pie_report,
-    xkey: 'y',
-    ykeys: ['a', 'b'],
-    labels: ['Passed', 'Failed'],
-    barColors: ['#4CB581', '#717373'],
-    stacked: true,
-    gridTextSize: 11,
-    hideHover: 'auto',
-    resize: true,
-    barSize: 30,
-    gridTextWeight: "bolder",
-    gridTextColor: "#4CB581",
-  });
  
- new Morris.Bar({
-    element: 'morrisBar1',
-    data:  ccp_pie_report,
-    xkey: 'y',
-    ykeys: ['a', 'b'],
-    labels: ['Passed', 'Failed'],
-    barColors: ['#D14F57', '#717373'],
-    stacked: true,
-    gridTextSize: 11,
-    hideHover: 'auto',
-    resize: true,
-    barSize: 30,
-    gridTextWeight: "bolder",
-    gridTextColor: "#D14F57",
-  });
-  
-   var morrisBar3data=
-    new Morris.Bar({
-    element: 'morrisBar3',
-    data: atp_swab_pie_report,
-    xkey: 'y',
-    ykeys: ['a', 'b'],
-    labels: ['Passed', 'Failed'],
-    barColors: ['#5D89A8', '#717373'],
-    stacked: true,
-    gridTextSize: 11,
-    hideHover: 'auto',
-    resize: true,
-    barSize: 30,
-    gridTextWeight: "bolder",
-    gridTextColor: "#5D89A8",
-  });
-    new Morris.Bar({
-    element: 'morrisBar4',
-    data:  receivinglog_pie_report,
-    xkey: 'y',
-    ykeys: ['a', 'b'],
-    labels: ['Passed', 'Failed'],
-    barColors: ['#EF9738', '#717373'],
-    stacked: true,
-    gridTextSize: 11,
-    hideHover: 'auto',
-    resize: true,
-    barSize: 30,
-    gridTextWeight: "bolder",
-    gridTextColor: "#EF9738",
-  });
-    }
+
+function triiger_pie_charts(ppc_pie_report,ccp_pie_report,atp_swab_pie_report,receivinglog_pie_report){
+   var rootStyle = getComputedStyle(document.body);
+    var themeColor1 = rootStyle.getPropertyValue("--theme-color-1").trim();
+    var themeColor2 = rootStyle.getPropertyValue("--theme-color-2").trim();
+    var themeColor3 = rootStyle.getPropertyValue("--theme-color-3").trim();
+    var themeColor4 = rootStyle.getPropertyValue("--theme-color-4").trim();
+    var themeColor5 = rootStyle.getPropertyValue("--theme-color-5").trim();
+    var themeColor6 = rootStyle.getPropertyValue("--theme-color-6").trim();
+    var themeColor1_10 = rootStyle
+      .getPropertyValue("--theme-color-1-10")
+      .trim();
+    var themeColor2_10 = rootStyle
+      .getPropertyValue("--theme-color-2-10")
+      .trim();
+    var themeColor3_10 = rootStyle
+      .getPropertyValue("--theme-color-3-10")
+      .trim();
+    var themeColor4_10 = rootStyle
+      .getPropertyValue("--theme-color-4-10")
+      .trim();
+
+    var themeColor5_10 = rootStyle
+      .getPropertyValue("--theme-color-5-10")
+      .trim();
+    var themeColor6_10 = rootStyle
+      .getPropertyValue("--theme-color-6-10")
+      .trim();
+
+    var primaryColor = rootStyle.getPropertyValue("--primary-color").trim();
+    var foregroundColor = rootStyle
+      .getPropertyValue("--foreground-color")
+      .trim();
+    var separatorColor = rootStyle.getPropertyValue("--separator-color").trim();
+
+    /* 03.02. Resize */
+    var subHiddenBreakpoint = 1440;
+    var searchHiddenBreakpoint = 768;
+    var menuHiddenBreakpoint = 768;
+
+
+ 	if (document.getElementById("categoryChart1")) {
+        var categoryChart1 = document.getElementById("categoryChart1");
+        var myDoughnutChart = new Chart(categoryChart1, {
+        //  plugins: [centerTextPlugin],
+          type: "DoughnutWithShadow",
+          data: {
+            labels: ["pass", "fail"],
+            datasets: [
+              {
+                label: "",
+                borderColor: [themeColor3, themeColor2, themeColor1],
+                backgroundColor: [
+                  themeColor3_10,
+                  themeColor2_10,
+                  themeColor1_10
+                ],
+                borderWidth: 2,
+                data:  [ppc_pie_report.pass,ppc_pie_report.fail]
+              }
+            ]
+          },
+          draw: function () { },
+          options: {
+            plugins: {
+              datalabels: {
+                display: false
+              }
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            cutoutPercentage: 80,
+            title: {
+              display: false
+            },
+            layout: {
+              padding: {
+                bottom: 20
+              }
+            },
+            legend: {
+              position: "bottom",
+              labels: {
+                padding: 30,
+                usePointStyle: true,
+                fontSize: 12
+              }
+            }
+          }
+        });
+      }
+  	if (document.getElementById("categoryChart2")) {
+        var categoryChart2 = document.getElementById("categoryChart2");
+        var myDoughnutChart = new Chart(categoryChart2, {
+       //   plugins: [centerTextPlugin],
+          type: "DoughnutWithShadow",
+          data: {
+            labels: ["pass", "fail"],
+            datasets: [
+              {
+                label: "",
+                borderColor: [themeColor3, themeColor2, themeColor1],
+                backgroundColor: [
+                  themeColor3_10,
+                  themeColor2_10,
+                  themeColor1_10
+                ],
+                borderWidth: 2,
+                data: [ccp_pie_report.pass,ccp_pie_report.fail]
+              }
+            ]
+          },
+          draw: function () { },
+          options: {
+            plugins: {
+              datalabels: {
+                display: false
+              }
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            cutoutPercentage: 80,
+            title: {
+              display: false
+            },
+            layout: {
+              padding: {
+                bottom: 20
+              }
+            },
+            legend: {
+              position: "bottom",
+              labels: {
+                padding: 30,
+                usePointStyle: true,
+                fontSize: 12
+              }
+            }
+          }
+        });
+      }
+  	if (document.getElementById("categoryChart3")) {
+        var categoryChart3 = document.getElementById("categoryChart3");
+        var myDoughnutChart = new Chart(categoryChart3, {
+       //   plugins: [centerTextPlugin],
+          type: "DoughnutWithShadow",
+          data: {
+            labels: ["pass", "fail"],
+            datasets: [
+              {
+                label: "",
+                borderColor: [themeColor3, themeColor2, themeColor1],
+                backgroundColor: [
+                  themeColor3_10,
+                  themeColor2_10,
+                  themeColor1_10
+                ],
+                borderWidth: 2,
+                data: [atp_swab_pie_report.pass,atp_swab_pie_report.fail]
+              }
+            ]
+          },
+          draw: function () { },
+          options: {
+            plugins: {
+              datalabels: {
+                display: false
+              }
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            cutoutPercentage: 80,
+            title: {
+              display: false
+            },
+            layout: {
+              padding: {
+                bottom: 20
+              }
+            },
+            legend: {
+              position: "bottom",
+              labels: {
+                padding: 30,
+                usePointStyle: true,
+                fontSize: 12
+              }
+            }
+          }
+        });
+      }
+  	if (document.getElementById("categoryChart4")) {
+        var categoryChart4 = document.getElementById("categoryChart4");
+        var myDoughnutChart = new Chart(categoryChart4, {
+        //  plugins: [centerTextPlugin],
+          type: "DoughnutWithShadow",
+          data: {
+            labels: ["pass","fail"],
+            datasets: [
+              {
+                label: "",
+                borderColor: [themeColor3, themeColor2, themeColor1],
+                backgroundColor: [
+                  themeColor3_10,
+                  themeColor2_10,
+                  themeColor1_10
+                ],
+                borderWidth: 2,
+                data: [receivinglog_pie_report.pass,receivinglog_pie_report.fail]
+              }
+            ]
+          },
+          draw: function () { },
+          options: {
+            plugins: {
+              datalabels: {
+                display: false
+              }
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            cutoutPercentage: 80,
+            title: {
+              display: false
+            },
+            layout: {
+              padding: {
+                bottom: 20
+              }
+            },
+            legend: {
+              position: "bottom",
+              labels: {
+                padding: 30,
+                usePointStyle: true,
+                fontSize: 12
+              }
+            }
+          }
+        });
+      }
+ }
+
 </script>
 <script type="text/javascript">
-  function morrisline1_data(final,plant_name,plant_index) {
-    new Morris.Line({
-    element: 'morrisLine1',
-    data: final,
-    xkey: 'y',
-    ykeys: plant_index,
-    labels: plant_name,
-    lineColors: ['#560bd0', '#007bff'],
-    lineWidth: 1,
-    ymax: 'auto 100',
-    gridTextSize: 11,
-    hideHover: 'auto',
-    resize: true
-  });
+  function morrisline1_data(plants,date,plants_name) {
+   var rootStyle = getComputedStyle(document.body);
+    var themeColor1 = rootStyle.getPropertyValue("--theme-color-1").trim();
+    var themeColor2 = rootStyle.getPropertyValue("--theme-color-2").trim();
+    var themeColor3 = rootStyle.getPropertyValue("--theme-color-3").trim();
+    var themeColor4 = rootStyle.getPropertyValue("--theme-color-4").trim();
+    var themeColor5 = rootStyle.getPropertyValue("--theme-color-5").trim();
+    var themeColor6 = rootStyle.getPropertyValue("--theme-color-6").trim();
+    var themeColor1_10 = rootStyle
+      .getPropertyValue("--theme-color-1-10")
+      .trim();
+    var themeColor2_10 = rootStyle
+      .getPropertyValue("--theme-color-2-10")
+      .trim();
+    var themeColor3_10 = rootStyle
+      .getPropertyValue("--theme-color-3-10")
+      .trim();
+    var themeColor4_10 = rootStyle
+      .getPropertyValue("--theme-color-4-10")
+      .trim();
+
+    var themeColor5_10 = rootStyle
+      .getPropertyValue("--theme-color-5-10")
+      .trim();
+    var themeColor6_10 = rootStyle
+      .getPropertyValue("--theme-color-6-10")
+      .trim();
+
+    var primaryColor = rootStyle.getPropertyValue("--primary-color").trim();
+    var foregroundColor = rootStyle
+      .getPropertyValue("--foreground-color")
+      .trim();
+    var separatorColor = rootStyle.getPropertyValue("--separator-color").trim();
+
+    /* 03.02. Resize */
+    var subHiddenBreakpoint = 1440;
+    var searchHiddenBreakpoint = 768;
+    var menuHiddenBreakpoint = 768;
+
+  		
+      if (document.getElementById("salesChart")) {
+        var salesChart = document.getElementById("salesChart").getContext("2d");
+        var myChart = new Chart(salesChart, {
+          type: "LineWithShadow",
+          options: {
+            plugins: {
+              datalabels: {
+                display: false
+              }
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              yAxes: [
+                {
+                  gridLines: {
+                    display: true,
+                    lineWidth: 1,
+                    color: "rgba(0,0,0,0.1)",
+                    drawBorder: false
+                  },
+                  ticks: {
+                    beginAtZero: true,
+                    padding: 20
+                  }
+                }
+              ],
+              xAxes: [
+                {
+                  gridLines: {
+                    display: false
+                  }
+                }
+              ]
+            },
+            legend: {
+              display: false
+            }
+          },
+          data: {
+            labels: date,
+            datasets: [
+            	{
+                label: plants.name,
+                data: plants[0].count,
+                borderColor: themeColor1,
+                pointBackgroundColor: foregroundColor,
+                pointBorderColor: themeColor1,
+                pointHoverBackgroundColor: themeColor1,
+                pointHoverBorderColor: foregroundColor,
+                pointRadius: 6,
+                pointBorderWidth: 2,
+                pointHoverRadius: 8,fill: true,
+               }
+            	// {
+            	// label: plants[1].name,
+            	// data: plants[1].count,
+            	// borderColor: themeColor1,
+            	// pointBackgroundColor: foregroundColor,
+            	// pointBorderColor: themeColor1,
+            	// pointHoverBackgroundColor: themeColor1,
+            	// pointHoverBorderColor: foregroundColor,
+            	// pointRadius: 6,
+            	// pointBorderWidth: 2,
+            	// pointHoverRadius: 8,fill: true,
+            	// },
+            ]
+          }
+        });
+      }
   }
+
+      $(document).on("click", ".view_details", function (event) {
+        event.preventDefault();
+        var id = $(this).attr('rel');
+    	var static = $(this).attr('static');
+    if(static=="1")
+    {
+          $.ajax({
+            type: 'POST',
+            url:"<?= ADMIN_BASE_URL?>static_form/static_form_detail",
+            data: {'id':id},
+            async: false,
+            success: function(test_body) {
+                var test_desc = test_body;
+                //var test_body = '<ul class="list-group"><li class="list-group-item"><b>Description:</b> Akabir Abbasi Test</li></ul>';
+                $('#myModalLarge').modal('show')
+                //$("#myModal .modal-title").html(test_title);
+                $("#myModalLarge .modal-body").html(test_desc);
+            }
+        });
+    }
+    else
+    {
+        $.ajax({
+            type: 'POST',
+            url:"<?= ADMIN_BASE_URL?>assignments/pending_review_detail",
+            data: {'id':id},
+            async: false,
+            success: function(test_body) {
+                var test_desc = test_body;
+                //var test_body = '<ul class="list-group"><li class="list-group-item"><b>Description:</b> Akabir Abbasi Test</li></ul>';
+                $('#myModalLarge').modal('show')
+                //$("#myModal .modal-title").html(test_title);
+                $("#myModalLarge .modal-body").html(test_desc);
+            }
+        });
+     }
+    });
 </script>
+
+<script>
+
+ function trigger_bar_grphs(ppc_pie_report,ccp_pie_report,atp_swab_pie_report,receivinglog_pie_report){
+      var rootStyle = getComputedStyle(document.body);
+    var themeColor1 = rootStyle.getPropertyValue("--theme-color-1").trim();
+    var themeColor2 = rootStyle.getPropertyValue("--theme-color-2").trim();
+    var themeColor3 = rootStyle.getPropertyValue("--theme-color-3").trim();
+    var themeColor4 = rootStyle.getPropertyValue("--theme-color-4").trim();
+    var themeColor5 = rootStyle.getPropertyValue("--theme-color-5").trim();
+    var themeColor6 = rootStyle.getPropertyValue("--theme-color-6").trim();
+    var themeColor1_10 = rootStyle
+      .getPropertyValue("--theme-color-1-10")
+      .trim();
+    var themeColor2_10 = rootStyle
+      .getPropertyValue("--theme-color-2-10")
+      .trim();
+    var themeColor3_10 = rootStyle
+      .getPropertyValue("--theme-color-3-10")
+      .trim();
+    var themeColor4_10 = rootStyle
+      .getPropertyValue("--theme-color-4-10")
+      .trim();
+
+    var themeColor5_10 = rootStyle
+      .getPropertyValue("--theme-color-5-10")
+      .trim();
+    var themeColor6_10 = rootStyle
+      .getPropertyValue("--theme-color-6-10")
+      .trim();
+
+    var primaryColor = rootStyle.getPropertyValue("--primary-color").trim();
+    var foregroundColor = rootStyle
+      .getPropertyValue("--foreground-color")
+      .trim();
+    var separatorColor = rootStyle.getPropertyValue("--separator-color").trim();
+
+    /* 03.02. Resize */
+    var subHiddenBreakpoint = 1440;
+    var searchHiddenBreakpoint = 768;
+    var menuHiddenBreakpoint = 768;
+       if (document.getElementById("productChart1")) {
+        var productChart1 = document
+          .getElementById("productChart1")
+          .getContext("2d");
+        var myChart = new Chart(productChart1, {
+          type: "BarWithShadow",
+          options: {
+            plugins: {
+              datalabels: {
+                display: false
+              }
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              yAxes: [
+                {
+                  gridLines: {
+                    display: true,
+                    lineWidth: 1,
+                    color: "rgba(0,0,0,0.1)",
+                    drawBorder: false
+                  },
+                  ticks: {
+                    beginAtZero: true,
+                    padding: 20
+                  }
+                }
+              ],
+              xAxes: [
+                {
+                  gridLines: {
+                    display: false
+                  }
+                }
+              ]
+            },
+            legend: {
+              position: "bottom",
+              labels: {
+                padding: 30,
+                usePointStyle: true,
+                fontSize: 12
+              }
+            }
+          },
+      
+          data: {
+            labels: ppc_pie_report[0].title,
+            datasets: [
+              {
+                label: "Pass",
+                borderColor: themeColor1,
+                backgroundColor: themeColor1_10,
+                data: ppc_pie_report[0].pass,
+                borderWidth: 2
+              },
+              {
+                label: "Fail",
+                borderColor: themeColor2,
+                backgroundColor: themeColor2_10,
+                data: ppc_pie_report[0].fail,
+                borderWidth: 2
+              }
+            ]
+          }
+        });
+      }
+ 	   if (document.getElementById("productChart2")) {
+        var productChart2 = document
+          .getElementById("productChart2")
+          .getContext("2d");
+        var myChart = new Chart(productChart2, {
+          type: "BarWithShadow",
+          options: {
+            plugins: {
+              datalabels: {
+                display: false
+              }
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              yAxes: [
+                {
+                  gridLines: {
+                    display: true,
+                    lineWidth: 1,
+                    color: "rgba(0,0,0,0.1)",
+                    drawBorder: false
+                  },
+                  ticks: {
+                    beginAtZero: true,
+                    padding: 20
+                  }
+                }
+              ],
+              xAxes: [
+                {
+                  gridLines: {
+                    display: false
+                  }
+                }
+              ]
+            },
+            legend: {
+              position: "bottom",
+              labels: {
+                padding: 30,
+                usePointStyle: true,
+                fontSize: 12
+              }
+            }
+          },
+          data: {
+            labels: ccp_pie_report[0].title,
+            datasets: [
+              {
+                label: "Pass",
+                borderColor: themeColor1,
+                backgroundColor: themeColor1_10,
+                data: [0, 0, 9],
+                borderWidth: 2
+              },
+              {
+                label: "Fail",
+                borderColor: themeColor2,
+                backgroundColor: themeColor2_10,
+                data: [0, 0, 9],
+                borderWidth: 2
+              }
+            ]
+          }
+        });
+      }
+       if (document.getElementById("productChart3")) {
+        var productChart3 = document
+          .getElementById("productChart3")
+          .getContext("2d");
+        var myChart = new Chart(productChart3, {
+          type: "BarWithShadow",
+          options: {
+            plugins: {
+              datalabels: {
+                display: false
+              }
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              yAxes: [
+                {
+                  gridLines: {
+                    display: true,
+                    lineWidth: 1,
+                    color: "rgba(0,0,0,0.1)",
+                    drawBorder: false
+                  },
+                  ticks: {
+                    beginAtZero: true,
+                    padding: 20
+                  }
+                }
+              ],
+              xAxes: [
+                {
+                  gridLines: {
+                    display: false
+                  }
+                }
+              ]
+            },
+            legend: {
+              position: "bottom",
+              labels: {
+                padding: 30,
+                usePointStyle: true,
+                fontSize: 12
+              }
+            }
+          },
+          data: {
+            labels: atp_swab_pie_report[0].title,
+            datasets: [
+              {
+                label: "Pass",
+                borderColor: themeColor1,
+                backgroundColor: themeColor1_10,
+                data: atp_swab_pie_report[0].pass,
+                borderWidth: 2
+              },
+              {
+                label: "Fail",
+                borderColor: themeColor2,
+                backgroundColor: themeColor2_10,
+                data: atp_swab_pie_report[0].fail,
+                borderWidth: 2
+              }
+            ]
+          }
+        });
+      }
+       if (document.getElementById("productChart4")) {
+        var productChart4 = document
+          .getElementById("productChart4")
+          .getContext("2d");
+        var myChart = new Chart(productChart4, {
+          type: "BarWithShadow",
+          options: {
+            plugins: {
+              datalabels: {
+                display: false
+              }
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              yAxes: [
+                {
+                  gridLines: {
+                    display: true,
+                    lineWidth: 1,
+                    color: "rgba(0,0,0,0.1)",
+                    drawBorder: false
+                  },
+                  ticks: {
+                    beginAtZero: true,
+                    padding: 20
+                  }
+                }
+              ],
+              xAxes: [
+                {
+                  gridLines: {
+                    display: false
+                  }
+                }
+              ]
+            },
+            legend: {
+              position: "bottom",
+              labels: {
+                padding: 30,
+                usePointStyle: true,
+                fontSize: 12
+              }
+            }
+          },
+          data: {
+            labels: receivinglog_pie_report[0].title,
+            datasets: [
+              {
+                label: "Pass",
+                borderColor: themeColor1,
+                backgroundColor: themeColor1_10,
+                data: receivinglog_pie_report[0].pass,
+                borderWidth: 2
+              },
+              {
+                label: "Fail",
+                borderColor: themeColor2,
+                backgroundColor: themeColor2_10,
+                data: receivinglog_pie_report[0].fail,
+                borderWidth: 2
+              }
+            ]
+          }
+        });
+      }
+ 
+ 
+
+ 	}
+
+
+
+
+
+</script>
+
 <script type="text/javascript">
   function show_trendline_graph_data(trendline_graph_data){
-
     var options = {
       chart: {
         height: 350,
@@ -577,49 +1435,566 @@
 
     chart.render();
   }
-</script>
-<script>
-      $(document).on("click", ".view_details", function (event) {
-        event.preventDefault();
-        var id = $(this).attr('rel');
-    	var static = $(this).attr('static');
-    if(static=="1")
-    {
-          $.ajax({
-            type: 'POST',
-            url:"<?= ADMIN_BASE_URL?>static_form/static_form_detail",
-            data: {'id':id},
-            async: false,
-            success: function(test_body) {
-                var test_desc = test_body;
-                //var test_body = '<ul class="list-group"><li class="list-group-item"><b>Description:</b> Akabir Abbasi Test</li></ul>';
-                $('#myModalLarge').modal('show')
-                //$("#myModal .modal-title").html(test_title);
-                $("#myModalLarge .modal-body").html(test_desc);
+     Chart.defaults.LineWithShadow = Chart.defaults.line;
+      Chart.controllers.LineWithShadow = Chart.controllers.line.extend({
+        draw: function (ease) {
+          Chart.controllers.line.prototype.draw.call(this, ease);
+          var ctx = this.chart.ctx;
+          ctx.save();
+          ctx.shadowColor = "rgba(0,0,0,0.15)";
+          ctx.shadowBlur = 10;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 10;
+          ctx.responsive = true;
+          ctx.stroke();
+          Chart.controllers.line.prototype.draw.apply(this, arguments);
+          ctx.restore();
+        }
+      });
+
+$.fn.addCommas = function (nStr) {
+  nStr += "";
+  var x = nStr.split(".");
+  var x1 = x[0];
+  var x2 = x.length > 1 ? "." + x[1] : "";
+  var rgx = /(\d+)(\d{3})/;
+  while (rgx.test(x1)) {
+    x1 = x1.replace(rgx, "$1" + "," + "$2");
+  }
+  return x1 + x2;
+};
+
+
+      
+      function status_data(status_graph){
+      var chartTooltip = {
+        backgroundColor: foregroundColor,
+        titleFontColor: primaryColor,
+        borderColor: separatorColor,
+        borderWidth: 0.5,
+        bodyFontColor: primaryColor,
+        bodySpacing: 10,
+        xPadding: 15,
+        yPadding: 15,
+        cornerRadius: 0.15,
+        displayColors: false
+      };
+      var rootStyle = getComputedStyle(document.body);
+    var themeColor1 = rootStyle.getPropertyValue("--theme-color-1").trim();
+    var themeColor2 = rootStyle.getPropertyValue("--theme-color-2").trim();
+    var themeColor3 = rootStyle.getPropertyValue("--theme-color-3").trim();
+    var themeColor4 = rootStyle.getPropertyValue("--theme-color-4").trim();
+    var themeColor5 = rootStyle.getPropertyValue("--theme-color-5").trim();
+    var themeColor6 = rootStyle.getPropertyValue("--theme-color-6").trim();
+    var themeColor1_10 = rootStyle
+      .getPropertyValue("--theme-color-1-10")
+      .trim();
+    var themeColor2_10 = rootStyle
+      .getPropertyValue("--theme-color-2-10")
+      .trim();
+    var themeColor3_10 = rootStyle
+      .getPropertyValue("--theme-color-3-10")
+      .trim();
+    var themeColor4_10 = rootStyle
+      .getPropertyValue("--theme-color-4-10")
+      .trim();
+
+    var themeColor5_10 = rootStyle
+      .getPropertyValue("--theme-color-5-10")
+      .trim();
+    var themeColor6_10 = rootStyle
+      .getPropertyValue("--theme-color-6-10")
+      .trim();
+
+    var primaryColor = rootStyle.getPropertyValue("--primary-color").trim();
+    var foregroundColor = rootStyle
+      .getPropertyValue("--foreground-color")
+      .trim();
+    var separatorColor = rootStyle.getPropertyValue("--separator-color").trim();
+
+    /* 03.02. Resize */
+    var subHiddenBreakpoint = 1440;
+    var searchHiddenBreakpoint = 768;
+    var menuHiddenBreakpoint = 768;
+      
+      	if (document.getElementById("visitChart1")) {
+        var visitChart1 = document.getElementById("visitChart1").getContext("2d");
+        var myChart = new Chart(visitChart1, {
+          type: "LineWithShadow",
+          options: {
+            plugins: {
+              datalabels: {
+                display: false
+              }
+            },
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+              yAxes: [
+                {
+                  gridLines: {
+                    display: true,
+                    lineWidth: 1,
+                    color: "rgba(0,0,0,0.1)",
+                    drawBorder: false
+                  },
+                  ticks: {
+                    beginAtZero: true,
+                    padding: 0
+                  }
+                }
+              ],
+              xAxes: [
+                {
+                  gridLines: {
+                    display: false,
+                  }
+                }
+              ]
+            },
+            legend: {
+              display: false,
             }
+          },
+          data: {
+            labels: status_graph.date,
+            datasets: [
+              {
+                label: "Pending",
+                data: status_graph.pending,
+                borderColor: themeColor1,
+                pointBackgroundColor: foregroundColor,
+                pointBorderColor: themeColor1,
+                pointHoverBackgroundColor: themeColor1,
+                pointHoverBorderColor: foregroundColor,
+                pointRadius: 4,
+                pointBorderWidth: 2,
+                pointHoverRadius: 5,
+                fill: true,
+                borderWidth: 2,
+                backgroundColor: themeColor1_10
+              }
+            ,{
+                label: "Completed",
+                data: status_graph.completed,
+                borderColor: themeColor2,
+                pointBackgroundColor: foregroundColor,
+                pointBorderColor: themeColor2,
+                pointHoverBackgroundColor: themeColor2,
+                pointHoverBorderColor: foregroundColor,
+                pointRadius: 4,
+                pointBorderWidth: 2,
+                pointHoverRadius: 5,
+                fill: true,
+                borderWidth: 2,
+                backgroundColor: themeColor2_10
+              }
+            ]
+          }
         });
-    }
-    else
-    {
-        $.ajax({
-            type: 'POST',
-            url:"<?= ADMIN_BASE_URL?>assignments/pending_review_detail",
-            data: {'id':id},
-            async: false,
-            success: function(test_body) {
-                var test_desc = test_body;
-                //var test_body = '<ul class="list-group"><li class="list-group-item"><b>Description:</b> Akabir Abbasi Test</li></ul>';
-                $('#myModalLarge').modal('show')
-                //$("#myModal .modal-title").html(test_title);
-                $("#myModalLarge .modal-body").html(test_desc);
+      }
+      }
+      function compliant_data(compliant_graph){
+      var chartTooltip = {
+        backgroundColor: foregroundColor,
+        titleFontColor: primaryColor,
+        borderColor: separatorColor,
+        borderWidth: 0.5,
+        bodyFontColor: primaryColor,
+        bodySpacing: 10,
+        xPadding: 15,
+        yPadding: 15,
+        cornerRadius: 0.15,
+        displayColors: false
+      };
+      var rootStyle = getComputedStyle(document.body);
+    var themeColor1 = rootStyle.getPropertyValue("--theme-color-1").trim();
+    var themeColor2 = rootStyle.getPropertyValue("--theme-color-2").trim();
+    var themeColor3 = rootStyle.getPropertyValue("--theme-color-3").trim();
+    var themeColor4 = rootStyle.getPropertyValue("--theme-color-4").trim();
+    var themeColor5 = rootStyle.getPropertyValue("--theme-color-5").trim();
+    var themeColor6 = rootStyle.getPropertyValue("--theme-color-6").trim();
+    var themeColor1_10 = rootStyle
+      .getPropertyValue("--theme-color-1-10")
+      .trim();
+    var themeColor2_10 = rootStyle
+      .getPropertyValue("--theme-color-2-10")
+      .trim();
+    var themeColor3_10 = rootStyle
+      .getPropertyValue("--theme-color-3-10")
+      .trim();
+    var themeColor4_10 = rootStyle
+      .getPropertyValue("--theme-color-4-10")
+      .trim();
+
+    var themeColor5_10 = rootStyle
+      .getPropertyValue("--theme-color-5-10")
+      .trim();
+    var themeColor6_10 = rootStyle
+      .getPropertyValue("--theme-color-6-10")
+      .trim();
+
+    var primaryColor = rootStyle.getPropertyValue("--primary-color").trim();
+    var foregroundColor = rootStyle
+      .getPropertyValue("--foreground-color")
+      .trim();
+    var separatorColor = rootStyle.getPropertyValue("--separator-color").trim();
+
+    /* 03.02. Resize */
+    var subHiddenBreakpoint = 1440;
+    var searchHiddenBreakpoint = 768;
+    var menuHiddenBreakpoint = 768;
+      if (document.getElementById("conversionChart1")) {
+        var conversionChart1 = document
+          .getElementById("conversionChart1")
+          .getContext("2d");
+        var myChart = new Chart(conversionChart1, {
+          type: "LineWithShadow",
+          options: {
+            plugins: {
+              datalabels: {
+                display: false
+              }
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              yAxes: [
+                {
+                  gridLines: {
+                    display: true,
+                    lineWidth: 1,
+                    color: "rgba(0,0,0,0.1)",
+                    drawBorder: false
+                  },
+                  ticks: {
+                    beginAtZero: true,
+                    padding: 0
+                  }
+                }
+              ],
+              xAxes: [
+                {
+                  gridLines: {
+                    display: false
+                  }
+                }
+              ]
+            },
+            legend: {
+              display: false
             }
+          },
+          data: {
+            labels:compliant_graph.date,
+            datasets: [
+              {
+                label: "Compliant",
+                data: compliant_graph.compliant,
+                borderColor: themeColor2,
+                pointBackgroundColor: foregroundColor,
+                pointBorderColor: themeColor2,
+                pointHoverBackgroundColor: themeColor2,
+                pointHoverBorderColor: foregroundColor,
+                pointRadius: 4,
+                pointBorderWidth: 2,
+                pointHoverRadius: 5,
+                fill: true,
+                borderWidth: 2,
+                backgroundColor: themeColor2_10
+              },
+             {
+                label: "Non- Compliant",
+                data:compliant_graph.non_compliant,
+                borderColor: themeColor1,
+                pointBackgroundColor: foregroundColor,
+                pointBorderColor: themeColor1,
+                pointHoverBackgroundColor: themeColor1,
+                pointHoverBorderColor: foregroundColor,
+                pointRadius: 4,
+                pointBorderWidth: 2,
+                pointHoverRadius: 5,
+                fill: true,
+                borderWidth: 2,
+                backgroundColor: themeColor1_10
+              }
+            ]
+          }
         });
-     }
-    });
+      }
+      
+     Chart.defaults.LineWithLine = Chart.defaults.line;
+      Chart.controllers.LineWithLine = Chart.controllers.line.extend({
+        draw: function (ease) {
+          Chart.controllers.line.prototype.draw.call(this, ease);
+          if (this.chart.tooltip._active && this.chart.tooltip._active.length) {
+            var activePoint = this.chart.tooltip._active[0];
+            var ctx = this.chart.ctx;
+            var x = activePoint.tooltipPosition().x;
+            var topY = this.chart.scales["y-axis-0"].top;
+            var bottomY = this.chart.scales["y-axis-0"].bottom;
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(x, topY);
+            ctx.lineTo(x, bottomY);
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = "rgba(0,0,0,0.1)";
+            ctx.stroke();
+            ctx.restore();
+          }
+        }
+      });
+    var smallChartOptions = {
+        layout: {
+          padding: {
+            left: 5,
+            right: 5,
+            top: 10,
+            bottom: 10
+          }
+        },
+        plugins: {
+          datalabels: {
+            display: false
+          }
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          display: false
+        },
+        tooltips: {
+          intersect: false,
+          enabled: false,
+          custom: function (tooltipModel) {
+            if (tooltipModel && tooltipModel.dataPoints) {
+              var $textContainer = $(this._chart.canvas.offsetParent);
+              var yLabel = tooltipModel.dataPoints[0].yLabel;
+              var xLabel = tooltipModel.dataPoints[0].xLabel;
+              var label = tooltipModel.body[0].lines[0].split(":")[0];
+              $textContainer.find(".value").html("" + $.fn.addCommas(yLabel));
+              $textContainer.find(".label").html(label + "-" + xLabel);
+            }
+          }
+        },
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true
+              },
+              display: false
+            }
+          ],
+          xAxes: [
+            {
+              display: false
+            }
+          ]
+        }
+      };
+    var smallChartInit = {
+        afterInit: function (chart, options) {
+          var $textContainer = $(chart.canvas.offsetParent);
+          var yLabel = chart.data.datasets[0].data[0];
+          var xLabel = chart.data.labels[0];
+          var label = chart.data.datasets[0].label;
+          $textContainer.find(".value").html("" + $.fn.addCommas(yLabel));
+          $textContainer.find(".label").html(label + "-" + xLabel);
+        }
+      };
 
+
+
+	var checks= '<?php echo $checks; ?>';
+    var checks=JSON.parse(checks);
+      if (document.getElementById("smallChart1")) {
+        var smallChart1 = document
+          .getElementById("smallChart1")
+          .getContext("2d");
+        var myChart = new Chart(smallChart1, {
+          type: "LineWithLine",
+          plugins: [smallChartInit],
+          data: {
+            labels:checks.day,
+            datasets: [
+              {
+                label: "Total Checks",
+                borderColor: themeColor1,
+                pointBorderColor: themeColor1,
+                pointHoverBackgroundColor: themeColor1,
+                pointHoverBorderColor: themeColor1,
+                pointRadius: 2,
+                pointBorderWidth: 3,
+                pointHoverRadius: 2,
+                fill: false,
+                borderWidth: 2,
+                data: checks.total_checks,
+                datalabels: {
+                  align: "end",
+                  anchor: "end"
+                }
+              }
+            ]
+          },
+          options: smallChartOptions
+        });
+      }
+
+      if (document.getElementById("smallChart2")) {
+        var smallChart2 = document
+          .getElementById("smallChart2")
+          .getContext("2d");
+        var myChart = new Chart(smallChart2, {
+          type: "LineWithLine",
+          plugins: [smallChartInit],
+          data: {
+            labels: checks.day,
+            datasets: [
+              {
+                label: "Pending Review",
+                borderColor: themeColor1,
+                pointBorderColor: themeColor1,
+                pointHoverBackgroundColor: themeColor1,
+                pointHoverBorderColor: themeColor1,
+                pointRadius: 2,
+                pointBorderWidth: 3,
+                pointHoverRadius: 2,
+                fill: false,
+                borderWidth: 2,
+                data: checks.pending_reviews,
+                datalabels: {
+                  align: "end",
+                  anchor: "end"
+                }
+              }
+            ]
+          },
+          options: smallChartOptions
+        });
+      }
+
+      if (document.getElementById("smallChart3")) {
+        var smallChart3 = document
+          .getElementById("smallChart3")
+          .getContext("2d");
+        var myChart = new Chart(smallChart3, {
+          type: "LineWithLine",
+          plugins: [smallChartInit],
+          data: {
+            labels:checks.day,
+            datasets: [
+              {
+                label: "Pending Approval",
+                borderColor: themeColor1,
+                pointBorderColor: themeColor1,
+                pointHoverBackgroundColor: themeColor1,
+                pointHoverBorderColor: themeColor1,
+                pointRadius: 2,
+                pointBorderWidth: 3,
+                pointHoverRadius: 2,
+                fill: false,
+                borderWidth: 2,
+                data: checks.pending_approval,
+                datalabels: {
+                  align: "end",
+                  anchor: "end"
+                }
+              }
+            ]
+          },
+          options: smallChartOptions
+        });
+      }
+
+      if (document.getElementById("smallChart4")) {
+        var smallChart4 = document
+          .getElementById("smallChart4")
+          .getContext("2d");
+        var myChart = new Chart(smallChart4, {
+          type: "LineWithLine",
+          plugins: [smallChartInit],
+          data: {
+            labels: checks.day,
+            datasets: [
+              {
+                label: "Completed",
+                borderColor: themeColor1,
+                pointBorderColor: themeColor1,
+                pointHoverBackgroundColor: themeColor1,
+                pointHoverBorderColor: themeColor1,
+                pointRadius: 2,
+                pointBorderWidth: 3,
+                pointHoverRadius: 2,
+                fill: false,
+                borderWidth: 2,
+                data: checks.completed_checks,
+                datalabels: {
+                  align: "end",
+                  anchor: "end"
+                }
+              }
+            ]
+          },
+          options: smallChartOptions
+        });
+      }
+     var static=''; 
+     static= '<?php echo $static; ?>';
+     var static=JSON.parse(static);
+         if (document.getElementById("polarChart1")) {
+
+        var polarChart1 = document.getElementById("polarChart1").getContext("2d");
+        var myChart = new Chart(polarChart1, {
+          type: "PolarWithShadow",
+          options: {
+            plugins: {
+              datalabels: {
+                display: false
+              }
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            scale: {
+              ticks: {
+                display: false
+              }
+            },
+            legend: {
+              position: "bottom",
+              labels: {
+                padding: 30,
+                usePointStyle: true,
+                fontSize: 12
+              }
+            }
+          },
+          data: {
+            datasets: [
+              {
+                label: "Static Checks",
+                borderWidth: 2,
+                pointBackgroundColor: themeColor1,
+                borderColor: [themeColor1, themeColor2, themeColor3],
+                backgroundColor: [
+                  themeColor1_10,
+                  themeColor2_10,
+                  themeColor3_10
+                ],
+                data: [static.pass,static.fail]
+              }
+            ],
+            labels: ["Pass", "Fail"]
+          }
+        });
+      }
+	}
+
+
+
+
+   
 </script>
-
-
 
 
 

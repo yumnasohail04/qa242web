@@ -23,58 +23,26 @@
     background-size: contain;
 }
 </style>
-<div class="page-content-wrapper">
-  <div class="page-content"> 
-    <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
-    <div id="contractors_measurements_modal" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-            <h4 class="modal-title">Modal title</h4>
-          </div>
-          <div class="modal-body"> Widget settings form goes here </div>
-          <div class="modal-footer">
-            <button type="button" class="btn green" id="confirm"><i class="fa fa-check"></i>&nbsp;Save changes</button>
-            <button type="button" class="btn default" data-dismiss="modal"><i class="fa fa-undo"></i>&nbsp;Close</button>
-          </div>
-        </div>
-        <!-- /.modal-content --> 
-      </div>
-      <!-- /.modal-dialog --> 
-    </div>
-    <!-- /.modal --> 
-    <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM--> 
-    <!-- BEGIN PAGE HEADER-->
-    <div class="content-wrapper">
-        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
-      <h3>
-        <?php 
-        if (empty($update_id)) 
-                    $strTitle = 'Add Supplier';
-                else 
-                    $strTitle = 'Edit Supplier';
-                    echo $strTitle;
-                    ?>
-                    <a href="<?php echo ADMIN_BASE_URL . 'supplier'; ?>"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-chevron-left"></i>&nbsp;&nbsp;&nbsp;Back</button></a>
-       </h3>             
-            
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="tabbable tabbable-custom boxless">
-          <div class="tab-content">
-          <div class="panel panel-default" style="border-radius:10px;">
-         
-            <div class="tab-pane  active" id="tab_2" >
-              <div class="portlet box green ">
-                <div class="portlet-title ">
-                 
-                </div>
-                
-                <div class="portlet-body form " style="padding-top:15px;"> 
-                  
-                  <!-- BEGIN FORM-->
+            <main>
+                    <div class="container-fluid">
+                        <div class="row">
+                        <div class="col-12">
+                            <h1>  <?php 
+                            if (empty($update_id)) 
+                                        $strTitle = 'Add Supplier';
+                                    else 
+                                        $strTitle = 'Edit Supplier';
+                                        echo $strTitle;
+                                        ?></h1>
+                            <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="<?php echo ADMIN_BASE_URL . 'supplier'; ?>">&nbsp;&nbsp;&nbsp;Back</a> 
+                            <div class="separator mb-5"></div>
+                        </div>
+                        </div>
+                    <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="mb-4">
+                        
+                        </h5>
                         <?php
                         $attributes = array('autocomplete' => 'off', 'id' => 'form_sample_1', 'class' => 'form-horizontal');
                         if (empty($update_id)) {
@@ -87,15 +55,17 @@
                         else
                             echo form_open_multipart(ADMIN_BASE_URL . 'supplier/submit/' . $update_id, $attributes);
                         ?>
-                  <div class="form-body section-box">
+                 <div class="form-body section-box">
                     
                     <!-- <h3 class="form-section">Post Information</h3>-->
-                   
-                    <div class="row">
-                        <fieldset>
+                    <fieldset>
                             <legend>Supplier Detail</legend>
-                         <div class="col-sm-5">
-                            <div class="form-group">
+                        
+                        </fieldset>
+                    <div class="row">
+                        
+                         <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'name',
@@ -108,15 +78,15 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Name<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Name<span style="color:red">*</span></button>
                                 </div>
+                                <?php echo form_input($data); ?>
                             </div>
                         </div>
                         
-                        <div class="col-sm-5">
-                            <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'supplier_no',
@@ -129,14 +99,14 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Supplier Number <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Supplier Number<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                        <div class="col-sm-5">
-                            <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'email',
@@ -149,14 +119,14 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Email<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Email<span style="color:red">*</span></button>
                                 </div>
+                                <?php echo form_input($data); ?>
                             </div>
                         </div>
-                        <div class="col-sm-5">
-                            <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'phone_no',
@@ -169,14 +139,14 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Phone Number<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Phone Number<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                        <div class="col-sm-5">
-                            <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'address',
@@ -189,14 +159,14 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Address<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Address<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                         <div class="col-sm-5">
-                            <div class="form-group">
+                         <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'city',
@@ -209,14 +179,14 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('City <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">City<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                        <div class="col-sm-5">
-                            <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'state',
@@ -229,14 +199,14 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('State <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">State<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                        <div class="col-sm-5">
-                            <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'country',
@@ -249,13 +219,13 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Country <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Country<span style="color:red">*</span></button>
                                 </div>
+                                <?php echo form_input($data); ?>
                             </div>
                         </div>
-                        <div class="col-sm-5">
+                        <!-- <div class="col-sm-5">
                             <div class="form-group">
                             <label class="control-label col-md-4">Supplier Type<span class="required" style="color:#ff60a3">*</span></label>
                                 <div class="col-md-8">
@@ -268,12 +238,14 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
-                        </fieldset>
+                        </div> -->
+                        <input type="hidden" id="supplier_type" value="<?php echo $news['supplier_type'] ?>" name="supplier_type">
                         </div>
                         <fieldset>
                             <legend>Documents</legend>
-                        <div class="append_doc">
+                        
+                        </fieldset>
+                        <div class=" row append_doc">
                             
                         </div>
                         <?php if(!empty($uploaded_doc)){?>
@@ -298,7 +270,7 @@
                                               <?php echo date("m-d-Y", strtotime($value['expiry_date'])); ?> 
                                           </td>
                                           <td>
-                                              <p class="col-md-1" style="font-size: 15px; cursor:pointer;" id="delete_doc" data-doc-id="<?php echo $value['id']; ?>"><i class="fa fa-close"></i></p>
+                                              <p class="col-md-1" style="font-size: 15px; cursor:pointer;" id="delete_doc" data-doc-id="<?php echo $value['id']; ?>"><i class="simple-icon-close"></i></p>
                                           </td>
                                       </tr>
                                       <?php } ?>
@@ -306,14 +278,13 @@
                                 </table>
                             </div>
                         <?php } ?>
-                    </fieldset>
                 <div class="form-actions fluid no-mrg">
                   <div class="row">
                     <div class="col-md-6">
                       <div class="col-md-offset-2 col-md-9" style="padding-bottom:15px;">
-                       <span style="margin-left:40px"></span> <button  class="btn btn-primary " id="submited_form"><i class="fa fa-check"></i>&nbsp;Save</button>
+                       <span style="margin-left:40px"></span> <button  class="btn btn-outline-primary " id="submited_form"><i class="fa fa-check"></i>&nbsp;Save</button>
                         <a href="<?php echo ADMIN_BASE_URL . 'supplier'; ?>">
-                        <button type="button" class="btn green btn-default" style="margin-left:20px;"><i class="fa fa-undo"></i>&nbsp;Cancel</button>
+                        <button type="button" class="btn green btn-outline-primary " style="margin-left:20px;"><i class="fa fa-undo"></i>&nbsp;Cancel</button>
                         </a> </div>
                     </div>
                     <div class="col-md-6"> </div>
@@ -321,19 +292,10 @@
                 </div>
                 
                 <?php echo form_close(); ?> 
-                <!-- END FORM--> 
-                
-               </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-</div>
+        </main>
 
 
 <script>

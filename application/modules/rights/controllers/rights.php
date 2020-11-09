@@ -35,6 +35,7 @@ Modules::run('site_security/has_permission');
 				}
 			} 
 		}
+    
 		foreach($arr_rights as $ctrl=>$methods){
 			if($ctrl!='rights')
 			{
@@ -61,7 +62,6 @@ Modules::run('site_security/has_permission');
 				}
 			}
 		}
-
 		$query = Modules::run('roles/_get_where_custom','role','portal admin');
 		$result = $query->row();
 		if (defined('DEFAULT_CHILD_OUTLET'))   $nOutlet_id = DEFAULT_CHILD_OUTLET;

@@ -19,8 +19,8 @@
 </select>
 <span class="total_records">Total</span>
 <div class="table-responsive">
-    <table class="table" id="tblReportData1" >
-        <thead style="background-color: #7BABED;">
+    <table class="" id="tblReportData1" >
+        <thead>
         <tr>
             <th data-htmltoarray="true" data-arrayclassth="supplier"><i class="fa fa-sort" style="font-size:13px;"></i>Supplier</th>
             <th data-htmltoarray="true" data-arrayclassth="completed_on"><i class="fa fa-sort" style="font-size:13px;"></i>Completed on</th>
@@ -33,15 +33,15 @@
             <?php  $count_row = 0; if(!empty($card_list)){
                 foreach($card_list as $row){ $count_row++;?>
           <?php if($count_row>5){ ?>
-                <tr style="display: none">
+                <tr style="display: none;">
             <?php }
             else {?>
                 <tr>
             <?php } ?>
-            <td data-htmltoarray="true" style="cursor:pointer;color: #6c9cde;" class="view_details" rel="<?= $row['id'] ?>"  data-arrayclasstd="supplier"><?=$row['name']?></td>
+            <td data-htmltoarray="true" style="cursor:pointer;" class="view_details color-theme-2 " rel="<?= $row['id'] ?>"  data-arrayclasstd="supplier"><?=$row['name']?></td>
             <td data-htmltoarray="true" data-arrayclasstd="completed_on"><?=$row['at_reviewed_date']?></td>
             <td data-htmltoarray="true" data-arrayclasstd="total_points"><?=number_format((float)$row['total_percentage'], 2, '.', '').'%'?></td>
-            <td><a class="btn yellow c-btn ingredients_detail" rel="<?=$row['supplier_id']?>"><i class="fa fa-list"  title="See ingredients"></i></a></td>
+            <td><a class="btn yellow c-btn ingredients_detail" rel="<?=$row['supplier_id']?>"><i class="iconsminds-file"  title="See ingredients"></i></a></td>
         </tr>
         <?}}else {?>  <tr>
             <td></td>

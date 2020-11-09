@@ -1,10 +1,4 @@
-<style type="text/css">
-    th
-    {
-        color: #6C9CDE;
 
-    }
-</style>
 <div class="page-content-wrapper">
 <?php // print_r($news['title']);exit; ?>
  <div class="row">

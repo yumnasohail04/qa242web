@@ -1,44 +1,55 @@
 <link href="<?php echo STATIC_ADMIN_CSS;?>simplePagination.css" rel="stylesheet">
-<!-- Page content-->
-<div class="content-wrapper">
-    <input type="hidden" id="assign_type" value="<?=$this->uri->segment(3);?>" />
-    <h3>Submitted Checks</h3>
+<main>
     <div class="container-fluid">
-        <!-- START DATATABLE 1 -->
         <div class="row">
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-body">
+            <div class="col-12">
+                <input type="hidden" id="assign_type" value="<?=$this->uri->segment(3);?>" />
+                <h1>
+                <?php if($this->uri->segment(3)=="static_forms_pending")
+                		echo "Static - Pending Review";
+                	  else if($this->uri->segment(3)=="static_forms_reviewed")
+                      	echo "Static - Pending Approval";
+                      else if($this->uri->segment(3)=="static_forms_approved")
+                      	echo "Static - Approved";
+                ?></h1>
+                <div class="separator mb-5"></div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-md-3">
-                                <div class="form-group">
+                                <div class="form-group mb-1">
                                 <label>From:</label>
-                                    <div class='input-group datetimepicker2'>
+                                    <div class='input-group date'>
                                         <input type='text' class="form-control" id="startdate" />
-                                        <span class="input-group-addon">
-                                            <span class="fa fa-calendar"></span>
-                                        </span>
+                                        <span class="input-group-text input-group-append input-group-addon">
+                                        <i class="simple-icon-calendar"></i>
+                                    </span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="form-group">
+                                <div class="form-group mb-1">
                                  <label>To:</label>
-                                    <div class='input-group datetimepicker2'>
+                                    <div class='input-group date'>
                                     <input type='text' class="form-control" id="enddate" />
-                                    <span class="input-group-addon">
-                                        <span class="fa fa-calendar"></span>
+                                    <span class="input-group-text input-group-append input-group-addon">
+                                        <i class="simple-icon-calendar"></i>
                                     </span>
                                  </div>
                                 </div>
                             </div>
-                            <div class="col-md-1">
+                            <div class="col-md-3">
                                 <div class="form-group" style="margin-top: 33px;">
                                     <button type="button" class="btn btn-primary form-control filter_search">Search</button>
                                  </div>
                             </div>
                         </div>
-                        <table class="table table-striped table-hover table-body table-bordered">
+                        <table class="data-table data-table-feature">
                             <thead class="bg-th">
                                 <tr class="bg-col">
                                     <th class="text-center" style="width:120px;">Inspection Datetime <i class="fa fa-sort" style="font-size:13px;"></th>
@@ -115,7 +126,7 @@
                                             <?php echo $value['assign_status'];?>
                                         </td>
                                         <td>
-                                            <a class="btn yellow c-btn view_details" rel="<?= $value['assign_id']; ?>"><i class="fa fa-list"  title="See Detail"></i></a>
+                                            <a class="btn yellow c-btn view_details" rel="<?= $value['assign_id']; ?>"><i class="iconsminds-file"  title="See Detail"></i></a>
                                         </td>
                                     </tr>
                                     <?php } ?>    
@@ -124,15 +135,12 @@
                         </table>
                         <br><br>
                         <div class="mg-t-20-f floatright" style="clear: both" id="light-pagination"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    <!-- END DATATABLE 1 -->
-    
-    </div>
-</div>    
-
+    </main>
 <script type="text/javascript">
 $(document).ready(function(){
 

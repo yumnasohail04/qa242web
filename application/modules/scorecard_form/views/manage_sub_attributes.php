@@ -14,22 +14,22 @@ function selectbox($id,$selected,$rank,$selected_rank) {
     return $text;
 }
 ?>
-<div class="content-wrapper">
-<h3>Questions of  <?php echo $parent_name; ?>
-        <a href= "<?php echo ADMIN_BASE_URL . 'scorecard_form/create_questions/' . $ParentId.'/'.$parent_name; ?>"/>
-            <button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Add New Attribute</button>
-        </a>
-        <a href= "<?php echo ADMIN_BASE_URL . 'scorecard_form';?>"/>
-            <button type="button" class="btn btn-primary pull-right" style="margin-right: 9px;"><i class="fa fa-chevron-left"></i>&nbsp;&nbsp;&nbsp;Back</button>
-        </a>
-    </h3>
-    <div class="container-fluid">
-        <!-- START DATATABLE 1 -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                    <table id="datatable1" class="table table-bordered table-hover">
+    <main>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Questions of  <?php echo $parent_name; ?></h1>
+                    <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="<?php echo ADMIN_BASE_URL . 'scorecard_form/create_questions/' . $ParentId.'/'.$parent_name; ?>">&nbsp;Add New Attribute&nbsp;</a>
+                    <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="<?php echo ADMIN_BASE_URL . 'scorecard_form';?>">&nbsp;Back&nbsp;</a>
+                    <div class="separator mb-5"></div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-12 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                    <table id="datatable1" class="data-table data-table-feature">
                         <thead class="bg-th">
                             <tr class="bg-col">
                                 <th>Question<i class="fa fa-sort" style="font-size:13px;"></i></th>
@@ -51,10 +51,10 @@ function selectbox($id,$selected,$rank,$selected_rank) {
                         <td><?php echo $row['description'];?></td>
                         <td><?php echo selectbox($row['id'],$row['page_rank'],$rank,$questions); ?></td>
                         <td class="table_action" style="text-align: center;">
-                            <a class="btn yellow c-btn view_details" rel="<?=$row['id']?>"><i class="fa fa-list"  title="See Detail"></i></a>
+                            <a class="btn yellow c-btn view_details" rel="<?=$row['id']?>"><i class="iconsminds-file"  title="See Detail"></i></a>
                             <?php
-                            echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit Users'));
-                            echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_records btn red c-btn', 'rel' => $row['id'],'title' => 'Delete question'));
+                            echo anchor($edit_url, '<i class="iconsminds-file-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit Users'));
+                            echo anchor('"javascript:;"', '<i class="simple-icon-close"></i>', array('class' => 'delete_records btn red c-btn', 'rel' => $row['id'],'title' => 'Delete question'));
 
                             ?>
                         </td>
@@ -65,14 +65,12 @@ function selectbox($id,$selected,$rank,$selected_rank) {
                       <?php } ?>
                             </tbody>
                     </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    <!-- END DATATABLE 1 -->
-    
-    </div>
-</div>    
+    </main>    
 <script type="application/javascript">
 $('.chosen-select').on('change', function() {
     var attr_id=$(this).attr('attr_id');

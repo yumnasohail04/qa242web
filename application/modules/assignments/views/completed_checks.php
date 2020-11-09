@@ -1,43 +1,47 @@
-<!-- Page content-->
-<div class="content-wrapper">
-    <input type="hidden" id="assign_type" value="<?=$this->uri->segment(3);?>" />
-    <h3><?php if($this->uri->segment(3) == 'active_checks') echo "Active"; elseif($this->uri->segment(3) == 'overdue_checks') echo "Overdue"; elseif($this->uri->segment(3) == 'pending_review') echo "Pending";  elseif($this->uri->segment(3) == 'pending_approval') echo "Pending Approval";elseif($this->uri->segment(3) == 'completed_checks') echo "Completed "; else echo ""; ?> Assignments</h3>
+<main>
     <div class="container-fluid">
-        <!-- START DATATABLE 1 -->
         <div class="row">
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-body">
+            <div class="col-12">
+                <input type="hidden" id="assign_type" value="<?=$this->uri->segment(3);?>" />
+                <h1><?php if($this->uri->segment(3) == 'active_checks') echo "Active Assignments"; elseif($this->uri->segment(3) == 'overdue_checks') echo "Overdue Assignments"; elseif($this->uri->segment(3) == 'pending_review') echo "Pending Review";  elseif($this->uri->segment(3) == 'pending_approval') echo "Pending Approval";elseif($this->uri->segment(3) == 'completed_checks') echo "Approved"; else echo ""; ?> </h1>
+                <div class="separator mb-5"></div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-md-3">
-                                <div class="form-group">
+                                <div class="form-group mb-1">
                                 <label>From:</label>
-                                    <div class='input-group datetimepicker2'>
+                                    <div class='input-group date'>
                                         <input type='text' class="form-control" id="startdate" />
-                                        <span class="input-group-addon">
-                                            <span class="fa fa-calendar"></span>
-                                        </span>
+                                        <span class="input-group-text input-group-append input-group-addon">
+                                        <i class="simple-icon-calendar"></i>
+                                    </span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="form-group">
+                                <div class="form-group mb-1">
                                  <label>To:</label>
-                                    <div class='input-group datetimepicker2'>
+                                    <div class='input-group date'>
                                     <input type='text' class="form-control" id="enddate" />
-                                    <span class="input-group-addon">
-                                        <span class="fa fa-calendar"></span>
+                                    <span class="input-group-text input-group-append input-group-addon">
+                                        <i class="simple-icon-calendar"></i>
                                     </span>
                                  </div>
                                 </div>
                             </div>
-                            <div class="col-md-1">
+                            <div class="col-md-3">
                                 <div class="form-group" style="margin-top: 33px;">
                                     <button type="button" class="btn btn-primary form-control filter_search">Search</button>
                                  </div>
                             </div>
                         </div>
-                    <table id="datatable1" class="table table-striped table-hover table-body table-bordered">
+                        <table class="data-table data-table-feature">
                         <thead class="bg-th">
                         <tr class="bg-col">
                         <th class="text-center" style="width:120px;">Approve Date <i class="fa fa-sort" style="font-size:13px;"></th>
@@ -65,7 +69,7 @@
                                                 $assignment_answer = Modules::run('api/_get_specific_table_with_pagination',array("assign_id"=>$new->assign_id),'assign_id desc',DEFAULT_OUTLET.'_assignments','approval_user','1','1')->result_array();
                                                 if(isset($assignment_answer[0]['approval_user']) && !empty($assignment_answer[0]['approval_user'])) {
                                                     $users = Modules::run('api/_get_specific_table_with_pagination',array("id"=>$assignment_answer[0]['approval_user']),'id desc','users','user_name','1','1')->result_array();
-                                                     $name=''; if(isset($users[0]['user_name']) && !empty($users[0]['user_name'])) $name= $users[0]['user_name']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; 
+                                                     $name=''; if(isset($users[0]['user_name']) && !empty($users[0]['user_name'])) $name= $users[0]['user_name']; $name=  Modules::run('api/string_length',$name,'8000','',''); echo $name; 
                                                 }
                                             }
                                             ?>
@@ -76,7 +80,7 @@
                                             $outlet_status=array(""=>"Select Action","Approval"=>"Set To Approval","Check_again"=>'Check again');
                                             echo form_dropdown('order_status', $outlet_status, $current_status, 'class="add_on form-control select_action order_status" style="width:190px;" order_id="'.$new->assign_id.'"');?>
                                             <?}?>
-                                        <a class="btn yellow c-btn view_details" rel="<?=$new->assign_id?>"><i class="fa fa-list"  title="See Detail"></i></a>
+                                        <a class="btn yellow c-btn view_details" rel="<?=$new->assign_id?>"><i class="iconsminds-file"  title="See Detail"></i></a>
                                        
                                         </td>
                                     </tr>
@@ -84,15 +88,12 @@
                                 <?php } ?>
                             </tbody>
                     </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    <!-- END DATATABLE 1 -->
-    
-    </div>
-</div>    
-
+    </main>
 <script type="text/javascript">
 $(document).ready(function(){
 

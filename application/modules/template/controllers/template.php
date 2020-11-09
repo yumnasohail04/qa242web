@@ -27,7 +27,7 @@ parent::__construct();
 		        $temp =array();
 		    	$temp['trackig_id'] = 'G_'.$primary_group;
 		    	$group_message = Modules::run('admin_api/get_chat_detail',array("group_id"=>$primary_group), 'chat_id desc','chat_id',$outlet_id,'message,chat_id','1','1','','','')->result_array();
-		        $temp['last_chat'] = 0; if(isset($group_message[0]['chat_id']) && !empty($group_message[0]['chat_id'])) $temp['last_chat']=$group_message[0]['chat_id']; $temp['last_chat']=  Modules::run('api/string_length',$temp['last_chat'],'8000',0);
+		        $temp['last_chat'] = 0; if(isset($group_message[0]['chat_id']) && !empty($group_message[0]['chat_id'])) $temp['last_chat']=$group_message[0]['chat_id']; $temp['last_chat']=  Modules::run('api/string_length',$temp['last_chat'],'8000',0,'');
 		        $data['total_counter'] = $data['total_counter'] + Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("group_id"=>$primary_group,"message_to"=>$user_id,"message_status"=>"1"),'chat_id desc','chat_id',$outlet_id.'_chat_detail','chat_id','1','0','','','')->num_rows();
 		        $left_panel[] = $temp;
 	    	}
@@ -37,7 +37,7 @@ parent::__construct();
 	        	$temp =array();
 	        	$temp['trackig_id'] = 'G_'.$secondry_group;
 	        	$group_message = Modules::run('admin_api/get_chat_detail',array("group_id"=>$secondry_group), 'chat_id desc','chat_id',$outlet_id,'message,chat_id','1','1','','','')->result_array();
-	            $temp['last_chat'] = 0; if(isset($group_message[0]['chat_id']) && !empty($group_message[0]['chat_id'])) $temp['last_chat']=$group_message[0]['chat_id']; $temp['last_chat']=  Modules::run('api/string_length',$temp['last_chat'],'8000',0);
+	            $temp['last_chat'] = 0; if(isset($group_message[0]['chat_id']) && !empty($group_message[0]['chat_id'])) $temp['last_chat']=$group_message[0]['chat_id']; $temp['last_chat']=  Modules::run('api/string_length',$temp['last_chat'],'8000',0,'');
 	            $data['total_counter'] = $data['total_counter'] + Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("group_id"=>$secondry_group,"message_to"=>$user_id,"message_status"=>"1"),'chat_id desc','chat_id',$outlet_id.'_chat_detail','chat_id','1','0','','','')->num_rows();
 	            $left_panel[] = $temp;
 	        }
@@ -198,17 +198,10 @@ parent::__construct();
 		$this->load->view('front/theme1/front_print', $data);
 	}
 	function front($data) {
+		$arr_outlets=array();
         $url=$this->uri->segment(1);
-		if(isset($url) && !empty($url))
-			$data['webpages'] =Modules::run('webpages/_get_by_arr_id',array('outlet_id'=> DEFAULT_OUTLET,'url_slug'=>$url))->result_array();
 		$where_current_outlet['url'] = CURRENT_DOMAIN;
 		$data['row_current_outlet'] = Modules::run('outlet/_get_by_arr_id', $where_current_outlet)->row();
-
-		$arr_outlets = array();
-        $data['top_panel_links'] = Modules::run('webpages/_get_toppanel_pages');
-       
-        $data['footer_links'] = Modules::run('webpages/_get_footerpanel_pages');
-
 		$where_outlet['is_default'] = 0;
 		$where_outlet['status'] = 1;
 		$res_outlets = Modules::run('outlet/_get_where_cols', $where_outlet, 'id asc, name asc');

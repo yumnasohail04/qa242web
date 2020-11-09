@@ -174,14 +174,14 @@ class CI_Session {
 		$session = $this->_unserialize($session);
 
 		// Is the session data we unserialized an array with the correct format?
-		if ( ! is_array($session) OR ! isset($session['session_id']) OR ! isset($session['ip_address']) OR ! isset($session['user_agent']) OR ! isset($session['last_activity']))
+		if ( ! is_array($session) OR ! isset($session['id']) OR ! isset($session['ip_address']) OR ! isset($session['user_agent']) OR ! isset($session['timestamp']))
 		{
 			$this->sess_destroy();
 			return FALSE;
 		}
 
 		// Is the session current?
-		if (($session['last_activity'] + $this->sess_expiration) < $this->now)
+		if (($session['timestamp'] + $this->sess_expiration) < $this->now)
 		{
 			$this->sess_destroy();
 			return FALSE;
@@ -204,7 +204,7 @@ class CI_Session {
 		// Is there a corresponding session in the DB?
 		if ($this->sess_use_database === TRUE)
 		{
-			$this->CI->db->where('session_id', $session['session_id']);
+			$this->CI->db->where('id', $session['id']);
 
 			if ($this->sess_match_ip == TRUE)
 			{
@@ -227,9 +227,9 @@ class CI_Session {
 
 			// Is there custom data?  If so, add it to the main session array
 			$row = $query->row();
-			if (isset($row->user_data) AND $row->user_data != '')
+			if (isset($row->data) AND $row->data != '')
 			{
-				$custom_data = $this->_unserialize($row->user_data);
+				$custom_data = $this->_unserialize($row->data);
 
 				if (is_array($custom_data))
 				{
@@ -272,7 +272,7 @@ class CI_Session {
 		// Before continuing, we need to determine if there is any custom data to deal with.
 		// Let's determine this by removing the default indexes to see if there's anything left in the array
 		// and set the session data while we're at it
-		foreach (array('session_id','ip_address','user_agent','last_activity') as $val)
+		foreach (array('id','ip_address','user_agent','timestamp') as $val)
 		{
 			unset($custom_userdata[$val]);
 			$cookie_userdata[$val] = $this->userdata[$val];
@@ -291,8 +291,8 @@ class CI_Session {
 		}
 
 		// Run the update query
-		$this->CI->db->where('session_id', $this->userdata['session_id']);
-		$this->CI->db->update($this->sess_table_name, array('last_activity' => $this->userdata['last_activity'], 'user_data' => $custom_userdata));
+		$this->CI->db->where('id', $this->userdata['id']);
+		$this->CI->db->update($this->sess_table_name, array('timestamp' => $this->userdata['timestamp'], 'data' => $custom_userdata));
 
 		// Write the cookie.  Notice that we manually pass the cookie data array to the
 		// _set_cookie() function. Normally that function will store $this->userdata, but
@@ -321,11 +321,11 @@ class CI_Session {
 		$sessid .= $this->CI->input->ip_address();
 
 		$this->userdata = array(
-							'session_id'	=> md5(uniqid($sessid, TRUE)),
+							'id'	=> md5(uniqid($sessid, TRUE)),
 							'ip_address'	=> $this->CI->input->ip_address(),
 							'user_agent'	=> substr($this->CI->input->user_agent(), 0, 120),
-							'last_activity'	=> $this->now,
-							'user_data'		=> ''
+							'timestamp'	=> $this->now,
+							'data'		=> ''
 							);
 
 
@@ -351,14 +351,14 @@ class CI_Session {
 	function sess_update()
 	{
 		// We only update the session every five minutes by default
-		if (($this->userdata['last_activity'] + $this->sess_time_to_update) >= $this->now)
+		if (($this->userdata['timestamp'] + $this->sess_time_to_update) >= $this->now)
 		{
 			return;
 		}
 
 		// Save the old session id so we know which record to
 		// update in the database if we need it
-		$old_sessid = $this->userdata['session_id'];
+		$old_sessid = $this->userdata['id'];
 		$new_sessid = '';
 		while (strlen($new_sessid) < 32)
 		{
@@ -372,24 +372,24 @@ class CI_Session {
 		$new_sessid = md5(uniqid($new_sessid, TRUE));
 
 		// Update the session data in the session data array
-		$this->userdata['session_id'] = $new_sessid;
-		$this->userdata['last_activity'] = $this->now;
+		$this->userdata['id'] = $new_sessid;
+		$this->userdata['timestamp'] = $this->now;
 
 		// _set_cookie() will handle this for us if we aren't using database sessions
 		// by pushing all userdata to the cookie.
 		$cookie_data = NULL;
 
-		// Update the session ID and last_activity field in the DB if needed
+		// Update the session ID and timestamp field in the DB if needed
 		if ($this->sess_use_database === TRUE)
 		{
 			// set cookie explicitly to only have our session data
 			$cookie_data = array();
-			foreach (array('session_id','ip_address','user_agent','last_activity') as $val)
+			foreach (array('id','ip_address','user_agent','timestamp') as $val)
 			{
 				$cookie_data[$val] = $this->userdata[$val];
 			}
 
-			$this->CI->db->query($this->CI->db->update_string($this->sess_table_name, array('last_activity' => $this->now, 'session_id' => $new_sessid), array('session_id' => $old_sessid)));
+			$this->CI->db->query($this->CI->db->update_string($this->sess_table_name, array('timestamp' => $this->now, 'id' => $new_sessid), array('id' => $old_sessid)));
 		}
 
 		// Write the cookie
@@ -407,9 +407,9 @@ class CI_Session {
 	function sess_destroy()
 	{
 		// Kill the session DB row
-		if ($this->sess_use_database === TRUE && isset($this->userdata['session_id']))
+		if ($this->sess_use_database === TRUE && isset($this->userdata['id']))
 		{
-			$this->CI->db->where('session_id', $this->userdata['session_id']);
+			$this->CI->db->where('id', $this->userdata['id']);
 			$this->CI->db->delete($this->sess_table_name);
 		}
 
@@ -774,7 +774,7 @@ class CI_Session {
 		{
 			$expire = $this->now - $this->sess_expiration;
 
-			$this->CI->db->where("last_activity < {$expire}");
+			$this->CI->db->where("timestamp < {$expire}");
 			$this->CI->db->delete($this->sess_table_name);
 
 			log_message('debug', 'Session garbage collection performed.');

@@ -1,13 +1,18 @@
-<!-- Page content-->
-<div class="content-wrapper">
-    <h3>In-Progress ScoreCards List</h3>
+
+<main>
     <div class="container-fluid">
-        <!-- START DATATABLE 1 -->
         <div class="row">
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                    <table id="datatable1" class="table table-body">
+            <div class="col-12">
+                <h1>In-Progress ScoreCards List</h1>
+                <div class="separator mb-5"></div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="data-table data-table-feature">
                         <thead class="bg-th">
                         <tr class="bg-col">
                         <th>Supplier<i class="fa fa-sort" style="font-size:13px;"></i></th>
@@ -33,8 +38,8 @@
                                         <!--<a class="btn yellow c-btn view_details" rel="<?=$new->id?>"><i class="fa fa-list"  title="See Detail"></i></a>-->
                                         
                                         <?php
-                                        echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit scorecard'));
-                                        echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $new->sc_id, 'title' => 'Delete'));
+                                        echo anchor($edit_url, '<i class="iconsminds-file-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit scorecard'));
+                                        echo anchor('"javascript:;"', '<i class="simple-icon-close"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $new->sc_id, 'title' => 'Delete'));
                                         ?>
                                         </td>
                                     </tr>
@@ -42,14 +47,12 @@
                                 <?php } ?>
                             </tbody>
                     </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    
-    </div>
-</div>    
-
+    </main>
 <script type="text/javascript">
 $(document).ready(function(){
 

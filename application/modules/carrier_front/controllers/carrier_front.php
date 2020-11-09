@@ -2,10 +2,10 @@
 	class Carrier_front extends MX_Controller {
 	protected $data = '';
 		function __construct() {
-		parent::__construct();
-		$this->load->library("pagination");
-		 $this->load->helper("url");
-		 $this->load->library('session');
+			parent::__construct();
+			$this->load->library("pagination");
+			$this->load->helper("url");
+			$this->load->library('session');
 		}
 
 		function index() {
@@ -13,15 +13,15 @@
 			$data['carrier_id']=$carrier_id;
 			$data['detail'] = Modules::run('ingredients/_get_data_from_db_table',array("id"=>$carrier_id),"carrier","","","*","")->row_array();
 			$data['carrier_type'] = Modules::run('ingredients/_get_data_from_db_table',array(),"carrier_types","","","*","")->result_array();
-
 			$query = Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("id"=>$carrier_id), "id asc","carrier","*","","","","","")->row();
-			$data['uploaded_ans'] = Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("carrier_type"=>$query->type,"status"=>"1"), "question asc","document_file","*","","","","","")->result_array();
+			$data['uploaded_ans'] = Modules::run('carrier/get_doc_by_carrier_type',array("status"=>"1"),"question asc","document_file","document_file.*","","",$query->type,"","")->result_array();
+
 			if(!empty($data['uploaded_ans'])){
 				foreach($data['uploaded_ans'] as $key => $value):
 					if($value['question']=="1"){
 						$result=Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("doc_id"=>$value['id']), "id asc","document_question","*","","","","","")->row();
 						$ans=Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("question_id"=>$result->id,"carrier_id"=>$carrier_id), "id asc","document_answer","option,comment_box,reference_link","","","","","")->row();
-						$doc_uploaded=Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("doc_id"=>$value['id'],"carrier_id"=>$carrier_id), "id asc","document_uploaded","document","","","","","")->row();
+						$doc_uploaded=Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("doc_id"=>$value['id'],"carrier_id"=>$carrier_id), "id asc","document_uploaded","document","","","","","")->result_array();
 						$data['doc'][$key]['sub_question']=$result;
 						$data['doc'][$key]['sub_ans']=$ans;
 						$data['doc'][$key]['doc_uploaded']=$doc_uploaded;
@@ -37,10 +37,10 @@
 		{
 			$carrier_type=$this->input->post('carrier_type');
 			$carrier_id=$this->session->userdata['carrier']['carrier_id'];
-			$data['doc'] = Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("carrier_type"=>$carrier_type,"status"=>"1"), "question asc","document_file","*","","","","","")->result_array();
+			$data['doc'] = Modules::run('carrier/get_doc_by_carrier_type',array("status"=>"1"),"question asc","document_file","document_file.*","","",$carrier_type,"","")->result_array();
 			if(!empty($data['doc'])){
 				foreach($data['doc'] as $key => $value):
-					$doc_uploaded=Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("doc_id"=>$value['id'],"carrier_id"=>$carrier_id), "id asc","document_uploaded","document","","","","","")->row();
+					$doc_uploaded=Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("doc_id"=>$value['id'],"carrier_id"=>$carrier_id), "id asc","document_uploaded","id,document","","","","","")->result_array();
 					$data['doc'][$key]['doc_uploaded']=$doc_uploaded;
 					if($value['question']=="1"){
 						$result=Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("doc_id"=>$value['id']), "id asc","document_question","*","","","","","")->row();
@@ -54,31 +54,110 @@
 		}
 		function submit_letter()
 		{
-			$id=$this->input->post('id');
+			$id=$this->session->userdata['carrier']['carrier_id'];
 			if(isset($_FILES["news_file"]['size']) )
 				if($_FILES["news_file"]['size'] > 0) {
 					$itemInfo = Modules::run('ingredients/_get_data_from_db_table',array("id"=>$id),"carrier","","","letter_of_conformance","")->row();
 					if(isset($itemInfo->letter_of_conformance) && !empty($itemInfo->letter_of_conformance)) 
-						Modules::run('supplier/delete_images_by_name',LETTER_OF_CONFORMANCE_PATH,$itemInfo->letter_of_conformance);
+						Modules::run('carrier_front/delete_images_by_name',LETTER_OF_CONFORMANCE_PATH,$itemInfo->letter_of_conformance);
 						Modules::run('carrier_front/upload_dynamic_image',LETTER_OF_CONFORMANCE_PATH,$id,"news_file",'letter_of_conformance','id','carrier');
+				}
+			if(isset($_FILES["doc_file1"]['size']) )
+				if($_FILES["doc_file1"]['size'] > 0) {
+					$itemInfo = Modules::run('ingredients/_get_data_from_db_table',array("id"=>$id),"carrier","","","sample_temperature_log","")->row();
+					if(isset($itemInfo->sample_temperature_log) && !empty($itemInfo->sample_temperature_log)) 
+						Modules::run('carrier_front/delete_images_by_name',LETTER_OF_CONFORMANCE_PATH,$itemInfo->sample_temperature_log);
+						Modules::run('carrier_front/upload_dynamic_carrier_image',LETTER_OF_CONFORMANCE_PATH,$id,"doc_file1",'sample_temperature_log','id','carrier');
+				}
+			if(isset($_FILES["doc_file2"]['size']) )
+				if($_FILES["doc_file2"]['size'] > 0) {
+					$itemInfo = Modules::run('ingredients/_get_data_from_db_table',array("id"=>$id),"carrier","","","cleaning_records","")->row();
+					if(isset($itemInfo->cleaning_records) && !empty($itemInfo->cleaning_records)) 
+						Modules::run('carrier_front/delete_images_by_name',LETTER_OF_CONFORMANCE_PATH,$itemInfo->cleaning_records);
+						Modules::run('carrier_front/upload_dynamic_carrier_image',LETTER_OF_CONFORMANCE_PATH,$id,"doc_file2",'cleaning_records','id','carrier');
+				}
+			if(isset($_FILES["doc_file3"]['size']) )
+				if($_FILES["doc_file3"]['size'] > 0) {
+					$itemInfo = Modules::run('ingredients/_get_data_from_db_table',array("id"=>$id),"carrier","","","employee_training","")->row();
+					if(isset($itemInfo->employee_training) && !empty($itemInfo->employee_training)) 
+						Modules::run('carrier_front/delete_images_by_name',LETTER_OF_CONFORMANCE_PATH,$itemInfo->employee_training);
+						Modules::run('carrier_front/upload_dynamic_carrier_image',LETTER_OF_CONFORMANCE_PATH,$id,"doc_file3",'employee_training','id','carrier');
+				}
+			if(isset($_FILES["doc_file4"]['size']) )
+				if($_FILES["doc_file4"]['size'] > 0) {
+					$itemInfo = Modules::run('ingredients/_get_data_from_db_table',array("id"=>$id),"carrier","","","prior_load_information","")->row();
+					if(isset($itemInfo->prior_load_information) && !empty($itemInfo->prior_load_information)) 
+						Modules::run('carrier_front/delete_images_by_name',LETTER_OF_CONFORMANCE_PATH,$itemInfo->prior_load_information);
+						Modules::run('carrier_front/upload_dynamic_carrier_image',LETTER_OF_CONFORMANCE_PATH,$id,"doc_file4",'prior_load_information','id','carrier');
 						
 				}
 				$data['carrier_id']=$id;
+        $outlet_id=DEFAULT_OUTLET;
+        $carrier_id=$id;
+        if(!empty($carrier_id) && !empty($outlet_id)) {
+					$groups = Modules::run('ingredients/_get_data_from_db_table',array("group_title"=>"Regulatory"),DEFAULT_OUTLET.'_groups',"","","id","")->result_array();
+					foreach($groups as $key => $val):
+						$tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$val['id'].'" or `group`="'.$val['id'].'")','','')->result_array();
+						if(!empty($tokens)) {
+							foreach ($tokens as $token_key => $to):
+								if(isset($to['id']) && !empty($to['id'])) {
+									$sup = Modules::run('ingredients/_get_data_from_db_table',array("id"=>$carrier_id),'carrier',"","","name","")->row_array();
+									Modules::run('api/insert_into_specific_table',array("assingment_id"=>"0","user_id"=>$to['id'],"carrier_id"=>$carrier_id,"outlet_id"=>$outlet_id,"supplier_id"=>"0","notification_message"=>'Carrier('. $sup['name'].") had updated documents","notification_datetime"=>date("Y-m-d H:i:s")),'notification');	
+								}
+							endforeach;
+						}
+					endforeach;
+				}
 				$data['detail'] = Modules::run('ingredients/_get_data_from_db_table',array("id"=>$id),"carrier","","","*","")->row_array();
 				$this->session->set_flashdata('status', 'success');
 				$this->session->set_flashdata('message', "Successfully document uploaded");
 				redirect(BASE_URL.'carrier/index#letter');
 		}
+		function delete_doc()
+		{
+			$id=$this->input->post('id');
+			$itemInfo= Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("id"=>$id), "id desc","document_uploaded","*","","","","","")->row();
+			if(isset($itemInfo->document) && !empty($itemInfo->document)) 
+				$this->delete_images_by_name(CARRIER_DOCUMENTS_PATH,$itemInfo->document);
+			Modules::run('ingredients/delete_from_table',array("id"=>$id),'document_uploaded');
 
+		}
 
-		function upload_dynamic_image($actual,$nId,$input_name,$image_field,$image_id_fild,$table) {
-        
+		// function upload_dynamic_image($actual,$input_name,$image_field,$image_id_fild,$table,$data) {
+
+		// 	$total=count($_FILES[$input_name]['name']);
+		// 	if(isset($total) && !empty($total)){
+		// 		for ($i=0; $i <$total; $i++) {
+		// 			if(isset($_FILES[$input_name]['size'][$i]) && $_FILES[$input_name]['size'][$i]>0){
+		// 				$upload_image_file = $_FILES[$input_name]['name'][$i];
+		// 				$upload_image_file = str_replace(' ', '_', $upload_image_file);
+		// 				$file_name = rand(1000,10000) . '_' . $upload_image_file;
+		// 				$config['upload_path'] = $actual;
+		// 				$config['allowed_types'] = '*';
+		// 				$config['max_size'] = '2000000000';
+		// 				$config['max_width'] = '2000000000';
+		// 				$config['max_height'] = '2000000000';
+		// 				$config['file_name'] = $file_name;
+		// 				$this->load->library('upload');
+		// 				$this->upload->initialize($config);
+		// 				if (isset($_FILES[$input_name])) {
+		// 					$this->upload->do_upload($input_name);
+		// 				}
+		// 				$upload_data = $this->upload->data();
+		// 				$data[$image_field]=$file_name;
+		// 				Modules::run('api/insert_into_specific_table',$data,$table);
+		// 			}
+		// 		}
+		// 	}
+		// }
+
+		function upload_dynamic_carrier_image($actual,$nId,$input_name,$image_field,$image_id_fild,$table) {
 			$upload_image_file = $_FILES[$input_name]['name'];
 			$upload_image_file = str_replace(' ', '_', $upload_image_file);
-			$file_name = $nId . '_' . $upload_image_file;
+			$file_name = rand(1000,100) . $nId. '_' . $upload_image_file;
 			$config['upload_path'] = $actual;
-			$config['allowed_types'] = 'pdf|xlsx|docx|PDF|XLSX|DOCX|txt|TXT';
-			$config['max_size'] = '20000';
+			$config['allowed_types'] = '*';
+			$config['max_size'] = '2000000';
 			$config['max_width'] = '2000000000';
 			$config['max_height'] = '2000000000';
 			$config['file_name'] = $file_name;
@@ -88,10 +167,40 @@
 				$this->upload->do_upload($input_name);
 			}
 			$upload_data = $this->upload->data();
-			unset($data);unset($where);
 			$where['id']=$nId;
 			$data = array($image_field => $file_name);
-			Modules::run('api/insert_or_update_specific_image',$where,$data,$table,$table.$image_id_fild);
+			Modules::run('api/update_specific_table',$where,$data,$table);
+		}
+		function upload_dynamic_image($actual,$input_name,$image_field,$image_id_fild,$table,$data) {
+			$config['upload_path'] = $actual;
+			$config['allowed_types'] = '*';
+			$config['max_size'] = '2000000000';
+			$config['max_width'] = '2000000000';
+			$config['max_height'] = '2000000000';
+			$this->load->library('upload');
+			$this->upload->initialize($config);
+			$cpt = count($_FILES[$input_name]['name']);
+			$files = $_FILES;
+			for($i=0; $i<$cpt; $i++) {
+				$upload_document_file = $files[$input_name]['name'][$i];
+				$extension = pathinfo($upload_document_file, PATHINFO_EXTENSION);
+				$upload_document_file = str_replace(' ', '_', $upload_document_file);
+				$upload_document_file = str_replace($extension, '', $upload_document_file);
+				$upload_document_file = str_replace('.', '_', $upload_document_file);
+				$new_name = 'custom_image_' . substr(md5(uniqid(rand(), true)), 8, 8)  . '_' . $upload_document_file;
+				$new_name = strtolower(str_replace(['  ', '/', '-', '--', '---', '----', '_', '__'], '-', $new_name));
+				$new_name = $new_name . '.' . $extension;
+				$_FILES[$input_name]['name'] = $new_name;
+				$_FILES[$input_name]['type'] = $files[$input_name]['type'][$i];
+				$_FILES[$input_name]['tmp_name'] = $files[$input_name]['tmp_name'][$i];
+				$_FILES[$input_name]['error'] = $files[$input_name]['error'][$i];
+				$_FILES[$input_name]['size'] = $files[$input_name]['size'][$i];
+				$upload_data = $this->upload->do_upload($input_name);
+				$data[$image_field]=$new_name;
+				if(isset($upload_document_file) && !empty($upload_document_file))
+					$nid = Modules::run('api/insert_into_specific_table',$data, $table);
+				$upload_data = $this->upload->data();	
+			}
 		}
 		
 		// function get_doc_name()
@@ -229,7 +338,7 @@
     		$data['user'] = $row->username;
     		$data['carrier_id'] = $id;
     		$this->session->set_userdata('carrier', $data);
-    		$supplier = $this->session->userdata('carrier');
+			$supplier = $this->session->userdata('carrier');
     		//Modules::run('api/update_specific_table',array("id"=>$row->id),array("login_status"=>'1'),'carrier_account');
     		redirect(BASE_URL.'carrier/index');
 		}
@@ -255,9 +364,12 @@
 		    $this->template->front($data);
 		}
 		function submit_doc(){
+			$outlet_id=DEFAULT_OUTLET;
 			$carrier_id=$this->session->userdata['carrier']['carrier_id'];
 			$carrier_type=$this->input->post('carrier_type');
-			$doc= Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',array("carrier_type"=>$carrier_type,"status"=>"1"), "question asc","document_file","*","","","","","")->result_array();
+        	$where['id'] = $carrier_id;
+            Modules::run('carrier/_update',$where, array("type"=>$carrier_type));
+			$doc= Modules::run('carrier/get_doc_by_carrier_type',array("status"=>"1"),"question asc","document_file","document_file.*","","",$carrier_type,"","")->result_array();
 			if(!empty($doc)){
 				foreach($doc as $key => $value):
 					if($value['question']=="1"){
@@ -267,38 +379,73 @@
 								$ans['option']=$this->input->post('answer_'.$key);
 								if(!empty($this->input->post('reference_link_'.$key)))
 								$ans['reference_link']=$this->input->post('reference_link_'.$key);
-								if(!empty($this->input->post('comment_'.$key)) )
 								$ans['comment_box']=$this->input->post('comment_'.$key);
 								$ans['doc_id']=$this->input->post('id_'.$key);
 								$ans['question_id']=$result->id;
 								$ans['carrier_id']=$carrier_id;
 								if(!empty($ans['doc_id']) && !empty($ans['question_id']) && !empty($ans['carrier_id']) )
-									Modules::run('api/insert_or_update',array("doc_id"=>$ans['doc_id'],"question_id"=>$ans['question_id'],"carrier_id"=>$ans['carrier_id']),$ans,'document_answer');
+									Modules::run('api/insert_or_update',array("question_id"=>$ans['question_id'],"carrier_id"=>$ans['carrier_id']),$ans,'document_answer');
 						}
 					}
-					if(isset($_FILES["news_main_page_file_$key"]['size']) &&  $_FILES["news_main_page_file_$key"]['size'] >0){
+					if(isset($_FILES["news_main_page_file_$key"]) && !empty($_FILES["news_main_page_file_$key"])){
 						$doc_data['doc_id']=$this->input->post('id_'.$key);
 						$doc_data['carrier_type']=$carrier_type;
 						$doc_data['carrier_id']=$carrier_id;
-						$update_id=Modules::run('api/insert_or_update',array("doc_id"=>$doc_data['doc_id'],"carrier_id"=>$doc_data['carrier_id']),$doc_data,'document_uploaded');
-						if($update_id=="0")
-						{
-							$itemInfo= Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',$doc_data, "id desc","document_uploaded","id","","","","","")->row();
-							$update_id=$itemInfo->id;
-						}
-							if($_FILES["news_main_page_file_$key"]['size'] > 0) {
-								$itemInfo= Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',$doc_data, "id desc","document_uploaded","*","","","","","")->row();
-								if(isset($itemInfo->document) && !empty($itemInfo->document)) 
-									$this->delete_images_by_name(CARRIER_DOCUMENTS_PATH,$itemInfo->document);
-									$this->upload_dynamic_image(CARRIER_DOCUMENTS_PATH,$update_id,"news_main_page_file_$key",'document','id','document_uploaded');
-							}
+						$itemInfo= Modules::run('carrier_front/_get_specific_table_with_pagination_and_where',$doc_data, "id desc","document_uploaded","*","","","","","")->result_array();
+						if(isset($itemInfo) && !empty($itemInfo)) 
+						foreach($itemInfo as $it => $itm):
+							$this->delete_images_by_name(CARRIER_DOCUMENTS_PATH,$itm['document']);
+						endforeach;
+							$this->upload_dynamic_image(CARRIER_DOCUMENTS_PATH,"news_main_page_file_$key",'document','id','document_uploaded',$doc_data);
 					}
 				endforeach;
 				$message="Successfully Submitted Documents";
+				///////////////////notification_code_start////////////////////////////////////
+				
+
+
+			///////////////////notification_code_end////////////////////////////////////
 			}
 			$this->session->set_flashdata('status', 'success');
 			$this->session->set_flashdata('message', $message);
     	    redirect(BASE_URL . 'carrier/index#carrier_documents');
+		}
+		function submit_documents_form()
+		{
+			$outlet_id=DEFAULT_OUTLET;
+			$carrier_id=$this->session->userdata['carrier']['carrier_id'];
+			Modules::run('api/update_specific_table',array("carrier_id"=>$carrier_id),array("submit"=>"1"),'document_uploaded');
+			$status=TRUE;
+			$message="Your documents have been submitted on Admin side";
+			if(!empty($carrier_id) && !empty($outlet_id)) {
+				$groups = Modules::run('ingredients/_get_data_from_db_table',array("group_title"=>"Regulatory"),DEFAULT_OUTLET.'_groups',"","","id","")->result_array();
+				foreach($groups as $key => $val):
+					$tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$val['id'].'" or `group`="'.$val['id'].'")','','')->result_array();
+					if(!empty($tokens)) {
+						foreach ($tokens as $token_key => $to):
+							if(isset($to['id']) && !empty($to['id'])) {
+								$sup = Modules::run('ingredients/_get_data_from_db_table',array("id"=>$carrier_id),'carrier',"","","name","")->row_array();
+								Modules::run('api/insert_into_specific_table',array("assingment_id"=>"0","user_id"=>$to['id'],"carrier_id"=>$carrier_id,"outlet_id"=>$outlet_id,"supplier_id"=>"0","notification_message"=>'Carrier('. $sup['name'].") had updated basic documents","notification_datetime"=>date("Y-m-d H:i:s")),'notification');	
+							}
+						endforeach;
+					}
+				endforeach;
+				$groups=Modules::run('front/get_roles_group',"(roles.role='Admin')",array(),"roles",DEFAULT_OUTLET.'_groups')->result_array();
+				foreach($groups as $key => $val):
+					$tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$val['id'].'" or `group`="'.$val['id'].'")','','')->result_array();
+					if(!empty($tokens)) {
+						foreach ($tokens as $token_key => $to):
+							if(isset($to['id']) && !empty($to['id'])) {
+								$sup = Modules::run('ingredients/_get_data_from_db_table',array("id"=>$carrier_id),'carrier',"","","name","")->row_array();
+								Modules::run('api/insert_into_specific_table',array("assingment_id"=>"0","user_id"=>$to['id'],"carrier_id"=>$carrier_id,"outlet_id"=>$outlet_id,"supplier_id"=>"0","notification_message"=>'Carrier('. $sup['name'].") had updated basic documents","notification_datetime"=>date("Y-m-d H:i:s")),'notification');	
+							}
+						endforeach;
+					}
+				endforeach;
+
+			}
+			echo '<article><status>'.$status.'</status><message>'.$message.'</message><article>';
+
 		}
 		function delete_images_by_name($actual_path,$name) {
             if (file_exists($actual_path.$name))

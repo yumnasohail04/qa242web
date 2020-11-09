@@ -40,17 +40,17 @@ function __construct() {
                 $user_image = "user.png";
                 if(isset($user_detail[0]['user_image']) && !empty($user_detail[0]['user_image']))
                     $user_image=$user_detail[0]['user_image'];
-                $user_image=  Modules::run('api/string_length',$user_image,'8000','');
+                $user_image=  Modules::run('api/string_length',$user_image,'8000','','');
                 $data['user_image'] = Modules::run('api/image_path_with_default',ACTUAL_OUTLET_USER_IMAGE_PATH,$user_image,STATIC_FRONT_IMAGE,'user.png');
                 $primary_group = '0';
                 if(isset($user_detail[0]['group']) && !empty($user_detail[0]['group'])) {
                     $primary_group = $user_detail[0]['group'];
                     $temp['id'] = $user_detail[0]['group'];
                     $group_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$user_detail[0]['group']),'id desc','id',DEFAULT_OUTLET.'_groups','group_title','1','0','','','')->result_array();
-                    $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','');
+                    $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','','');
                     $temp['trackig_id'] = 'G_'.$user_detail[0]['group'];
                     $group_message = Modules::run('admin_api/get_chat_detail',array("group_id"=>$user_detail[0]['group']), 'chat_id desc','chat_id',DEFAULT_OUTLET,'message,chat_id,message_datetime','1','1','','','')->result_array();
-                    $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','');
+                    $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','','');
                     $temp['message_datetime'] = ""; 
                     if(isset($group_message[0]['message_datetime']) && !empty($group_message[0]['message_datetime'])) 
                         $temp['message_datetime']= $group_message[0]['message_datetime'];
@@ -72,10 +72,10 @@ function __construct() {
                     if($user_detail[0]['group'] != $user_detail[0]['second_group']) {
                         $temp['id'] = $user_detail[0]['second_group'];
                         $group_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$user_detail[0]['second_group']),'id desc','id',DEFAULT_OUTLET.'_groups','group_title','1','0','','','')->result_array();
-                        $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','');
+                        $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','','');
                         $temp['trackig_id'] = 'G_'.$user_detail[0]['second_group'];
                         $group_message = Modules::run('admin_api/get_chat_detail',array("group_id"=>$user_detail[0]['second_group']), 'chat_id desc','chat_id',DEFAULT_OUTLET,'message,chat_id,message_datetime','1','1','','','')->result_array();
-                        $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','');
+                        $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','','');
                         $temp['message_datetime'] = "";
                         if(isset($group_message[0]['message_datetime']) && !empty($group_message[0]['message_datetime'])) 
                         $temp['message_datetime'] = $group_message[0]['message_datetime'];
@@ -95,10 +95,10 @@ function __construct() {
                     foreach ($group_chat as $key => $gc):
                         $temp['id'] = $gc['group_id'];
                         $group_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$gc['group_id']),'id desc','id',DEFAULT_OUTLET.'_groups','group_title','1','0','','','')->result_array();
-                        $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','');
+                        $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','','');
                         $temp['trackig_id'] = 'G_'.$user_detail[0]['second_group'];
                         $group_message = Modules::run('admin_api/get_chat_detail',array("group_id"=>$gc['group_id']), 'chat_id desc','group_id',DEFAULT_OUTLET,'message,chat_id,message_datetime','1','1','','','')->result_array();
-                        $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','');
+                        $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','','');
                         $temp['message_datetime'] = "";
                         if(isset($group_message[0]['message_datetime']) && !empty($group_message[0]['message_datetime'])) 
                         $temp['message_datetime'] = $group_message[0]['message_datetime'];
@@ -134,7 +134,7 @@ function __construct() {
                     $temp['last_message'] = "";
                     if(isset($last_detail[0]['message']) && !empty($last_detail[0]['message']))
                         $temp['last_message']=$last_detail[0]['message'];
-                    $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','');
+                    $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','','');
                     $temp['message_datetime'] = "";
                     if(isset($last_detail[0]['message_datetime']) && !empty($last_detail[0]['message_datetime'])) 
                     $temp['message_datetime'] = $last_detail[0]['message_datetime'];
@@ -143,7 +143,7 @@ function __construct() {
                         $temp['last_chat']=$last_detail[0]['chat_id'];
                     $pre_temp['last_message'] = $temp['last_message'];
                     $pre_temp['type'] = $temp['type'] = 'user';
-                    $user_image = "user.png"; if(isset($gc['user_image']) && !empty($gc['user_image'])) $user_image=$gc['user_image']; $user_image=  Modules::run('api/string_length',$user_image,'8000','');
+                    $user_image = "user.png"; if(isset($gc['user_image']) && !empty($gc['user_image'])) $user_image=$gc['user_image']; $user_image=  Modules::run('api/string_length',$user_image,'8000','','');
                     $pre_temp['image'] = $temp['image'] = Modules::run('api/image_path_with_default',ACTUAL_OUTLET_USER_IMAGE_PATH,$user_image,STATIC_FRONT_IMAGE,'user.png');
                     $temp['counter'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("group_id"=>'0',"message_to"=>$user_id,"message_status"=>"1","message_from"=>$gc['id']),'chat_id desc','chat_id',$outlet_id.'_chat_detail','chat_id','1','0','','','')->num_rows();
                     $pre_temp['next_chat'] = $temp['next_chat'] = true;
@@ -285,17 +285,17 @@ function __construct() {
                 $user_image = "user.png";
                 if(isset($user_detail[0]['user_image']) && !empty($user_detail[0]['user_image']))
                     $user_image=$user_detail[0]['user_image'];
-                $user_image=  Modules::run('api/string_length',$user_image,'8000','');
+                $user_image=  Modules::run('api/string_length',$user_image,'8000','','');
                 $data['user_image'] = Modules::run('api/image_path_with_default',ACTUAL_OUTLET_USER_IMAGE_PATH,$user_image,STATIC_FRONT_IMAGE,'user.png');
                 $primary_group = '0';
                 if(isset($user_detail[0]['group']) && !empty($user_detail[0]['group'])) {
                     $primary_group = $user_detail[0]['group'];
                     $temp['id'] = $user_detail[0]['group'];
                     $group_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$user_detail[0]['group']),'id desc','id',DEFAULT_OUTLET.'_groups','group_title','1','0','','','')->result_array();
-                    $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','');
+                    $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','','');
                     $temp['trackig_id'] = 'G_'.$user_detail[0]['group'];
                     $group_message = Modules::run('admin_api/get_chat_detail',array("group_id"=>$user_detail[0]['group']), 'chat_id desc','chat_id',DEFAULT_OUTLET,'message,chat_id,message_datetime','1','1','','','')->result_array();
-                    $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','');
+                    $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','','');
                     $temp['message_datetime'] = ""; 
                     if(isset($group_message[0]['message_datetime']) && !empty($group_message[0]['message_datetime'])) 
                         $temp['message_datetime']= $group_message[0]['message_datetime'];
@@ -317,10 +317,10 @@ function __construct() {
                     if($user_detail[0]['group'] != $user_detail[0]['second_group']) {
                         $temp['id'] = $user_detail[0]['second_group'];
                         $group_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$user_detail[0]['second_group']),'id desc','id',DEFAULT_OUTLET.'_groups','group_title','1','0','','','')->result_array();
-                        $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','');
+                        $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','','');
                         $temp['trackig_id'] = 'G_'.$user_detail[0]['second_group'];
                         $group_message = Modules::run('admin_api/get_chat_detail',array("group_id"=>$user_detail[0]['second_group']), 'chat_id desc','chat_id',DEFAULT_OUTLET,'message,chat_id,message_datetime','1','1','','','')->result_array();
-                        $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','');
+                        $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','','');
                         $temp['message_datetime'] = "";
                         if(isset($group_message[0]['message_datetime']) && !empty($group_message[0]['message_datetime'])) 
                         $temp['message_datetime'] = $group_message[0]['message_datetime'];
@@ -340,10 +340,10 @@ function __construct() {
                     foreach ($group_chat as $key => $gc):
                         $temp['id'] = $gc['group_id'];
                         $group_detail = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$gc['group_id']),'id desc','id',DEFAULT_OUTLET.'_groups','group_title','1','0','','','')->result_array();
-                        $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','');
+                        $temp['name'] = ""; if(isset($group_detail[0]['group_title']) && !empty($group_detail[0]['group_title'])) $temp['name']=$group_detail[0]['group_title']; $temp['name']=  Modules::run('api/string_length',$temp['name'],'8000','','');
                         $temp['trackig_id'] = 'G_'.$user_detail[0]['second_group'];
                         $group_message = Modules::run('admin_api/get_chat_detail',array("group_id"=>$gc['group_id']), 'chat_id desc','group_id',DEFAULT_OUTLET,'message,chat_id,message_datetime','1','1','','','')->result_array();
-                        $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','');
+                        $temp['last_message'] = ""; if(isset($group_message[0]['message']) && !empty($group_message[0]['message'])) $temp['last_message']=$group_message[0]['message']; $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','','');
                         $temp['message_datetime'] = "";
                         if(isset($group_message[0]['message_datetime']) && !empty($group_message[0]['message_datetime'])) 
                         $temp['message_datetime'] = $group_message[0]['message_datetime'];
@@ -379,7 +379,7 @@ function __construct() {
                         $temp['last_message'] = "";
                         if(isset($last_detail[0]['message']) && !empty($last_detail[0]['message']))
                             $temp['last_message']=$last_detail[0]['message'];
-                        $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','');
+                        $temp['last_message']=  Modules::run('api/string_length',$temp['last_message'],'8000','','');
                         $temp['message_datetime'] = "";
                         if(isset($last_detail[0]['message_datetime']) && !empty($last_detail[0]['message_datetime'])) 
                         $temp['message_datetime'] = $last_detail[0]['message_datetime'];
@@ -388,7 +388,7 @@ function __construct() {
                             $temp['last_chat']=$last_detail[0]['chat_id'];
                         $pre_temp['last_message'] = $temp['last_message'];
                         $pre_temp['type'] = $temp['type'] = 'user';
-                        $user_image = "user.png"; if(isset($gc['user_image']) && !empty($gc['user_image'])) $user_image=$gc['user_image']; $user_image=  Modules::run('api/string_length',$user_image,'8000','');
+                        $user_image = "user.png"; if(isset($gc['user_image']) && !empty($gc['user_image'])) $user_image=$gc['user_image']; $user_image=  Modules::run('api/string_length',$user_image,'8000','','');
                         $pre_temp['image'] = $temp['image'] = Modules::run('api/image_path_with_default',ACTUAL_OUTLET_USER_IMAGE_PATH,$user_image,STATIC_FRONT_IMAGE,'user.png');
                         $temp['counter'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("group_id"=>'0',"message_to"=>$user_id,"message_status"=>"1","message_from"=>$gc['id']),'chat_id desc','chat_id',$outlet_id.'_chat_detail','chat_id','1','0','','','')->num_rows();
                         $pre_temp['next_chat'] = $temp['next_chat'] = true;
@@ -497,7 +497,7 @@ function __construct() {
                 $user_image = "user.png"; 
                 if(isset($user_detail[0]['user_image']) && !empty($user_detail[0]['user_image'])) 
                     $user_image=$user_detail[0]['user_image']; 
-                $user_image=  Modules::run('api/string_length',$user_image,'8000','');
+                $user_image=  Modules::run('api/string_length',$user_image,'8000','','');
                 $user_image = Modules::run('api/image_path_with_default',ACTUAL_OUTLET_USER_IMAGE_PATH,$user_image,STATIC_FRONT_IMAGE,'user.png');
             	if(!empty($token) && !empty($token)) {
                     $fcm_token = $token;

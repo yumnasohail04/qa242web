@@ -21,16 +21,16 @@ display: block;
 <div class="attribute">
     <div class=" table-wrapper-scroll-y my-custom-scrollbar ">
     <h4>Choice  attributes:</h4>
- <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
+ <table class="table table-bordered mb-0">
                                     <thead>
                                       <tr>
-                                        <th  style="color: black !important">Attribute Name</th>
-                                        <th  style="color: black !important">Choice Type</th>
-                                        <th  style="color: black !important">Dependent on</th>
-                                        <th  style="color: black !important">Order</th>
-                                        <!--<th style="color: black !important">Possible Value</th>-->
+                                        <th>Attribute Name</th>
+                                        <th>Choice Type</th>
+                                        <th>Dependent on</th>
+                                        <th style="width:10%;">Order</th>
+                                        <!--<th  >Possible Value</th>-->
                                         <?php  if($datacheck==false){?>
-                                        <th style="color: black !important"></th><?}?> 
+                                        <th  ></th><?}?> 
                                       </tr>
                                     </thead>
                                     <tbody id="choice_table">
@@ -95,7 +95,7 @@ display: block;
                 $valuess['question_id']='0';
                 ?>
                 <div class="col-md-12" id="cities_cont">
-                  <?php echo form_dropdown('page_rank[]', $options, $valuess['page_rank'], 'class = "form-control chosen-select" id = "rank" attr_id="'.$valuess['question_id'].'"'); ?>
+                  <?php echo form_dropdown('page_rank[]', $options, $valuess['page_rank'], 'class = "form-control chosen-selects" id = "rank" attr_id="'.$valuess['question_id'].'"'); ?>
                 </div>
               </div>
                                         
@@ -104,7 +104,7 @@ display: block;
             <td> <div class="form-group">
             <div class="col-md-8" style="width:100%;">
                   
-                    <i  style="color:#ffc735;" class="fa fa-times  pull-right remove_attribute"   attr_id="<?php if(isset($valuess['question_id']) ) echo $valuess['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check"></i>              </div>
+                    <i  style="color:#ffc735;" class="simple-icon-close  pull-right remove_attribute"   attr_id="<?php if(isset($valuess['question_id']) ) echo $valuess['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check"></i>              </div>
                    
                    
             </div></td>
@@ -115,16 +115,16 @@ display: block;
                                     </tbody>
                                   </table>
                                    <h4>Fixed attributes:</h4>
- <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
+ <table class="table table-bordered mb-0">
                                     <thead>
                                       <tr>
-                                        <th  style="color: black !important">Attribute Name</th>
+                                        <th   >Attribute Name</th>
                                         
-                                        <th style="color: black !important"></th>
-                                        <th  style="color: black !important">Dependent on</th>
-                                         <th style="color: black !important">Order</th>
+                                        <th  ></th>
+                                        <th   >Dependent on</th>
+                                         <th style="width:10%;" >Order</th>
                                        <?php if($datacheck==false){?>
-                                        <th style="color: black !important"></th><?}?> 
+                                        <th  ></th><?}?> 
                                       </tr>
                                     </thead>
                                     <tbody  id="fixed_table">
@@ -189,7 +189,7 @@ display: block;
                 $valuerrr['question_id']='0';
                 ?>
                 <div class="col-md-12" id="cities_cont">
-                  <?php echo form_dropdown('page_rank[]', $options,$valuerrr['page_rank'], 'class = "form-control chosen-select" id = "rank" attr_id="'.$valuerrr['question_id'].'"'); ?>
+                  <?php echo form_dropdown('page_rank[]', $options,$valuerrr['page_rank'], 'class = "form-control chosen-selects" id = "rank" attr_id="'.$valuerrr['question_id'].'"'); ?>
                 </div>
               </div>
                                         
@@ -198,7 +198,7 @@ display: block;
             <td> <div class="form-group">
             <div class="col-md-8" style="width:100%;">
                   
-                    <i  style="color:#ffc735;" class="fa fa-times  pull-right remove_attribute"   attr_id="<?php if(isset($valuerrr['question_id']) ) echo $valuerrr['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check"></i>              </div>
+                    <i  style="color:#ffc735;" class="simple-icon-close  pull-right remove_attribute"   attr_id="<?php if(isset($valuerrr['question_id']) ) echo $valuerrr['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check"></i>              </div>
                    
                    
             </div></td> 
@@ -209,19 +209,19 @@ display: block;
                                     </tbody>
                                   </table>
                <h4>Range attributes:</h4>
-                <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
+                <table class="table table-bordered mb-0">
                                     <thead>
                                       <tr>
-                                        <th  style="color: black !important">Attribute Name</th>
-                                        <th  style="color: black !important">Dependent on</th>
-                                        <th style="color: black !important;width:15%;">Min</th>
-                                        <th style="color: black !important;width:15%;">Target</th>
+                                        <th   >Attribute Name</th>
+                                        <th   >Dependent on</th>
+                                        <th style="width:12%;">Min</th>
+                                        <th style="width:12%;">Target</th>
                                         <th style="display:none;width:15%;"></th>
-                                        <th style="color: black !important;width:15%;">Max</th>
-                                        <th style="color: black !important;width:15%;">Rank</th>
-                                        <!--<th style="color: black !important">Possible Value</th>-->
+                                        <th style="width:12%;">Max</th>
+                                        <th style="width:15%;">Order</th>
+                                        <!--<th  >Possible Value</th>-->
                                        <?php if($datacheck==false){?>
-                                        <th style="color: black !important"></th><?}?> 
+                                        <th  ></th><?}?> 
                                       </tr>
                                     </thead>
                                     <tbody  id="range_table">
@@ -370,7 +370,7 @@ display: block;
                 $valuettt['question_id']='0';
                ?>
                 <div class="col-md-12" id="cities_cont">
-                  <?php echo form_dropdown('page_rank[]', $options, $valuettt['page_rank'], 'class = "form-control chosen-select" id = "rank" attr_id="'.$valuettt['question_id'].'" '); ?>
+                  <?php echo form_dropdown('page_rank[]', $options, $valuettt['page_rank'], 'class = "form-control chosen-selects" id = "rank" attr_id="'.$valuettt['question_id'].'" '); ?>
                 </div>
               </div>
                                         
@@ -379,7 +379,7 @@ display: block;
             <td> <div class="form-group">
             <div class="col-md-8" style="width:100%;">
                   
-                    <i  style="color:#ffc735;" class="fa fa-times  pull-right remove_attribute"  attr_id="<?php if(isset($valuettt['question_id']) ) echo $valuettt['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check"></i>              </div>
+                    <i  style="color:#ffc735;" class="simple-icon-close  pull-right remove_attribute"  attr_id="<?php if(isset($valuettt['question_id']) ) echo $valuettt['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check"></i>              </div>
                    
                    
             </div></td> 
@@ -392,16 +392,16 @@ display: block;
     
     
       <h4>Date attributes:</h4>
- <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
+ <table class="table table-bordered mb-0" >
                                     <thead>
                                       <tr>
-                                        <th  style="color: black !important">Attribute Name</th>
+                                        <th   >Attribute Name</th>
                                         
-                                        <th style="color: black !important"></th>
-                                        <th style="color: black !important">Dependent on</th>
-                                         <th style="color: black !important">Order</th>
+                                        <th  ></th>
+                                        <th  >Dependent on</th>
+                                         <th style="width:10%;" >Order</th>
                                        <?php if($datacheck==false){?>
-                                        <th style="color: black !important"></th><?}?> 
+                                        <th  ></th><?}?> 
                                       </tr>
                                     </thead>
                                     <tbody  id="date_table">
@@ -475,7 +475,7 @@ display: block;
             <td> <div class="form-group">
             <div class="col-md-8" style="width:100%;">
                   
-                    <i  style="color:#ffc735;" class="fa fa-times  pull-right remove_attribute"   attr_id="<?php if(isset($valuerrr['question_id']) ) echo $valuerrr['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check"></i>              </div>
+                    <i  style="color:#ffc735;" class="simple-icon-close  pull-right remove_attribute"   attr_id="<?php if(isset($valuerrr['question_id']) ) echo $valuerrr['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check"></i>              </div>
                    
                    
             </div></td> 
@@ -487,16 +487,16 @@ display: block;
                                   </table>
     
                                 <h4>DateTime attributes:</h4>
-                                  <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
+                                  <table class="table table-bordered mb-0" >
                                     <thead>
                                       <tr>
-                                        <th  style="color: black !important">Attribute Name</th>
+                                        <th   >Attribute Name</th>
                                         
-                                        <th style="color: black !important"></th>
-                                        <th style="color: black !important">Dependent on</th>
-                                         <th style="color: black !important">Order</th>
+                                        <th  ></th>
+                                        <th  >Dependent on</th>
+                                         <th  style="width:10%;" >Order</th>
                                        <?php if($datacheck==false){?>
-                                        <th style="color: black !important"></th><?}?> 
+                                        <th  ></th><?}?> 
                                       </tr>
                                     </thead>
                                     <tbody  id="datetime_table">
@@ -561,7 +561,7 @@ display: block;
                 $valuerrr['question_id']='0';
                 ?>
                 <div class="col-md-12" id="cities_cont">
-                  <?php echo form_dropdown('page_rank[]', $options,$valuerrr['page_rank'], 'class = "form-control chosen-select" id = "rank" attr_id="'.$valuerrr['question_id'].'"'); ?>
+                  <?php echo form_dropdown('page_rank[]', $options,$valuerrr['page_rank'], 'class = "form-control chosen-selects" id = "rank" attr_id="'.$valuerrr['question_id'].'"'); ?>
                 </div>
               </div>
                                         
@@ -570,7 +570,7 @@ display: block;
             <td> <div class="form-group">
             <div class="col-md-8" style="width:100%;">
                   
-                    <i  style="color:#ffc735;" class="fa fa-times  pull-right remove_attribute"   attr_id="<?php if(isset($valuerrr['question_id']) ) echo $valuerrr['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check"></i>              </div>
+                    <i  style="color:#ffc735;" class="simple-icon-close  pull-right remove_attribute"   attr_id="<?php if(isset($valuerrr['question_id']) ) echo $valuerrr['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check"></i>              </div>
                    
                    
             </div></td> 
@@ -581,16 +581,16 @@ display: block;
                                     </tbody>
                                   </table>
       <h4>Time attributes:</h4>
- <table class="table table-responsive  table-bordered table-striped mb-0" style="color: black !important;">
+ <table class="table table-bordered mb-0" >
                                     <thead>
                                       <tr>
-                                        <th  style="color: black !important">Attribute Name</th>
+                                        <th   >Attribute Name</th>
                                         
-                                        <th style="color: black !important"></th>
-                                        <th style="color: black !important">Dependent on</th>
-                                         <th style="color: black !important">Order</th>
+                                        <th  ></th>
+                                        <th  >Dependent on</th>
+                                         <th  style="width:10%;">Order</th>
                                        <?php if($datacheck==false){?>
-                                        <th style="color: black !important"></th><?}?> 
+                                        <th  ></th><?}?> 
                                       </tr>
                                     </thead>
                                     <tbody  id="time_table">
@@ -655,7 +655,7 @@ display: block;
                 $valuerrr['question_id']='0';
                 ?>
                 <div class="col-md-12" id="cities_cont">
-                  <?php echo form_dropdown('page_rank[]', $options,$valuerrr['page_rank'], 'class = "form-control chosen-select" id = "rank" attr_id="'.$valuerrr['question_id'].'"'); ?>
+                  <?php echo form_dropdown('page_rank[]', $options,$valuerrr['page_rank'], 'class = "form-control chosen-selects" id = "rank" attr_id="'.$valuerrr['question_id'].'"'); ?>
                 </div>
               </div>
                                         
@@ -664,7 +664,7 @@ display: block;
             <td> <div class="form-group">
             <div class="col-md-8" style="width:100%;">
                   
-                    <i  style="color:#ffc735;" class="fa fa-times  pull-right remove_attribute"   attr_id="<?php if(isset($valuerrr['question_id']) ) echo $valuerrr['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check"></i>              </div>
+                    <i  style="color:#ffc735;" class="simple-icon-close  pull-right remove_attribute"   attr_id="<?php if(isset($valuerrr['question_id']) ) echo $valuerrr['question_id'];else echo '0';?>" checkid="<?=$update_id?>" style="margin-left: 20px;" onclick="myfunction(this)" title="You can exclude this attribute from check"></i>              </div>
                    
                    
             </div></td> 
@@ -681,7 +681,7 @@ display: block;
                                  </div>
   </div>
 <script>
-    $('.chosen-select').on('change', function() {
+    $('.chosen-selects').on('change', function() {
          var attr_id=$(this).attr('attr_id');
          var select_val=$(this).val();
          var checkid=<?=$update_id?>;
@@ -727,6 +727,10 @@ function selection_code(){
     attr_arr=JSON.parse(attr_array);
     var attr_id=$(this).parent().parent().find('#product_id').val();
     var parent_id=$(this).attr('parent_id');
+    if(!parent_id)
+    {
+      var parent_id="0";
+    }
     var selection_arr=JSON.parse(localStorage.getItem('selection_arr'))
     var opt = document.createElement('option');
     opt.value = '';
@@ -743,7 +747,7 @@ function selection_code(){
               //if(index==-1){
                 var opt = document.createElement('option');
                 if(parent_id==Item.question_id)
-                  opt.selected = selected;
+                  opt.selected = "selected";
                 opt.value = Item.attribute_id;
                 opt.innerHTML = Item.question;
                 this.appendChild(opt);
@@ -755,7 +759,7 @@ function selection_code(){
         if(Item.attribute_id!=attr_id){
               var opt = document.createElement('option');
               if(parent_id==Item.question_id)
-                opt.selected = selected;
+                opt.selected = "selected";
               opt.value = Item.attribute_id;
               opt.innerHTML = Item.question;
               this.appendChild(opt);

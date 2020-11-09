@@ -9,60 +9,42 @@
     .btn-group.open .dropdown-toggle {
         background-color: transparent;
     }
-    .form-group{
+    .input-group  mb-3{
         padding-bottom: 15px;
     }
+.input_fields_wrap
+{
+   border: 1px solid #757576;
+    padding: 1%;
+    margin-bottom: 2%;
+    margin-top: 2%;
+    margin-left: 0%;
+}
+.cross-icon
+{
+width:100%}
 </style>
-<div class="page-content-wrapper">
-  <div class="page-content"> 
-    <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
-    <div id="contractors_measurements_modal" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-            <h4 class="modal-title">Modal title</h4>
-          </div>
-          <div class="modal-body"> Widget settings form goes here </div>
-          <div class="modal-footer">
-            <button type="button" class="btn green" id="confirm"><i class="fa fa-check"></i>&nbsp;Save changes</button>
-            <button type="button" class="btn default" data-dismiss="modal"><i class="fa fa-undo"></i>&nbsp;Close</button>
-          </div>
-        </div>
-        <!-- /.modal-content --> 
-      </div>
-      <!-- /.modal-dialog --> 
-    </div>
-    <!-- /.modal --> 
-    <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM--> 
-    <!-- BEGIN PAGE HEADER-->
-    <div class="content-wrapper">
-        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
-      <h3>
-        <?php 
-        if (empty($update_id)) 
-                    $strTitle = 'Add Ingredient';
-                else 
-                    $strTitle = 'Edit Ingredient';
-                    echo $strTitle;
-                    ?>
-                    <a href="<?php echo ADMIN_BASE_URL . 'ingredients'; ?>"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-chevron-left"></i>&nbsp;&nbsp;&nbsp;Back</button></a>
-       </h3>             
-            
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="tabbable tabbable-custom boxless">
-          <div class="tab-content">
-          <div class="panel panel-default" style="border-radius:10px;">
-         
-            <div class="tab-pane  active" id="tab_2" >
-              <div class="portlet box green ">
-                <div class="portlet-title ">
-                 
-                </div>
-                
-                <div class="portlet-body form " style="padding-top:15px;"> 
+<?php include_once("select_box.php");?>
+                <main>
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-12">
+                        <h1> <?php if (empty($update_id)) 
+                        $strTitle = 'Add Ingredient';
+                      else 
+                        $strTitle = 'Edit Ingredient';
+                        echo $strTitle;
+                      ?></h1>
+                        <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="<?php echo ADMIN_BASE_URL . 'ingredients'; ?>">&nbsp;&nbsp;&nbsp;Back</a> 
+                        <div class="separator mb-5"></div>
+                      </div>
+                    </div>
+                <div class="card mb-4">
+                  <div class="card-body">
+                    <h5 class="mb-4">
+                      </h5>
+
+
                   
                   <!-- BEGIN FORM-->
                         <?php
@@ -81,11 +63,12 @@
                     
                     <!-- <h3 class="form-section">Post Information</h3>-->
                    
-                    <div class="row">
-                        <fieldset>
+                    <fieldset>
                             <legend>Ingredients Information</legend>
-                        <!--<div class="col-sm-5 selecting_div">
-                            <div class="form-group">
+                        </fieldset>
+                    <div class="row">
+                        <!--<div class="col-sm-6 selecting_div">
+                            <div class="input-group  mb-3">
                               <label class="col-sm-4 control-label">Ingredient</label>
                                 <div class="col-sm-8">
                                    	<select  id="selectboxing" class="selectpicker"  data-show-subtext="true" data-live-search="true" name="wip_id" required="required">
@@ -100,8 +83,8 @@
                                 </div>
                             </div>
                         </div>-->
-                         <div class="col-sm-5">
-                            <div class="form-group">
+                         <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'item_no',
@@ -114,14 +97,14 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('NAV Number<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">NAV Number<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                        <div class="col-sm-5">
-                            <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'plm_no',
@@ -134,14 +117,14 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('RM PLM Number<span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">RM PLM Number<span style="color:red">*</span></button>
                                 </div>
+                                    <?php echo form_input($data); ?>
                             </div>
                         </div>
-                         <div class="col-sm-5">
-                            <div class="form-group">
+                         <div class="col-sm-6">
+                            <div class="input-group  mb-3">
                                 <?php
                                 $data = array(
                                     'name' => 'item_name',
@@ -154,19 +137,20 @@
                                 );
                                 $attribute = array('class' => 'control-label col-md-4');
                                 ?>
-                                <?php echo form_label('Raw Material Name <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                <div class="col-md-8">
-                                    <?php echo form_input($data); ?>
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button">Raw Material Name<span style="color:red">*</span></button>
                                 </div>
+                                <?php echo form_input($data); ?>
                             </div>
                         </div>
-                        <div class="col-sm-5">
-                        <div class="form-group">
-                          <label class="col-sm-4 control-label">Type<span class="red" style="color:red;">*</span></label>
-                          <div class="col-sm-8">
-                            <select  id="selectboxing" name="type[]" class="form-control chosen-select type" required="required" multiple>
+                        <div class="col-sm-6">
+                        <div class="input-group  mb-3">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary" type="button">Type<span style="color:red">*</span></button>
+                        </div>
+                            <select  id="selectboxing" name="type[]" class="form-control program_type select-1 type" required="required" multiple style="float:right;">
                               <option >Select</option>
-                              /*<?php if(!isset($type) || empty($type))
+                              <?php if(!isset($type) || empty($type))
                                       $type = array();
                                 foreach ($type as $value): ?>
                                   <option value="<?=$value['id']?>" 
@@ -175,204 +159,17 @@
                                     $exist = array_search($value['id'], array_column($selected_type, 'type_id'));
                                     foreach($news as $new){ if(isset($exist) && is_numeric($exist)) echo 'selected="selected"';}?>><?= $value['name'];?>
                                   </option>
-                                <?php endforeach ?>*/
+                                <?php endforeach ?>
                             </select>
-                          </div>
                         </div>
                       </div>
-                        </fieldset>
-                        </div>
-                        <div class="row">
-                        <fieldset>
-                        <legend>Supplier</legend>
-                      
-                      <div class="col-sm-12">
-                        <br>
                       </div>
-                      
-                      
-                        <div class="rap_clone">
-                            <?php if(isset($selected_supplier) && !empty($selected_supplier)){
-                                foreach($selected_supplier as $value){ ?>
-                            <div class="input_fields_wrap">
-                                <div class="col-sm-5">
-                                    <div class="form-group">
-                                      <?php if(!isset($groups)) $groups = array();
-                                      if(!isset($value['supplier_id'])) $value['supplier_id'] = ""; ?>
-                                      <?php $options = $groups ;
-                                      $attribute = array('class' => 'control-label col-md-4');
-                                      echo form_label('Supplier Name <span style="color:red">*</span>', 'role_id', $attribute);?>
-                                      <div class="col-md-8">
-                                        <?php echo form_dropdown('supplier_name[]', $options, $value['supplier_id'],  'class="form-control select2me required validatefield" id="role_id" tabindex ="8"'); ?>
-                                      </div>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-5">
-                                    <div class="form-group">
-                                      <?php if(!isset($role)) $role = array();
-                                      if(!isset($value['role'])) $value['role'] = ""; ?>
-                                      <?php $options = $role ;
-                                      $attribute = array('class' => 'control-label col-md-4');
-                                      echo form_label('Supplier Role <span style="color:red">*</span>', 'role_id', $attribute);?>
-                                      <div class="col-md-8">
-                                        <?php echo form_dropdown('role[]', $options, $value['role'],  'class="form-control select2me required validatefield" id="role_id" tabindex ="8"'); ?>
-                                      </div>
-                                    </div>
-                                 </div>
-                                  <div class="col-sm-5">
-                                    <div class="form-group">
-                                        <?php
-                                        $data = array(
-                                            'name' => 's_item_name[]',
-                                            'id' => 's_item_name',
-                                            'class' => 'form-control',
-                                            'value' => $value['s_item_name'],
-                                            'type' => 'text',
-                                            'required' => 'required',
-                                            'data-parsley-type'=>"integer",
-                                            'data-parsley-maxlength'=>TEXT_BOX_RANGE
-                                        );
-                                        $attribute = array('class' => 'control-label col-md-4');
-                                        ?>
-                                        <?php echo form_label('Supplier Item Name <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                        <div class="col-md-8">
-                                            <?php echo form_input($data); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                                  <div class="col-sm-5">
-                                    <div class="form-group">
-                                        <?php
-                                        $data = array(
-                                            'name' => 's_item_no[]',
-                                            'id' => 's_item_no',
-                                            'class' => 'form-control',
-                                            'value' => $value['s_item_no'],
-                                            'type' => 'text',
-                                            'required' => 'required',
-                                            'data-parsley-type'=>"integer",
-                                            'data-parsley-maxlength'=>TEXT_BOX_RANGE
-                                        );
-                                        $attribute = array('class' => 'control-label col-md-4');
-                                        ?>
-                                        <?php echo form_label('Supplier Item Number <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                        <div class="col-md-8">
-                                            <?php echo form_input($data); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                                <i class="fa fa-times delete_record cross-icon" rel="<?php echo $value['id'];?>" rel_ingredient="<?php echo $value['ingredient_id'];?>" style="float:left;"></i>
-                            </div>
-                            <?}}else{?>
-                            <div class="input_fields_wrap">
-                                <div class="col-sm-5">
-                                    <div class="form-group">
-                                      <?php if(!isset($groups)) $groups = array();
-                                      if(!isset($value['supplier_id'])) $value['supplier_id'] = ""; ?>
-                                      <?php $options = $groups ;
-                                      $attribute = array('class' => 'control-label col-md-4');
-                                      echo form_label('Supplier Name <span style="color:red">*</span>', 'role_id', $attribute);?>
-                                      <div class="col-md-8">
-                                        <?php echo form_dropdown('supplier_name[]', $options, $value['supplier_id'],  'class="form-control select2me required validatefield" id="role_id" tabindex ="8"'); ?>
-                                      </div>
-                                    </div>
-                                 </div>
-                                <div class="col-sm-5">
-                                    <div class="form-group">
-                                      <?php if(!isset($role)) $role = array();
-                                      $options = $role ;
-                                      $attribute = array('class' => 'control-label col-md-4');
-                                      echo form_label('Supplier Role <span style="color:red">*</span>', 'role_id', $attribute);?>
-                                      <div class="col-md-8">
-                                        <?php echo form_dropdown('role[]', $options, "",  'class="form-control select2me required validatefield" id="role_id" tabindex ="8"'); ?>
-                                      </div>
-                                    </div>
-                                 </div>
-                                  <div class="col-sm-5">
-                                    <div class="form-group">
-                                        <?php
-                                        $data = array(
-                                            'name' => 's_item_name[]',
-                                            'id' => 's_item_name',
-                                            'class' => 'form-control',
-                                             'value' => '',
-                                            'type' => 'text',
-                                            'required' => 'required',
-                                            'data-parsley-type'=>"integer",
-                                            'data-parsley-maxlength'=>TEXT_BOX_RANGE
-                                        );
-                                        $attribute = array('class' => 'control-label col-md-4');
-                                        ?>
-                                        <?php echo form_label('Supplier Item Name <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                        <div class="col-md-8">
-                                            <?php echo form_input($data); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                                  <div class="col-sm-5">
-                                    <div class="form-group">
-                                        <?php
-                                        $data = array(
-                                            'name' => 's_item_no[]',
-                                            'id' => 's_item_no',
-                                            'class' => 'form-control',
-                                            'value' => '',
-                                            'type' => 'text',
-                                            'required' => 'required',
-                                            'data-parsley-type'=>"integer",
-                                            'data-parsley-maxlength'=>TEXT_BOX_RANGE
-                                        );
-                                        $attribute = array('class' => 'control-label col-md-4');
-                                        ?>
-                                        <?php echo form_label('Supplier Item Number <span class="required" style="color:#ff60a3">*</span>', 'txtNewsTitle', $attribute); ?>
-                                        <div class="col-md-8">
-                                            <?php echo form_input($data); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <?}?>
+                      <div class="col-md-12" >
+                      <a href="<?php echo ADMIN_BASE_URL . 'ingredients'; ?>">
+                        <button type="button" class="btn green btn-outline-primary" style="margin-left:20px;float:right;"><i class="fa fa-undo"></i>&nbsp;Cancel</button>
+                        </a> 
+                       <span style="margin-left:40px"></span> <button type="submit" class="btn btn-outline-primary submited_form" style="float:right;"><i class="fa fa-check"></i>&nbsp;Save</button>
                         </div>
-                        <div>
-                            <button class="add_field_button btn btn-primary" style="float:right;margin-right: 30px;">Add Supplier</button>
-                        </div>
-                
-                        <!-- </fieldset>
-                        </div>
-                        <fieldset>
-                        <legend>Documents</legend>
-                        <div class="doc_data">
-                            
-                        </div>
-                    
-                            <?php if(!empty($doc)){?>
-                        <div class="col-md-12" style="margin-top:2%;">
-                            <h4 style="font-weight: 400;">Uploaded File</h4>
-                            <?php foreach($doc as $key => $value){?>
-                            <div class="form-group">
-                                <p class="col-md-5" style="font-size: 15px;"><a href="<?php echo BASE_URL.INGREDIENT_DOCUMENTS_PATH.$value['document']; ?>" download><?php echo $value['document']; ?></a></p>
-                                <p class="col-md-1" style="font-size: 15px; cursor:pointer;" id="delete_doc" data-doc-id="<?php echo $value['id']; ?>"><i class="fa fa-close"></i></p>
-                            </div>
-                            
-                       <?php
-                       }?>
-                       
-                        </div>
-                       <?php
-                    } ?> 
-                    </fieldset> -->
-                <div class="form-actions fluid no-mrg">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="col-md-offset-2 col-md-9" style="padding-bottom:15px;">
-                       <span style="margin-left:40px"></span> <button type="submit" class="btn btn-primary submited_form"><i class="fa fa-check"></i>&nbsp;Save</button>
-                        <a href="<?php echo ADMIN_BASE_URL . 'ingredients'; ?>">
-                        <button type="button" class="btn green btn-default" style="margin-left:20px;"><i class="fa fa-undo"></i>&nbsp;Cancel</button>
-                        </a> </div>
-                    </div>
-                    <div class="col-md-6"> </div>
-                  </div>
-                </div>
                 
                 <?php echo form_close(); ?> 
                 <!-- END FORM--> 
@@ -408,7 +205,7 @@
             if(data.doc !=""){
             for(var i = 0; i < data.doc.length; i++) {
                     var obj = data.doc[i];
-                    html += '<div class="col-md-12"><div class="form-group"> <label class="control-label col-md-4" id="doc_label">'+obj+'</label><div class="col-md-8"> <input type="file" name="news_main_page_file_'+i+'" id="news_d_file" class="default"></div></div></div>';
+                    html += '<div class="col-md-12"><div class="input-group  mb-3"> <label class="control-label col-md-4" id="doc_label">'+obj+'</label><div class="col-md-8"> <input type="file" name="news_main_page_file_'+i+'" id="news_d_file" class="default"></div></div></div>';
                 }
             }else
             {
@@ -431,7 +228,7 @@
             if(data.doc !=""){
             for(var i = 0; i < data.doc.length; i++) {
                     var obj = data.doc[i];
-                    html += '<div class="col-md-12"><div class="form-group"> <label class="control-label col-md-4" id="doc_label">'+obj+'</label><div class="col-md-8"> <input type="file" name="news_main_page_file_'+i+'" id="news_d_file" class="default"></div></div></div>';
+                    html += '<div class="col-md-12"><div class="input-group  mb-3"> <label class="control-label col-md-4" id="doc_label">'+obj+'</label><div class="col-md-8"> <input type="file" name="news_main_page_file_'+i+'" id="news_d_file" class="default"></div></div></div>';
                 }
             }else
             {
@@ -476,7 +273,7 @@
             var add_button      = $(".add_field_button");
             
             var x = 1;
-            hyTy = '<div class="input_fields_wrap"><div class="col-sm-5"><div class="form-group"> <label for="role_id" class="control-label col-md-4">Supplier Name <span style="color:red">*</span></label><div class="col-md-8"> <select name="supplier_name[]" class="form-control select2me required validatefield" id="role_id" tabindex="8"> <?php foreach($group as $key => $value){ ?><option value="<?php echo $value['id']; ?>"><?php echo $value['name']; ?></option> <?php } ?> </select></div></div></div><div class="col-sm-5"><div class="form-group"> <label for="role_id" class="control-label col-md-4">Supplier Role <span style="color:red">*</span></label><div class="col-md-8"> <select name="role[]" class="form-control select2me required validatefield" id="role_id" tabindex="8"> <?php foreach($role as $key => $value){ ?><option value="<?php echo $value; ?>"><?php echo $value; ?></option> <?php } ?> </select></div></div></div><div class="col-sm-5"><div class="form-group"> <label for="txtNewsTitle" class="control-label col-md-4">Supplier Item Name <span class="required" style="color:#ff60a3">*</span></label><div class="col-md-8"> <input type="text" name="s_item_name[]" value="" id="s_item_name" class="form-control" required="required" data-parsley-type="integer" data-parsley-maxlength="100"></div></div></div><div class="col-sm-5"><div class="form-group"> <label for="txtNewsTitle" class="control-label col-md-4">Supplier Item Number <span class="required" style="color:#ff60a3">*</span></label><div class="col-md-8"> <input type="text" name="s_item_no[]" value="" id="s_item_no" class="form-control" required="required" data-parsley-type="integer" data-parsley-maxlength="100"></div></div></div><i class="fa fa-times clone-remover cross-icon" style="float:left;"></i></div>';
+            hyTy = '<div class="input_fields_wrap row" style="width:100%;"> <i class="simple-icon-close clone-remover cross-icon" style="float:right;"></i><div class="col-sm-5"> <div class="input-group mb-3"> <div class="input-group-prepend"> <button class="btn btn-outline-secondary" type="button">Supplier Name <span style="color:red">*</span></button> </div><select name="supplier_name[]" class="form-control select2me required validatefield" id="role_id" tabindex="8"> <?php foreach($group as $key=> $value){?> <option value="<?php echo $value['id']; ?>"><?php echo $value['name']; ?></option> <?php }?> </select> </div></div><div class="col-sm-5"> <div class="input-group mb-3"> <div class="input-group-prepend"> <button class="btn btn-outline-secondary" type="button">Supplier Role <span style="color:red">*</span></button> </div><select name="role[]" class="form-control select2me required validatefield" id="role_id" tabindex="8"> <?php foreach($role as $key=> $value){ ?> <option value="<?php echo $value; ?>"><?php echo $value; ?></option> <?php }?> </select> </div></div><div class="col-sm-5"> <div class="input-group mb-3"> <div class="input-group-prepend"> <button class="btn btn-outline-secondary" type="button">Supplier Item Name <span style="color:red">*</span></button> </div><input type="text" name="s_item_name[]" value="" id="s_item_name" class="form-control" required="required" data-parsley-type="integer" data-parsley-maxlength="100"> </div></div><div class="col-sm-5"> <div class="input-group mb-3"> <div class="input-group-prepend"> <button class="btn btn-outline-secondary" type="button">Supplier Item Number <span style="color:red">*</span></button> </div><input type="text" name="s_item_no[]" value="" id="s_item_no" class="form-control" required="required" data-parsley-type="integer" data-parsley-maxlength="100"> </div></div></div>';
             $(add_button).click(function(e){
                 e.preventDefault();
                      $('.rap_clone').append(hyTy);

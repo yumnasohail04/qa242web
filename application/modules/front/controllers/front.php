@@ -14,6 +14,7 @@
     			redirect(BASE_URL.'login');
     			exit();
 			}
+			$data['locations'] = Modules::run('ingredients/_get_data_from_db_table',array("supplier_id"=>$supplier_id),'ingredient_location',"","","*","")->result_array();
 			$data['ingredients'] = Modules::run('ingredients/_get_data_from_db_table',array("supplier_id"=>$supplier_id),DEFAULT_OUTLET.'_ingredients_supplier',"","","ingredient_id,s_item_name","")->result_array();
 		    $data['detail'] = Modules::run('ingredients/_get_data_from_db_table',array("id"=>$supplier_id),"supplier","","","*","")->row_array();
 			$data['supplier_types'] = Modules::run('ingredients/_get_data_from_db_table',array("status"=>"1"),'supplier_type',"","","id,name","")->result_array();
@@ -25,19 +26,44 @@
 				$type_selected=$this->supplier_ingredients($supplier_id,$ing['ingredient_id'])->result_array();
 				foreach($type_selected as $key => $value)
 				{
-					$result = Modules::run('ingredients/_get_data_from_db_table',array("type_id"=>$value['type_id'],"assign_to"=>"ingredient","status"=>"1"),'document',"","","doc_name,id","")->result_array();
+					$result =$this->get_doc_by_ingredient_type(array("assign_to"=>"ingredient","status"=>"1"),"document.id asc","document","document.id,document.doc_name,document.doc_type","","",$value['type_id'],"","")->result_array();
 					foreach($result as $keys => $values)
 					{
-						$query=Modules::run('ingredients/_get_data_from_db_table',array("supplier_id"=>$supplier_id,"ingredient_id"=>$ing['ingredient_id'],"document_id"=>$values['id']),DEFAULT_OUTLET.'_ingredients_document',"","","document","")->row_array();
-						$ing_doc['document']=null;
-						if(!empty($query) && isset($query['document']))
-						$ing_doc['document']=$query['document'];
-						$ing_doc['doc_name']=$values['doc_name'];
-						$ing_doc['ing_id']=$ing['ingredient_id'];
-						$ing_doc['ing_name']=$ing['s_item_name'];
-						$temp[]=$ing_doc;
+						if($values['doc_type']=="location specific"){
+							$ing_doc=array();
+							$ingredient_locations = Modules::run('ingredients/_get_data_from_db_table',array("ingredient_id"=>$ing['ingredient_id'],"supplier_id"=>$supplier_id),'ingredient_location',"","","id as loc_id,location","")->result_array();
+							if(!empty($ingredient_locations))
+							foreach($ingredient_locations as $l => $va){
+								$query=Modules::run('ingredients/_get_data_from_db_table',array("location_id"=>$va['loc_id'],"supplier_id"=>$supplier_id,"ingredient_id"=>$ing['ingredient_id'],"document_id"=>$values['id']),DEFAULT_OUTLET.'_ingredients_document',"","","document","")->row_array();
+								$ing_doc['document']=null;
+								if(!empty($query) && isset($query['document']))
+								$ing_doc['document']=$query['document'];
+								$ing_doc['doc_id']=$values['id'];
+								$ing_doc['doc_name']=$values['doc_name'];
+								$ing_doc['doc_type']=$values['doc_type'];
+								$ing_doc['ing_id']=$ing['ingredient_id'];
+								$ing_doc['ing_name']=$ing['s_item_name'];
+								$ing_doc['location']=$va['location'];
+								$ing_doc['loc_id']=$va['loc_id'];
+								$temp[]=$ing_doc;
+							}
+						}
+						else{
+							$ing_doc=array();
+							$query=Modules::run('ingredients/_get_data_from_db_table',array("supplier_id"=>$supplier_id,"ingredient_id"=>$ing['ingredient_id'],"document_id"=>$values['id']),DEFAULT_OUTLET.'_ingredients_document',"","","document","")->row_array();
+							$ing_doc['document']=null;
+							if(!empty($query) && isset($query['document']))
+							$ing_doc['document']=$query['document'];
+							$ing_doc['doc_id']=$values['id'];
+							$ing_doc['doc_name']=$values['doc_name'];
+							$ing_doc['doc_type']=$values['doc_type'];
+							$ing_doc['ing_id']=$ing['ingredient_id'];
+							$ing_doc['ing_name']=$ing['s_item_name'];
+							$temp[]=$ing_doc;
+						}
 					}
 				}
+				
 			}
 			$data['ingredients_doc']=$temp;
 			$this->load->module('template');
@@ -49,7 +75,7 @@
 		{
 			$supplier_type=$this->input->post('supplier_type');
 			$supplier_id=$this->session->userdata['supplier']['supplier_id'];
-			$data['doc'] = Modules::run('front/_get_specific_table_with_pagination_and_where',array("assign_to"=>"supplier","status"=>"1","supplier_type"=>"0"), "level asc","document","id,doc_name,level,supplier_type","","",array("supplier_type"=>$supplier_type),"","")->result_array();
+			$data['doc'] = Modules::run('supplier/get_doc_by_supplier_type',array("assign_to"=>"supplier","status"=>"1"),"level asc","document","document.id,document.doc_name,document.level,doc_supplier_types.supplier_type","","",$supplier_type,"","")->result_array();
 			if(!empty($data['doc'])){
 				foreach($data['doc'] as $key => $value)
 				{
@@ -136,7 +162,6 @@
 			$data['address']=$this->input->post('address');
 			if(!empty($data['name']) && !empty($data['email']) && !empty($data['phone_no']) && !empty($data['city']) && !empty($data['country']) && !empty($data['state'])){
 				$supplier_id=$this->session->userdata['supplier']['supplier_id'];
-				$password=md5($password);
 				Modules::run('api/update_specific_table',array("id"=>$supplier_id),$data,'supplier');
 				$status=TRUE;
 				$message="Profile Updated ";
@@ -148,29 +173,98 @@
 			}
 			echo '<article><status>'.$status.'</status><message>'.$message.'</message><article>';
 		}
+		function submit_ingredient_form()
+		{
+			$supplier_id=$this->session->userdata['supplier']['supplier_id'];
+			Modules::run('api/update_specific_table',array("supplier_id"=>$supplier_id),array("submit"=>"1"),DEFAULT_OUTLET.'_ingredients_document');
+			$status=TRUE;
+			$outlet_id=DEFAULT_OUTLET;
+			if(!empty($supplier_id) && !empty($outlet_id)) {
+				$groups=$this->get_roles_group("(roles.role='Admin' OR roles.role = 'Purchasing Team' OR roles.role='Purchasing Admin')",array(),"roles",DEFAULT_OUTLET.'_groups')->result_array();
+				foreach($groups as $key => $val):
+					$tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$val['id'].'" or `group`="'.$val['id'].'")','','')->result_array();
+					if(!empty($tokens)) {
+						foreach ($tokens as $token_key => $to):
+							if(isset($to['id']) && !empty($to['id'])) {
+								$sup = Modules::run('ingredients/_get_data_from_db_table',array("id"=>$supplier_id),'supplier',"","","name,supplier_no","")->row_array();
+								Modules::run('api/insert_into_specific_table',array("assingment_id"=>"0","user_id"=>$to['id'],"carrier_id"=>"0","outlet_id"=>$outlet_id,"supplier_id"=>$supplier_id,"notification_message"=>'Supplier# '. $sup['supplier_no'].' '. $sup['name']." had updated basic documents","notification_datetime"=>date("Y-m-d H:i:s")),'notification');	
+							}
+						endforeach;
+					}
+				endforeach;
+			}
+			$message="Your documents have been submitted on Admin side";
+			echo '<article><status>'.$status.'</status><message>'.$message.'</message><article>';
 
+		}
 		function ingredient_location()
 		{
 			$supplier_id=$this->session->userdata['supplier']['supplier_id'];
-			$ing_id=$this->input->post('ing_id');
-			$loc=$this->input->post('loc');
-			$total=count($ing_id);
-			if(isset($ing_id) && !empty($ing_id)){
-				for ($i=0; $i < $total; $i++) {
-					$where_attr['supplier_id']=$supplier_id;
-					$where_attr['ingredient_id']=$ing_id[$i];
-					$data['ing_loc']=$loc[$i];
-					Modules::run('api/update_specific_table',$where_attr,$data,DEFAULT_OUTLET.'_ingredients_supplier');
-					}	
-					$status=TRUE;
-					$message="Location Saved";
+			$location= $this->input->post('loc');
+			$ingredient_id=$this->input->post('ingredient');
+			$total=count($ingredient_id);
+			if(isset($ingredient_id) && !empty($ingredient_id)){
+			for ($i=0; $i <$total; $i++) {
+				$attribute_ids="";
+				$where_attr['supplier_id']=$supplier_id;
+				$where_attr['ingredient_id']=$ingredient_id[$i];
+				$where_attr['location']=$location[$i];
+				$arr_attr_data= $this->check_atrribute_exists($where_attr,'ingredient_location')->result_array();
+				if(empty($arr_attr_data)){
+				$arr_attribute['supplier_id']=$supplier_id;
+				$arr_attribute['ingredient_id']=$ingredient_id[$i];
+				$arr_attribute['location']=$location[$i];
+				$attribute_ids=$this->insert_attribute_data($arr_attribute,'ingredient_location');
 				}
-			else
+				elseif(!empty($arr_attr_data)){
+					  $where['id']=$arr_attr_data[0]['id'];
+					  $attribute_data['location']=$location[$i];
+					  $attribute_data['ingredient_id']=$ingredient_id[$i];
+					  $attribute_ids=$this->update_attribute_data($where,$attribute_data,'ingredient_location');
+					}
+					if(!empty($attribute_ids))
+					{
+						$ingredients = Modules::run('ingredients/_get_data_from_db_table',array("supplier_id"=>$supplier_id),DEFAULT_OUTLET.'_ingredients_supplier',"","","ingredient_id,s_item_name","")->result_array();
+						foreach($ingredients as $ingrdnt => $ing)
+						{
+							$type_selected=$this->supplier_ingredients($supplier_id,$ing['ingredient_id'])->result_array();
+							foreach($type_selected as $key => $value)
+							{
+								$result =$this->get_doc_by_ingredient_type(array("assign_to"=>"ingredient","status"=>"1"),"document.id asc","document","document.id,document.doc_name,document.doc_type","","",$value['type_id'],"","")->result_array();
+								foreach($result as $keys => $values)
+								{
+									if($values['doc_type']=="location specific" ){
+										$ingredient_locations = Modules::run('ingredients/_get_data_from_db_table',array("location"=>$location[$i],"ingredient_location.id != "=>$attribute_ids,"supplier_id"=>$supplier_id),'ingredient_location',"","","location,id as loc_id,ingredient_id","")->result_array();
+										if(!empty($ingredient_locations))
+										foreach($ingredient_locations as $l => $va){
+											$docname= Modules::run('ingredients/_get_data_from_db_table',array("ingredient_id"=>$va['ingredient_id'],"supplier_id"=>$supplier_id,"document_id"=>$values['id'],"location_id"=>$va['loc_id']),DEFAULT_OUTLET.'_ingredients_document',"","","document","")->row_array();
+											if(!empty($docname)){
+												$id=Modules::run('api/insert_or_update',array("ingredient_id"=>$ingredient_id[$i],"supplier_id"=>$supplier_id,"document_id"=>$values['id'],"location_id"=>$attribute_ids),array("ingredient_id"=>$ingredient_id[$i],"supplier_id"=>$supplier_id,"document_id"=>$values['id'],"location_id"=>$attribute_ids),DEFAULT_OUTLET.'_ingredients_document');
+												copy(INGREDIENT_DOCUMENTS_PATH.$docname['document'],INGREDIENT_DOCUMENTS_PATH.$id.$docname['document']);
+												Modules::run('api/update_specific_table',array("id"=>$id),array("document"=>$id.$docname['document']),DEFAULT_OUTLET.'_ingredients_document');
+
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				$status=TRUE;
+				$message="Location Saved";
+			 }
+			 else
 			{
 				$status=FALSE;
 				$message="Please Provide all required Information";
 			}
 			echo '<article><status>'.$status.'</status><message>'.$message.'</message><article>';
+		}
+		function delete_attributes() {
+			$delete_id = $this->input->post('id');    
+			$where['id'] = $delete_id;
+			$this->delete_from_table($where,'ingredient_location');
 		}
 		function login() {
 		    $this->load->module('template');
@@ -191,11 +285,21 @@
     		$username = $this->input->post('txtUserName', TRUE);
     		$id = $this->input->post('id', TRUE);
     		$password = md5($this->input->post('txtPassword', TRUE)); 
-    		$row = Modules::run('ingredients/_get_data_from_db_table',array("username"=>$username,"password"=>$password,"supplier_id"=>$id),"supplier_account","","","*","")->row();
+			$row = Modules::run('ingredients/_get_data_from_db_table',array("username"=>$username,"password"=>$password,"supplier_id"=>$id),"supplier_account","","","*","")->row();
+			$stat = Modules::run('ingredients/_get_data_from_db_table',array("id"=>$id),"supplier","","","*","")->row();
     		if (empty($row)) {
+				$this->session->set_flashdata('status', 'error');
+				$this->session->set_flashdata('message', 'Invalid Username or Password');
     			redirect(BASE_URL.'login/'.$id);
     			exit();
-    		}
+			}
+			if($stat->status=="0")
+			{
+				$this->session->set_flashdata('status', 'error');
+				$this->session->set_flashdata('message', 'Sorry, your account has been deactivated');
+				redirect(BASE_URL.'login/'.$id);
+    			exit();
+			}
     		$data['user_id'] = $row->id;
     		$data['user'] = $row->username;
     		$data['supplier_id'] = $id;
@@ -225,60 +329,177 @@
 		    $data['view_file'] = 'thanks';
 		    $this->template->front($data);
 		}
-		
+		function submit_ingredients_doc()
+		{
+			$outlet_id=DEFAULT_OUTLET;
+			$supplier_id=$this->session->userdata['supplier']['supplier_id'];
+			$total=$this->input->post('total');
+			if(isset($supplier_id) && !empty($supplier_id)){
+				for ($i=0; $i <=$total; $i++) {
+					$attribute_data=$arr_attribute=$where_attr=array();
+					if(isset($_FILES["main_file_$i"])){
+						if($_FILES["main_file_$i"]['size'] > 0) {
+							$where_attr['supplier_id']=$supplier_id;
+							$where_attr['ingredient_id']=$this->input->post('ingredient_'.$i);
+							$where_attr['document_id']=$this->input->post('doc_'.$i);
+							$where_attr['location_id']="0";
+							if(!empty($this->input->post('loc_'.$i)))
+							$where_attr['location_id']=$this->input->post('loc_'.$i);
+							$arr_attr_data= $this->check_atrribute_exists($where_attr,DEFAULT_OUTLET.'_ingredients_document')->result_array();
+							if(empty($arr_attr_data)){
+							$arr_attribute['supplier_id']=$supplier_id;
+							$arr_attribute['ingredient_id']=$this->input->post('ingredient_'.$i);
+							$arr_attribute['document_id']=$this->input->post('doc_'.$i);
+							$arr_attribute['location_id']="0";
+							if(!empty($this->input->post('loc_'.$i)))
+							$arr_attribute['location_id']=$this->input->post('loc_'.$i);
+							$attribute_ids=$this->insert_attribute_data($arr_attribute,DEFAULT_OUTLET.'_ingredients_document');
+							}
+							elseif(!empty($arr_attr_data)){
+								$where['id']=$arr_attr_data[0]['id'];
+								$attribute_data['ingredient_id']=$this->input->post('ingredient_'.$i);
+								$attribute_data['document_id']=$this->input->post('doc_'.$i);
+								$attribute_data['location_id']="0";
+								if(!empty($this->input->post('loc_'.$i)))
+								$attribute_data['location_id']=$this->input->post('loc_'.$i);
+								$this->update_attribute_data($where,$attribute_data,DEFAULT_OUTLET.'_ingredients_document');
+								$attribute_ids=$arr_attr_data[0]['id'];
+								
+							}	
+							$itemInfo = Modules::run('ingredients/_get_data_from_db_table',array("id"=>$attribute_ids),DEFAULT_OUTLET.'_ingredients_document',"","","*","")->row();
+							if(isset($itemInfo->document) && !empty($itemInfo->document)) 
+								Modules::run('ingredients/delete_images_by_name',INGREDIENT_DOCUMENTS_PATH,$itemInfo->document);
+								Modules::run('front/upload_dynamic_image',INGREDIENT_DOCUMENTS_PATH,$itemInfo->id,'main_file_'.$i,'document','id',DEFAULT_OUTLET.'_ingredients_document',$this->input->post('doc_'.$i));
+							if(!empty($this->input->post('loc_'.$i))){
+								$exist_loc = Modules::run('ingredients/_get_data_from_db_table',array("id"=>$this->input->post('loc_'.$i)),'ingredient_location',"","","location","")->row();
+								$ingredients = Modules::run('ingredients/_get_data_from_db_table',array("supplier_id"=>$supplier_id),DEFAULT_OUTLET.'_ingredients_supplier',"","","ingredient_id,s_item_name","")->result_array();
+								foreach($ingredients as $ingrdnt => $ing)
+								{
+									$type_selected=$this->supplier_ingredients($supplier_id,$ing['ingredient_id'])->result_array();
+									foreach($type_selected as $key => $value)
+									{
+										$result =$this->get_doc_by_ingredient_type(array("assign_to"=>"ingredient","status"=>"1"),"document.id asc","document","document.id,document.doc_name,document.doc_type","","",$value['type_id'],"","")->result_array();
+
+										foreach($result as $keys => $values)
+										{
+											if($values['doc_type']=="location specific" && $values['id']==$this->input->post('doc_'.$i) ){
+												$ingredient_locations = Modules::run('ingredients/_get_data_from_db_table',array("location"=>$exist_loc->location,"ingredient_id"=>$ing['ingredient_id'],"supplier_id"=>$supplier_id),'ingredient_location',"","","location,id as loc_id,ingredient_id","")->result_array();
+												if(!empty($ingredient_locations))
+												foreach($ingredient_locations as $l => $va){
+													$ing_doc['supplier_id']=$supplier_id;
+													$ing_doc['ingredient_id']=$va['ingredient_id'];
+													$ing_doc['document_id']=$this->input->post('doc_'.$i);
+													$ing_doc['location_id']=$va['loc_id'];
+													$attribute_ids=Modules::run('api/insert_or_update',$ing_doc,$ing_doc,DEFAULT_OUTLET.'_ingredients_document');
+													Modules::run('front/upload_dynamic_image',INGREDIENT_DOCUMENTS_PATH,$attribute_ids,'main_file_'.$i,'document','id',DEFAULT_OUTLET.'_ingredients_document',$this->input->post('doc_'.$i));
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			///////////////////notification_code_start////////////////////////////////////
+			
+			///////////////////notification_code_end////////////////////////////////////
+			$this->session->set_flashdata('status', 'success');
+			$this->session->set_flashdata('message', 'Documents Saved');
+    	    redirect(BASE_URL . 'index#ingredient_location');
+		}
+
+		function upload_dynamic_image($actual,$nId,$input_name,$image_field,$image_id_fild,$table,$doc_id) {
+			$upload_image_file = $_FILES[$input_name]['name'];
+			$upload_image_file = str_replace(' ', '_', $upload_image_file);
+			$file_name = 'Ingredient_doc' . $nId.'_'.$doc_id. '_' . $upload_image_file;
+			$config['upload_path'] = $actual;
+			$config['allowed_types'] = 'pdf|xlsx|docx|PDF|XLSX|DOCX|TXT|txt';
+			$config['max_size'] = '20000';
+			$config['max_width'] = '2000000000';
+			$config['max_height'] = '2000000000';
+			$config['file_name'] = $file_name;
+			$this->load->library('upload');
+			$this->upload->initialize($config);
+			if (isset($_FILES[$input_name])) {
+				$this->upload->do_upload($input_name);
+			}
+			$upload_data = $this->upload->data();
+			$where['id']=$nId;
+			$data = array($image_field => $file_name);
+			$this->update_attribute_data($where,$data,DEFAULT_OUTLET.'_ingredients_document');
+		}
 		function submit_doc(){
+			$outlet_id=DEFAULT_OUTLET;
 			$supplier_id=$this->session->userdata['supplier']['supplier_id'];
 			$supplier_type=$this->input->post('supplier_type');
 			$update_id=$this->input->post('id');
 			Modules::run('api/insert_or_update',array("id"=>$supplier_id),array("supplier_type"=>$supplier_type),'supplier');
-			$doc = Modules::run('front/_get_specific_table_with_pagination_and_where',array("assign_to"=>"supplier","status"=>"1","supplier_type"=>"0"), "level asc","document","id,doc_name,level,supplier_type","","",array("supplier_type"=>$supplier_type),"","")->result_array();
+			$doc = Modules::run('supplier/get_doc_by_supplier_type',array("assign_to"=>"supplier","status"=>"1"),"level asc","document","document.id,document.doc_name,document.level,doc_supplier_types.supplier_type","","",$supplier_type,"","")->result_array();
 			if (is_numeric($update_id) && $update_id != 0) {
-                    if(!empty($doc)){
-                        $where['id'] = $update_id;
-                        foreach($doc as $key => $value){
-						$exp_date=$this->input->post("expiry_date_$key");
-                        if(isset($_FILES["news_main_page_file_$key"]['size']) )
-                            if($_FILES["news_main_page_file_$key"]['size'] > 0) {
-                                $itemInfo = Modules::run('supplier/_get_by_arr_id',$where)->row();
-                                if(isset($itemInfo->document) && !empty($itemInfo->document)) 
-                                    Modules::run('supplier/delete_images_by_name',SUPPLIER_DOCUMENTS_PATH,$itemInfo->document);
-                                    Modules::run('supplier/delete_from_table',array("s_doc_id"=>$value['id'],"supplier_id"=>$update_id),"supplier_documents");
-									Modules::run('supplier/upload_dynamic_image',SUPPLIER_DOCUMENTS_PATH,$update_id,"news_main_page_file_$key",'document','id','supplier_documents',$value['id'],$value['doc_name'],$exp_date);
-									
-							}
-							if(!empty($exp_date)){
-							    $exp_date=date("Y-m-d", strtotime($exp_date));
-								Modules::run('api/insert_or_update',array("supplier_id"=>$supplier_id,"s_doc_id"=>$value['id']),array("expiry_date"=>$exp_date),'supplier_documents');
+				if(!empty($doc)){
+					$where['id'] = $update_id;
+					foreach($doc as $key => $value){
+					$exp_date=$this->input->post("expiry_date_$key");
+					if(isset($_FILES["news_main_page_file_$key"]['size']) )
+						if($_FILES["news_main_page_file_$key"]['size'] > 0) {
+							$itemInfo = Modules::run('supplier/_get_by_arr_id',$where)->row();
+							if(isset($itemInfo->document) && !empty($itemInfo->document)) 
+								Modules::run('supplier/delete_images_by_name',SUPPLIER_DOCUMENTS_PATH,$itemInfo->document);
+							Modules::run('supplier/delete_from_table',array("s_doc_id"=>$value['id'],"supplier_id"=>$update_id),"supplier_documents");
+							Modules::run('supplier/upload_dynamic_image',SUPPLIER_DOCUMENTS_PATH,$update_id,"news_main_page_file_$key",'document','id','supplier_documents',$value['id'],$value['doc_name'],$exp_date);
+								
 						}
-					  } 
-					}
-					// $type_selected=$this->supplier_ingredients($supplier_id)->result_array();
-					// Modules::run('ingredients/delete_from_table',array("ingredient_id"=>$update_id),DEFAULT_OUTLET.'_assigned_ingredient_types');
-					// $selected_type= $this->input->post('type');
-					// if(!empty($selected_type)){
-					// 	 foreach($selected_type as $key => $value)
-					// 	{
-					// 		$type['ingredient_id']=$update_id;
-					// 		$type['type_id']=$value;
-					// 		Modules::run('ingredients/_insert_data',$type,DEFAULT_OUTLET.'_assigned_ingredient_types');
-					// 	}
-					// }
-					$count=$this->submit_ingredient_document($supplier_id);
+						if(!empty($exp_date)){
+							$exp_date=date("Y-m-d", strtotime($exp_date));
+							Modules::run('api/insert_or_update',array("supplier_id"=>$supplier_id,"s_doc_id"=>$value['id']),array("expiry_date"=>$exp_date),'supplier_documents');
+						}
+					} 
 				}
+				//$count=$this->submit_ingredient_document($supplier_id);
+			}
 			$detail= Modules::run('ingredients/_get_data_from_db_table',array("id"=>$supplier_id),"supplier","","","*","")->row_array();
 			$submitted = Modules::run('ingredients/_get_data_from_db_table',array("supplier_id"=>$supplier_id),"supplier_documents","","","*","")->num_rows();
 			//$submitted_ing = Modules::run('ingredients/_get_data_from_db_table',array("supplier_id"=>$supplier_id),DEFAULT_OUTLET."_ingredients_document","","","*","")->num_rows();
-			$total_doc =  Modules::run('front/_get_specific_table_with_pagination_and_where',array("assign_to"=>"supplier","status"=>"1","supplier_type"=>"0"), "level asc","document","id,doc_name,level,supplier_type","","",array("supplier_type"=>$supplier_type),"","")->num_rows();
+			$total_doc = Modules::run('supplier/get_doc_by_supplier_type',array("assign_to"=>"supplier","status"=>"1"),"level asc","document","document.id,document.doc_name,document.level,doc_supplier_types.supplier_type","","",$supplier_type,"","")->num_rows();
 			//$submitted=$submitted+$submitted_ing;
 			//$total_doc=$total_doc+$count;
 			if($submitted==$total_doc)
 				$message= $detail['name']." you have completed your profile by providing all your documents.";
 			else
 				$message= $detail['name']." you have submitted ".$submitted." out of ".$total_doc." documents.";
+			///////////////////notification_code_start////////////////////////////////////
+				
+
+			///////////////////notification_code_end////////////////////////////////////
 			$this->session->set_flashdata('status', 'success');
 			$this->session->set_flashdata('message', $message);
-
     	    redirect(BASE_URL . 'index#supplier_documents');
+		}
+		function submit_documents_form()
+		{
+			$outlet_id=DEFAULT_OUTLET;
+			$supplier_id=$this->session->userdata['supplier']['supplier_id'];
+			Modules::run('api/update_specific_table',array("supplier_id"=>$supplier_id),array("submit"=>"1"),'supplier_documents');
+			$status=TRUE;
+			if(!empty($supplier_id) && !empty($outlet_id)) {
+				$groups=$this->get_roles_group("(roles.role='Admin' OR roles.role = 'Purchasing Team' OR roles.role='Purchasing Admin')",array(),"roles",DEFAULT_OUTLET.'_groups')->result_array();
+				foreach($groups as $key => $val):
+					$tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$val['id'].'" or `group`="'.$val['id'].'")','','')->result_array();
+					if(!empty($tokens)) {
+						foreach ($tokens as $token_key => $to):
+							if(isset($to['id']) && !empty($to['id'])) {
+								$sup = Modules::run('ingredients/_get_data_from_db_table',array("id"=>$supplier_id),'supplier',"","","name,supplier_no","")->row_array();
+								Modules::run('api/insert_into_specific_table',array("assingment_id"=>"0","user_id"=>$to['id'],"carrier_id"=>"0","outlet_id"=>$outlet_id,"supplier_id"=>$supplier_id,"notification_message"=>'Supplier# '. $sup['supplier_no'].' '. $sup['name']." had updated basic documents","notification_datetime"=>date("Y-m-d H:i:s")),'notification');	
+							}
+						endforeach;
+					}
+				endforeach;
+			}
+			$message="Your documents have been submitted on Admin side";
+			echo '<article><status>'.$status.'</status><message>'.$message.'</message><article>';
+
 		}
 		function submit_ingredient_document($supplier_id)
 		{
@@ -326,5 +547,32 @@
             $this->load->model('mdl_front');
             $query = $this->mdl_front->_get_specific_table_with_pagination_and_where($cols, $order_by,$table,$select,$page_number,$limit,$or_where,$and_where,$having);
             return $query;
-        }
+		}
+		function check_atrribute_exists($arr_col,$table){
+			$this->load->model('mdl_front');
+			return $this->mdl_front->check_atrribute_exists($arr_col,$table);
+		}
+		function insert_attribute_data($data,$table){
+			$this->load->model('mdl_front');
+		   return $this->mdl_front->insert_attribute_data($data,$table);
+		}
+		function update_attribute_data($where,$attribute_data,$table){
+			$this->load->model('mdl_front');
+		   return $this->mdl_front->update_attribute_data($where,$attribute_data,$table);
+		}
+		function delete_from_table($where,$table)
+		{
+			$this->load->model('mdl_front');
+			$this->mdl_front->delete_from_table($where,$table);
+		}
+		function get_doc_by_ingredient_type($cols, $order_by,$table,$select,$page_number,$limit,$or_where,$and_where='',$having='')
+		{
+			$this->load->model('mdl_front');
+			return $this->mdl_front->get_doc_by_ingredient_type($cols, $order_by,$table,$select,$page_number,$limit,$or_where,$and_where='',$having='');
+		}
+		function get_roles_group($where,$or_where,$table,$jtable)
+		{
+			$this->load->model('mdl_front');
+			return $this->mdl_front->get_roles_group($where,$or_where,$table,$jtable);
+		}
 }

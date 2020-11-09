@@ -1,13 +1,19 @@
-<!-- Page content-->
-<div class="content-wrapper">
-    <h3>QA Checks<a href="herbspice_checks/create"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Add New</button></a></h3>
-    <div class="container-fluid">
-        <!-- START DATATABLE 1 -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                    <table id="datatable1" class="table table-body  table-bordered">
+<main>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <h1>QA Checks</h1>
+                    <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="herbspice_checks/create">&nbsp;Add New&nbsp;</a>
+                    <div class="separator mb-5"></div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-12 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="data-table data-table-feature">
+
                         <thead class="bg-th">
                         <tr class="bg-col" align="center" class="text-center">
                         <th class="text-center" style="display:none;"><b>S.no </b><i class="fa fa-sort" style="font-size:13px;"></i></th>
@@ -60,23 +66,23 @@
                                         <td class="table_action" style="text-align: center;">
                                         <!-- <a class="btn yellow c-btn view_details" rel="<?=$new->id?>"><i class="fa fa-list"  title="See Detail"></i></a> -->
                                         <?php
-                                        echo '<a class="btn yellow  c-btn " href="'.ADMIN_BASE_URL.'herb_spice/manage/'.$new->id.'"><i class="fa fa-sitemap"  title="Manage ingredients"></i></a>';
-                                        echo '<a href="'.ADMIN_BASE_URL.'herb_attributes/manage/'.$new->id.'" class=" btn blue c-btn" title="Manage Attributes"><i class="fa fa-tags" style="color: #B7E031;"></i></a>';
+                                        echo '<a class="btn yellow  c-btn " href="'.ADMIN_BASE_URL.'herb_spice/manage/'.$new->id.'"><i class="iconsminds-three-arrow-fork"  title="Manage ingredients"></i></a>';
+                                        echo '<a href="'.ADMIN_BASE_URL.'herb_attributes/manage/'.$new->id.'" class=" btn blue c-btn" title="Manage Attributes"><i class="iconsminds-tag-3" ></i></a>';
                                         $publish_class = ' table_action_publish';
                                         $publis_title = 'Set Un-Publish';
-                                        $icon = '<i class="fas fa-arrow-up"></i>';
+                                        $icon = '<i class="simple-icon-arrow-up-circle"></i>';
                                         $iconbgclass = ' btn greenbtn c-btn';
                                         if ($new->status != 1) {
                                         $publish_class = ' table_action_unpublish';
                                         $publis_title = 'Set Publish';
-                                        $icon = '<i class="fas fa-arrow-down red"></i>';
+                                        $icon = '<i class="simple-icon-arrow-down-circle red"></i>';
                                         $iconbgclass = ' btn default c-btn';
                                         }
                                         echo anchor("javascript:;",$icon, array('class' => 'action_publish' . $publish_class . $iconbgclass, 
                                         'title' => $publis_title,'rel' => $new->id,'id' => $new->id, 'status' => $new->status));
-                                        echo anchor($edit_url, '<i class="fa fa-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit product_tests'));
+                                        echo anchor($edit_url, '<i class="iconsminds-file-edit"></i>', array('class' => 'action_edit btn blue c-btn','title' => 'Edit product_tests'));
 
-                                        echo anchor('"javascript:;"', '<i class="fa fa-times"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $new->id, 'title' => 'Delete product_tests'));
+                                        echo anchor('"javascript:;"', '<i class="simple-icon-close"></i>', array('class' => 'delete_record btn red c-btn', 'rel' => $new->id, 'title' => 'Delete product_tests'));
                                         ?>
                                         </td>
                                     </tr>
@@ -84,13 +90,12 @@
                                 <?php } ?>
                             </tbody>
                     </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    
-    </div>
-</div>    
+    </main>>    
 
 <script type="text/javascript">
 $(document).ready(function(){
