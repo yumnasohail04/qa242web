@@ -48,7 +48,7 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                         <span>Submitted Forms</span>
                         </a>
                     </li>
-                    <li class="<?php if($curr_url == 'ingredients' || $curr_url == 'supplier' || $curr_url == 'document' || $curr_url == 'scorecard_form' || $curr_url == 'scorecard'  ){echo 'active';}   ?>">
+                    <li class="<?php if($curr_url == 'ingredients' || $curr_url == 'supplier' || $curr_url == 'document' || $curr_url == 'scorecard_form' || $curr_url == 'scorecard'  || $curr_url == 'ingredient_doc' ){echo 'active';}   ?>">
                         <a href="#supplier">
                             <i class="iconsminds-network"></i> 
                         <span>Suppliers</span>
@@ -461,6 +461,19 @@ if (defined('DEFAULT_CHILD_OUTLET'))   $outlet_id = DEFAULT_CHILD_OUTLET;
                     <li class="<?php if($curr_url== 'document'){echo 'active';}    ?>">
                         <a href="<?php $controller='document'; echo ADMIN_BASE_URL . $controller ?>">
                             <i class="iconsminds-folder-open"></i> <span class="d-inline-block">Document detail</span>
+                        </a>
+                    </li>
+                    <?php
+                    }
+                    $permission = false;
+                    if ($user_data['role'] != 'Admin')
+                        $permission = Modules:: run('permission/has_control_permission',$role_id,$outlet_id,'ingredient_doc');
+                    else 
+                        $permission = true;
+                    if ($permission){?>
+                    <li class="<?php if($curr_url== 'ingredient_doc'){echo 'active';}    ?>">
+                        <a href="<?php $controller='ingredient_doc'; echo ADMIN_BASE_URL . $controller ?>">
+                            <i class="iconsminds-folder-open"></i> <span class="d-inline-block">Ingredients documents</span>
                         </a>
                     </li>
                     <?php
