@@ -24,6 +24,13 @@
       top: 3%;
       right: -8%;
     }
+    input[type="checkbox"] {
+    flex: unset!important;
+}
+.space
+{
+  margin-left: 3%;
+}
 </style>  
 <?php include_once("select_box.php");?>
 
@@ -153,39 +160,25 @@
                       <div class="row">
                       <div class="col-sm-12">
                         <div class="input-group  mb-3">
-                       
-                        <div class="input-group-prepend">
-                                    <button class="btn btn-outline-secondary" type="button"> Comment box?<span style="color:red">*</span></button>
-                                </div>
-                          <input type="checkbox" name="comment_box" id="comment_box" class="form-control" <?php if( isset($new['comment_box']) && $new['comment_box']=="1") echo "checked";?>  <?php if( isset($new['comment_box']) && !empty($new['comment_box'])){?> value=" <?php echo $new['comment_box']; ?>" <?php } ?>>
+                          <input type="checkbox" name="comment_box" id="comment_box" class="form-control" <?php if( isset($new['comment_box']) && $new['comment_box']=="1") echo "checked";?>  <?php if( isset($new['comment_box']) && !empty($new['comment_box'])){?> value=" <?php echo $new['comment_box']; ?>" <?php } ?>><span class="space">Show Comment box?</span>
                         </div>
                       </div>
                       <div class="col-sm-12">
                         <div class="input-group  mb-3">
-                       
-                        <div class="input-group-prepend">
-                                    <button class="btn btn-outline-secondary" type="button"> Supporting Attachment?<span style="color:red">*</span></button>
-                                </div>
-                          <input type="checkbox" name="attachment" id="attachment" class="form-control" <?php if( isset($new['attachment']) && $new['attachment']=="1") echo "checked";?>  <?php if( isset($new['attachment']) && !empty($new['attachment'])){?> value=" <?php echo $new['attachment']; ?>" <?php } ?>>
+                          <input type="checkbox" name="comment_type" id="comment_type" class="form-control" <?php if( isset($new['comment_type']) && $new['comment_type']=="1") echo "checked";?>  <?php if( isset($new['comment_type']) && !empty($new['comment_type'])){?> value=" <?php echo $new['comment_type']; ?>" <?php } ?>><span class="space">Comment Mandatory?</span>
+                        </div>
+                      </div>
+                      <div class="col-sm-12">
+                        <div class="input-group  mb-3">
+                          <input type="checkbox" name="attachment" id="attachment" class="form-control" <?php if( isset($new['attachment']) && $new['attachment']=="1") echo "checked";?>  <?php if( isset($new['attachment']) && !empty($new['attachment'])){?> value=" <?php echo $new['attachment']; ?>" <?php } ?>><span class="space">Upload Supporting Attachment?</span>
                         </div>
                       </div>
 
                       <div class="col-sm-12">
                         <div class="input-group  mb-3">
-                        <div class="input-group-prepend">
-                                    <button class="btn btn-outline-secondary" type="button"> Supporting Attachment Expiration Date?<span style="color:red">*</span></button>
-                                </div>
-                          <input type="checkbox" name="expiry" id="expiry" class="form-control" <?php if( isset($new['expiry']) && $new['expiry']=="1") echo "checked";?>  <?php if( isset($new['expiry']) && !empty($new['expiry'])){?> value=" <?php echo $new['expiry']; ?>" <?php } ?>>
+                          <input type="checkbox" name="expiry" id="expiry" class="form-control" <?php if( isset($new['expiry']) && $new['expiry']=="1") echo "checked";?>  <?php if( isset($new['expiry']) && !empty($new['expiry'])){?> value=" <?php echo $new['expiry']; ?>" <?php } ?>><span class="space">Get Supporting Attachment Expiration Date?</span>
                         </div>
                       </div>
-
-
-
-                     
-
-
-
-
                     </div>
                 <div class="form-actions fluid no-mrg">
                   <div class="row">

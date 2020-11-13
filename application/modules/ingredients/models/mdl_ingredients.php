@@ -96,6 +96,15 @@ class Mdl_ingredients extends CI_Model {
         $this->db->where($where);
         return $this->db->get();
     }
+    function _get_data_from_db_table_supplier_name($where)
+    {
+        $table=DEFAULT_OUTLET.'_ingredients_supplier';
+        $this->db->select("supplier.name, supplier.id");
+        $this->db->from($table);
+        $this->db->join("supplier","$table.supplier_id=supplier.id","LEFT");
+        $this->db->where($where);
+        return $this->db->get();
+    }
     function _get_data_from_db_table_document($where)
     {
         $table=DEFAULT_OUTLET.'_ingredients_document';

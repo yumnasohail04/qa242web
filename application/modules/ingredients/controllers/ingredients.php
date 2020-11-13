@@ -41,6 +41,8 @@ date_default_timezone_set("Asia/karachi");
         $data['groups'] = $groups;
         $data['group'] = $group;
         $data['type'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("status" =>'1'),'id desc','id','ingredient_types','id,name','1','0','','','')->result_array();
+        $data['type'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("status" =>'1'),'id desc','id','ingredient_types','id,name','1','0','','','')->result_array();
+        $data['selected_supplier'] = $this->_get_data_from_db_table_supplier_name(array("ingredient_id"=>$update_id))->result_array();
         $data['update_id'] = $update_id;
         $data['view_file'] = 'newsform';
         $this->load->module('template');
@@ -375,6 +377,11 @@ date_default_timezone_set("Asia/karachi");
     {
         $this->load->model('mdl_ingredients');
         return $this->mdl_ingredients->_get_data_from_db_table_supplier($where);
+    }
+    function _get_data_from_db_table_supplier_name($where)
+    {
+        $this->load->model('mdl_ingredients');
+        return $this->mdl_ingredients->_get_data_from_db_table_supplier_name($where);
     }
     function _get_data_from_db_table_document($where)
     {

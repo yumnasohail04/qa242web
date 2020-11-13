@@ -46,6 +46,7 @@ date_default_timezone_set("Asia/karachi");
             $data['title'] = $row->title;
             $data['type'] = $row->type;
             $data['comment_box'] = $row->comment_box;
+            $data['comment_type'] = $row->comment_type;
             $data['expiry'] = $row->expiry;
             $data['attachment'] = $row->attachment;
         }
@@ -58,13 +59,16 @@ date_default_timezone_set("Asia/karachi");
         $data['type'] = $this->input->post('type');
         $data['comment_box']=0;
         if(!empty($this->input->post('comment_box')))
-        $data['comment_box'] = 1;
-        $data['comment_box']=0;
+            $data['comment_box'] = 1;
+        $data['expiry']=0;
         if(!empty($this->input->post('expiry')))
-        $data['expiry'] = 1;
-        $data['comment_box']=0;
+            $data['expiry'] = 1;
+        $data['attachment']=0;
         if(!empty($this->input->post('attachment')))
-        $data['attachment'] = 1;
+            $data['attachment'] = 1;
+        $data['comment_type']=0;
+        if(!empty($this->input->post('comment_type')))
+            $data['comment_type'] = 1;
         return $data;
     }
     function submit_document_options($update_id)
@@ -86,15 +90,17 @@ date_default_timezone_set("Asia/karachi");
         }
         if(isset($opions) && !empty($opions)){
             for ($i=0; $i <$total; $i++) {
-                $arr_attribute['quest_id']=$update_id;
-                $arr_attribute['option']=$opions[$i];
-                $where['del_status']=0;
-                $where['quest_id']=$update_id;
-                $where['option']=$opions[$i];
-                $query = Modules::run('api/_get_specific_table_with_pagination_where_groupby',$where,'id desc','id','ing_form_options','id','1','0','','','')->num_rows();
-                if($query<=0)
-                {
-                    Modules::run('api/insert_into_specific_table',$arr_attribute,'ing_form_options');
+                if(!empty($opions[$i])){
+                    $arr_attribute['quest_id']=$update_id;
+                    $arr_attribute['option']=$opions[$i];
+                    $where['del_status']=0;
+                    $where['quest_id']=$update_id;
+                    $where['option']=$opions[$i];
+                    $query = Modules::run('api/_get_specific_table_with_pagination_where_groupby',$where,'id desc','id','ing_form_options','id','1','0','','','')->num_rows();
+                    if($query<=0)
+                    {
+                        Modules::run('api/insert_into_specific_table',$arr_attribute,'ing_form_options');
+                    }
                 }
             }
         }
@@ -105,13 +111,17 @@ date_default_timezone_set("Asia/karachi");
         if (is_numeric($update_id) && $update_id != 0) {
             $where['id'] = $update_id;
             $this->_update($where, $data);
-            $this->submit_document_options($update_id);
+            if($data['type']=="other")
+                $this->submit_document_options($update_id);
+            else
+                Modules::run('api/update_specific_table',array("quest_id"=>$update_id),array("del_status"=>"1"),'ing_form_options');
             $this->session->set_flashdata('message', 'document Data Saved');
 	        $this->session->set_flashdata('status', 'success');
         }
         if (is_numeric($update_id) && $update_id == 0) {
             $id = $this->_insert($data);
-            $this->submit_document_options($id);
+            if($data['type']=="other")
+                $this->submit_document_options($id);
             $this->session->set_flashdata('message', 'document'.' '.DATA_SAVED);
 	        $this->session->set_flashdata('status', 'success');
         }

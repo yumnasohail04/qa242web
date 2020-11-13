@@ -163,7 +163,6 @@ width:100%}
                             </select>
                         </div>
                       </div>
-                      </div>
                       <div class="col-md-12" >
                       <a href="<?php echo ADMIN_BASE_URL . 'ingredients'; ?>">
                         <button type="button" class="btn green btn-outline-primary" style="margin-left:20px;float:right;"><i class="fa fa-undo"></i>&nbsp;Cancel</button>
@@ -172,8 +171,61 @@ width:100%}
                         </div>
                 
                 <?php echo form_close(); ?> 
-                <!-- END FORM--> 
-                
+                </div>
+                <fieldset>
+                  <legend>Ingredient Form</legend>
+                </fieldset>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary" type="button">Supplier<span style="color:red">*</span></button>
+                        </div>
+                        <select id="selected_supplier" class="form-control">
+                            <?php foreach($selected_supplier as $key => $value){ ?>
+                              <option value="<?php echo $value['id']; ?>"><?php echo $value['name']; ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-12" style="overflow: auto;">
+                  <table class="table table-user-information table_doc table-striped">        
+                  <thead>
+                    <tr>
+                      <th >Product Information</th>
+                      <th >Check one or more(if applicable)</th>
+                      <th >Comments</th>
+                      <th >Supporting Attachment</th>
+                      <th >Supporting Attachment Expiration Date </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                        <?php 
+                            foreach($doc as $keys => $values){ ?>
+                            <tr data-id="<?php echo $values['id']; ?>">
+                                <td style="width:40%"><?php echo  $values['sub_question']->title; ?></td>
+                                <td style="width:20%;margin-right: 3px;">
+                                    <input type="radio" id="check_answer" <?php if( $values['sub_ans']->option=="1") echo "checked";?>  name="answer_<?php echo $keys ?>" value="1">Yes
+                                    <input type="radio" id="check_answer" <?php if($values['sub_ans']->option=="0") echo "checked";?> name="answer_<?php echo $keys ?>" style="margin-left: 17px;margin-right: 3px;" value="0">No
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td style="width:10%"></span></td>
+                                <td style="width:10%">
+                                    <div class="box">
+                                        <input type="file" data-doc-name="<?php echo $values['doc_name']; ?>" name="news_main_page_file_<?php echo $keys; ?>[]" id="file-<?php echo $keys+1; ?>" class=" file_load inputfile inputfile-4 tooltip" data-multiple-caption="{count} files selected" multiple />
+                                        <label  for="file-<?php echo $keys+1; ?>"><figure><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg></figure> <span></span></label>
+                                    </div>
+                                    <span class="tooltiptext tooltiptext-hide">Upload File</span> 
+                                </td>  
+                                <td ></td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                  </table>
+                  </div>
                </div>
               </div>
             </div>
