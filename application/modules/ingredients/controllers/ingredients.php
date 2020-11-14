@@ -71,6 +71,20 @@ date_default_timezone_set("Asia/karachi");
         $this->load->module('template');
         $this->template->admin($data);
     }
+    function get_form_data()
+    {
+        $ing_id=$this->input->post('ing_id');
+        $supplier=$this->input->post('selected');
+        $data['question'] = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("status" =>'1','del_status'=>'0'),'id asc','id','ing_form_questions','*','1','0','','','')->result_array();
+        foreach($data['question'] as $key => $value):
+            $sub=array();
+            if($value['type']=="other"){
+                $sub = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("quest_id" =>$value['id'],'del_status'=>'0'),'id desc','id','ing_form_options','id,option','1','0','','','')->result_array();
+            }
+            $data['question'][$key]['sub']=$sub;
+        endforeach;
+        $this->load->view('ingredient_form_view',$data);
+    }
     function supplier_item() {
         $data['news'] = $this->_get('id desc')->result_array();
         $data['view_file'] = 'supplier_items';

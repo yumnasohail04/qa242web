@@ -40,9 +40,9 @@
                 <div class="col-12">
                   <h1> <?php 
         if (empty($update_id)) 
-                    $strTitle = 'Add Document';
+                    $strTitle = 'Add ';
                 else 
-                    $strTitle = 'Edit Document';
+                    $strTitle = 'Edit';
                     echo $strTitle;
                     ?></h1>
                   <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block btn-right" href="<?php echo ADMIN_BASE_URL . 'ingredient_doc'; ?>">&nbsp;&nbsp;&nbsp;Back</a> 
@@ -158,6 +158,11 @@
                       
                       </div>
                       <div class="row">
+                      <div class="col-sm-12" id="slectiont_type" >
+                        <div class="input-group  mb-3">
+                          <input type="checkbox" name="selection" id="selection" class="form-control" <?php if( isset($new['selection']) && $new['selection']=="1") echo "checked";?>  <?php if( isset($new['selection']) && !empty($new['selection'])){?> value=" <?php echo $new['selection']; ?>" <?php } ?>><span class="space">Allow selecting multiple options?</span>
+                        </div>
+                      </div>
                       <div class="col-sm-12">
                         <div class="input-group  mb-3">
                           <input type="checkbox" name="comment_box" id="comment_box" class="form-control" <?php if( isset($new['comment_box']) && $new['comment_box']=="1") echo "checked";?>  <?php if( isset($new['comment_box']) && !empty($new['comment_box'])){?> value=" <?php echo $new['comment_box']; ?>" <?php } ?>><span class="space">Show Comment box?</span>
@@ -231,11 +236,17 @@
     });
 
     function check_sub_options(other){
-      if(other=="other")
+      if(other=="other"){
         document.getElementById( 'custom_options' ).style.display = 'block';
+        document.getElementById( 'slectiont_type' ).style.display = 'block';
+      }
       else
+      {
         document.getElementById( 'custom_options' ).style.display = 'none';
+        document.getElementById( 'slectiont_type' ).style.display = 'none';
+      }
     }
+
         
     $(document).ready(function(){
       check_sub_options($('#selection_type').val());

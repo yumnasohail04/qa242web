@@ -4,6 +4,7 @@
 */
 function Inputselector(){
 	var inputs = document.querySelectorAll( '.inputfile' );
+
 	Array.prototype.forEach.call( inputs, function( input )
 	{
 		var label	 = input.nextElementSibling,
@@ -13,7 +14,6 @@ function Inputselector(){
 		{
 			var fileName = '';
 				fileName = ( this.getAttribute( 'data-multiple-caption' ) || '' ).replace( '{count}', this.files.length );
-
 			if( fileName )
 				label.querySelector( 'span' ).innerHTML = fileName;
 			else

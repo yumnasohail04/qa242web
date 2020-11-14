@@ -49,6 +49,7 @@ date_default_timezone_set("Asia/karachi");
             $data['comment_type'] = $row->comment_type;
             $data['expiry'] = $row->expiry;
             $data['attachment'] = $row->attachment;
+            $data['selection'] = $row->selection;
         }
         return $data;
     }
@@ -69,6 +70,14 @@ date_default_timezone_set("Asia/karachi");
         $data['comment_type']=0;
         if(!empty($this->input->post('comment_type')))
             $data['comment_type'] = 1;
+        if($data['type']=="other"){
+        $data['selection']=0;
+        if(!empty($this->input->post('selection')))
+            $data['selection'] = 1;
+        }else
+        {
+            $data['selection']=0;
+        }
         return $data;
     }
     function submit_document_options($update_id)

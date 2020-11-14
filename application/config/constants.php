@@ -39,14 +39,14 @@ $_SERVER['HTTP_HOST'] = preg_replace('/www./', '', $_SERVER['HTTP_HOST'], 1);
 $folder =  substr($_SERVER['HTTP_HOST'], 0, (strpos($_SERVER['HTTP_HOST'], '.')));
 
 if (empty($folder) )
-	$folder = 'qa242';
+	$folder = 'qa242web';
 
 if (strpos($_SERVER['HTTP_HOST'], '.') > 0 && $_SERVER['HTTP_HOST'] != '192.168.2.50')
 {
 	$localname='';
 }
 else
-	$localname='qa242/';
+	$localname='qa242web/';
 	$prefix = 'http';
 	define('BASE_URL', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname);
 	define('BASE_URL_FRONT', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname);
