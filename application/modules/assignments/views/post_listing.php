@@ -1,8 +1,19 @@
+
 <?php  if(isset($news) && !empty($news->result_array())){?> 
+<table class="data-table data-table-feature">
 <thead class="bg-th">
                         <tr class="bg-col">
                         <th class="text-center" style="width:120px;">Start Time <i class="fa fa-sort" style="font-size:13px;"></th>
                         <th class="text-center" style="width:120px;">End Time <i class="fa fa-sort" style="font-size:13px;"></th>
+                        <?php if(strtolower($assign_type) == 'completed_checks'){ ?>
+                        	<th class="text-center" style="width:120px;">Approved Datetime<i class="fa fa-sort" style="font-size:13px;"></th>
+                        <?php } ?>
+                        <?php if(strtolower($assign_type) == 'pending_review'){ ?>
+                            <th class="text-center" style="width:120px;">Submit Datetime<i class="fa fa-sort" style="font-size:13px;"></th>
+                        <?php } ?>
+                            <?php if(strtolower($assign_type) == 'pending_approval'){ ?>
+                            <th class="text-center" style="width:120px;">Review Datetime<i class="fa fa-sort" style="font-size:13px;"></th>
+                        <?php } ?>
                         <th class="text-center" style="width:200px;">Check Name <i class="fa fa-sort" style="font-size:13px;"></th>
                         <th class="text-center"style="width:200px;" ><?php if(strtolower($assign_type) == 'completed_checks') echo 'Approved by'; else echo "Responsible Team"; ?> <i class="fa fa-sort" style="font-size:13px;"></th>
                          <?php if($assign_type == 'pending_review'){ ?>
@@ -24,6 +35,15 @@
                                     <tr id="Row_<?=$new->assign_id?>" class="odd gradeX " >
                                         <td class="text-center"><?php echo date('m-d-Y H:i',strtotime($new->start_datetime)); ?></td>
                                         <td class="text-center"><?php echo date('m-d-Y H:i',strtotime($new->end_datetime)); ?></td>
+                                    <?php if(strtolower($assign_type) == 'completed_checks'){ ?>
+                        				<td class="text-center"><?php echo date('m-d-Y H:i',strtotime($new->approval_datetime)); ?></td>
+                        			<?php } ?>
+                                     <?php if(strtolower($assign_type) == 'pending_review'){ ?>
+                        				<td class="text-center"><?php echo date('m-d-Y H:i',strtotime($new->complete_datetime)); ?></td>
+                        			<?php } ?>
+                                    <?php if(strtolower($assign_type) == 'pending_approval'){ ?>
+                        				<td class="text-center"><?php echo date('m-d-Y H:i',strtotime($new->review_datetime)); ?></td>
+                        			<?php } ?>
                                         <td class="text-center"><?php echo wordwrap( $new->checkname , 50 , "<br>\n");?></td>
                                        <?php if($assign_type == 'active_checks'){ ?>
                                        <td class="text-center">
@@ -66,7 +86,7 @@
                                                 $assignment_answer = Modules::run('api/_get_specific_table_with_pagination',array("assign_id"=>$new->assign_id),'assign_id desc',DEFAULT_OUTLET.'_assignments','approval_user','1','1')->result_array();
                                                 if(isset($assignment_answer[0]['approval_user']) && !empty($assignment_answer[0]['approval_user'])) {
                                                     $users = Modules::run('api/_get_specific_table_with_pagination',array("id"=>$assignment_answer[0]['approval_user']),'id desc','users','user_name','1','1')->result_array();
-                                                     $name=''; if(isset($users[0]['user_name']) && !empty($users[0]['user_name'])) $name= $users[0]['user_name']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; 
+                                                     $name=''; if(isset($users[0]['user_name']) && !empty($users[0]['user_name'])) $name= $users[0]['user_name']; $name=  Modules::run('api/string_length',$name,'8000','',''); echo $name; 
                                                 }
                                             }
                                             ?>
@@ -78,7 +98,7 @@
             $outlet_status=array(""=>"Select Action","Approval"=>"Set To Approval","Check_again"=>'Check again');
             echo form_dropdown('order_status', $outlet_status, $current_status, 'class="add_on form-control select_action order_status" style="width:190px;" order_id="'.$new->assign_id.'"');?>
                 <?}?>
-                                        <a class="btn yellow c-btn view_details" rel="<?=$new->assign_id?>"><i class="fa fa-list"  title="See Detail"></i></a>
+                                        <a class="btn yellow c-btn view_details" rel="<?=$new->assign_id?>"><i class="iconsminds-file"  title="See Detail"></i></a>
                                         <?php
                                         $publish_class = ' table_action_publish';
                                         $publis_title = 'Set Un-Publish';
@@ -96,4 +116,5 @@
                                     <?php } ?>    
                                 <?php } ?>
                             </tbody>
+</table>
                             <?php } ?>

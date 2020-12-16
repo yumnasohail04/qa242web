@@ -27,9 +27,9 @@
               <main>
                 <div class="container-fluid">
                   <div class="row">
-                    <div class="col-12">
-                      <h1>   </h1>
-                      <div class="separator mb-5"></div>
+                    <div class="col-12" style="text-align: right;">
+                      <h1>  <button class="btn btn-outline-primary scorecard_create">Create Quarter</button> </h1>
+                      <div class="separator mb-5" ></div>
                     </div>
                   </div>
                 <div class="card mb-4">
@@ -70,6 +70,11 @@
                           <?php echo form_dropdown('supplier_id', $options, '',  'class="form-control select2me required validatefield" id="supplier_id" tabindex ="8"'); ?>
                         </div>
                      </div>
+                     <div class="col-md-6">
+                      <div class="col-md-offset-2 col-md-9" style="padding-bottom:15px;">
+                       <span style="margin-left:40px"></span> <button type="submit" class="btn btn-outline-primary submited_form"><i class="fa fa-check"></i>&nbsp;Create Scorecard</button>
+                         </div>
+                    </div>
                      <!-- <div class="col-sm-5">
                         <div class="input-group mb-3">
                           <?php if(!isset($groups)) $groups = array();
@@ -84,13 +89,7 @@
                 </div>
                 <div class="form-actions fluid no-mrg">
                   <div class="row">
-                    <div class="col-md-6">
-                      <div class="col-md-offset-2 col-md-9" style="padding-bottom:15px;">
-                       <span style="margin-left:40px"></span> <button type="submit" class="btn btn-outline-primary submited_form"><i class="fa fa-check"></i>&nbsp;Create</button>
-                        <a href="<?php echo ADMIN_BASE_URL . 'scorecard'; ?>">
-                        <button type="button" class="btn green btn-outline-default" style="margin-left:20px;"><i class="fa fa-undo"></i>&nbsp;Cancel</button>
-                        </a> </div>
-                    </div>
+                    
                     <div class="col-md-6"> </div>
                   </div>
                 </div>
@@ -213,6 +212,33 @@
                             }
                         });
                 swal("Deleted!", "ScoreCard has been deleted.", "success");
+              });
+
+            });
+
+            $(document).off('click', '.scorecard_create').on('click', '.scorecard_create', function(e){
+                e.preventDefault();
+                var id = $(this).attr('rel');
+              swal({
+                title : "Are you sure you want to create a new quarter ?",
+                text : "Scorecards will be created for all active suppliers",
+                type : "info",
+                showCancelButton : true,
+                confirmButtonColor : "#81ccee",
+                confirmButtonText : "Yes, Create!",
+                closeOnConfirm : false
+              },
+                function () {
+                    
+                       $.ajax({
+                            type: 'POST',
+                            url: "<?=BASE_URL?>admin_api/scorecards",
+                            data: {'id': id},
+                            async: false,
+                            success: function() {
+                            }
+                        });
+                swal("Created!", "ScoreCard have been deleted.", "success");
               });
 
             });

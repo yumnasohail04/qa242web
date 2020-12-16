@@ -19,7 +19,14 @@ color:white;}
     margin: 0!important;
     height: 100%;
   }
-  
+.modal-backdrop {
+   background-color: transparent!important;
+}
+.modal.show .modal-dialog
+{
+border: 1px solid #dedede;
+    box-shadow: 0 1px 15px rgba(0,0,0,.04), 0 1px 6px rgba(0,0,0,.04);
+}
   body.background main .container {
     height: 100%;
   }
@@ -2886,9 +2893,8 @@ div[data-notify=container] {
     min-width: 80%;
 }
 .table-striped tbody tr:nth-of-type(odd) {
-  background-color: transparent!important;
+    background-color: #ffffff!important;
 }
-
 .form-control-sm {
   padding: .5rem;
   font-size: .75rem;

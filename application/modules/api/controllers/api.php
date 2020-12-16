@@ -4978,7 +4978,7 @@ function get_restaurant_catagories(){
             $file_name = 'custom_image_'.substr(md5(uniqid(rand(), true)), 8, 8). $nId . '_' . $upload_image_file;
             $file_name = strtolower(str_replace(['  ', '/','-','--','---','----', '_', '__'], '-',$file_name));
             $config['upload_path'] = $actual;
-            $config['allowed_types'] = 'gif|jpg|png|jpeg|JPEG|JPG|PNG';
+            $config['allowed_types'] = 'gif|jpg|png|jpeg|JPEG|JPG|PNG|txt|TXT|DOC|doc|csv|CSV|xls|XLS|docx';
             $config['max_size'] = '20000';
             $config['max_width'] = '2000000000';
             $config['max_height'] = '2000000000';

@@ -39,7 +39,7 @@ $_SERVER['HTTP_HOST'] = preg_replace('/www./', '', $_SERVER['HTTP_HOST'], 1);
 $folder =  substr($_SERVER['HTTP_HOST'], 0, (strpos($_SERVER['HTTP_HOST'], '.')));
 
 if (empty($folder) )
-	$folder = 'qa242web';
+	$folder = 'lantix';
 
 if (strpos($_SERVER['HTTP_HOST'], '.') > 0 && $_SERVER['HTTP_HOST'] != '192.168.2.50')
 {
@@ -47,7 +47,9 @@ if (strpos($_SERVER['HTTP_HOST'], '.') > 0 && $_SERVER['HTTP_HOST'] != '192.168.
 }
 else
 	$localname='qa242web/';
-	$prefix = 'http';
+	$prefix = 'https';
+	if( strtolower($strHost) == 'localhost')
+		$prefix = 'http';
 	define('BASE_URL', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname);
 	define('BASE_URL_FRONT', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname);
 	define('IMAGE_BASE_URL', $prefix.'://'.$_SERVER['HTTP_HOST'].'/'.$localname.'uploads/');
@@ -116,6 +118,7 @@ else
 	define('MEDIUM_SIGNATURE_IMAGE_PATH', 'uploads/signature/medium-images/');
 	define('SMALL_SIGNATURE_IMAGE_PATH', 'uploads/signature/small-images/');
 	
+	define('ACTUAL_ING_FORM_IMAGE_PATH', 'uploads/ingredient_form/actual_images/');
 	define('LETTER_OF_CONFORMANCE_PATH', 'uploads/letter/');
 	
 	define('CARRIER_DOCUMENTS_PATH', 'uploads/carrier/');

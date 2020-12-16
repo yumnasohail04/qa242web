@@ -29,7 +29,9 @@ $config = array(
          25 => 'supplier',
          26 => 'scheduled_checks',
 		 27 => 'carrier',
-    	 28 => 'document_file'
+    	 28 => 'document_file',
+    	 29 => 'ingredient_doc',
+    	 30 => 'supplier_reports',
 		  
 	),
 );

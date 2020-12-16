@@ -23,10 +23,10 @@ Modules::run('site_security/has_permission');
 		$this->load->library('controllerlist');
 		//echo '------------4----------';
 		$rights = $this->controllerlist->getControllers();
-		//echo 'wasimm<pre>';
-		//print_r($rights );
-		//exit();
-		$arr_rights = '';
+		// echo 'wasimm<pre>';
+		// print_r($rights );
+		// exit();
+		$arr_rights = array();
 		foreach($rights as $ctrl => $methods){
 			foreach($methods as $method1){
 				$_score = substr($method1,0,1); 
@@ -45,7 +45,9 @@ Modules::run('site_security/has_permission');
 				$where_right['parent_id'] = 0;
 				$query = $this->_get_where_cols($where_right);
 				$parent = $query->row();
-				if(count($parent) == 0){
+            	print_r(count($query->result_array())); echo "<br><br>==================";
+            
+				if(count($query->result_array()) == 0){
 					$parent_data['right'] = $ctrl;
 					//$parent_data['outlet_id'] = DEFAULT_OUTLET;
 					$parent_id = $this->_insert($parent_data);

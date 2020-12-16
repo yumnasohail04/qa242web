@@ -70,16 +70,35 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | The $query_builder variables lets you determine whether or not to load
 | the query builder class.
 */
-
+$strHost = $_SERVER['SERVER_NAME'];
+$strHost = preg_replace('/www./', '', $strHost, 1);
+if (strtolower($strHost) == '' || strtolower($strHost) == 'localhost'){
+	$hostname="localhost";
+	$username="root";
+	$password="";
+	$database="hwryk_qa";
+}else if(strtolower($strHost) == 'lantixapp1.lantix.com')
+{
+	$hostname="localhost";
+	$username="umar";
+	$password="amc2@A";
+	$database="hwryk_qa";
+}else
+{
+	$hostname="localhost";
+	$username="umar";
+	$password="amc2@A";
+	$database="hwryk_qa";
+}
 
 $active_group = 'default';
 $query_builder = TRUE;
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '',
-	'database' => 'hwryk_qa',
+	'hostname' => $hostname,
+	'username' => $username,
+	'password' => $password,
+	'database' => $database,
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => true,

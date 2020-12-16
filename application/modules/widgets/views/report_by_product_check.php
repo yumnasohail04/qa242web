@@ -7,8 +7,8 @@ if(!empty($arr_orignal)) {
     $arr_questions = array_unique(array_map(function ($i) { return $i['question_id']; }, $arr_orignal));
 
     //print_r($arr_orignal);echo "<br><br><br>";
-    //print_r($arr_assignments);echo "<br><br><br>";
-    //print_r($arr_questions);echo "<br><br><br>";
+   // print_r($arr_assignments);echo "<br><br><br>";
+   // print_r($arr_questions);echo "<br><br><br>";
 }
 $count_row = 0;
 ?>

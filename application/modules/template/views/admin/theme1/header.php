@@ -49,6 +49,7 @@ th {
     text-align: inherit!important;
     padding-left: 1%;
 }
+
 </style>
 <?php $data = $this->session->userdata('user_data');?>
 <!-- show-spinner -->
@@ -117,28 +118,35 @@ th {
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="simple-icon-bell"></i>
                         <?php if(isset($total_notification) && !empty($total_notification)) { ?>
-                        <span class="count"><?=$total_notification?></span>
+                        <span class="count badge_noti"><?=$total_notification?></span>
                         <?php } ?>
                     </button>
                     <div class="dropdown-menu dropdown-menu-right mt-3 position-absolute" id="notificationDropdown" onclick="myFunction()">
                         <div class="scroll">
+                        
                             <?php if(isset($notification) && !empty($notification)) {
+                                ?>
+                                <div class="d-flex flex-row mb-3 pb-3 border-bottom">
+                                <div class="pl-3">
+                                        <p class="font-weight-medium mb-1 mark_view" style="cursor: pointer;" >Mark all as read</p>
+                                </div>
+                            </div>
+                                <?php 
                             foreach ($notification as $key => $noti):
                             ?>
                             <div class="d-flex flex-row mb-3 pb-3 border-bottom">
                                 <div class="pl-3">
-                                    <a href="#">
                                         <p class="font-weight-medium mb-1"><?=$noti['notification_message']?></p>
                                         <!-- <p class="text-muted mb-0 text-small">09.04.2018 - 12:45</p> -->
-                                    </a>
                                 </div>
                                 <div class="close_btn">
                                   <div class="close_div dropbtn">
-                                  <span class="cross_set dropbtn" notiattr= "<?=$noti['notification_id']?>">x</span>
+                                  <span style="cursor: pointer;" class="cross_set dropbtn" notiattr= "<?=$noti['notification_id']?>">x</span>
                                   </div>
                                 </div>
                             </div>
-                            <?php endforeach; } ?>
+                            <?php endforeach; }else
+                            echo "No notifications"; ?>
                         </div>
                     </div>
                 </div>
@@ -222,7 +230,7 @@ if (isset($message) && !empty($message) && $status == 'error') {?><script>$(docu
         data: {'id': id},
         async: false,
         success: function(result) {
-            $this.parent().parent().parent().parent().remove();
+            $this.parent().parent().parent().remove();
             var number = parseInt($('.badge_noti').text(),10);
             $('.badge_noti').text(number-1);
         }

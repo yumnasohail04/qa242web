@@ -1,17 +1,10 @@
 <div class="panel panel-default">
 <div class="panel-body">
 <input type="hidden" value="">
-<select id="ddl_tbl_show_row_count" onchange="func_set_tbl_rows(this.value)">
-    <option value="5">5</option>
-    <option value="10">10</option>
-    <option value="20">20</option>
-    <option value="50">50</option>
-    <option value="100">100</option>
-    <option value="-1">All</option>
-</select>
+
 
 <div class="table-responsive">
-    <table class="" id="">
+    <table class="data-table data-table-feature" >
         <thead  class="bg-th">
           <tr class="bg-col">
             <th data-htmltoarray="true" data-arrayclassth="assign_id">Check<i class="fa fa-sort" style="font-size:13px;"></th>
@@ -46,7 +39,9 @@
             <td style="display: none" data-htmltoarray="true" data-arrayclasstd="assign_year"><?= date_format(date_create($row['approval_datetime']), "yy") ?></td>
             <td data-htmltoarray="true" data-arrayclasstd="assign_shift"><?=$row['shift_no']?></td>
             <td data-htmltoarray="true" data-arrayclasstd="assign_plant"><?=$row['plant_name']?></td>
-            <td data-htmltoarray="true" data-arrayclasstd="assign_line"><?=$row['line_no']?></td>
+            <td data-htmltoarray="true" data-arrayclasstd="assign_line">
+                <?php   $line = Modules::run('api/_get_specific_table_with_pagination',array("line_id"=>$row['line_no']),'line_id desc',DEFAULT_OUTLET."_lines",'line_name','1','1')->row_array();
+                        echo $line['line_name']; ?> </td>
             <td data-htmltoarray="true" data-arrayclasstd="result_status"><?= $row['Status'] ?></td>
             <td data-htmltoarray="true" data-arrayclasstd="assign_product_title"><?php if(isset($row['product_title']) && !empty($row['product_title'])) echo $row['product_title']; ?></td>
         </tr>
@@ -72,59 +67,59 @@
 </div>
 <div>
 <script>
-    tbl_id_name = "datatable1";
-    function download_csv(csv, filename) {
-        let csvFile;
-        let downloadLink;
+    // tbl_id_name = "datatable1";
+    // function download_csv(csv, filename) {
+    //     let csvFile;
+    //     let downloadLink;
 
-        // CSV FILE
-        csvFile = new Blob([csv], {type: "text/csv"});
+    //     // CSV FILE
+    //     csvFile = new Blob([csv], {type: "text/csv"});
 
-        // Download link
-        downloadLink = document.createElement("a");
+    //     // Download link
+    //     downloadLink = document.createElement("a");
 
-        // File name
-        downloadLink.download = filename;
+    //     // File name
+    //     downloadLink.download = filename;
 
-        // We have to create a link to the file
-        downloadLink.href = window.URL.createObjectURL(csvFile);
+    //     // We have to create a link to the file
+    //     downloadLink.href = window.URL.createObjectURL(csvFile);
 
-        // Make sure that the link is not displayed
-        downloadLink.style.display = "none";
+    //     // Make sure that the link is not displayed
+    //     downloadLink.style.display = "none";
 
-        // Add the link to your DOM
-        document.body.appendChild(downloadLink);
+    //     // Add the link to your DOM
+    //     document.body.appendChild(downloadLink);
 
-        // Lanzamos
-        downloadLink.click();
-    }
+    //     // Lanzamos
+    //     downloadLink.click();
+    // }
 
-    function export_table_to_csv(html, filename) {
-        var csv = [];
-        var rows = document.querySelectorAll("#"+tbl_id_name+" tr");
+    // function export_table_to_csv(html, filename) {
+    //     var csv = [];
+    //     var rows = document.querySelectorAll("#"+tbl_id_name+" tr");
 
-        for (var i = 0; i < rows.length; i++) {
-            var row = [], cols = rows[i].querySelectorAll("td, th");
+    //     for (var i = 0; i < rows.length; i++) {
+    //         var row = [], cols = rows[i].querySelectorAll("td, th");
 
-            for (var j = 0; j < cols.length; j++)
-                row.push(cols[j].innerText.replace(',',' '));
+    //         for (var j = 0; j < cols.length; j++)
+    //             row.push(cols[j].innerText.replace(',',' '));
 
-            csv.push(row.join(","));
-        }
+    //         csv.push(row.join(","));
+    //     }
 
-        // Download CSV
-        download_csv(csv.join("\n"), filename);
-    }
+    //     // Download CSV
+    //     download_csv(csv.join("\n"), filename);
+    // }
 
-    function export_to_CSV(filename) {
-        var html = document.querySelector("#"+tbl_id_name).outerHTML;
-        export_table_to_csv(html, filename + ".csv");
-    }
+    // function export_to_CSV(filename) {
+    //     var html = document.querySelector("#"+tbl_id_name).outerHTML;
+    //     export_table_to_csv(html, filename + ".csv");
+    // }
 
-    function func_set_tbl_rows(p_count){
-        $("#datatable1 tr").each(function (i){
-           $(this).css("display",((i<=p_count || p_count==-1)?"":"none"))
-        });
-    }
+    // function func_set_tbl_rows(p_count){
+    //     $("#datatable1 tr").each(function (i){
+    //        $(this).css("display",((i<=p_count || p_count==-1)?"":"none"))
+    //     });
+    // }
 
 </script>

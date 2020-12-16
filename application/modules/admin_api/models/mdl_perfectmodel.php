@@ -487,5 +487,16 @@ class Mdl_perfectmodel extends CI_Model {
         	$this->db->order_by($order_by);
         	$query=$this->db->get();
         	return $query;
-    	}
+        }
+        function get_supplier_ingreients($where)
+        {
+            $table = DEFAULT_OUTLET."_ingredients_supplier";
+            $this->db->select("1_ingredients.item_no,1_ingredients.item_name,$table.role,$table.ingredient_id");
+            $this->db->from($table);
+            $this->db->order_by("$table.id desc");
+            $this->db->join("1_ingredients","$table.ingredient_id=1_ingredients.id","LEFT");
+            $this->db->where($where);
+            $query = $this->db->get();
+            return $query;
+        }
 }

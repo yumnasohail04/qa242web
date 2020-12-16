@@ -47,6 +47,19 @@
       .btn_time_period {
         cursor: pointer;
     }
+    #overlay {
+  position: fixed;
+  display: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.2);
+  z-index: 2;
+  cursor: pointer;
+}
 .badge-primary
 {
 border-radius:8px;
@@ -54,6 +67,8 @@ color: white!important;
 padding: 5px;}
 </style>
 <main>
+<div id="overlay" onclick="off()"></div>
+<div id="wait" style="display: none;position: absolute;left: 50%;top:10%; padding: 2px;z-index: 9999;"><img src='https://www.bertuccis.com/wp-content/themes/bertuccis-child/assets/images/loading-dots-white.gif'  /></div>
   <div class="container-fluid">
       <div class="row">
           <div class="col-12">
@@ -140,8 +155,18 @@ padding: 5px;}
                                 </div>
                             </div> -->
                         </div>
-                        <div class="chart card-body pt-0"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
-                            <canvas id="visitChart1" width="646" height="194" class="chartjs-render-monitor" style="display: block; width: 646px; height: 194px;"></canvas>
+                        <div class="chart card-body pt-0 cpchart">
+                          <div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+                            <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                              <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0">
+                              </div>
+                            </div>
+                            <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                              <div style="position:absolute;width:200%;height:200%;left:0; top:0">
+                              </div>
+                            </div>
+                          </div>
+                          <canvas id="visitChart1" width="646" height="194" class="chartjs-render-monitor" style="display: block; width: 646px; height: 194px;"></canvas>
                         </div>
                     </div>
                 </div>
@@ -164,7 +189,7 @@ padding: 5px;}
                                 </div>
                             </div> -->
                         </div>
-                        <div class="chart card-body pt-0"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                        <div class="chart card-body pt-0 cnchart"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
                             <canvas id="conversionChart1" width="646" height="194" class="chartjs-render-monitor" style="display: block; width: 646px; height: 194px;"></canvas>
                         </div>
                     </div>
@@ -315,7 +340,7 @@ padding: 5px;}
                                     </div>
                                 </div>
                                 <div class="col-lg-9 mb-5">
-                                <div class="chart-container chart">
+                                <div class="chart-container chart pc1">
                                      <canvas id="productChart1"></canvas>
                                  </div>
                              </div>
@@ -336,12 +361,12 @@ padding: 5px;}
                         <div class="chart card-body pt-0 row">
                             <div class="col-sm-12 col-lg-3">
 <!--                                     <div id="morrisDonut2" class="morris-donut-wrapper-demo" style="height:150px;"></div> -->
-                                <div class="chart-container chart">
+                                <div class="chart-container chart ">
                                         <canvas id="categoryChart2"></canvas>
                                     </div>
                                 </div>
                                 <div class="col-lg-9 mb-5">
-                                <div class="chart-container chart">
+                                <div class="chart-container chart pc2">
                                      <canvas id="productChart2"></canvas>
                                  </div>
                              </div>
@@ -369,7 +394,7 @@ padding: 5px;}
                                     </div>
                                 </div>
                                 <div class="col-lg-9 mb-5">
-                                <div class="chart-container chart">
+                                <div class="chart-container chart pc3">
                                      <canvas id="productChart3"></canvas>
                                  </div>
                              </div>
@@ -395,7 +420,7 @@ padding: 5px;}
                                     </div>
                                 </div>
                                 <div class="col-lg-9 mb-5">
-                                <div class="chart-container chart">
+                                <div class="chart-container chart pc4">
                                      <canvas id="productChart4"></canvas>
                                  </div>
                              </div>
@@ -420,7 +445,7 @@ padding: 5px;}
                                 <div id="morrisLine1" class="morris-wrapper-demo" style="height:330px;" ></div>
                             </div> -->
                                 <div class="col-sm-12 col-lg-12">
-                                    <div class="chart-container chart">
+                                    <div class="chart-container chart ptchart">
                                         <canvas id="salesChart"></canvas>
                                     </div>
                                 </div>
@@ -457,6 +482,9 @@ padding: 5px;}
 
 
 <script type="text/javascript">
+
+
+
  var chartTooltip = {
         backgroundColor: foregroundColor,
         titleFontColor: primaryColor,
@@ -512,6 +540,11 @@ padding: 5px;}
     function get_graphs_data(date_from_str,date_to_str,var_time_period){
     
   var gph_data={};
+
+
+
+document.getElementById("overlay").style.display = "block";
+$("#wait").css("display", "block");
         $.ajax({
             type: "POST",
             url: "<?=ADMIN_BASE_URL.'dashboard/testing'?>",
@@ -536,6 +569,8 @@ padding: 5px;}
              compliant_data(obj.compliant_graph);
              status_data(obj.status_graph);
              morrisline1_data(obj.plants,obj.date,obj.plants_name);
+    $("#wait").css("display", "none");
+    document.getElementById("overlay").style.display = "none";
             }
          });
     }
@@ -563,17 +598,38 @@ padding: 5px;}
             data:{'start_date':date_from_str,'end_date':date_to_str,'var_time_period':var_time_period},
             success: function (data) {
               $('#div_tblreport').html(data);
-				 $('table').dataTable({
-       				 'bFilter': false,
-        			 'bInfo': false,
-       				 'bLengthChange': false,
-       				 'bPaginate': false
-    			});
+              datatable();
             }
          });
          get_graphs_data(date_from_str,date_to_str,var_time_period);
     
     }
+
+    function datatable()
+{
+	$(".data-table-feature").DataTable({
+        sDom: '<"row view-filter"<"col-sm-12"<"float-right"l><"float-left"f><"clearfix">>>t<"row view-pager"<"col-sm-12"<"text-center"ip>>>',
+        drawCallback: function () {
+          $($(".dataTables_wrapper .pagination li:first-of-type"))
+            .find("a")
+            .addClass("prev");
+          $($(".dataTables_wrapper .pagination li:last-of-type"))
+            .find("a")
+            .addClass("next");
+
+          $(".dataTables_wrapper .pagination").addClass("pagination-sm");
+        },
+        language: {
+          paginate: {
+            previous: "<i class='simple-icon-arrow-left'></i>",
+            next: "<i class='simple-icon-arrow-right'></i>"
+          },
+          search: "_INPUT_",
+          searchPlaceholder: "Search...",
+          lengthMenu: "Items Per Page _MENU_"
+        },
+      });
+}
 
     $('.btn_time_period').on('click', function() {
         var_time_period = $(this).attr("data-value");
@@ -872,7 +928,8 @@ function triiger_pie_charts(ppc_pie_report,ccp_pie_report,atp_swab_pie_report,re
     var subHiddenBreakpoint = 1440;
     var searchHiddenBreakpoint = 768;
     var menuHiddenBreakpoint = 768;
-
+    $("canvas#salesChart").remove();
+    $(".ptchart").append('<canvas id="salesChart"></canvas>');
   		
       if (document.getElementById("salesChart")) {
         var salesChart = document.getElementById("salesChart").getContext("2d");
@@ -1025,6 +1082,8 @@ function triiger_pie_charts(ppc_pie_report,ccp_pie_report,atp_swab_pie_report,re
     var subHiddenBreakpoint = 1440;
     var searchHiddenBreakpoint = 768;
     var menuHiddenBreakpoint = 768;
+    $("canvas#productChart1").remove();
+    $(".pc1").append('<canvas id="productChart1"></canvas>');
        if (document.getElementById("productChart1")) {
         var productChart1 = document
           .getElementById("productChart1")
@@ -1093,6 +1152,8 @@ function triiger_pie_charts(ppc_pie_report,ccp_pie_report,atp_swab_pie_report,re
           }
         });
       }
+      $("canvas#productChart2").remove();
+    $(".pc2").append('<canvas id="productChart2"></canvas>');
  	   if (document.getElementById("productChart2")) {
         var productChart2 = document
           .getElementById("productChart2")
@@ -1160,6 +1221,8 @@ function triiger_pie_charts(ppc_pie_report,ccp_pie_report,atp_swab_pie_report,re
           }
         });
       }
+      $("canvas#productChart3").remove();
+    $(".pc3").append('<canvas id="productChart3"></canvas>');
        if (document.getElementById("productChart3")) {
         var productChart3 = document
           .getElementById("productChart3")
@@ -1227,6 +1290,9 @@ function triiger_pie_charts(ppc_pie_report,ccp_pie_report,atp_swab_pie_report,re
           }
         });
       }
+      $("canvas#productChart4").remove();
+    $(".pc4").append('<canvas id="productChart4"></canvas>');
+
        if (document.getElementById("productChart4")) {
         var productChart4 = document
           .getElementById("productChart4")
@@ -1466,7 +1532,8 @@ $.fn.addCommas = function (nStr) {
 
 
       
-      function status_data(status_graph){
+  function status_data(status_graph){
+    var myChart;
       var chartTooltip = {
         backgroundColor: foregroundColor,
         titleFontColor: primaryColor,
@@ -1516,10 +1583,12 @@ $.fn.addCommas = function (nStr) {
     var subHiddenBreakpoint = 1440;
     var searchHiddenBreakpoint = 768;
     var menuHiddenBreakpoint = 768;
-      
-      	if (document.getElementById("visitChart1")) {
-        var visitChart1 = document.getElementById("visitChart1").getContext("2d");
-        var myChart = new Chart(visitChart1, {
+    $("canvas#visitChart1").remove();
+    $(".cpchart").append('<canvas id="visitChart1" width="646" height="194" class="chartjs-render-monitor" style="display: block; width: 646px; height: 194px;"></canvas>');
+
+      if (document.getElementById("visitChart1")) {
+       var visitChart1 = document.getElementById("visitChart1").getContext("2d");
+       myChart = new Chart(visitChart1, {
           type: "LineWithShadow",
           options: {
             plugins: {
@@ -1593,8 +1662,8 @@ $.fn.addCommas = function (nStr) {
           }
         });
       }
-      }
-      function compliant_data(compliant_graph){
+    }
+    function compliant_data(compliant_graph){
       var chartTooltip = {
         backgroundColor: foregroundColor,
         titleFontColor: primaryColor,
@@ -1644,6 +1713,10 @@ $.fn.addCommas = function (nStr) {
     var subHiddenBreakpoint = 1440;
     var searchHiddenBreakpoint = 768;
     var menuHiddenBreakpoint = 768;
+    
+    $("canvas#conversionChart1").remove();
+    $(".cnchart").append('<canvas id="conversionChart1" width="646" height="194" class="chartjs-render-monitor" style="display: block; width: 646px; height: 194px;"></canvas>');
+
       if (document.getElementById("conversionChart1")) {
         var conversionChart1 = document
           .getElementById("conversionChart1")

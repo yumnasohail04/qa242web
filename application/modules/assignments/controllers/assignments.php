@@ -28,6 +28,15 @@ class Assignments extends MX_Controller
         }
         $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
         $data['groups'] = $groups;
+        $group_list = Modules::run('api/_get_specific_table_with_pagination',array(), 'group_title asc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
+        if(!empty($group_list)) {
+            $temp= array();
+            foreach ($group_list as $key => $gp):
+                $temp[$gp['id']] = $gp['group_title'];
+            endforeach;
+            $group_list = $temp;
+        }
+        $data['group_list'] = $group_list;
         $data['assign_status'] = 'active_checks';
         $data['view_file'] = 'check_listing';
         $this->load->module('template');
@@ -255,27 +264,30 @@ class Assignments extends MX_Controller
         $data['assign_status'] = $assign_status = $this->input->post('assign_status');
         if(empty($startdate))
             $startdate=date('Y-m-d');
-        $startdate=$startdate.' 00:00:00';
+        $startdate=$startdate;
         if(empty($enddate))
             $enddate=date('Y-m-d');
-        $enddate=$enddate.' 23:59:59';
-        $startdate = date('Y-m-d H:i:s', strtotime($startdate));
-        $enddate = date('Y-m-d H:i:s', strtotime($enddate));
+        $enddate=$enddate;
+        $startdate = date('Y-m-d', strtotime($startdate));
+        $enddate = date('Y-m-d', strtotime($enddate));
         $data['page_number'] = $this->input->post('page_number');
         if(empty($data['page_number']))
             $data['page_number'] = '1';
         $data['limit'] = $this->input->post('limit'); 
         $data['total_pages'] = 0;
         $user_data = $this->session->userdata('user_data');
+     		//$or_where = '(`complete_datetime` >= "'.$startdate.' 00:00:00" AND `complete_datetime` <="'.$enddate.' 23:59:59" AND (review_team ="'.$user_data['group'].'" OR  review_team ="'.$user_data['second_group'].'"))';
+           // $or_where = '(`review_datetime` >= "'.$startdate.' 00:00:00" AND `review_datetime` <="'.$enddate.' 23:59:59"  AND (approval_team ="'.$user_data['group'].'" OR  approval_team ="'.$user_data['second_group'].'"))';
         if(strtolower($assign_status) == 'pending')
-            $or_where = '(`complete_datetime` >= "'.$startdate.' 00:00:00" AND `complete_datetime` <="'.$enddate.' 23:59:59" AND (review_team ="'.$user_data['group'].'" OR  review_team ="'.$user_data['second_group'].'"))';
+            $or_where = '(`complete_datetime` >= "'.$startdate.' 00:00:00" AND `complete_datetime` <="'.$enddate.' 23:59:59")';
         elseif(strtolower($assign_status) == 'reviewed')
-            $or_where = '(`review_datetime` >= "'.$startdate.' 00:00:00" AND `review_datetime` <="'.$enddate.' 23:59:59"  AND (approval_team ="'.$user_data['group'].'" OR  approval_team ="'.$user_data['second_group'].'"))';
+            $or_where = '(`review_datetime` >= "'.$startdate.' 00:00:00" AND `review_datetime` <="'.$enddate.' 23:59:59")';
         elseif(strtolower($assign_status) == 'approved')
             $or_where = '(`approval_datetime` >= "'.$startdate.' 00:00:00" AND `approval_datetime` <="'.$enddate.' 23:59:59")';
         else
             $or_where = "";
-        $res = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>$assign_status), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team,review_user,approval_user',$data['page_number'],$data['limit'],$or_where,'','')->result_array();
+   // print_r($or_where);exit;
+        $res = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>$assign_status), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,review_datetime,approval_datetime,assign_status,check_id,inspection_team,review_user,approval_user',$data['page_number'],$data['limit'],$or_where,'','')->result_array();
         $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
         foreach($res as $key=>$value)
         {
@@ -302,7 +314,7 @@ class Assignments extends MX_Controller
         }
         $data['total_pages'] = Modules::run('api/_get_specific_table_with_pagination_and_where',array("assign_status"=>$assign_status), 'assign_id desc',DEFAULT_OUTLET.'_static_assignments','assign_id,complete_datetime,assign_status,check_id,inspection_team','1','0',$or_where,'','')->num_rows();
         $data['result'] = $res;
-        echo $this->load->view('static_assignment_search',$data,TRUE);
+         $this->load->view('static_assignment_search',$data);
     }
         function assignments_detail() {
         $id = $this->input->post('id');
@@ -875,6 +887,10 @@ class Assignments extends MX_Controller
          $enddate = $this->input->post('enddate');
          $assign_type = $this->input->post('assign_type');
          $data['assign_type']=$assign_type;
+      if(isset($startdate) && !empty($startdate))
+             $where['assignments.start_datetime >=']=date('Y-m-d 00:00',strtotime($startdate));
+        if(isset($enddate) && !empty($enddate))
+             $where['assignments.end_datetime <=']=date('Y-m-d 23:59',strtotime($enddate));
          if($assign_type=='active_checks'){
              $where['assign_status']="Open";
          }elseif($assign_type=='overdue_checks'){
@@ -883,15 +899,22 @@ class Assignments extends MX_Controller
              $where['assign_status']="Review";
          }
          elseif($assign_type=='pending_approval'){
+          	$where=array();
              $where['assign_status']="Approval";
+           if(isset($startdate) && !empty($startdate))
+             $where['assignments.review_datetime >=']=date('Y-m-d 00:00:00',strtotime($startdate));
+           if(isset($enddate) && !empty($enddate))
+             $where['assignments.review_datetime <=']=date('Y-m-d 23:59:00',strtotime($enddate));
          }
          elseif($assign_type=='completed_checks'){
+         $where=array();
              $where['assign_status']="Completed";
+           if(isset($startdate) && !empty($startdate))
+             $where['assignments.approval_datetime >=']=date('Y-m-d 00:00:00',strtotime($startdate));
+           if(isset($enddate) && !empty($enddate))
+             $where['assignments.approval_datetime <=']=date('Y-m-d 23:59:00',strtotime($enddate));
          }
-        if(isset($startdate) && !empty($startdate))
-             $where['assignments.start_datetime >=']=date('Y-m-d 00:00',strtotime($startdate));
-        if(isset($enddate) && !empty($enddate))
-             $where['assignments.end_datetime <=']=date('Y-m-d 23:59',strtotime($enddate));
+   
         $data['news'] = $this->_get('id desc',$where);
         
         $groups = Modules::run('api/_get_specific_table_with_pagination',array(), 'id desc',DEFAULT_OUTLET.'_groups','id,group_title','1','0')->result_array();
@@ -901,9 +924,11 @@ class Assignments extends MX_Controller
     function get_check_listing_filter_data() {
         $startdate = $this->input->post('startdate');
         $searh = $this->input->post('like');
+        $group = $this->input->post('group');
         $data['like_search'] = $like_search = '';
         if(!empty($searh))
             $data['like_search'] = $like_search['LOWER(product_checks.checkname)'] = $searh;
+        
         $enddate = $this->input->post('enddate');
         $data['assign_status'] = $assign_status = $this->input->post('assign_status');
         $checking = false;
@@ -930,6 +955,10 @@ class Assignments extends MX_Controller
         }
         else
             $where = array();
+
+            
+        if(!empty($group))
+            $where['assignments.inspection_team'] = $group;
         if($checking == false) {
             $where['assignments.start_datetime >=']= $startdate;
             $where['assignments.end_datetime <=']= $enddate;

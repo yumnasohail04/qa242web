@@ -1,4 +1,3 @@
-<link href="<?php echo STATIC_ADMIN_CSS;?>simplePagination.css" rel="stylesheet">
 <main>
     <div class="container-fluid">
         <div class="row">
@@ -45,10 +44,11 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group" style="margin-top: 33px;">
-                                    <button type="button" class="btn btn-primary form-control filter_search">Search</button>
+                                    <button type="button" class="btn btn-outline-primary form-control filter_search">Search</button>
                                  </div>
                             </div>
                         </div>
+                    <div class="table-append">
                         <table class="data-table data-table-feature">
                             <thead class="bg-th">
                                 <tr class="bg-col">
@@ -69,7 +69,7 @@
                                     <th class="text-center" style="width:500px;" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="ajax_content_wrapper">
+                            <tbody >
                                 <?php
                                 $i = 0;
                                 if (isset($result)) {
@@ -133,8 +133,8 @@
                                 <?php } ?>
                             </tbody>
                         </table>
+                    </div>
                         <br><br>
-                        <div class="mg-t-20-f floatright" style="clear: both" id="light-pagination"></div>
                         </div>
                     </div>
                 </div>
@@ -161,7 +161,7 @@ $(document).ready(function(){
                             var review_status = $("#truct_inspection").find(".review_status").text();
                             if(review_status == true) {
                                 var review_text = $("#truct_inspection").find(".review_text").text();
-                                $("#truct_inspection .modal-footer").html('<button type="button" data-dismiss="modal" class="btn btn-primary  pull-right">Cancel</button> <button type="button" class="btn btn-primary pull-right submit_check" >'+review_text+'</button>');
+                                $("#truct_inspection .modal-footer").html('<button type="button" data-dismiss="modal" class="btn btn-outline-primary  pull-right">Cancel</button> <button type="button" class="btn btn-outline-primary pull-right submit_check" >'+review_text+'</button>');
                             }
                             submit_status();
                         }
@@ -193,7 +193,6 @@ $(document).ready(function(){
 <script>
     var PreviousStartDate=$('#startdate').val();
     var PreviousEndDate=$('#enddate').val();
-    var firstclick = "one";
     $(document).ready(function() {
         $('.filter_search').on('click', function() {
             var startdate=$('#startdate').val();
@@ -202,80 +201,50 @@ $(document).ready(function(){
                 toastr.success('Please Select Date Range');
             }
             else{
-                firstclick="fdafdas";
-                ajax_call('1',startdate,enddate);
+                ajax_caller('1',startdate,enddate);
             }    
         });
     });
-    function pagination_call(total_number_pages,active) {
-        $.getScript("<?php echo STATIC_ADMIN_JS;?>jquery.simplePagination.js").done(function( s, Status ) {
-          $('#light-pagination').pagination({
-            items: total_number_pages,
-            itemsOnPage: <?=$limit?>,
-            cssStyle: 'light-theme'
-            });
-            $('#light-pagination').pagination('selectPage', active);
-            $('#light-pagination').off('click').click(function(event) {
-                var valuecheck = '';
-                if($(this).find('.active').text() == 'Next') {
-                    valuecheck = parseInt($('#light-pagination').find('.active').find('.current').text());
-                }
-                else if($(this).find('.active').text() == 'Prev') {
-                    valuecheck = parseInt($('#light-pagination').find('.active').find('.current').text());
-                }
-                else {
-                    valuecheck = $(this).find('.active').text();
-                }
-                var StartDate=$('#startdate').val();
-                var EndDate=$('#enddate').val();
-                if(firstclick != "fdafdas") {
-                    StartDate = "";
-                    EndDate = "";
-                }
-                ajax_call(valuecheck,StartDate,EndDate);
-                
-            });
-            $('#light-pagination').find('.page-link').each(function(){
-                $(this).attr('href','javascript:void(0);');
-            });
-        });
-    }
-    var citycurrentRequest=null;
-    function ajax_call(page_number,startdate,enddate) {
-        citycurrentRequest= $.ajax({
+
+    function ajax_caller(page_number,startdate,enddate) {
+         $.ajax({
             type: "POST",  
             url: '<?= ADMIN_BASE_URL?>assignments/static_assignment_search',  
-            data: {'page_number':page_number,'startdate':startdate,'enddate':enddate,'limit':<?=$limit?>,'assign_status':'<?=$assign_status ?>'},
-            dataType: 'html',
-            beforeSend : function()    {           
-                if(citycurrentRequest != null) {
-                    citycurrentRequest.abort();
-                }
-            },
-            success: function(result) {
-                var datamain = $(result).find('datamain').html();
-                var tablecreat = ''
-                var active= $(result).find('pagenumber').text();
-                var total_number_pages= $(result).find('totalpage').text();
-                $(result).find('datamain').find('trr').each(function(){
-                    tablecreat = tablecreat+'<tr>';
-                    $(this).find('tdd').each(function(){
-                        tablecreat = tablecreat+'<td>'+$(this).html()+'</td>';
-                    })
-                })
-                tablecreat = tablecreat+'<tr>';
-                if(total_number_pages == '0')
-                        tablecreat = tablecreat+'<td colspan="6">No data available in table</td>';
-                    tablecreat = tablecreat+'</tr>';
-                $('#ajax_content_wrapper').html(tablecreat);
-                if(total_number_pages>1)
-                    pagination_call(total_number_pages,active);
-                else
-                    pagination_call('1','1');
+            data: {'page_number':page_number,'startdate':startdate,'enddate':enddate,'limit':'<?=$limit?>','assign_status':'<?=$assign_status ?>'},
+            async: false,
+            success: function(result) {   
+            	if(result!=''){
+            		$('.table-append').html(result);
+                    datatable();
+                }else
+                      toastr.success('No result found b/w selected date');
             }
         });
     }
-    <?php if(isset($page_number) && is_numeric($page_number) && isset($total_pages) && is_numeric($total_pages)) { if($total_pages>1) {?>
-        pagination_call('<?=$total_pages;?>','<?=$page_number;?>');
-    <?php }}?>
+ 
+function datatable()
+{
+	$(".data-table-feature").DataTable({
+        sDom: '<"row view-filter"<"col-sm-12"<"float-right"l><"float-left"f><"clearfix">>>t<"row view-pager"<"col-sm-12"<"text-center"ip>>>',
+        drawCallback: function () {
+          $($(".dataTables_wrapper .pagination li:first-of-type"))
+            .find("a")
+            .addClass("prev");
+          $($(".dataTables_wrapper .pagination li:last-of-type"))
+            .find("a")
+            .addClass("next");
+
+          $(".dataTables_wrapper .pagination").addClass("pagination-sm");
+        },
+        language: {
+          paginate: {
+            previous: "<i class='simple-icon-arrow-left'></i>",
+            next: "<i class='simple-icon-arrow-right'></i>"
+          },
+          search: "_INPUT_",
+          searchPlaceholder: "Search...",
+          lengthMenu: "Items Per Page _MENU_"
+        },
+      });
+}
 </script>

@@ -16,6 +16,11 @@
       transition: all .5s;
       padding: 1px;
     }
+body {
+    -moz-transform: scale(0.8, 0.8); /* Moz-browsers */
+    zoom: 0.8; /* Other non-webkit browsers */
+    zoom: 80%; /* Webkit browsers */
+}
     .veen{
       width: 70%;
       margin: 70px auto;

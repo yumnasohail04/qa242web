@@ -364,7 +364,7 @@
                                                   if(isset($update_id) && $update_id != 0)
                                                     $all_shifts = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array(),'shift_id desc','shift_id',DEFAULT_OUTLET.'_shifts','shift_id,shift_name,shift_status','1','0','','','')->result_array();
                                                   else
-                                                    $all_shifts = array();
+                                                    $all_shifts = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array(),'shift_id desc','shift_id',DEFAULT_OUTLET.'_shifts','shift_id,shift_name,shift_status','1','0','','','')->result_array();
                                                   $html =  "";
                                                   foreach ($all_shifts as $key => $value):
                                                     if(isset($selected_option) &&  !empty($selected_option)) 

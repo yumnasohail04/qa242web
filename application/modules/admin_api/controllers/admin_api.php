@@ -414,7 +414,7 @@ class Admin_api extends MX_Controller {
         header('Content-Type: application/json');
         echo json_encode(array("status" => $status, "message" => $message));
     }
-    function get_user_notinotification() {
+    function get_user_notificationget_user_notinotification() {
         $status = false;
         $message="Please fill the code.";
         $user_id = $this->input->post("user_id");
@@ -3756,98 +3756,100 @@ class Admin_api extends MX_Controller {
                                 }
                             }
                             else if( strtolower($value['checktype']) == strtolower('unit weight(tray+pasta)')) {
-                                  $product_schedules = $this->get_product_schedules_from_db(array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d')),'ps_id desc','ps_id',DEFAULT_OUTLET,'ps_product,product_title,ps_line,ps_plant,unit_weight,machine_number,whole_weight,dough_weight,filling_weight,filling_percentage,shape,max_unitweight','1','0','','','')->result_array();
+                                  $product_schedules = $this->get_product_schedules_from_db(array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d')),'ps_id desc','ps_id',DEFAULT_OUTLET,'ps_product,product_title,ps_line,ps_plant,unit_weight,machine_number,whole_weight,dough_weight,filling_weight,filling_percentage,shape,max_unitweight,storage_type','1','0','','','')->result_array();
                                 $products_counter = count($product_schedules);
                                 if(!empty($product_schedules)) {
                                     foreach ($product_schedules as $key => $ps):
-                                        $program_detail = $this->get_product_program(array("ppt_product_id"=>$ps['ps_product']), 'ppt_id desc','ppt_id',$outlet_id,'program_types.id as program_id','1','0','','','')->result_array();
-                                        if(!empty($program_detail)) {
-                                            foreach ($program_detail as $pd_key => $pd):
-                                                $product_attribute = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("product_id"=>$ps['ps_product'],"outlet_id"=>DEFAULT_OUTLET),'id desc','id',DEFAULT_OUTLET.'_product_attributes','attribute_name,min_value,target_value,max_value','1','0','','','')->result_array();
-                                                $valid = false;
-                                                if(isset($ps['unit_weight']) && !empty($ps['unit_weight']))
-                                                    $valid = true;
-                                                else if(isset($ps['max_unitweight']) && !empty($ps['max_unitweight']))
-                                                    $valid = true;
-                                                else
+                                        if(strtolower($ps['storage_type']) != strtolower('Frozen')){
+                                            $program_detail = $this->get_product_program(array("ppt_product_id"=>$ps['ps_product']), 'ppt_id desc','ppt_id',$outlet_id,'program_types.id as program_id','1','0','','','')->result_array();
+                                            if(!empty($program_detail)) {
+                                                foreach ($program_detail as $pd_key => $pd):
+                                                    $product_attribute = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("product_id"=>$ps['ps_product'],"outlet_id"=>DEFAULT_OUTLET),'id desc','id',DEFAULT_OUTLET.'_product_attributes','attribute_name,min_value,target_value,max_value','1','0','','','')->result_array();
                                                     $valid = false;
-                                                if($valid == true) {
-                                                    $inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
-                                                    if(!empty($inspection_team_array)) {
-                                                        foreach ($inspection_team_array as $ina_key => $ina):
-                                                            $assign_data['line_timing'] = $ps['ps_line'];
-                                                    		$assign_data['plant_no'] = $ps['ps_plant'];
-                                                            $assign_data['product_id'] = $ps['ps_product'];
-                                                            $outlet_id = $value['outlet_id'];
-                                                            $assign_data['checkid'] = $value['id'];
-                                                            $assign_data['program_type'] = $pd['program_id'];
-                                                            $assign_data['inspection_team'] = $ina['sci_team_id'];
-                                                            $assign_data['review_team'] = $value['review_team'];
-                                                            $assign_data['approval_team'] = $value['approval_team'];
-                                                            $assign_data['outlet_id'] = $value['outlet_id'];
-                                                            $assign_data['start_datetime'] = date('Y-m-d H:i:s');
-                                                            $assign_data['is_calculation'] = "0";
-                                                            $assign_data['end_datetime'] = $cenvertedTime = date('Y-m-d H:i:s',strtotime('+30 minutes',strtotime(date('Y-m-d H:i:s'))));
-                                                            if($products_counter==1)
-                                                                $assign_data['assign_status']='Open';
-                                                            else
-                                                                $assign_data['assign_status']='Closed';
-                                                            $where_assign['checkid'] = $value['id'];
-                                                            $where_assign['product_id'] = $ps['ps_product'];
-                                                            $where_assign['line_timing'] = $ps['ps_line'];
-                                                    		$where_assign['plant_no'] = $ps['ps_plant'];
-                                                            $where_assign['program_type'] = $pd['program_id'];
-                                                            $where_assign['inspection_team']=$ina['inspection_team'];
-                                                            $where_assign['review_team'] = $value['review_team'];
-                                                            $where_assign['approval_team'] = $value['approval_team'];
-                                                            $where_assign['start_datetime <='] = date('Y-m-d H:i:s');
-                                                            $where_assign['is_calculation'] = "0";
-                                                            $where_assign['end_datetime >='] = date('Y-m-d H:i:s',strtotime('+30 minutes',strtotime(date('Y-m-d H:i:s'))));
-                                                            $check_if = $this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
-                                                    
-                                                            if(empty($check_if)) {
-                                                                $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
-                                                                if(isset($ps['unit_weight']) && !empty($ps['unit_weight'])) {
-                                                                    $insert_id=Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
-                                                                    Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
-                                                                    
-                                                                    $insert_id=Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
-                                                                    Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
+                                                    if(isset($ps['unit_weight']) && !empty($ps['unit_weight']))
+                                                        $valid = true;
+                                                    else if(isset($ps['max_unitweight']) && !empty($ps['max_unitweight']))
+                                                        $valid = true;
+                                                    else
+                                                        $valid = false;
+                                                    if($valid == true) {
+                                                        $inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+                                                        if(!empty($inspection_team_array)) {
+                                                            foreach ($inspection_team_array as $ina_key => $ina):
+                                                                $assign_data['line_timing'] = $ps['ps_line'];
+                                                                $assign_data['plant_no'] = $ps['ps_plant'];
+                                                                $assign_data['product_id'] = $ps['ps_product'];
+                                                                $outlet_id = $value['outlet_id'];
+                                                                $assign_data['checkid'] = $value['id'];
+                                                                $assign_data['program_type'] = $pd['program_id'];
+                                                                $assign_data['inspection_team'] = $ina['sci_team_id'];
+                                                                $assign_data['review_team'] = $value['review_team'];
+                                                                $assign_data['approval_team'] = $value['approval_team'];
+                                                                $assign_data['outlet_id'] = $value['outlet_id'];
+                                                                $assign_data['start_datetime'] = date('Y-m-d H:i:s');
+                                                                $assign_data['is_calculation'] = "0";
+                                                                $assign_data['end_datetime'] = $cenvertedTime = date('Y-m-d H:i:s',strtotime('+30 minutes',strtotime(date('Y-m-d H:i:s'))));
+                                                                if($products_counter==1)
+                                                                    $assign_data['assign_status']='Open';
+                                                                else
+                                                                    $assign_data['assign_status']='Closed';
+                                                                $where_assign['checkid'] = $value['id'];
+                                                                $where_assign['product_id'] = $ps['ps_product'];
+                                                                $where_assign['line_timing'] = $ps['ps_line'];
+                                                                $where_assign['plant_no'] = $ps['ps_plant'];
+                                                                $where_assign['program_type'] = $pd['program_id'];
+                                                                $where_assign['inspection_team']=$ina['inspection_team'];
+                                                                $where_assign['review_team'] = $value['review_team'];
+                                                                $where_assign['approval_team'] = $value['approval_team'];
+                                                                $where_assign['start_datetime <='] = date('Y-m-d H:i:s');
+                                                                $where_assign['is_calculation'] = "0";
+                                                                $where_assign['end_datetime >='] = date('Y-m-d H:i:s',strtotime('+30 minutes',strtotime(date('Y-m-d H:i:s'))));
+                                                                $check_if = $this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
+                                                        
+                                                                if(empty($check_if)) {
+                                                                    $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
+                                                                    if(isset($ps['unit_weight']) && !empty($ps['unit_weight'])) {
+                                                                        $insert_id=Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
+                                                                        Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
+                                                                        
+                                                                        $insert_id=Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
+                                                                        Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
 
-                                                                    $insert_id=Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
-                                                                    Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
+                                                                        $insert_id=Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
+                                                                        Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
 
-                                                                    $insert_id=Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
-                                                                    Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
+                                                                        $insert_id=Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
+                                                                        Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
+                                                                    }
+                                                                    /////////// notification code umar start///////////
+                                                                    $assign_name = 'Assignment Name';
+                                                                    if(isset($value['checkname']) && !empty($value['checkname']))
+                                                                        $assign_name = $value['checkname'];
+                                                                    $assign_name = Modules::run('api/string_length',$assign_name,'8000','','');
+                                                                    $fcm_data = $fcm_token = array();
+                                                                    Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$ina['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
+                                                                    $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$ina['sci_team_id'].'" or `group`="'.$ina['sci_team_id'].'")','','')->result_array();
+                                                                    if(!empty($tokens)) {
+                                                                        foreach ($tokens as $key => $to):
+                                                                            if(isset($to['fcm_token']) && !empty($to['fcm_token']))
+                                                                                $fcm_token[] = $to['fcm_token'];
+                                                                            if(isset($to['id']) && !empty($to['id'])) {
+                                                                                Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                                                            }
+                                                                        endforeach;
+                                                                    }
+                                                                    if(!empty($fcm_token) && $products_counter==1) {
+                                                                        $fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
+                                                                        Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
+                                                                        $counter = $counter + 1;
+                                                                    }
+                                                                    /////////// notification code umar end///////////
                                                                 }
-                                                                /////////// notification code umar start///////////
-                                                                $assign_name = 'Assignment Name';
-                                                                if(isset($value['checkname']) && !empty($value['checkname']))
-                                                                    $assign_name = $value['checkname'];
-                                                                $assign_name = Modules::run('api/string_length',$assign_name,'8000','','');
-                                                                $fcm_data = $fcm_token = array();
-                                                                Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$ina['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
-                                                                $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$ina['sci_team_id'].'" or `group`="'.$ina['sci_team_id'].'")','','')->result_array();
-                                                                if(!empty($tokens)) {
-                                                                    foreach ($tokens as $key => $to):
-                                                                        if(isset($to['fcm_token']) && !empty($to['fcm_token']))
-                                                                            $fcm_token[] = $to['fcm_token'];
-                                                                        if(isset($to['id']) && !empty($to['id'])) {
-                                                                            Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
-                                                                        }
-                                                                    endforeach;
-                                                                }
-                                                                if(!empty($fcm_token) && $products_counter==1) {
-                                                                    $fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
-                                                                    Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
-                                                                    $counter = $counter + 1;
-                                                                }
-                                                                /////////// notification code umar end///////////
-                                                            }
-                                                        endforeach;
+                                                            endforeach;
+                                                        }
                                                     }
-                                                }
-                                            endforeach;
+                                                endforeach;
+                                            }
                                         }
                                     endforeach;
                                 }
@@ -4225,100 +4227,102 @@ class Admin_api extends MX_Controller {
                                 }
                             }
                             else if( strtolower($value['checktype']) == strtolower('unit weight(tray+pasta)')) {
-                                $product_schedules = $this->get_product_schedules_from_db(array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d')),'ps_id desc','ps_id',DEFAULT_OUTLET,'ps_product,product_title,ps_line,ps_plant,unit_weight,machine_number,whole_weight,dough_weight,filling_weight,filling_percentage,shape,max_unitweight','1','0','','','')->result_array();
+                                $product_schedules = $this->get_product_schedules_from_db(array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d')),'ps_id desc','ps_id',DEFAULT_OUTLET,'ps_product,product_title,ps_line,ps_plant,unit_weight,machine_number,whole_weight,dough_weight,filling_weight,filling_percentage,shape,max_unitweight,storage_type','1','0','','','')->result_array();
                                 $products_counter = count($product_schedules);
                                 if(!empty($product_schedules)) {
                                     foreach ($product_schedules as $key => $ps):
-                                        $program_detail = $this->get_product_program(array("ppt_product_id"=>$ps['ps_product']), 'ppt_id desc','ppt_id',$outlet_id,'program_types.id as program_id','1','0','','','')->result_array();
-                                        if(!empty($program_detail)) {
-                                            foreach ($program_detail as $pd_key => $pd):
-                                                $product_attribute = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("product_id"=>$ps['ps_product'],"outlet_id"=>DEFAULT_OUTLET),'id desc','id',DEFAULT_OUTLET.'_product_attributes','attribute_name,min_value,target_value,max_value','1','0','','','')->result_array();
-                                                $valid = false;
-                                                if(isset($ps['unit_weight']) && !empty($ps['unit_weight']))
-                                                    $valid = true;
-                                                elseif(isset($ps['max_unitweight']) && !empty($ps['max_unitweight']))
-                                                    $valid = true;
-                                                else
+                                        if(strtolower($ps['storage_type']) != strtolower('Frozen')){
+                                            $program_detail = $this->get_product_program(array("ppt_product_id"=>$ps['ps_product']), 'ppt_id desc','ppt_id',$outlet_id,'program_types.id as program_id','1','0','','','')->result_array();
+                                            if(!empty($program_detail)) {
+                                                foreach ($program_detail as $pd_key => $pd):
+                                                    $product_attribute = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("product_id"=>$ps['ps_product'],"outlet_id"=>DEFAULT_OUTLET),'id desc','id',DEFAULT_OUTLET.'_product_attributes','attribute_name,min_value,target_value,max_value','1','0','','','')->result_array();
                                                     $valid = false;
-                                                if($valid == true) {
-                                                    $inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
-                                                    if(!empty($inspection_team_array)) {
-                                                        foreach ($inspection_team_array as $ina_key => $ina):
-                                                            $assign_data =array();
-                                                            $where_assign = array();
-                                                            $assign_data['line_timing'] = $ps['ps_line'];
-                                                            $assign_data['plant_no'] = $ps['ps_plant'];
-                                                            $assign_data['product_id'] = $ps['ps_product'];
-                                                            $outlet_id = $value['outlet_id'];
-                                                            $assign_data['checkid'] = $value['id'];
-                                                            $assign_data['program_type'] = $pd['program_id'];
-                                                            $assign_data['inspection_team'] = $ina['sci_team_id'];
-                                                            $assign_data['review_team'] = $value['review_team'];
-                                                            $assign_data['approval_team'] = $value['approval_team'];
-                                                            $assign_data['outlet_id'] = $value['outlet_id'];
-                                                            $assign_data['start_datetime'] = date('Y-m-d H:i:s');
-                                                            $assign_data['is_calculation'] = "0";
-                                                            $assign_data['end_datetime'] = $cenvertedTime = date('Y-m-d H:i:s',strtotime('+1 hour',strtotime(date('Y-m-d H:i:s'))));
-                                                            if($products_counter==1)
-                                                                $assign_data['assign_status']='Open';
-                                                            else
-                                                                $assign_data['assign_status']='Closed';
-                                                            $where_assign['checkid'] = $value['id'];
-                                                            $where_assign['product_id'] = $ps['ps_product'];
-                                                            $where_assign['line_timing'] = $ps['ps_line'];
-                                                            $where_assign['plant_no'] = $ps['ps_plant'];
-                                                            $where_assign['program_type'] = $pd['program_id'];
-                                                            $where_assign['inspection_team']=$ina['sci_team_id'];
-                                                            $where_assign['review_team'] = $value['review_team'];
-                                                            $where_assign['approval_team'] = $value['approval_team'];
-                                                            $where_assign['start_datetime <='] = date('Y-m-d H:i:s');
-                                                            $where_assign['is_calculation'] = "0";
-                                                            $where_assign['end_datetime >='] = date('Y-m-d H:i:s',strtotime('+1 hour',strtotime(date('Y-m-d H:i:s'))));
-                                                            $check_if = $this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
-                                                            if(empty($check_if)) {
-                                                            
-                                                                $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
-                                                                if(isset($ps['unit_weight']) && !empty($ps['unit_weight'])) {
-                                                                    $insert_id= Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
-                                                                    $answers_id = Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
-                                                                    
-                                                                    $insert_id= Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
-                                                                    $answers_id = Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
-                                                                    
-                                                                    $insert_id= Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
-                                                                    $answers_id = Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
-                                                                    
-                                                                    $insert_id= Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
-                                                                    $answers_id = Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
-                                                                    
+                                                    if(isset($ps['unit_weight']) && !empty($ps['unit_weight']))
+                                                        $valid = true;
+                                                    elseif(isset($ps['max_unitweight']) && !empty($ps['max_unitweight']))
+                                                        $valid = true;
+                                                    else
+                                                        $valid = false;
+                                                    if($valid == true) {
+                                                        $inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+                                                        if(!empty($inspection_team_array)) {
+                                                            foreach ($inspection_team_array as $ina_key => $ina):
+                                                                $assign_data =array();
+                                                                $where_assign = array();
+                                                                $assign_data['line_timing'] = $ps['ps_line'];
+                                                                $assign_data['plant_no'] = $ps['ps_plant'];
+                                                                $assign_data['product_id'] = $ps['ps_product'];
+                                                                $outlet_id = $value['outlet_id'];
+                                                                $assign_data['checkid'] = $value['id'];
+                                                                $assign_data['program_type'] = $pd['program_id'];
+                                                                $assign_data['inspection_team'] = $ina['sci_team_id'];
+                                                                $assign_data['review_team'] = $value['review_team'];
+                                                                $assign_data['approval_team'] = $value['approval_team'];
+                                                                $assign_data['outlet_id'] = $value['outlet_id'];
+                                                                $assign_data['start_datetime'] = date('Y-m-d H:i:s');
+                                                                $assign_data['is_calculation'] = "0";
+                                                                $assign_data['end_datetime'] = $cenvertedTime = date('Y-m-d H:i:s',strtotime('+1 hour',strtotime(date('Y-m-d H:i:s'))));
+                                                                if($products_counter==1)
+                                                                    $assign_data['assign_status']='Open';
+                                                                else
+                                                                    $assign_data['assign_status']='Closed';
+                                                                $where_assign['checkid'] = $value['id'];
+                                                                $where_assign['product_id'] = $ps['ps_product'];
+                                                                $where_assign['line_timing'] = $ps['ps_line'];
+                                                                $where_assign['plant_no'] = $ps['ps_plant'];
+                                                                $where_assign['program_type'] = $pd['program_id'];
+                                                                $where_assign['inspection_team']=$ina['sci_team_id'];
+                                                                $where_assign['review_team'] = $value['review_team'];
+                                                                $where_assign['approval_team'] = $value['approval_team'];
+                                                                $where_assign['start_datetime <='] = date('Y-m-d H:i:s');
+                                                                $where_assign['is_calculation'] = "0";
+                                                                $where_assign['end_datetime >='] = date('Y-m-d H:i:s',strtotime('+1 hour',strtotime(date('Y-m-d H:i:s'))));
+                                                                $check_if = $this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
+                                                                if(empty($check_if)) {
+                                                                
+                                                                    $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
+                                                                    if(isset($ps['unit_weight']) && !empty($ps['unit_weight'])) {
+                                                                        $insert_id= Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
+                                                                        $answers_id = Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
+                                                                        
+                                                                        $insert_id= Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
+                                                                        $answers_id = Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
+                                                                        
+                                                                        $insert_id= Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
+                                                                        $answers_id = Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
+                                                                        
+                                                                        $insert_id= Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
+                                                                        $answers_id = Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
+                                                                        
+                                                                    }
+                                                                    /////////// notification code umar start///////////
+                                                                    $assign_name = 'Assignment Name';
+                                                                    if(isset($value['checkname']) && !empty($value['checkname']))
+                                                                        $assign_name = $value['checkname'];
+                                                                    $assign_name = Modules::run('api/string_length',$assign_name,'8000','','');
+                                                                    $fcm_data = $fcm_token = array();
+                                                                    Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$ina['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
+                                                                    $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$ina['sci_team_id'].'" or `group`="'.$ina['sci_team_id'].'")','','')->result_array();
+                                                                    if(!empty($tokens)) {
+                                                                        foreach ($tokens as $key => $to):
+                                                                            if(isset($to['fcm_token']) && !empty($to['fcm_token']))
+                                                                                $fcm_token[] = $to['fcm_token'];
+                                                                            if(isset($to['id']) && !empty($to['id'])) {
+                                                                                Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                                                            }
+                                                                        endforeach;
+                                                                    }
+                                                                    if(!empty($fcm_token) && $products_counter==1) {
+                                                                        $fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
+                                                                        Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
+                                                                    }
+                                                                    /////////// notification code umar end///////////
                                                                 }
-                                                                /////////// notification code umar start///////////
-                                                                $assign_name = 'Assignment Name';
-                                                                if(isset($value['checkname']) && !empty($value['checkname']))
-                                                                    $assign_name = $value['checkname'];
-                                                                $assign_name = Modules::run('api/string_length',$assign_name,'8000','','');
-                                                                $fcm_data = $fcm_token = array();
-                                                                Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$ina['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
-                                                                $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$ina['sci_team_id'].'" or `group`="'.$ina['sci_team_id'].'")','','')->result_array();
-                                                                if(!empty($tokens)) {
-                                                                    foreach ($tokens as $key => $to):
-                                                                        if(isset($to['fcm_token']) && !empty($to['fcm_token']))
-                                                                            $fcm_token[] = $to['fcm_token'];
-                                                                        if(isset($to['id']) && !empty($to['id'])) {
-                                                                            Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
-                                                                        }
-                                                                    endforeach;
-                                                                }
-                                                                if(!empty($fcm_token) && $products_counter==1) {
-                                                                    $fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
-                                                                    Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
-                                                                }
-                                                                /////////// notification code umar end///////////
-                                                            }
-                                                        endforeach;
+                                                            endforeach;
+                                                        }
                                                     }
-                                                }
-                                            endforeach;
+                                                endforeach;
+                                            }
                                         }
                                     endforeach;
                                 }
@@ -4611,99 +4615,101 @@ class Admin_api extends MX_Controller {
                             else if(strtolower($value['checktype']) == strtolower('unit weight(tray+pasta)')) {
                                 $today_valid = Modules::run('api/_get_specific_table_with_pagination',array("fc_check_id" =>$value['id'],'fc_frequency'=>date("l")), 'fc_id asc',DEFAULT_OUTLET.'_checks_frequency','fc_frequency','1','0')->result_array();
                                 if((!empty($today_valid) && strtolower($value['frequency']) == strtolower("Weekly")) || strtolower($value['frequency']) == strtolower("Daily")) {
-                                    $product_schedules = $this->get_product_schedules_from_db(array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d')),'ps_id desc','ps_id',DEFAULT_OUTLET,'ps_product,product_title,ps_line,ps_plant,unit_weight,machine_number,whole_weight,dough_weight,filling_weight,filling_percentage,shape,max_unitweight','1','0','','','')->result_array();
+                                    $product_schedules = $this->get_product_schedules_from_db(array("ps_date <="=>date('Y-m-d'),"ps_end_date >="=>date('Y-m-d')),'ps_id desc','ps_id',DEFAULT_OUTLET,'ps_product,product_title,ps_line,ps_plant,unit_weight,machine_number,whole_weight,dough_weight,filling_weight,filling_percentage,shape,max_unitweight,storage_type','1','0','','','')->result_array();
                                     $products_counter = count($product_schedules);
                                     if(!empty($product_schedules)) {
                                         foreach ($product_schedules as $key => $ps):
-                                            $program_detail = $this->get_product_program(array("ppt_product_id"=>$ps['ps_product']), 'ppt_id desc','ppt_id',$outlet_id,'program_types.id as program_id','1','0','','','')->result_array();
-                                            if(!empty($program_detail)) {
-                                                foreach ($program_detail as $pd_key => $pd):
-                                                    $product_attribute = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("product_id"=>$ps['ps_product'],"outlet_id"=>DEFAULT_OUTLET),'id desc','id',DEFAULT_OUTLET.'_product_attributes','attribute_name,min_value,target_value,max_value','1','0','','','')->result_array();
-                                                    $valid = false;
-                                                    if(isset($ps['unit_weight']) && !empty($ps['unit_weight']))
-                                                        $valid = true;
-                                                    else if(isset($ps['max_unitweight']) && !empty($ps['max_unitweight']))
-                                                    $valid = true;
-                                                    else
+                                            if(strtolower($ps['storage_type']) != strtolower('Frozen')){
+                                                $program_detail = $this->get_product_program(array("ppt_product_id"=>$ps['ps_product']), 'ppt_id desc','ppt_id',$outlet_id,'program_types.id as program_id','1','0','','','')->result_array();
+                                                if(!empty($program_detail)) {
+                                                    foreach ($program_detail as $pd_key => $pd):
+                                                        $product_attribute = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("product_id"=>$ps['ps_product'],"outlet_id"=>DEFAULT_OUTLET),'id desc','id',DEFAULT_OUTLET.'_product_attributes','attribute_name,min_value,target_value,max_value','1','0','','','')->result_array();
                                                         $valid = false;
-                                                    if($valid == true) {
-                                                        $inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
-                                                        if(!empty($inspection_team_array)) {
-                                                            foreach ($inspection_team_array as $ina_key => $ina):
-                                                                $assign_data['line_timing'] = $ps['ps_line'];
-                                                                $assign_data['plant_no'] = $ps['ps_plant'];
-                                                                $assign_data['product_id'] = $ps['ps_product'];
-                                                                $outlet_id = $value['outlet_id'];
-                                                                $assign_data['checkid'] = $value['id'];
-                                                                $assign_data['program_type'] = $pd['program_id'];
-                                                                $assign_data['inspection_team'] = $ina['sci_team_id'];
-                                                                $assign_data['review_team'] = $value['review_team'];
-                                                                $assign_data['approval_team'] = $value['approval_team'];
-                                                                $assign_data['outlet_id'] = $value['outlet_id'];
-                                                                $assign_data['start_datetime'] = date('Y-m-d H:i:s');
-                                                                $assign_data['end_datetime'] = date('Y-m-d 23:59:00');
-                                                                $assign_data['is_calculation'] = "0";
-                                                                
-                                                                if($products_counter==1)
-                                                                    $assign_data['assign_status']='Open';
-                                                                else
-                                                                    $assign_data['assign_status']='Closed';
-                                                                $where_assign['checkid'] = $value['id'];
-                                                                $where_assign['product_id'] = $ps['ps_product'];
-                                                                $where_assign['line_timing'] = $ps['ps_line'];
-                                                                $where_assign['plant_no'] = $ps['ps_plant'];
-                                                                $where_assign['program_type'] = $pd['program_id'];
-                                                                $where_assign['inspection_team']=$ina['sci_team_id'];
-                                                                $where_assign['review_team'] = $value['review_team'];
-                                                                $where_assign['approval_team'] = $value['approval_team'];
-                                                                $where_assign['start_datetime <='] = date('Y-m-d H:i:s');
-                                                                $where_assign['end_datetime >='] = date('Y-m-d 23:59:00');
-                                                                $where_assign['is_calculation'] = "0";
-                                                                $check_if = $this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
-                                                                if(empty($check_if)) {
-                                                                    $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
-                                                                    if(isset($ps['unit_weight']) && !empty($ps['unit_weight'])) {
-                                                                        $insert_id=Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
-                                                                        Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
+                                                        if(isset($ps['unit_weight']) && !empty($ps['unit_weight']))
+                                                            $valid = true;
+                                                        else if(isset($ps['max_unitweight']) && !empty($ps['max_unitweight']))
+                                                        $valid = true;
+                                                        else
+                                                            $valid = false;
+                                                        if($valid == true) {
+                                                            $inspection_team_array = Modules::run('api/_get_specific_table_with_pagination',array('sci_check_id'=>$value['id']), 'sci_id desc',DEFAULT_OUTLET.'_scheduled_checks_inspection','sci_team_id','1','0')->result_array();
+                                                            if(!empty($inspection_team_array)) {
+                                                                foreach ($inspection_team_array as $ina_key => $ina):
+                                                                    $assign_data['line_timing'] = $ps['ps_line'];
+                                                                    $assign_data['plant_no'] = $ps['ps_plant'];
+                                                                    $assign_data['product_id'] = $ps['ps_product'];
+                                                                    $outlet_id = $value['outlet_id'];
+                                                                    $assign_data['checkid'] = $value['id'];
+                                                                    $assign_data['program_type'] = $pd['program_id'];
+                                                                    $assign_data['inspection_team'] = $ina['sci_team_id'];
+                                                                    $assign_data['review_team'] = $value['review_team'];
+                                                                    $assign_data['approval_team'] = $value['approval_team'];
+                                                                    $assign_data['outlet_id'] = $value['outlet_id'];
+                                                                    $assign_data['start_datetime'] = date('Y-m-d H:i:s');
+                                                                    $assign_data['end_datetime'] = date('Y-m-d 23:59:00');
+                                                                    $assign_data['is_calculation'] = "0";
+                                                                    
+                                                                    if($products_counter==1)
+                                                                        $assign_data['assign_status']='Open';
+                                                                    else
+                                                                        $assign_data['assign_status']='Closed';
+                                                                    $where_assign['checkid'] = $value['id'];
+                                                                    $where_assign['product_id'] = $ps['ps_product'];
+                                                                    $where_assign['line_timing'] = $ps['ps_line'];
+                                                                    $where_assign['plant_no'] = $ps['ps_plant'];
+                                                                    $where_assign['program_type'] = $pd['program_id'];
+                                                                    $where_assign['inspection_team']=$ina['sci_team_id'];
+                                                                    $where_assign['review_team'] = $value['review_team'];
+                                                                    $where_assign['approval_team'] = $value['approval_team'];
+                                                                    $where_assign['start_datetime <='] = date('Y-m-d H:i:s');
+                                                                    $where_assign['end_datetime >='] = date('Y-m-d 23:59:00');
+                                                                    $where_assign['is_calculation'] = "0";
+                                                                    $check_if = $this->check_if_assignment_exists($where_assign,$outlet_id=DEFAULT_OUTLET)->result_array();
+                                                                    if(empty($check_if)) {
+                                                                        $assign_id = $this->insert_assignment_data($assign_data,$outlet_id);
+                                                                        if(isset($ps['unit_weight']) && !empty($ps['unit_weight'])) {
+                                                                            $insert_id=Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
+                                                                            Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
 
-                                                                        $insert_id=Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
-                                                                        Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
+                                                                            $insert_id=Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
+                                                                            Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
 
-                                                                        $insert_id=Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
-                                                                        Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
+                                                                            $insert_id=Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
+                                                                            Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
 
-                                                                        $insert_id=Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
-                                                                        Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
-                                                                        /////////// notification code umar start///////////
-                                                                    $assign_name = 'Assignment Name';
-                                                                    if(isset($value['checkname']) && !empty($value['checkname']))
-                                                                        $assign_name = $value['checkname'];
-                                                                    $assign_name = Modules::run('api/string_length',$assign_name,'8000','','');
-                                                                    $fcm_data = $fcm_token = array();
-                                                                    Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$ina['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
-                                                                    $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$ina['sci_team_id'].'" or `group`="'.$ina['sci_team_id'].'")','','')->result_array();
-                                                                    if(!empty($tokens)) {
-                                                                        foreach ($tokens as $key => $to):
-                                                                            if(isset($to['fcm_token']) && !empty($to['fcm_token']))
-                                                                                $fcm_token[] = $to['fcm_token'];
-                                                                            if(isset($to['id']) && !empty($to['id'])) {
-                                                                                Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
-                                                                            }
-                                                                        endforeach;
+                                                                            $insert_id=Modules::run('api/insert_into_specific_table',array("type"=>'Range',"question"=>'Unit weight',"checkid"=>$value['id'],"assignment_id"=>$assign_id),$outlet_id.'_checks_questions');
+                                                                            Modules::run('api/insert_into_specific_table',array("question_id"=>$insert_id,"possible_answer"=>$ps['unit_weight'],"min"=>$ps['unit_weight'],"max"=>$ps['max_unitweight'],'checkid'=>$value['id'],'is_acceptable'=>'1'),$outlet_id.'_checks_answers');
+                                                                            /////////// notification code umar start///////////
+                                                                        $assign_name = 'Assignment Name';
+                                                                        if(isset($value['checkname']) && !empty($value['checkname']))
+                                                                            $assign_name = $value['checkname'];
+                                                                        $assign_name = Modules::run('api/string_length',$assign_name,'8000','','');
+                                                                        $fcm_data = $fcm_token = array();
+                                                                        Modules::run('api/insert_into_specific_table',array("inspection_team_id"=>$ina['sci_team_id'],"assignment_id"=>$assign_id,"assignment_checkid"=>$value['id']),$outlet_id.'_assignment_inspection_teams');
+                                                                        $tokens = Modules::run('api/_get_specific_table_with_pagination_and_where',array('status'=>'1'),'id desc','users','fcm_token,id','1','0','(`second_group`="'.$ina['sci_team_id'].'" or `group`="'.$ina['sci_team_id'].'")','','')->result_array();
+                                                                        if(!empty($tokens)) {
+                                                                            foreach ($tokens as $key => $to):
+                                                                                if(isset($to['fcm_token']) && !empty($to['fcm_token']))
+                                                                                    $fcm_token[] = $to['fcm_token'];
+                                                                                if(isset($to['id']) && !empty($to['id'])) {
+                                                                                    Modules::run('api/insert_into_specific_table',array("assingment_id"=>$assign_id,"user_id"=>$to['id'],"outlet_id"=>$outlet_id,"notification_message"=>"New ".$assign_name." has been assign to you, please login to the system to review the data.","notification_datetime"=>date("Y-m-d H:i:s")),'notification');
+                                                                                }
+                                                                            endforeach;
+                                                                        }
+                                                                        if(!empty($fcm_token) && $products_counter==1) {
+                                                                            $fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
+                                                                            Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
+                                                                            $counter = $counter + 1;
+                                                                        }
+                                                                        /////////// notification code umar end///////////
+                                                                            
+                                                                        }
                                                                     }
-                                                                    if(!empty($fcm_token) && $products_counter==1) {
-                                                                        $fcm_data['data']=Modules::run('api/notifiction_message',$assign_name,"New ".$assign_name." has been assign to you, please login to the system to review the data.",false,false,"");
-                                                                        Modules::run('api/send_fcm_message',$fcm_token,$fcm_data['data']);
-                                                                        $counter = $counter + 1;
-                                                                    }
-                                                                    /////////// notification code umar end///////////
-                                                                        
-                                                                    }
-                                                                }
-                                                            endforeach;
+                                                                endforeach;
+                                                            }
                                                         }
-                                                    }
-                                                endforeach;
+                                                    endforeach;
+                                                }
                                             }
                                         endforeach;
                                     }
@@ -4929,72 +4935,69 @@ class Admin_api extends MX_Controller {
             if(!empty($result) && isset($result)){
                 $this->reminder_email($result,0);
             }
-            $card= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('status'=>"Complete"),'id desc','supplier_id',DEFAULT_OUTLET.'_scorecard_assignment','*','1','','','','')->result_array();
-            foreach($card as $key => $value)
+           
+         
+    }
+    function scorecards()
+    {
+       
+        $card= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('status'=>"1"),'id desc','id','supplier','*','1','','','','')->result_array();
+        foreach($card as $c => $cd)
+        {
+            $app_gp = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id"=>DEFAULT_OUTLET), 'id desc','general_setting','scorecard_approv','1','0')->row_array();
+            $data['supplier_id'] = $cd['id'];
+            $data['approval_team'] = $app_gp['scorecard_approv'];
+            $data['create_date'] = date('Y-m-d H:i:s');
+            $id = Modules::run('api/insert_into_specific_table',$data,DEFAULT_OUTLET."_scorecard_assignment");
+            $team= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('sf_status'=>'1','sf_delete_status'=>'0'),'sf_id desc','sf_id',DEFAULT_OUTLET.'_scorecard_form','sf_id, assigned_to','1','0','','','')->result_array();
+            foreach($team as $key => $value )
             {
-                $exist= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('status'=>"Pending",'supplier_id'=>$value['supplier_id']),'id desc','id',DEFAULT_OUTLET.'_scorecard_assignment','*','1','','','','')->result_array();
-                if(empty($exist)){
-                    $dates = explode(' ', $value['at_reviewed_date']);
-                    $dates = date("Y-m-d", strtotime($dates[0]."+3 months"));
-                    if(date("Y-m-d")==$dates)
+                $score['sc_id']=$id;
+                $score['questioniar_id']=$value['sf_id'];
+                $score['team_id']=$value['assigned_to'];
+                $tassign_id=Modules::run('api/insert_into_specific_table',$score,DEFAULT_OUTLET."_scorecard_team_assign");
+                $title= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('id'=>$value['assigned_to']),'id desc','id',DEFAULT_OUTLET.'_groups','group_title','1','0','','','')->row_array();
+                if(strtolower($title['group_title'])=="regulatory")	
+                {
+                    $result_ingredient=$this->get_supplier_ingreients(array("supplier_id"=>$data['supplier_id']))->result_array();
+                    foreach($result_ingredient as $si =>$val)
                     {
-                    $app_gp = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id"=>DEFAULT_OUTLET), 'id desc','general_setting','scorecard_approv','1','0')->row_array();
-                    $data['supplier_id'] = $value['supplier_id'];
-                    $data['approval_team'] = $app_gp['scorecard_approv'];
-                    $data['create_date'] = date('Y-m-d H:i:s');
-                    $id = $this->_insert_data($data,DEFAULT_OUTLET."_scorecard_assignment");
-                    $team= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('sf_status'=>'1','sf_delete_status'=>'0'),'sf_id desc','sf_id',DEFAULT_OUTLET.'_scorecard_form','sf_id, assigned_to','1','0','','','')->result_array();
-                        foreach($team as $key => $value )
+                        $quest= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('status'=>"1"),'id desc','id',' ingredient_risk_assessment','title,description','1','0','','','')->result_array();
+                        foreach($quest as $ira =>$i_val)
                         {
-                            $score['sc_id']=$id;
-                            $score['questioniar_id']=$value['sf_id'];
-                            $score['team_id']=$value['assigned_to'];
-                            $tassign_id=$this->_insert_data($score,DEFAULT_OUTLET."_scorecard_team_assign");
-                            $title= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('id'=>$value['assigned_to']),'id desc','id',DEFAULT_OUTLET.'_groups','group_title','1','0','','','')->row_array();
-                            if(strtolower($title['group_title'])=="regulatory")	
-                            {
-                                $result_ingredient=$this->get_supplier_ingreients(array("supplier_id"=>$data['supplier_id']))->result_array();
-                                foreach($result_ingredient as $si =>$val)
-                                {
-                                    $quest= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('status'=>"1"),'id desc','id',' ingredient_risk_assessment','title,description','1','0','','','')->result_array();
-                                    foreach($quest as $ira =>$i_val)
-                                    {
-                                        $qu['sc_id']=$id;
-                                        $qu['tassign_id']=$tassign_id;
-                                        $qu['questioniar_id']=$value['sf_id'];
-                                        $qu['ingredient_id']=$val['ingredient_id'];
-                                        $qu['question']=$i_val['title'];
-                                        $qu['sfq_description']=$i_val['description'];
-                                        $this->_insert_data($qu,DEFAULT_OUTLET."_scorecard_assign_questions");
-                                    }
-                                } 
-                                $docs= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('status'=>"1","assign_to"=>"supplier"),'id desc','id',' document','doc_name,id','1','0','','','')->result_array();
-                                foreach($docs as $d =>$doc)
-                                {
-                                        $dd['sc_id']=$id;
-                                        $dd['tassign_id']=$tassign_id;
-                                        $dd['questioniar_id']=$value['sf_id'];
-                                        $dd['document_id']=$doc['id'];
-                                        $dd['question']=$doc['doc_name'];
-                                        $this->_insert_data($dd,DEFAULT_OUTLET."_scorecard_assign_questions");
-                                }
-                            }
-                            $question= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('sfq_check_id'=>$value['sf_id'],'sfq_status'=>'1','sfq_delete'=>'0'),'sfq_id desc','sfq_id',DEFAULT_OUTLET.'_scorecard_form_question','sfq_id, sfq_question,sfq_description','1','0','','','')->result_array();
-                            foreach($question as $keys => $values )
-                            {
-                                $ques['sc_id']=$id;
-                                $ques['tassign_id']=$tassign_id;
-                                $ques['questioniar_id']=$value['sf_id'];
-                                $ques['question_id']=$values['sfq_id'];
-                                $ques['question']=$values['sfq_question'];
-                                $ques['sfq_description']=$values['sfq_description'];
-                                $this->_insert_data($ques,DEFAULT_OUTLET."_scorecard_assign_questions");
-                            }
+                            $qu['sc_id']=$id;
+                            $qu['tassign_id']=$tassign_id;
+                            $qu['questioniar_id']=$value['sf_id'];
+                            $qu['ingredient_id']=$val['ingredient_id'];
+                            $qu['question']=$i_val['title'];
+                            $qu['sfq_description']=$i_val['description'];
+                            Modules::run('api/insert_into_specific_table',$qu,DEFAULT_OUTLET."_scorecard_assign_questions");
                         }
+                    } 
+                    $docs= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('status'=>"1","assign_to"=>"supplier"),'id desc','id',' document','doc_name,id','1','0','','','')->result_array();
+                    foreach($docs as $d =>$doc)
+                    {
+                            $dd['sc_id']=$id;
+                            $dd['tassign_id']=$tassign_id;
+                            $dd['questioniar_id']=$value['sf_id'];
+                            $dd['document_id']=$doc['id'];
+                            $dd['question']=$doc['doc_name'];
+                            Modules::run('api/insert_into_specific_table',$dd,DEFAULT_OUTLET."_scorecard_assign_questions");
                     }
                 }
-            }  
-         
+                $question= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('sfq_check_id'=>$value['sf_id'],'sfq_status'=>'1','sfq_delete'=>'0'),'sfq_id desc','sfq_id',DEFAULT_OUTLET.'_scorecard_form_question','sfq_id, sfq_question,sfq_description','1','0','','','')->result_array();
+                foreach($question as $keys => $values )
+                {
+                    $ques['sc_id']=$id;
+                    $ques['tassign_id']=$tassign_id;
+                    $ques['questioniar_id']=$value['sf_id'];
+                    $ques['question_id']=$values['sfq_id'];
+                    $ques['question']=$values['sfq_question'];
+                    $ques['sfq_description']=$values['sfq_description'];
+                    Modules::run('api/insert_into_specific_table',$ques,DEFAULT_OUTLET."_scorecard_assign_questions");
+                }
+            }
+        }  
     }
     function reminder_email($result,$days){
         foreach($result as $key => $value)
@@ -5388,7 +5391,7 @@ class Admin_api extends MX_Controller {
                 date_default_timezone_set($timezone[0]['timezones']);
         $outlet_id=DEFAULT_OUTLET;
         $where['assignments.outlet_id']=$outlet_id;
-        $where['assignments.end_datetime <=']=date('Y-m-d h:i:s');
+        $where['assignments.end_datetime <=']=date('Y-m-d H:i:s');
        // $where['assignments.end_timetime <']=date('H:i');
         $where['assignments.assign_status']="Open";
         $ass_arr=$this->get_over_due_assignment($where,$outlet_id)->result_array();

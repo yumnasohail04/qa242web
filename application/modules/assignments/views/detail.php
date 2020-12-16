@@ -1,4 +1,3 @@
-
 <?php if(!isset($function)) $function=""; 
 $assign_id = "";
 if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid']))
@@ -38,7 +37,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid']))
                                                    Product name:
                                               </th>
                                               <td>
-                                                <?php $name=''; if(isset($prodct_detail[0]['product_title']) && !empty($prodct_detail[0]['product_title'])) $name=$prodct_detail[0]['product_title']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; ?>
+                                                <?php $name=''; if(isset($prodct_detail[0]['product_title']) && !empty($prodct_detail[0]['product_title'])) $name=$prodct_detail[0]['product_title']; $name=  Modules::run('api/string_length',$name,'8000','',''); echo $name; ?>
                                               </td>
                                           </tr>
                                           <tr class="bg-col">
@@ -46,7 +45,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid']))
                                                   User name:
                                               </th>
                                               <td>
-                                                  <?php $name=''; if(isset($user_detail[0]['user_name']) && !empty($user_detail[0]['user_name'])) $name=$user_detail[0]['user_name']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; ?>
+                                                  <?php $name=''; if(isset($user_detail[0]['user_name']) && !empty($user_detail[0]['user_name'])) $name=$user_detail[0]['user_name']; $name=  Modules::run('api/string_length',$name,'8000','',''); echo $name; ?>
                                               </td>
                                           </tr>
                                           <tr class="bg-col">
@@ -54,7 +53,9 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid']))
                                                   Line number:
                                               </th>
                                               <td>
-                                                  <?php $name=''; if(isset($assignmet_answers[0]['line_no']) && !empty($assignmet_answers[0]['line_no'])) $name=$assignmet_answers[0]['line_no']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; ?>
+                                                  <?php $name=''; if(isset($assignmet_answers[0]['line_no']) && !empty($assignmet_answers[0]['line_no'])) $name=$assignmet_answers[0]['line_no']; $name=  Modules::run('api/string_length',$name,'8000','',''); 
+ 												$name = Modules::run('api/_get_specific_table_with_pagination',array("line_id"=>$assignmet_answers[0]['line_no']),'line_id desc',DEFAULT_OUTLET.'_lines','line_name','1','1')->row_array();
+															echo $name['line_name']; ?>
                                               </td>
                                           </tr>
                                           <tr class="bg-col">
@@ -62,7 +63,7 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid']))
                                                   Shift detail:
                                               </th>
                                               <td>
-                                                  <?php $name=''; if(isset($assignmet_answers[0]['shift_no']) && !empty($assignmet_answers[0]['shift_no'])) $name=$assignmet_answers[0]['shift_no']; $name=  Modules::run('api/string_length',$name,'8000',''); echo $name; ?>
+                                                  <?php $name=''; if(isset($assignmet_answers[0]['shift_no']) && !empty($assignmet_answers[0]['shift_no'])) $name=$assignmet_answers[0]['shift_no']; $name=  Modules::run('api/string_length',$name,'8000','',''); echo $name; ?>
                                               </td>
                                           </tr>
                                           <tr class="bg-col">

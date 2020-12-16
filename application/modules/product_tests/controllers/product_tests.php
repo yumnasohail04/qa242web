@@ -349,9 +349,49 @@ Modules::run('site_security/has_permission');
     function detail() {
         $update_id = $this->input->post('id');
        // $lang_id = $this->input->post('lang_id');
-        $data['post'] = $this->_get_data_from_db($update_id);
-        $data['product_attribute']=$this->get_attriutes_list($update_id)->result_array();
-        $data['update_id'] = $update_id;
+        $post= $this->_get_data_from_db($update_id);
+        if($post['checktype']=="unit weight(tray+pasta)")
+        {
+            $product_attribute['0']['attribute_name']="Unit weight";
+            $product_attribute['0']['attribute_type']="Fixed";
+            $product_attribute['1']['attribute_name']="Unit weight";
+            $product_attribute['1']['attribute_type']="Fixed";
+            $product_attribute['2']['attribute_name']="Unit weight";
+            $product_attribute['2']['attribute_type']="Fixed";
+            $product_attribute['3']['attribute_name']="Unit weight";
+            $product_attribute['3']['attribute_type']="Fixed";
+        }
+        else if($post['checktype']=="product attribute")
+        {
+            $product_attribute['0']['attribute_name']="Shape";
+            $product_attribute['0']['attribute_type']="Choice";
+            $product_attribute['1']['attribute_name']="Machine Number";
+            $product_attribute['1']['attribute_type']="Fixed";
+            $product_attribute['2']['attribute_name']="Whole Weight";
+            $product_attribute['2']['attribute_type']="Fixed";
+            $product_attribute['3']['attribute_name']="Dough Weight";
+            $product_attribute['3']['attribute_type']="Fixed";
+            $product_attribute['4']['attribute_name']="Filling Weight";
+            $product_attribute['4']['attribute_type']="Fixed";
+            $product_attribute['5']['attribute_name']="Filling Percentage";
+            $product_attribute['5']['attribute_type']="Fixed";
+            $product_attribute['6']['attribute_name']="All other Range attributes(if added) ";
+            $product_attribute['6']['attribute_type']="Range";
+        }
+        else
+        {
+            if($post['checksubtype']=="Filling Check" && $post['checktype']=="bowl_filling" )
+                $where=array('wip_type'=>'Bowl Filling (Filling check)');
+            else if($post['checksubtype']=="Dough Check" && $post['checktype']=="bowl_filling")
+                $where=array('wip_type'=>'Bowl Filling (Dough check)');
+            else if($post['checksubtype']=="Filling Check" && $post['checktype']=="wip_profile")
+                $where=array('wip_type'=>'Ingredient Process Control (Filling check)');
+            else if($post['checksubtype']=="Dough Check" && $post['checktype']=="wip_profile")
+                $where=array('wip_type'=>'Ingredient Process Control (Dough check)');
+            $product_attribute = Modules::run('api/_get_specific_table_with_pagination_where_groupby',$where,'wip_id desc','wip_id','wip_profile','attribute_name,attribute_type','1','0','','','')->result_array();
+        }
+            $data['product_attribute']=$product_attribute;
+            $data['update_id'] = $update_id;
         $this->load->view('detail', $data);
     }
 

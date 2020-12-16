@@ -678,8 +678,6 @@ display: block;
                      <br><br>
            
                                        </div>
-                                 </div>
-  </div>
 <script>
     $('.chosen-selects').on('change', function() {
          var attr_id=$(this).attr('attr_id');

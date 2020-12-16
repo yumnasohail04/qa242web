@@ -263,7 +263,7 @@
                                             <?php if($update_id >0){?>
                                              <?php include('check_attributes.php');?>
                                              <?}?>
-
+</div>
                                              <button class="btn btn-outline-primary nextBtn  pull-right" type="button" style="margin-top: 30px;margin-right: 42px; float:right;">Next</button>
                                            <button type="button" class="btn btn-outline-primary btn-previous pull-right" style="margin-top: 30px;">Previous</button>
                                            <?php if($update_id >0){?>
@@ -370,7 +370,7 @@
                                                   if(isset($update_id) && $update_id != 0)
                                                     $all_shifts = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array(),'shift_id desc','shift_id',DEFAULT_OUTLET.'_shifts','shift_id,shift_name,shift_status','1','0','','','')->result_array();
                                                   else
-                                                    $all_shifts = array();
+                                                    $all_shifts = Modules::run('api/_get_specific_table_with_pagination_where_groupby',array(),'shift_id desc','shift_id',DEFAULT_OUTLET.'_shifts','shift_id,shift_name,shift_status','1','0','','','')->result_array();
                                                   $html =  "";
                                                   foreach ($all_shifts as $key => $value):
                                                     if(isset($selected_option) &&  !empty($selected_option)) 

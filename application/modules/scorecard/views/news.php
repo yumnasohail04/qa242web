@@ -4,6 +4,9 @@
         <div class="row">
             <div class="col-12">
                 <h1>In-Progress ScoreCards List</h1>
+                <button class="btn btn-outline-primary scorecard_create" style="float: right;margin-left:1%;">Regulatory - Score in Bulk</button> 
+                <button class="btn btn-outline-primary scorecard_create" style="float: right;margin-left:1%;">Purchasing - Score in Bulk</button> 
+                <button class="btn btn-outline-primary scorecard_create" style="float: right;margin-left:1%;">QA Manager - Score in Bulk</button> 
                 <div class="separator mb-5"></div>
             </div>
         </div>

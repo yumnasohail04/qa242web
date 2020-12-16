@@ -166,8 +166,10 @@
                     </div>
                     
                     <div class="row datetimeshow" <?php if(!isset($news['is_dates']) || empty($news['is_dates'])) echo 'style="display: none;"';?> >
-                        <fieldset>
+                        <fieldset style="width:100%;">
                     <legend>Check Duration</legend>
+                        
+                    </fieldset>
                       <div class="col-sm-6">
                         <?php $news_date='';
                          if (isset($news['sf_start_datetime']) && $news['sf_start_datetime'] != "0000-00-00 00:00:00" && !empty($news['sf_start_datetime']) && $news['sf_start_datetime']!="1970-01-01") {
@@ -282,7 +284,6 @@
                           </div>
                         </div>
                       </div>
-                    </fieldset>
                     </div>
                     <div class="form-actions fluid no-mrg">
                       <div class="row">

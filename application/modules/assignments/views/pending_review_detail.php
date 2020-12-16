@@ -96,7 +96,9 @@ if(isset($assign_detail[0]['checkid']) && !empty($assign_detail[0]['checkid'])) 
                                                   Line number:
                                               </th>
                                               <td>
-                                                  <?php $name=''; if(isset($assignmet_answers[0]['line_no']) && !empty($assignmet_answers[0]['line_no'])) $name=$assignmet_answers[0]['line_no']; $name=  Modules::run('api/string_length',$name,'8000','',''); echo $name; ?>
+                                                  <?php $name=''; if(isset($assignmet_answers[0]['line_no']) && !empty($assignmet_answers[0]['line_no'])) $name=$assignmet_answers[0]['line_no']; $name=  Modules::run('api/string_length',$name,'8000','',''); 
+                                                  $name = Modules::run('api/_get_specific_table_with_pagination',array("line_id"=>$assignmet_answers[0]['line_no']),'line_id desc',DEFAULT_OUTLET.'_lines','line_name','1','1')->row_array();
+															echo $name['line_name']; ?>
                                               </td>
                                           </tr>
                                         <?php } if(empty($shift_na)) { ?>

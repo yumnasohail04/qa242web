@@ -153,22 +153,22 @@ function set_permission($role_id,$outlet_id){
   	 $where['role_id'] = $role_id;
 	 $where['outlet_id'] = $outlet_id;
 	 $result = $this->_get_where_cols($where); 
-	 $arr_rights = array();
+	 $arr_rights =array();
 	 $controller = '';
 	 $parent_id = '';
 	 foreach($result->result() as $right){
 		if($right->parent_id == 0 ){
 			$query =  Modules::run('rights/_get_where',$right->right_id);
 			$rs_parent = $query->row();
-        if(isset($rs_parent->right))
-			$controller = $rs_parent->right;
+        	if(isset($rs_parent->right) && !empty($rs_parent->right)){
+            $controller = $rs_parent->right;
 			$parent_id = $right->right_id;
+            }
+			
 		}
 		if($right->parent_id == $parent_id){
 			$query =  Modules::run('rights/_get_where',$right->right_id);
 			$rs_method = $query->row();
-        
-        if(isset($rs_method->right))
 			$arr_rights[$controller][] = $rs_method->right;
 		}
 	 }
@@ -183,12 +183,12 @@ function has_permission($role_id,$outlet_id,$controller, $action){
 	 $allowed_modules = array('login', 'rights');
 	 $rights = $this->cache->get("user_".$role_id."_".$outlet_id."_rights");
 
-	// print $action.'---<pre>';print_r($rights);print "this =====>> user_".$role_id."_".$outlet_id."_rights";//exit;
+//	print $action.'---<pre>';print_r($rights);print "this =====>> user_".$role_id."_".$outlet_id."_rights";exit;
     ///////////////////////////////
 
 	 
 //$json = json_encode($rights);
-$file = ACTUAL_BANNER_IMAGE_PATH."debug_text.txt";
+$file = "debug_text.txt";
 //using the FILE_APPEND flag to append the content.
 file_put_contents ($file, "\n\n***************5a----user_".$role_id."_".$outlet_id."_rights*********** \n\n", FILE_APPEND);
 file_put_contents ($file, "\n\n***************5----Permission->HAS Permission*********** \n\n", FILE_APPEND);
@@ -201,6 +201,7 @@ file_put_contents ($file, "\n\n************6******************action-".$action, 
           return true;
 	 }
 	 else{
+		 $controller=ucfirst($controller);
 	 	file_put_contents ($file, "\n\n-8-", FILE_APPEND);
 		 foreach($rights as $ctrl=>$act){
 			if(!in_array($action, $rights[$controller])){				
@@ -216,15 +217,13 @@ file_put_contents ($file, "\n\n************6******************action-".$action, 
 
 function has_control_permission($role_id,$outlet_id=DEFAULT_OUTLET,$controller){
 	 $allowed_modules = array('login', 'rights');
-//		echo "===>>> user_".$role_id."_".$outlet_id."_rights";exit;
+		//echo "===>>> user_".$role_id."_".$outlet_id."_rights";exit;
 	 $rights = $this->cache->get("user_".$role_id."_".$outlet_id."_rights");
-
+	$controller=ucfirst($controller);
 	 if(in_array($controller, $allowed_modules)){
-		 return true;
+		 return true;	
 	 }
 	 else{
-	 		
-	 		 	
 	 		 foreach($rights as $ctrl=>$act){
 	 		 	/*if ($controller=='reports' && $ctrl === $controller)
 		 		{
@@ -240,6 +239,7 @@ function has_control_permission($role_id,$outlet_id=DEFAULT_OUTLET,$controller){
 			 }
 			 return false;  
 	   }
+
 }
 
 

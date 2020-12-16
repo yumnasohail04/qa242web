@@ -63,7 +63,7 @@
                                         <td><?php foreach($groups as $value): if($value['id']==$new->approval_team) echo $value['group_title']; endforeach;?></td>
                                         
                                         <td class="table_action" style="text-align: center;">
-                                        <!-- <a class="btn yellow c-btn view_details" rel="<?=$new->id?>"><i class="fa fa-list"  title="See Detail"></i></a> -->
+                                        <a class="btn yellow c-btn view_details" rel="<?=$new->id?>"><i class="iconsminds-file"  title="See Attributes"></i></a> 
                                         <?php
                                         $publish_class = ' table_action_publish';
                                         $publis_title = 'Set Un-Publish';
