@@ -4,9 +4,9 @@
         <div class="row">
             <div class="col-12">
                 <h1>In-Progress ScoreCards List</h1>
-                <button class="btn btn-outline-primary scorecard_create" style="float: right;margin-left:1%;">Regulatory - Score in Bulk</button> 
-                <button class="btn btn-outline-primary scorecard_create" style="float: right;margin-left:1%;">Purchasing - Score in Bulk</button> 
-                <button class="btn btn-outline-primary scorecard_create" style="float: right;margin-left:1%;">QA Manager - Score in Bulk</button> 
+                <?php foreach($cards as $key => $value): ?>
+                <button class="btn btn-outline-primary scorecard_bulk" rel="<?php echo $value['sf_id'];  ?>" style="float: right;margin-left:1%;"><?php echo $value['sf_name']; ?> - Score in Bulk</button> 
+                <?php endforeach; ?>
                 <div class="separator mb-5"></div>
             </div>
         </div>
@@ -16,15 +16,15 @@
                 <div class="card">
                     <div class="card-body">
                         <table class="data-table data-table-feature">
-                        <thead class="bg-th">
-                        <tr class="bg-col">
-                        <th>Supplier<i class="fa fa-sort" style="font-size:13px;"></i></th>
-                        <th>Assigned to <i class="fa fa-sort" style="font-size:13px;"></i></th>
-                        <th>Created Date <i class="fa fa-sort" style="font-size:13px;"></i></th>
-                        <th class="" style="width:300px;text-align: center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
+                            <thead class="bg-th">
+                            <tr class="bg-col">
+                            <th>Supplier<i class="fa fa-sort" style="font-size:13px;"></i></th>
+                            <th>Assigned to <i class="fa fa-sort" style="font-size:13px;"></i></th>
+                            <th>Created Date <i class="fa fa-sort" style="font-size:13px;"></i></th>
+                            <th class="" style="width:300px;text-align: center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
                                 <?php
                                 $i = 0;
                                 if (isset($card_list)) {
@@ -49,7 +49,7 @@
                                     <?php } ?>    
                                 <?php } ?>
                             </tbody>
-                    </table>
+                        </table>
                         </div>
                     </div>
                 </div>
@@ -80,6 +80,23 @@ $(document).ready(function(){
                      }
                     });
             });
+
+            $(document).on("click", ".scorecard_bulk", function(event){
+            event.preventDefault();
+            var id = $(this).attr('rel');
+                $.ajax({
+                    type: 'POST',
+                    url: "<?php echo ADMIN_BASE_URL?>scorecard/bulk_list",
+                    data: {'id': id},
+                    async: false,
+                    success: function(test_body) {
+                    var test_desc = test_body;
+                        $('#myModalLarge').modal('show');
+                        $("#myModalLarge .modal-body").html(test_desc);
+                    }
+                });
+            });
+            
 
 
             $(document).off('click', '.delete_record').on('click', '.delete_record', function(e){

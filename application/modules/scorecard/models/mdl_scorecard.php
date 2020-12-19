@@ -137,7 +137,7 @@ class Mdl_scorecard extends CI_Model {
         $table = DEFAULT_OUTLET."_scorecard_team_assign";
         $table1 = DEFAULT_OUTLET."_scorecard_assignment";
         $table2 = "supplier";
-        $this->db->select("$table2.name,$table2.id as supplier_id");
+        $this->db->select("$table2.name,$table2.id as supplier_id,$table.id");
         $this->db->from($table);
         $this->db->join("$table1","$table.sc_id=$table1.id","LEFT");
         $this->db->join("$table2","$table1.supplier_id=$table2.id","LEFT");

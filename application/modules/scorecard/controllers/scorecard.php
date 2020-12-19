@@ -192,6 +192,68 @@ date_default_timezone_set($timezone[0]['timezones']);
         $this->load->module('template');
         $this->template->admin($data);
     }
+    function submit_bulk()
+    {
+        $result_arr=array();
+        $result_arr=$this->input->post('result_arr');
+        $result_arr=json_decode($result_arr);
+        $teamcount=$tot_points=$rec_points=0;
+        $questions =Modules::run('dashboard/array_sort',$result_arr, 'cardId', SORT_DESC);
+        print_r($questions);exit;
+        foreach ($result_arr as $key => $form_data) {
+            $id=$form_data->cardId;
+            $card= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('id'=>$id),'id desc','id',DEFAULT_OUTLET.'_scorecard_team_assign','*','1','0','','','')->row_array();
+            $data['sc_id']=$card['sc_id'];	
+            $data['team_id']=$card['team_id'];
+            $data['qauto_id']=$form_data->questId;
+            $data['answer_id']=$form_data->ansId;
+            $rec_points=$rec_points+$form_data->points;
+            $tot_points=$tot_points+100;
+            $this->_insert_data($data,DEFAULT_OUTLET."_scorecard_assign_answers");
+        }
+        $team_count= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('sc_id'=>$data['sc_id']),'id desc','',DEFAULT_OUTLET.'_scorecard_team_assign','*','1','0','','','')->num_rows();
+        $team_count=100/$team_count;
+        $points=$rec_points/$tot_points*$team_count;
+        if($points<20)
+        {
+            $this->update_table_(array('id'=>$id),array("final_review"=>"1"),DEFAULT_OUTLET.'_scorecard_team_assign');
+        }
+        $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id desc','general_setting','timezones','1','1')->result_array();
+        if(isset($timezones[0]['timezones']) && !empty($timezones[0]['timezones']))
+        date_default_timezone_set($timezones[0]['timezones']);
+        $user_id=$this->session->userdata['user_data']['user_id'];
+        $this->update_table_(array('id'=>$id),array("fill_status"=>"1","reviewed_date"=>date('Y-m-d H:i:s'),"review_user"=>$user_id,"percentage"=>$points,"points"=>$team_count),DEFAULT_OUTLET.'_scorecard_team_assign');
+        $status= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('sc_id'=>$data['sc_id']),'id desc','id',DEFAULT_OUTLET.'_scorecard_team_assign','*','1','0','','','')->result_array();
+        $stat="1";
+        $review_stat="0";
+        $team_data= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('sc_id'=>$data['sc_id']),'id desc','',DEFAULT_OUTLET.'_scorecard_team_assign','*','1','0','','','')->result_array();
+        $percentage=0;
+        foreach($team_data as $key => $value)
+        {
+        $percentage=$percentage+$value['percentage'];
+        }
+        $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id desc','general_setting','timezones','1','1')->result_array();
+        if(isset($timezones[0]['timezones']) && !empty($timezones[0]['timezones']))
+        date_default_timezone_set($timezones[0]['timezones']);
+        $this->update_table_(array('id'=>$data['sc_id']),array("status"=>"Complete","total_percentage"=>$percentage),DEFAULT_OUTLET.'_scorecard_assignment');
+        foreach($status as $key => $value)
+        {
+            if($value['fill_status']=="0"){
+                $stat="0";
+            } 
+            if($value['final_review']=="1"){
+                $review_stat="1";
+            }  
+        }
+        if($stat=="1"){
+            if($review_stat=="1"){
+                $this->update_table_(array('id'=>$data['sc_id']),array("status"=>"Review"),DEFAULT_OUTLET.'_scorecard_assignment');
+            }else{
+                
+                $this->update_table_(array('id'=>$data['sc_id']),array("status"=>"Complete"),DEFAULT_OUTLET.'_scorecard_assignment');
+            }
+        }
+    }
     function submitt_scorecard()
     {
         $result_arr=array();
@@ -285,10 +347,56 @@ date_default_timezone_set($timezone[0]['timezones']);
         {
             $where=array(DEFAULT_OUTLET."_scorecard_team_assign.fill_status"=>"0", DEFAULT_OUTLET."_scorecard_team_assign.team_id"=>$group_id);
         }
+        $data['cards'] = Modules::run('api/_get_specific_table_with_pagination',array("sf_delete_status" =>"0","sf_status" =>"1"), 'sf_id desc',DEFAULT_OUTLET.'_scorecard_form','sf_name,sf_id','','')->result_array();
         $data['card_list'] =$this->get_scorecard_list($where);
         $data['view_file'] = 'news';
         $this->load->module('template');
         $this->template->admin($data);
+    }
+    function bulk_list()
+    {
+        $tot="0";
+        $id=$this->input->post('id');
+        $gd= Modules::run('api/_get_specific_table_with_pagination',array("sf_id" =>$id), 'sf_id desc',DEFAULT_OUTLET.'_scorecard_form','assigned_to','','')->row_array();
+        $where=array(DEFAULT_OUTLET."_scorecard_team_assign.fill_status"=>"0", DEFAULT_OUTLET."_scorecard_team_assign.team_id"=>$gd['assigned_to']);
+        $card_list =$this->get_scorecard_list($where)->result_array();
+        foreach($card_list as $key => $value): 
+            $supplier= $this->get_supplier_data($value['id'])->row_array();
+            $questions= $this->get_card_questions($value['id'])->result_array();
+            foreach($questions as $key => $value)
+            {
+                if($value['question_id']=="0")
+                {
+                    $answers= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array(),'sfa_id asc','sfa_id',DEFAULT_OUTLET.'_ingredient_document_ans','*','1','0','','','')->result_array();
+                    if($value['document_id']!="0"){
+                        $questions[$key]['type']="Document";
+                        $doc= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("s_doc_id"=>$value['document_id'],"supplier_id"=>$data['supplier']['supplier_id']),'id asc','id','supplier_documents','document','1','0','','','')->row_array();
+                        if(isset($doc['document']))
+                        $questions[$key]['doc']=$doc['document'];
+                        if(!isset($doc['document']))
+                        $questions[$key]['doc_stat']="0";
+                    }
+                    if($value['ingredient_id']!="0"){
+                        $questions[$key]['type']="Ingredient";
+                        $name= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array("id"=>$value['ingredient_id']),'id asc','id',DEFAULT_OUTLET.'_ingredients','item_name','1','0','','','')->row_array();
+                        $questions[$key]['question']=$questions[$key]['question'];
+                        $questions[$key]['ingredient']=$name['item_name'];
+                    }
+                }else{
+                    $answers= $this->get_questions_answers($value['question_id'])->result_array();
+                    $questions[$key]['type']="General";
+                }
+                $questions[$key]['answers']=$answers;
+            }
+            $questions =Modules::run('dashboard/array_sort',$questions, 'id', SORT_DESC);
+            $tot=$tot + count($questions);
+            $temp['supplier']=$supplier;
+            $temp['questions']=$questions;
+            $data['card'][]=$temp;
+        endforeach;
+        $data['tot']=$tot;
+        $this->load->view('bulk_page', $data);
+
     }
     function pending_scorecard() {
         $group_id=$this->session->userdata['user_data']['group'];
@@ -438,6 +546,7 @@ date_default_timezone_set($timezone[0]['timezones']);
         $data['create_date'] = date('Y-m-d H:i:s');
         return $data;
     }
+   
     function submit_supplier()
     {   
        $data = $this->_get_data_from_post();

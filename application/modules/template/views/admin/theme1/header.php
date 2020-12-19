@@ -96,7 +96,7 @@ th {
                             <i class="iconsminds-male-female d-block"></i>
                             <span>Users</span>
                         </a>
-                        <a href="#" class="icon-menu-item">
+                        <!-- <a href="#" class="icon-menu-item">
                             <div class="d-none d-md-inline-block align-text-bottom mr-3">
                                 <div class="custom-switch custom-switch-primary-inverse custom-switch-small pl-1" 
                                     data-toggle="tooltip" data-placement="left" title="Dark Mode">
@@ -105,7 +105,7 @@ th {
                                 </div>
                             </div>
                             <span>Dark Mode</span>
-                        </a>
+                        </a> -->
                         <a href=""  class="icon-menu-item view_chat">
                             <i class="simple-icon-bubbles d-block"></i>
                             <span>Chat</span>
