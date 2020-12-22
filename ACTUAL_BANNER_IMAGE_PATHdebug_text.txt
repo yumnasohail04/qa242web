@@ -65703,3 +65703,1371 @@
  -1-action-submit_bulk
 
  -4-  end function
+
+  =================2020-12-23 00:27:17================== 
+
+ inprogress_scorecard
+
+ -1-action-inprogress_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:27:20================== 
+
+ bulk_list
+
+ -1-action-bulk_list
+
+ -4-  end function
+
+  =================2020-12-23 00:27:35================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:27:47================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:27:47================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:27:52================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:27:52================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:27:56================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:27:56================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:27:59================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:27:59================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:28:02================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:28:02================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:28:06================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:28:06================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:28:10================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:28:10================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:28:13================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:28:13================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:28:16================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:28:16================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:28:20================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:28:20================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:28:23================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:28:24================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:28:27================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:28:27================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:28:30================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:28:30================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:28:33================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:28:34================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:28:37================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:28:37================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:28:41================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:28:41================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:28:44================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:28:44================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:28:48================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:28:48================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:28:52================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:28:52================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:28:55================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:28:55================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:28:59================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:28:59================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:29:04================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:29:04================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:29:07================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:29:07================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:29:11================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:29:11================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:29:14================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:29:14================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:29:17================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:29:17================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:29:21================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:29:21================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:29:24================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:29:24================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:29:27================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:29:27================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:29:30================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:29:30================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:29:33================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:29:33================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:29:36================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:29:36================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:29:40================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:29:40================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:29:43================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:29:43================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:29:46================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:29:46================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:29:49================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:29:49================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:29:52================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:29:52================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:29:55================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:29:55================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:29:58================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:29:58================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:30:02================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:30:02================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:30:05================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:30:05================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:30:08================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:30:08================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:30:11================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:30:11================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:30:15================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:30:15================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:30:18================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:30:18================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:30:21================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:30:21================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:30:24================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:30:24================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:30:27================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:30:27================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:30:32================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:30:32================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:30:35================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:30:35================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:30:38================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:30:38================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:30:41================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:30:41================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:30:44================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:30:44================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:30:50================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:30:50================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:30:54================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:30:54================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:30:57================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:30:57================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:31:00================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:31:00================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:31:03================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:31:03================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:31:07================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:31:07================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:31:10================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:31:10================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:31:14================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:31:14================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:31:17================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:31:17================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:31:20================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:31:20================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:31:24================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:31:24================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:41:56================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:41:56================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:41:59================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:41:59================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:42:03================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:42:03================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:42:06================== 
+
+ delete_scorecard
+
+ -1-action-delete_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:42:06================== 
+
+ manage
+
+ -1-action-manage
+
+ -4-  end function
+
+  =================2020-12-23 00:42:10================== 
+
+ inprogress_scorecard
+
+ -1-action-inprogress_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 00:42:12================== 
+
+ bulk_list
+
+ -1-action-bulk_list
+
+ -4-  end function
+
+  =================2020-12-23 00:46:40================== 
+
+ submit_bulk
+
+ -1-action-submit_bulk
+
+ -4-  end function
+
+  =================2020-12-23 00:46:53================== 
+
+ submit_bulk
+
+ -1-action-submit_bulk
+
+ -4-  end function
+
+  =================2020-12-23 01:18:19================== 
+
+ inprogress_scorecard
+
+ -1-action-inprogress_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 01:18:22================== 
+
+ bulk_list
+
+ -1-action-bulk_list
+
+ -4-  end function
+
+  =================2020-12-23 01:19:14================== 
+
+ submit_bulk
+
+ -1-action-submit_bulk
+
+ -4-  end function
+
+  =================2020-12-23 01:19:19================== 
+
+ bulk_list
+
+ -1-action-bulk_list
+
+ -4-  end function
+
+  =================2020-12-23 01:19:57================== 
+
+ inprogress_scorecard
+
+ -1-action-inprogress_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 01:19:59================== 
+
+ bulk_list
+
+ -1-action-bulk_list
+
+ -4-  end function
+
+  =================2020-12-23 01:21:29================== 
+
+ inprogress_scorecard
+
+ -1-action-inprogress_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 01:21:31================== 
+
+ bulk_list
+
+ -1-action-bulk_list
+
+ -4-  end function
+
+  =================2020-12-23 01:22:07================== 
+
+ inprogress_scorecard
+
+ -1-action-inprogress_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 01:22:09================== 
+
+ bulk_list
+
+ -1-action-bulk_list
+
+ -4-  end function
+
+  =================2020-12-23 01:22:12================== 
+
+ bulk_list
+
+ -1-action-bulk_list
+
+ -4-  end function
+
+  =================2020-12-23 01:22:16================== 
+
+ pending_scorecard
+
+ -1-action-pending_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 01:22:20================== 
+
+ inprogress_scorecard
+
+ -1-action-inprogress_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 01:22:22================== 
+
+ bulk_list
+
+ -1-action-bulk_list
+
+ -4-  end function
+
+  =================2020-12-23 01:22:43================== 
+
+ submit_bulk
+
+ -1-action-submit_bulk
+
+ -4-  end function
+
+  =================2020-12-23 01:22:45================== 
+
+ bulk_list
+
+ -1-action-bulk_list
+
+ -4-  end function
+
+  =================2020-12-23 01:23:09================== 
+
+ submit_bulk
+
+ -1-action-submit_bulk
+
+ -4-  end function
+
+  =================2020-12-23 01:23:11================== 
+
+ bulk_list
+
+ -1-action-bulk_list
+
+ -4-  end function
+
+  =================2020-12-23 01:23:12================== 
+
+ bulk_list
+
+ -1-action-bulk_list
+
+ -4-  end function
+
+  =================2020-12-23 01:23:13================== 
+
+ bulk_list
+
+ -1-action-bulk_list
+
+ -4-  end function
+
+  =================2020-12-23 01:23:16================== 
+
+ inprogress_scorecard
+
+ -1-action-inprogress_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 01:23:20================== 
+
+ pending_scorecard
+
+ -1-action-pending_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 01:23:26================== 
+
+ fill_pending_scorecard
+
+ -1-action-fill_pending_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 01:23:41================== 
+
+ fill_pending_scorecard
+
+ -1-action-fill_pending_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 01:24:01================== 
+
+ fill_pending_scorecard
+
+ -1-action-fill_pending_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 01:24:22================== 
+
+ inprogress_scorecard
+
+ -1-action-inprogress_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 01:24:47================== 
+
+ inprogress_scorecard
+
+ -1-action-inprogress_scorecard
+
+ -4-  end function
+
+  =================2020-12-23 01:24:51================== 
+
+ pending_scorecard
+
+ -1-action-pending_scorecard
+
+ -4-  end function

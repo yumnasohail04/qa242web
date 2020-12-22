@@ -81,14 +81,15 @@
 }
 .modal .modal-body
 {
-    height: 74vh;
+    max-height: 74vh;
     overflow: auto;
 }
 
 </style>
 
             <!-- BEGIN FORM-->
-               
+            <?php 
+            if(!empty($card)){?>   
             <div class="form-body section-box ">
             
             
@@ -163,6 +164,7 @@
             </div>
             </div>
         </div>
+        <?php }else echo "No Scorecards Available"; ?>
         
 <script>
 
@@ -224,8 +226,9 @@
             data: {'result_arr':formdata},
             async: false,
             success: function() {
-                return false;
-                window.location = "<?php echo ADMIN_BASE_URL.'scorecard/inprogress_scorecard'; ?>";
+                toastr.success('Scoring Submitted');
+                $('#myModalLarge').modal('hide');
+                location.redirect();
             }
         });
     }

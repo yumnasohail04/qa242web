@@ -199,7 +199,7 @@ date_default_timezone_set($timezone[0]['timezones']);
         $result_arr=json_decode($result_arr);
         $teamcount=$tot_points=$rec_points=0;
         $questions =Modules::run('dashboard/array_sort',$result_arr, 'cardId', SORT_DESC);
-        print_r($questions);exit;
+        $cardid=0;
         foreach ($result_arr as $key => $form_data) {
             $id=$form_data->cardId;
             $card= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('id'=>$id),'id desc','id',DEFAULT_OUTLET.'_scorecard_team_assign','*','1','0','','','')->row_array();
@@ -210,49 +210,55 @@ date_default_timezone_set($timezone[0]['timezones']);
             $rec_points=$rec_points+$form_data->points;
             $tot_points=$tot_points+100;
             $this->_insert_data($data,DEFAULT_OUTLET."_scorecard_assign_answers");
-        }
-        $team_count= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('sc_id'=>$data['sc_id']),'id desc','',DEFAULT_OUTLET.'_scorecard_team_assign','*','1','0','','','')->num_rows();
-        $team_count=100/$team_count;
-        $points=$rec_points/$tot_points*$team_count;
-        if($points<20)
-        {
-            $this->update_table_(array('id'=>$id),array("final_review"=>"1"),DEFAULT_OUTLET.'_scorecard_team_assign');
-        }
-        $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id desc','general_setting','timezones','1','1')->result_array();
-        if(isset($timezones[0]['timezones']) && !empty($timezones[0]['timezones']))
-        date_default_timezone_set($timezones[0]['timezones']);
-        $user_id=$this->session->userdata['user_data']['user_id'];
-        $this->update_table_(array('id'=>$id),array("fill_status"=>"1","reviewed_date"=>date('Y-m-d H:i:s'),"review_user"=>$user_id,"percentage"=>$points,"points"=>$team_count),DEFAULT_OUTLET.'_scorecard_team_assign');
-        $status= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('sc_id'=>$data['sc_id']),'id desc','id',DEFAULT_OUTLET.'_scorecard_team_assign','*','1','0','','','')->result_array();
-        $stat="1";
-        $review_stat="0";
-        $team_data= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('sc_id'=>$data['sc_id']),'id desc','',DEFAULT_OUTLET.'_scorecard_team_assign','*','1','0','','','')->result_array();
-        $percentage=0;
-        foreach($team_data as $key => $value)
-        {
-        $percentage=$percentage+$value['percentage'];
-        }
-        $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id desc','general_setting','timezones','1','1')->result_array();
-        if(isset($timezones[0]['timezones']) && !empty($timezones[0]['timezones']))
-        date_default_timezone_set($timezones[0]['timezones']);
-        $this->update_table_(array('id'=>$data['sc_id']),array("status"=>"Complete","total_percentage"=>$percentage),DEFAULT_OUTLET.'_scorecard_assignment');
-        foreach($status as $key => $value)
-        {
-            if($value['fill_status']=="0"){
-                $stat="0";
-            } 
-            if($value['final_review']=="1"){
-                $review_stat="1";
-            }  
-        }
-        if($stat=="1"){
-            if($review_stat=="1"){
-                $this->update_table_(array('id'=>$data['sc_id']),array("status"=>"Review"),DEFAULT_OUTLET.'_scorecard_assignment');
-            }else{
-                
-                $this->update_table_(array('id'=>$data['sc_id']),array("status"=>"Complete"),DEFAULT_OUTLET.'_scorecard_assignment');
+            if($form_data->cardId!=$cardid)
+            {
+                $cardid=$form_data->cardId;
+                $team_count= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('sc_id'=>$data['sc_id']),'id desc','',DEFAULT_OUTLET.'_scorecard_team_assign','*','1','0','','','')->num_rows();
+                $team_count=100/$team_count;
+                $points=$rec_points/$tot_points*$team_count;
+                if($points<20)
+                {
+                    $this->update_table_(array('id'=>$id),array("final_review"=>"1"),DEFAULT_OUTLET.'_scorecard_team_assign');
+                }
+                $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id desc','general_setting','timezones','1','1')->result_array();
+                if(isset($timezones[0]['timezones']) && !empty($timezones[0]['timezones']))
+                date_default_timezone_set($timezones[0]['timezones']);
+                $user_id=$this->session->userdata['user_data']['user_id'];
+                $this->update_table_(array('id'=>$id),array("fill_status"=>"1","reviewed_date"=>date('Y-m-d H:i:s'),"review_user"=>$user_id,"percentage"=>$points,"points"=>$team_count),DEFAULT_OUTLET.'_scorecard_team_assign');
+                $status= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('sc_id'=>$data['sc_id']),'id desc','id',DEFAULT_OUTLET.'_scorecard_team_assign','*','1','0','','','')->result_array();
+                $stat="1";
+                $review_stat="0";
+                $team_data= Modules::run('api/_get_specific_table_with_pagination_where_groupby',array('sc_id'=>$data['sc_id']),'id desc','',DEFAULT_OUTLET.'_scorecard_team_assign','*','1','0','','','')->result_array();
+                $percentage=0;
+                foreach($team_data as $key => $value)
+                {
+                $percentage=$percentage+$value['percentage'];
+                }
+                $timezone = Modules::run('api/_get_specific_table_with_pagination',array("outlet_id" =>DEFAULT_OUTLET), 'id desc','general_setting','timezones','1','1')->result_array();
+                if(isset($timezones[0]['timezones']) && !empty($timezones[0]['timezones']))
+                date_default_timezone_set($timezones[0]['timezones']);
+                $this->update_table_(array('id'=>$data['sc_id']),array("status"=>"Complete","total_percentage"=>$percentage),DEFAULT_OUTLET.'_scorecard_assignment');
+                foreach($status as $key => $value)
+                {
+                    if($value['fill_status']=="0"){
+                        $stat="0";
+                    } 
+                    if($value['final_review']=="1"){
+                        $review_stat="1";
+                    }  
+                }
+                if($stat=="1"){
+                    if($review_stat=="1"){
+                        $this->update_table_(array('id'=>$data['sc_id']),array("status"=>"Review"),DEFAULT_OUTLET.'_scorecard_assignment');
+                    }else{
+                        
+                        $this->update_table_(array('id'=>$data['sc_id']),array("status"=>"Complete"),DEFAULT_OUTLET.'_scorecard_assignment');
+                    }
+                }
+                $tot_points=$rec_points=$team_count=0;
             }
         }
+        
     }
     function submitt_scorecard()
     {
